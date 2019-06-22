@@ -1,5 +1,6 @@
 import connect from 'react-redux/es/connect/connect';
 import { PostList } from './PostList';
+import { filterChanged, handleClick } from '../redux/actions';
 
 function mapStateToProps(state) {
   return {
@@ -8,10 +9,10 @@ function mapStateToProps(state) {
     loadedPosts: state.loadedPosts,
     loadedComments: state.loadedComments,
     articles: state.articles,
-    users: state.users,
+    usersMap: state.usersMap,
     posts: state.posts,
     comments: state.comments,
-    postComponents: state.postComponents,
+    filteredPosts: state.filteredPosts,
   };
 }
 
@@ -22,4 +23,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const PostListHandler = connect(mapStateToProps,mapDispatchToProps)(PostList);
+export const PostListHandler = connect(mapStateToProps, mapDispatchToProps)(PostList);

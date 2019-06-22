@@ -1,34 +1,33 @@
 import React from 'react';
-import { Posts } from './Posts';
+import { PostHandler } from './PostHandler';
 
 export function PostList(props) {
+
   const {
     requested,
     loadedUsers,
     loadedPosts,
+    loadedComments,
     comments,
-    users,
-    postComponents,
+    usersMap,
+    posts,
     filterChanged,
     handleClick,
+    filteredPosts,
   } = props;
   if (!requested) {
     return (
       <input type="button" onClick={handleClick} value="Download posts!" />
     );
-  } if (
-    loadedUsers
-                   && loadedPosts
-                   && comments
-  ) {
-    const usersMap = users.reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
-    const items = postComponents.map(item => (
-      <Posts
-        key={item.id}
-        userId={item.userId}
-        title={item.title}
-        body={item.body}
-        id={item.id}
+  } if (loadedUsers && loadedPosts && loadedComments) {
+    posts.length = 5;
+    const items = filteredPosts.map(post => (
+      <PostHandler
+        key={post.id}
+        userId={post.userId}
+        title={post.title}
+        body={post.body}
+        id={post.id}
         comments={comments}
         usersMap={usersMap}
       />

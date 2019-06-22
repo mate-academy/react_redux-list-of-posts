@@ -13,10 +13,10 @@ const initialState = {
   loadedPosts: false,
   loadedComments: false,
   articles: null,
-  users: null,
+  usersMap: null,
   posts: null,
   comments: null,
-  postComponents: null,
+  filteredPosts: null,
 };
 
 const actionHandlers = {
@@ -24,40 +24,44 @@ const actionHandlers = {
     ...state,
     requested: true,
   }),
-  [DISPLAY_USERS]: (state, action) => ({
-    ...state,
-    loadedUsers: true,
-    users: action.payload.users,
-  }),
+  [DISPLAY_USERS]: (state, action) => {
+    const usersMap = action.payload.users
+      .reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
+    return {
+      ...state,
+      loadedUsers: true,
+      usersMap,
+    };
+  },
   [DISPLAY_COMMENTS]: (state, action) => ({
     ...state,
-    loadedPosts: true,
-    postComponents: action.payload.comments,
+    loadedComments: true,
+    comments: action.payload.comments,
   }),
   [DISPLAY_POSTS]: (state, action) => {
     const { posts } = action.payload;
     return {
       ...state,
       loadedPosts: true,
-      postComponents: posts,
+      filteredPosts: posts,
       posts,
     };
   },
   [FILTER_CHANGED]: (state, action) => ({
     ...state,
-    postComponents: state.posts.filter(post => post.title
+    filteredPosts: state.posts.filter(post => post.title
       .includes(action.payload.target.value)),
   }),
-  [REMOVE_POST_ITEM]: (state, action) => {
-    const newTodos = state.todos.filter(
-      (todo, index) => index !== action.payload
-    );
-    return {
-      ...state,
-      filteredTodos: newTodos,
-      todos: newTodos,
-    };
-  },
+  // [REMOVE_POST_ITEM]: (state, action) => {
+  //   const newTodos = state.todos.filter(
+  //     (todo, index) => index !== action.payload
+  //   );
+  //   return {
+  //     ...state,
+  //     filteredTodos: newTodos,
+  //     todos: newTodos,
+  //   };
+  // },
 };
 
 export const reducer = (state = initialState, action) => {

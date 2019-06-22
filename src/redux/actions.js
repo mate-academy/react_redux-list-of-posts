@@ -33,7 +33,7 @@ export function handleClick() {
 
       const payloadPosts = {
         loadedPosts: true,
-        postComponents: posts,
+        filteredPosts: posts,
         posts,
       };
 
