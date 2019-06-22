@@ -1,0 +1,10 @@
+.comment {
+  margin: 20px 0 10px;
+  font-size: 14px;
+  padding-left: 15px;
+  border-left: 1px solid rgb(107, 7, 107);
+}
+
+h4 {
+  margin: 0;
+}
