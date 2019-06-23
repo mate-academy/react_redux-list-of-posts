@@ -5,13 +5,10 @@ import { filterChanged, handleClick } from '../redux/actions';
 function mapStateToProps(state) {
   return {
     requested: state.requested,
-    loadedUsers: state.loadedUsers,
-    loadedPosts: state.loadedPosts,
-    loadedComments: state.loadedComments,
-    articles: state.articles,
-    usersMap: state.usersMap,
+    usersLoaded: state.usersLoaded,
+    postsLoaded: state.postsLoaded,
+    commentsLoaded: state.commentsLoaded,
     posts: state.posts,
-    comments: state.comments,
     filteredPosts: state.filteredPosts,
   };
 }

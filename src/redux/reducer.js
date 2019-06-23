@@ -4,15 +4,15 @@ import {
   DISPLAY_COMMENTS,
   DISPLAY_POSTS,
   FILTER_CHANGED,
-  REMOVE_POST_ITEM,
+  POST_ITEM_REMOVE,
+  COMMENT_ITEM_REMOVE,
 } from './actions';
 
 const initialState = {
   requested: false,
-  loadedUsers: false,
-  loadedPosts: false,
-  loadedComments: false,
-  articles: null,
+  usersLoaded: false,
+  postsLoaded: false,
+  commentsLoaded: false,
   usersMap: null,
   posts: null,
   comments: null,
@@ -24,25 +24,22 @@ const actionHandlers = {
     ...state,
     requested: true,
   }),
-  [DISPLAY_USERS]: (state, action) => {
-    const usersMap = action.payload.users
-      .reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
-    return {
-      ...state,
-      loadedUsers: true,
-      usersMap,
-    };
-  },
+  [DISPLAY_USERS]: (state, action) => ({
+    ...state,
+    usersLoaded: true,
+    usersMap: action.payload.users
+      .reduce((acc, user) => ({ ...acc, [user.id]: user }), {}),
+  }),
   [DISPLAY_COMMENTS]: (state, action) => ({
     ...state,
-    loadedComments: true,
+    commentsLoaded: true,
     comments: action.payload.comments,
   }),
   [DISPLAY_POSTS]: (state, action) => {
     const { posts } = action.payload;
     return {
       ...state,
-      loadedPosts: true,
+      postsLoaded: true,
       filteredPosts: posts,
       posts,
     };
@@ -52,16 +49,16 @@ const actionHandlers = {
     filteredPosts: state.posts.filter(post => post.title
       .includes(action.payload.target.value)),
   }),
-  // [REMOVE_POST_ITEM]: (state, action) => {
-  //   const newTodos = state.todos.filter(
-  //     (todo, index) => index !== action.payload
-  //   );
-  //   return {
-  //     ...state,
-  //     filteredTodos: newTodos,
-  //     todos: newTodos,
-  //   };
-  // },
+  [POST_ITEM_REMOVE]: (state, action) => ({
+    ...state,
+    posts: state.posts.filter((todo, index) => index !== action.payload),
+    filteredPosts: state.posts
+      .filter((todo, index) => index !== action.payload),
+  }),
+  [COMMENT_ITEM_REMOVE]: (state, action) => ({
+    ...state,
+    comments: state.comments.filter(todo => todo.id !== action.payload),
+  }),
 };
 
 export const reducer = (state = initialState, action) => {

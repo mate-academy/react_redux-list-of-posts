@@ -1,21 +1,18 @@
 import connect from 'react-redux/es/connect/connect';
-import { Posts } from './Posts';
+import { Post } from './Post';
+import { postItemRemove } from '../redux/actions';
 
-// function mapStateToProps(state) {
-//   return {
-//     key={item.id}
-//     //     userId={item.userId}
-//     //     title={item.title}
-//     //     body={item.body}
-//     //     id={item.id}
-//     //     comments={comments}
-//     //     usersMap={usersMap}
-//   };
-// }
-
-function mapDispatchToProps(dispatch) {
+function mapStateToProps(state) {
   return {
+    comments: state.comments,
+    usersMap: state.usersMap,
   };
 }
 
-export const PostHandler = connect(null, mapDispatchToProps)(Posts);
+function mapDispatchToProps(dispatch) {
+  return {
+    postItemRemove: index => dispatch(postItemRemove(index)),
+  };
+}
+
+export const PostHandler = connect(mapStateToProps, mapDispatchToProps)(Post);

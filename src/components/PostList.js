@@ -1,35 +1,34 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { PostHandler } from './PostHandler';
 
 export function PostList(props) {
-
   const {
     requested,
-    loadedUsers,
-    loadedPosts,
-    loadedComments,
-    comments,
-    usersMap,
-    posts,
+    usersLoaded,
+    postsLoaded,
+    commentsLoaded,
     filterChanged,
     handleClick,
     filteredPosts,
   } = props;
   if (!requested) {
     return (
-      <input type="button" onClick={handleClick} value="Download posts!" />
+      <input
+        type="button"
+        onClick={handleClick}
+        value="Download posts!"
+      />
     );
-  } if (loadedUsers && loadedPosts && loadedComments) {
-    posts.length = 5;
-    const items = filteredPosts.map(post => (
+  } if (usersLoaded && postsLoaded && commentsLoaded) {
+    const items = filteredPosts.map((post, index) => (
       <PostHandler
         key={post.id}
         userId={post.userId}
         title={post.title}
         body={post.body}
         id={post.id}
-        comments={comments}
-        usersMap={usersMap}
+        index={index}
       />
     ));
 
@@ -58,4 +57,18 @@ export function PostList(props) {
   return (
     <input type="button" disabled value="Loading..." />
   );
+}
+
+PostList.propTypes = {
+  requested: PropTypes.bool.isRequired,
+  usersLoaded: PropTypes.bool.isRequired,
+  postsLoaded: PropTypes.bool.isRequired,
+  commentsLoaded: PropTypes.bool.isRequired,
+  filterChanged: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  filteredPosts: PropTypes.arrayOf(PropTypes.object),
+};
+
+PostList.defaultProps = {
+  filteredPosts: null,
 }

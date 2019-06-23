@@ -3,7 +3,8 @@ export const DISPLAY_USERS = 'users_ready';
 export const DISPLAY_COMMENTS = 'comments_ready';
 export const DISPLAY_POSTS = 'posts_ready';
 export const FILTER_CHANGED = 'new_filter';
-export const REMOVE_POST_ITEM = 'remove_Item';
+export const POST_ITEM_REMOVE = 'post_remove';
+export const COMMENT_ITEM_REMOVE = 'comment_remove';
 
 export function handleClick() {
   return (dispatch) => {
@@ -32,18 +33,18 @@ export function handleClick() {
       const comments = await commentsResponse.json();
 
       const payloadPosts = {
-        loadedPosts: true,
+        postsLoaded: true,
         filteredPosts: posts,
         posts,
       };
 
       const payloadUsers = {
-        loadedUsers: true,
+        usersLoaded: true,
         users,
       };
 
       const payloadComments = {
-        loadedComments: true,
+        commentsLoaded: true,
         comments,
       };
       dispatch(displayUsers(payloadUsers));
@@ -81,9 +82,16 @@ export function filterChanged(payload) {
   };
 }
 
-// export function removePostItem(payload) {
-//   return {
-//     type: REMOVE_POST_ITEM,
-//     payload,
-//   };
-// }
+export function postItemRemove(payload) {
+  return {
+    type: POST_ITEM_REMOVE,
+    payload,
+  };
+}
+
+export function commentItemRemove(payload) {
+  return {
+    type: COMMENT_ITEM_REMOVE,
+    payload,
+  };
+}
