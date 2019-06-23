@@ -75,23 +75,23 @@ export function displayComments(payloadComments) {
   };
 }
 
-export function filterChanged(payload) {
+export function filterChanged(eventTarget) {
   return {
     type: FILTER_CHANGED,
-    payload,
+    payload: eventTarget,
   };
 }
 
-export function postItemRemove(payload) {
+export function postItemRemove(index) {
   return {
     type: POST_ITEM_REMOVE,
-    payload,
+    payload: index,
   };
 }
 
-export function commentItemRemove(payload) {
+export function commentItemRemove(id) {
   return {
     type: COMMENT_ITEM_REMOVE,
-    payload,
+    payload: id,
   };
 }
