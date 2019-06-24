@@ -1,0 +1,128 @@
+body {
+  background: rgba(252, 217, 187, 0.5)
+}
+
+#root {
+  display: grid;
+  grid-gap: 20px;
+  justify-content: center;
+  grid-template-columns: repeat(2, 50%);
+  margin: 20px 20px;
+  position: relative;
+}
+
+.loading {
+  font-size: 50px;
+  display: block;
+  position: absolute;
+  top: 250px;
+  left: 45%;
+}
+
+h2 {
+  text-transform: uppercase;
+}
+
+h4 {
+  margin: 0;
+}
+
+.removeComment, .removeArticle {
+  text-align: center;
+  border-radius: 50%;
+  border: 1px solid black;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.removeArticle {
+  float: right;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+}
+
+.removeComment {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+
+.removeArticle:hover, .removeComment:hover {
+  color: red;
+  border-color: red;
+  font-weight: bold;
+}
+
+.article p::first-letter {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.comments {
+  color: rgba(82, 81, 81, 0.8);
+}
+
+.container {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 250px;
+  left: 45%;
+  cursor: pointer;
+}
+
+.load {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  background-color: grey;
+  transition: transform 800ms;
+  position: relative;
+  text-align: center;
+  z-index: 10;
+}
+
+.load:before {
+  content: "";
+  box-shadow: 0px 0px 8px 2px rgba(128, 128, 128, 0.53);
+  transform: scale(1);
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 10px;
+  left: 10px;
+  border-radius: 100%;
+  pointer-events: none;
+  opacity: 1;
+  z-index: 1;
+}
+
+.load:after {
+  transition: opacity 600ms, transform 800ms;
+  content: "Download";
+  line-height: 100px;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: "Arial";
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+.load:hover {
+  transform: scale(1.5);
+  transition: transform 800ms, background-color 800ms;
+}
+
+.load:hover:after {
+  transform: translate3d(0, -50px, 0);
+  opacity: 0;
+}
+
+.load:hover:before {
+  transition: transform 800ms, opacity 1000ms;
+  transform: scale(1.8);
+  opacity: 0;
+}
