@@ -26,26 +26,22 @@ export function getNextState(state = initialState, action) {
         comments: action.commentsData
       }
     case REMOVE_POST:
-      const clonedPosts = [...state.data];
-      const clonedSearchedPosts = state.search ? [...state.searchedPosts] : null;
-      console.log(clonedPosts, clonedSearchedPosts);
+      const searched = state.search ? state.searchedPosts : null;
       return {
         ...state,
-        data: clonedPosts.filter(post => post.id !== action.id),
+        data: state.data.filter(post => post.id !== action.id),
         searchedPosts: state.search
-                       ? clonedSearchedPosts.filter(post => post.id !== action.id)
+                       ? searched.filter(post => post.id !== action.id)
                        : state.searchedPosts
       }
     case REMOVE_COMMENT:
-      const clonedComments = [...state.comments];
       return {
         ...state,
-        comments: clonedComments.filter(comment => comment.id !== action.id)
+        comments: state.comments.filter(comment => comment.id !== action.id)
       }
     case SEARCH_POSTS:
-      const clonedData = [...state.data];
       const serchText = action.inputValue.trim();
-      const searchedPosts = clonedData.filter(post => {
+      const searchedPosts = state.data.filter(post => {
         return post.title.includes(serchText) || post.body.includes(serchText);
       });
 
