@@ -47,7 +47,7 @@ const actionHandlers = {
   [FILTER_CHANGED]: (state, action) => ({
     ...state,
     filteredPosts: state.posts.filter(post => post.title
-      .includes(action.payload.target.value)),
+      .includes(action.payload)),
   }),
   [POST_ITEM_REMOVE]: (state, action) => ({
     ...state,

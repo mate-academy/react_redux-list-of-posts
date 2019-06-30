@@ -1,6 +1,6 @@
 import connect from 'react-redux/es/connect/connect';
 import { Post } from './Post';
-import { postItemRemove } from '../redux/actions';
+import { removePost } from '../redux/actions';
 
 function mapStateToProps(state) {
   return {
@@ -11,7 +11,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    postItemRemove: index => dispatch(postItemRemove(index)),
+    postItemRemove: index => dispatch(removePost(index)),
   };
 }
 

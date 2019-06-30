@@ -14,11 +14,12 @@ export function Comment(props) {
       <p>{body}</p>
       <span>{commentAuthorName}</span>
       <div>
-        <input
+        <button
           type="button"
           onClick={() => commentItemRemove(id)}
-          value="Remove comment!"
-        />
+        >
+            Remove comment!
+        </button>
       </div>
     </section>
   );

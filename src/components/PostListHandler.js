@@ -1,6 +1,6 @@
 import connect from 'react-redux/es/connect/connect';
 import { PostList } from './PostList';
-import { filterChanged, handleClick } from '../redux/actions';
+import { filterChanged, loadTodos } from '../redux/actions';
 
 function mapStateToProps(state) {
   return {
@@ -15,8 +15,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    handleClick: () => dispatch(handleClick()),
-    filterChanged: event => dispatch(filterChanged(event)),
+    handleClick: () => dispatch(loadTodos()),
+    filterChanged: event => dispatch(filterChanged(event.target.value)),
   };
 }
 

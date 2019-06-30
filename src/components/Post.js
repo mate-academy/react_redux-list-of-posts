@@ -14,6 +14,7 @@ export function Post(props) {
     body,
     id,
   } = props;
+  console.log(usersMap);
   const commentItems = comments.filter(comment => comment.postId === id);
   const user = usersMap[userId];
 
@@ -22,11 +23,12 @@ export function Post(props) {
       <td>
         <span>{title}</span>
         <p>{body}</p>
-        <input
+        <button
           type="button"
           onClick={() => postItemRemove(index)}
-          value="Remove Post!"
-        />
+        >
+            Remove Post!
+        </button>
       </td>
       <td>
         <User user={user} />
@@ -40,11 +42,252 @@ export function Post(props) {
 
 Post.propTypes = {
   postItemRemove: PropTypes.func.isRequired,
-  usersMap: PropTypes.objectOf(PropTypes.object).isRequired,
   comments: PropTypes.arrayOf(PropTypes.object).isRequired,
   userId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   body: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
+  usersMap: PropTypes.objectOf(PropTypes.shape({
+    1: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    2: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    3: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    4: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    5: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    6: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    7: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    8: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    9: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+    10: PropTypes.objectOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      username: PropTypes.string,
+      website: PropTypes.string,
+      company: PropTypes.objectOf(PropTypes.shape({
+        bs: PropTypes.string,
+        catchPhrase: PropTypes.string,
+        name: PropTypes.string,
+      })),
+      address: PropTypes.objectOf(PropTypes.shape({
+        city: PropTypes.string,
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        zipcode: PropTypes.string,
+        geo: PropTypes.objectOf({
+          lat: PropTypes.string,
+          lng: PropTypes.string,
+        }),
+
+      })),
+
+    })),
+  })).isRequired,
 };

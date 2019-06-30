@@ -14,11 +14,12 @@ export function PostList(props) {
   } = props;
   if (!requested) {
     return (
-      <input
+      <button
         type="button"
         onClick={handleClick}
-        value="Download posts!"
-      />
+      >
+        Download posts!
+      </button>
     );
   } if (usersLoaded && postsLoaded && commentsLoaded) {
     const items = filteredPosts.map((post, index) => (
@@ -55,7 +56,7 @@ export function PostList(props) {
     );
   }
   return (
-    <input type="button" disabled value="Loading..." />
+    <button type="button" disabled>Loading...</button>
   );
 }
 
@@ -71,4 +72,4 @@ PostList.propTypes = {
 
 PostList.defaultProps = {
   filteredPosts: null,
-}
+};
