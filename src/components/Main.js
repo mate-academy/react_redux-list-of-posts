@@ -3,7 +3,7 @@ import Buttons from './Buttons';
 import PostList from './PostsList';
 
 function Main({ dataRequested, postsList, request }) {
-  if (dataRequested && postsList) {
+  if (postsList) {
     return (
       <PostList postsList={postsList} />
     )
