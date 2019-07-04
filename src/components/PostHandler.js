@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
-import {removePost} from "../redux/actions";
-import Post from "./Post";
+import {removePost} from '../redux/actions';
+import Post from './Post';
 
 function mapStateToProps(state) {
   return {};
@@ -8,7 +8,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    postRemoveClicked: (id) => dispatch(removePost(id))
+    handlePostRemove: (id) => dispatch(removePost(id))
   };
 }
 

@@ -1,19 +1,23 @@
 import {connect} from 'react-redux';
-import {load} from "../redux/actions";
-import PostList from "./PostList";
+import {loadPosts, loadUsers, loadComments} from '../redux/actions';
+import PostList from './PostList';
+import {selectPostMap, selectIsLoading, selectIsLoaded} from '../redux/selectors';
 
 function mapStateToProps(state) {
   return {
-    posts: state.postList,
-    requested: state.requested
+    isLoading: selectIsLoading(state),
+    isLoaded: selectIsLoaded(state),
+    postMap: selectPostMap(state)
   };
-}
+};
 
 function mapDispatchToProps(dispatch) {
   return {
-    buttonLoadClicked: () => dispatch(load())
+    loadPosts: () => dispatch(loadPosts()),
+    loadUsers: () => dispatch(loadUsers()),
+    loadComments: () => dispatch(loadComments())
   };
-}
+};
 
 const PostListHandler = connect(mapStateToProps, mapDispatchToProps)(PostList);
 

@@ -1,46 +1,54 @@
-import {LOAD, POSTS_RECEIVED, USERS_RECEIVED, COMMENTS_RECEIVED,
-  CHECK_DATA, REMOVE_POST, mapData } from "./actions";
+import {POSTS_LOAD, USERS_LOAD, COMMENTS_LOAD,
+  POSTS_RECEIVED, USERS_RECEIVED, COMMENTS_RECEIVED, REMOVE_POST } from './actions';
 
 const initialState = {
-  posts: null,
-  users: null,
-  comments: null,
   postList: null,
-  requested: false
+  userList: null,
+  commentList: null,
+
+  postLoading: false,
+  userLoading: false,
+  commentLoading: false
 };
 
 export function getNextState(state = initialState, action) {
   switch (action.type) {
-    case LOAD:
+    case POSTS_LOAD:
       return {
         ...state,
-        requested: true
+        postList: null,
+        postLoading: true
+      };
+    case USERS_LOAD:
+      return {
+        ...state,
+        userList: null,
+        userLoading: true
+      };
+    case COMMENTS_LOAD:
+      return {
+        ...state,
+        commentList: null,
+        commentLoading: true
       };
     case POSTS_RECEIVED:
       return {
         ...state,
-        posts: action.posts
+        postLoading: false,
+        postList: action.payload
       };
     case USERS_RECEIVED:
       return {
         ...state,
-        users: action.users
+        userLoading: false,
+        userList: action.payload
       };
     case COMMENTS_RECEIVED:
       return {
         ...state,
-        comments: action.comments
+        commentLoading: false,
+        commentList: action.payload
       };
-    case CHECK_DATA:
-      const postList = mapData(state);
-      if (postList) {
-        return {
-          ...state,
-          postList,
-          requested: false
-        }
-      }
-      return state;
     case REMOVE_POST:
       return {
         ...state,

@@ -1,96 +1,80 @@
-export const LOAD = 'load';
+export const POSTS_LOAD = 'posts_load';
+export const USERS_LOAD = 'users_load';
+export const COMMENTS_LOAD = 'comments_load';
+
 export const POSTS_RECEIVED = 'posts_received';
 export const USERS_RECEIVED = 'users_received';
 export const COMMENTS_RECEIVED = 'comments_received';
-export const CHECK_DATA = 'check_data';
+
 export const REMOVE_POST = 'remove_post';
 
 
 const serverUrl = 'https://jsonplaceholder.typicode.com/';
 
-function loadData(dispatch) {
-  sendRequest(`${serverUrl}posts`, requestPostsHandler, dispatch);
-  sendRequest(`${serverUrl}users`, requestUsersHandler, dispatch);
-  sendRequest(`${serverUrl}comments`, requestCommentsHandler, dispatch);
-}
-
-function sendRequest(url, handler, dispatch) {
-  const request = new XMLHttpRequest();
-  request.open('GET', url);
-  request.addEventListener('load', handler(request, dispatch));
-  request.send();
-}
-
-const requestPostsHandler = (request, dispatch) => () => {
-  const parsePosts = JSON.parse(request.responseText);
-  dispatch(postsReceived(parsePosts));
-}
-
-const requestUsersHandler = (request, dispatch) => () => {
-  const parseUsers = JSON.parse(request.responseText);
-  dispatch(usersReceived(parseUsers));
-}
-
-const requestCommentsHandler = (request, dispatch) => () => {
-  const parseComments = JSON.parse(request.responseText);
-  dispatch(commentsReceived(parseComments));
-}
-
-export function load() {
-  return (dispatch) => {
-    dispatch({
-        type: LOAD
-    });
-    loadData(dispatch);
-  };
-}
-
-export function postsReceived(posts) {
-  return (dispatch) => {
-    dispatch({
-      type: POSTS_RECEIVED,
-      posts
-    });
-    dispatch(checkData());
-  }
-}
-
-export function usersReceived(users) {
-  return (dispatch) => {
-    dispatch({
-      type: USERS_RECEIVED,
-      users
-    });
-    dispatch(checkData());
-  }
-}
-
-export function commentsReceived(comments) {
-  return (dispatch) => {
-    dispatch({
-      type: COMMENTS_RECEIVED,
-      comments
-    });
-    dispatch(checkData());
-  }
-}
-
-export function checkData() {
+export const setLoadPosts = () => {
   return {
-    type: CHECK_DATA
-  };
+    type: POSTS_LOAD
+  }
 }
 
-function isLoading(state) {
-  return !state.posts || !state.users || !state.comments;
+export const setLoadUsers = () => {
+  return {
+    type: USERS_LOAD
+  }
 }
 
-export function mapData(state) {
-  if (isLoading(state)) return null;
-  const postsListMap = state.posts.map(post => ({...post,
-    user: state.users.find(user => user.id === post.userId),
-    postComments: state.comments.filter(comment => comment.postId === post.id) }));
-  return postsListMap;
+export const setLoadComments = () => {
+  return {
+    type: COMMENTS_LOAD
+  }
+}
+
+export const loadPosts = () => (dispatch) => {
+  dispatch(setLoadPosts());
+  fetch(`${serverUrl}posts`)
+    .then(response => response.json())
+    .then(postList => {
+      dispatch(receivePosts(postList))
+    })
+};
+
+export const loadUsers = () => (dispatch) => {
+  dispatch(setLoadUsers());
+  fetch(`${serverUrl}users`)
+    .then(response => response.json())
+    .then(userList => {
+      dispatch(receiveUsers(userList))
+    })
+};
+
+export const loadComments = () => (dispatch) => {
+  dispatch(setLoadComments());
+  fetch(`${serverUrl}comments`)
+    .then(response => response.json())
+    .then(commentList => {
+      dispatch(receiveComments(commentList))
+    })
+};
+
+export const receivePosts = (postList) => {
+  return {
+    type: POSTS_RECEIVED,
+    payload: postList
+  }
+}
+
+export const receiveUsers = (userList) => {
+  return {
+    type: USERS_RECEIVED,
+    payload: userList
+  }
+}
+
+export const receiveComments = (commentList) => {
+  return {
+    type: COMMENTS_RECEIVED,
+    payload: commentList
+  }
 }
 
 export function removePost(id) {
