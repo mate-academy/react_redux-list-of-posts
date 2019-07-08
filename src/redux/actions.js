@@ -1,3 +1,5 @@
+import { loadData } from './loadData';
+
 export const REQUESTED = 'requested';
 export const DISPLAY_USERS = 'users_ready';
 export const DISPLAY_COMMENTS = 'comments_ready';
@@ -5,7 +7,8 @@ export const DISPLAY_POSTS = 'posts_ready';
 export const FILTER_CHANGED = 'new_filter';
 export const POST_ITEM_REMOVE = 'post_remove';
 export const COMMENT_ITEM_REMOVE = 'comment_remove';
-const url = 'https://jsonplaceholder.typicode.com/';
+
+// const url = 'https://jsonplaceholder.typicode.com/';
 
 export function loadTodos() {
   return (dispatch) => {
@@ -13,9 +16,18 @@ export function loadTodos() {
       type: 'requested',
     });
 
-    dispatch(displayUsers());
-    dispatch(displayPosts());
-    dispatch(displayComments());
+    const resultResponse = loadData();
+    dispatch(displayUsers(resultResponse.payloadUsers));
+    dispatch(displayPosts(resultResponse.payloadPosts));
+    dispatch(displayComments(resultResponse.payloadComments));
+
+    // const respUsers = displayUsers();
+    // const respPost = displayPosts();
+    // const respCom = displayComments()
+    //
+    // dispatch(respUsers);
+    // dispatch(respPost);
+    // dispatch(respCom);
 
     // loadData();
     // async function loadData() {
@@ -59,51 +71,32 @@ export function loadTodos() {
   };
 }
 
-export async function displayUsers() {
-  const usersPromise = fetch(`${url}users`);
-  const usersResponse = await usersPromise;
-  const users = await usersResponse.json();
+export function displayUsers(payload) {
+
   return {
     type: DISPLAY_USERS,
-    payload: {
-      usersLoaded: true,
-      users,
-    },
+    payload,
   };
 }
 
-export async function displayPosts() {
-  const postsPromise = fetch(`${url}posts`);
-  const postsResponse = await postsPromise;
-  const posts = await postsResponse.json();
+export function displayPosts(payload) {
   return {
     type: DISPLAY_POSTS,
-    payload: {
-      postsLoaded: true,
-      filteredPosts: posts,
-      posts,
-    },
+    payload,
   };
 }
 
-export async function displayComments() {
-  const commentsPromise = fetch(`${url}comments`);
-  const commentsResponse = await commentsPromise;
-  const comments = await commentsResponse.json();
-
+export async function displayComments(payload) {
   return {
     type: DISPLAY_COMMENTS,
-    payload: {
-      commentsLoaded: true,
-      comments,
-    },
+    payload,
   };
 }
 
-export function filterChanged(eventTarget) {
+export function filterChanged(payload) {
   return {
     type: FILTER_CHANGED,
-    payload: eventTarget,
+    payload,
   };
 }
 

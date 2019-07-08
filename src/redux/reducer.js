@@ -62,6 +62,7 @@ const actionHandlers = {
 };
 
 export const reducer = (state = initialState, action) => {
+
   const handler = actionHandlers[action.type];
   return handler
     ? handler(state, action)
