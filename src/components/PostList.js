@@ -16,7 +16,7 @@ function PostList(props) {
             type="text"
             placeholder="search..."
             value={props.inputValue}
-            onChange={e => props.updateInput(e.target.value)}
+            onChange={event => props.updateInput(event.target.value)}
           />
           {list}
         </section>

@@ -14,16 +14,16 @@ export function reducer(state = initialState, action) {
     case DELETE_POST:
       return {
         ...state,
-        items: state.items.filter((item, index) => action.id !== item.id)
+        items: state.items.filter(item => action.id !== item.id)
       };
     case DELETE_COMMENT:
       return {
         ...state,
         items: state.items.map((item) => {
-          if ((item.id) === action.postId) {
+          if (item.id === action.postId) {
             return {
               ...item,
-              comments: item.comments.filter((item) => item.id !== action.id)
+              comments: item.comments.filter(item => item.id !== action.id)
             };
           }
           return item;
