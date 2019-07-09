@@ -2,7 +2,7 @@
 
 ## Task
 
-By requesting [https://jsonplaceholder.typicode.com/posts](https://jsonplaceholder.typicode.com/posts), [https://jsonplaceholder.typicode.com/users](), and [https://jsonplaceholder.typicode.com/comments](https://jsonplaceholder.typicode.com/users), create and display a list of posts with the following data on each:
+By requesting [https://jsonplaceholder.typicode.com/posts](https://jsonplaceholder.typicode.com/posts), [https://jsonplaceholder.typicode.com/users](https://jsonplaceholder.typicode.com/users), and [https://jsonplaceholder.typicode.com/comments](https://jsonplaceholder.typicode.com/comments), create and display a list of posts with the following data on each:
 
 1) the title of the post;
 2) the text (body) of the post;
