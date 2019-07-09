@@ -1,13 +1,14 @@
 import React from 'react';
 import PostHandler from './PostHandler';
+import './envelope.css';
 import './PostList.css';
 
 function PostList(props) {
   if (!props.requested) {
     return (
-      <div className="container">
-        <div className="load" onClick={props.load} />
-      </div>
+      <section className="circle">
+        <div className="envelope" onClick={props.load} />
+      </section>
     );
   }
   if (props.articles === null) {
