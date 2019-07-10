@@ -1,0 +1,17 @@
+.delete {
+  margin: 10px 10px;
+  width: auto;
+  background-color: red;
+  color: black;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+h1 {
+  margin-left: 10px;
+}
+
+.post-body {
+  margin-left: 10px;
+  font-size: 16px;
+}
