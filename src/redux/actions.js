@@ -2,7 +2,7 @@ export const LOAD = 'load';
 export const DISPLAY = 'display';
 export const REMOVE_POST = 'remove_post';
 export const REMOVE_COMMENT = 'remove_comment';
-export const SEARCH_POST = 'search_post';
+export const GET_INPUT_VALUE = 'get_input_value';
 
 export function load() {
   return (dispatch) => {
@@ -63,9 +63,9 @@ export function removeComment(index, posts, postIndex) {
   };
 }
 
-export function search(value) {
+export function getInputValue(value) {
   return {
-    type: SEARCH_POST,
+    type: GET_INPUT_VALUE,
     value,
   };
 }

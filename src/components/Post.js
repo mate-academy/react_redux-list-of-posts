@@ -5,7 +5,7 @@ import CommentList from './CommentList';
 function Post(props) {
   return (
     <div className="post">
-      <span className={props.search ? "post-cross-none" :"post-cross"} title="click to remove post" onClick={() => props.removePost(props.index, props.posts)}>&times;</span>
+      <span className="post-cross" title="click to remove post" onClick={() => props.removePost(props.index, props.posts)}>&times;</span>
       <h2 className="post-title">{props.title}</h2>
       <User user={props.user}/>
       <p className="post-body">{props.body}</p>

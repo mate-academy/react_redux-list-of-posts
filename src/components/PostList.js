@@ -19,9 +19,14 @@ function PostList(props) {
   }
   return (
     <>
-    <input type="text" placeholder="Search" onChange={(event) => props.search(event.target.value)}/>
+    <input type="text" placeholder="Search" onChange={(event) => props.getInputValue(event)}/>
     <div className="posts">
-      {props.search && props.filtredPosts !== null ? props.filtredPosts.map(item => <PostHandler post={item} key={item.id}/>) : props.data.map(item => <PostHandler post={item} key={item.id}/>)}
+      {
+        props.search ?
+        props.data.filter((post) => {return post.title.includes(props.inputValue) ||
+        post.body.includes(props.inputValue)}).map(item => <PostHandler post={item} key={item.id}/>) :
+        props.data.map(item => <PostHandler post={item} key={item.id}/>)
+      }
     </div>
     </>
   )

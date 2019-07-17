@@ -8,7 +8,6 @@ function mapStateToProps(state, ownProps) {
     index: ownProps.index,
     posts: state.data,
     postIndex: ownProps.postIndex,
-    search: state.search,
   };
 }
 

@@ -4,14 +4,12 @@ import { removePost } from '../redux/actions';
 
 function mapStateToProps(state, ownProps) {
   return {
-    filtredPosts: state.filtredPosts,
-    posts: state.search ? state.filtredPosts : state.data,
+    posts: state.data,
     body: ownProps.post.body,
     title: ownProps.post.title,
     user: ownProps.post.user,
     comments: ownProps.post.comments,
     index: ownProps.post.id,
-    search: state.search,
   };
 }
 
