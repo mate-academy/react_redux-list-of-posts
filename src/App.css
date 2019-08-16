@@ -1,33 +1,110 @@
+body {
+  background-color: lightgoldenrodyellow;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 900px;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.search_list {
+  display: grid;
+  grid-template-columns: 900px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.search_field {
+  width: 600px;
+  margin: 30px auto;
+  padding: 0 20px;
+  font-size: 24px;
+  height: 50px;
+  border-radius: 30px;
+  border: 0;
+  box-shadow: 0 0 10px gray;
+  outline: none;
 }
+
+.post_list {
+  margin: 30px 0;
+  padding: 10px 30px;
+  list-style-type: none;
+  transition: 0.3s;
+  background-color: white;
+  box-shadow: 0 0 10px gray;
+  border-radius: 10px;
+}
+
+.post_title {
+  text-align: center;
+  font-size: 20px;
+  margin: 21px 0;
+}
+
+.post_body {
+  font-size: 25px;
+  margin: 20px 0;
+}
+
+.user_information {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.show_comments {
+  width: 170px;
+  height: 40px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.view-comments {
+  user-select: none;
+  padding-top: 4px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.show_comments:hover {
+  box-shadow: 0 0 10px gray;
+  border-radius: 30px;
+}
+
+.comments{
+  user-select: none;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.button_load {
+  display: grid;
+  justify-content: center;
+}
+
+.button {
+  background-image: url(https://t-ec.bstatic.com/images/hotel/max1024x768/135/135722802.jpg);
+  user-select: none;
+  color: aliceblue;
+  margin-top: 20px;
+  padding: 100px;
+  border-radius: 20px;
+  font-size: 30px;
+  outline: none;
+  border: 0;
+  box-shadow: 10px 10px 10px gray;
+  transition: 0.3s;
+}
+
+.button:hover {
+  transform: scale(1.1);
+}
+
