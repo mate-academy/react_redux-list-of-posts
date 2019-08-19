@@ -18,7 +18,7 @@ class Comment extends React.Component {
         <p className="comment_name">{commentData.name}</p>
         <p className="comment_body">{commentData.body}</p>
         <p className="comment_email">{commentData.email}</p>
-        {/* <button  onClick={() =>  this.handleCommentDelete(commentData.postId, commentData.id)} >delete</button> */}
+        <button  onClick={() =>  this.handleCommentDelete(commentData.postId, commentData.id)} >delete</button>
       </div>
   </div>
     )

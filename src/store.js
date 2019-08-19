@@ -66,13 +66,25 @@ const reducer = (state, action) => {
 
     case DELETE_COMMENT:
 
-       state.loadedPosts[action.postId-1].userComments = state.loadedPosts[action.postId-1].userComments.filter(
-       comment => comment.id !== action.commentId)
+        const newState = state.loadedPosts.map(post => {
+          if (post.id === action.postId) {
+            return {
+              ...post,
+              userComments: post.userComments.filter(
+                comment => comment.id !== action.commentId
+              )
+            };
+          } else {
+            return post;
+          }
+        });
 
       return  {
         ...state,
-        loadedPosts: [...state.loadedPosts]
+        loadedPosts: newState,
       };
+
+
 
     case DELETE_POST:
       return {
