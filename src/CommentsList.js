@@ -38,7 +38,6 @@ class CommentsList extends React.Component {
 
 const getData = state => ({
   commentListIsOpen: getCommentLists(state),
-
 });
 
 const getMethod = dispatch => ({

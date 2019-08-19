@@ -27,7 +27,6 @@ export const setCommentList = () => ({ type: SET_COMMENT_LIST })
 export const deleteComment = (postId, commentId) => ({ type: DELETE_COMMENT, postId, commentId })
 export const deletePost = (value) => ({ type: DELETE_POST, value })
 
-
 // reducer
 
 const reducer = (state, action) => {
@@ -65,7 +64,6 @@ const reducer = (state, action) => {
       };
 
     case DELETE_COMMENT:
-
         const newState = state.loadedPosts.map(post => {
           if (post.id === action.postId) {
             return {
@@ -78,13 +76,10 @@ const reducer = (state, action) => {
             return post;
           }
         });
-
       return  {
         ...state,
         loadedPosts: newState,
       };
-
-
 
     case DELETE_POST:
       return {

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import User from './User';
 import CommentsList from './CommentsList';
-
 import { deletePost } from './store';
 
 class Post extends React.Component {

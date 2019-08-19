@@ -19,11 +19,8 @@ class App extends React.Component {
 
 handleLoad = async() => {
   const { setPosts, getLoading} = this.props;
-
   getLoading();
-
   const postsWithUserAndComments = await getData();
-
   setPosts(postsWithUserAndComments);
 };
 

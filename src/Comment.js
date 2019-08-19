@@ -9,6 +9,7 @@ class Comment extends React.Component {
   handleCommentDelete = (postId, commentId) => {
     this.props.deleteComment(postId, commentId)
   };
+
   render() {
     const { commentData } = this.props;
     return(
@@ -26,7 +27,6 @@ class Comment extends React.Component {
 };
 
 const getData = (state) => ({ });
-
 const getMethod = (dispatch) => ({
   deleteComment: (postId, commentId) => dispatch(deleteComment(postId, commentId)),
 });
