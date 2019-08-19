@@ -32,6 +32,7 @@ class Post extends React.Component {
 }
 
 const getData = (state) => ({});
+
 const getMethod = (dispatch) => ({
   deletePost: (value) => dispatch(deletePost(value)),
   });

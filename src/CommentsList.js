@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import Comment from './Comment';
 import './commentlist.css';
-
 import { getCommentLists, setCommentList } from './store';
 
 class CommentsList extends React.Component {

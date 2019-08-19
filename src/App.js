@@ -17,50 +17,50 @@ import {
 
 class App extends React.Component {
 
-handleLoad = async() => {
-  const { setPosts, getLoading} = this.props;
-  getLoading();
-  const postsWithUserAndComments = await getData();
-  setPosts(postsWithUserAndComments);
-};
+  handleLoad = async() => {
+    const { setPosts, getLoading} = this.props;
+    getLoading();
+    const postsWithUserAndComments = await getData();
+    setPosts(postsWithUserAndComments);
+  };
 
-filteringPosts = (event) => {
-  const { setFilteredPosts } = this.props;
-  const { value } = event.target;
-  setFilteredPosts(value)
-};
+  filteringPosts = (event) => {
+    const { setFilteredPosts } = this.props;
+    const { value } = event.target;
+    setFilteredPosts(value)
+  };
 
-render() {
-  const { isLoaded, isLoading } = this.props
-  if (!isLoaded) {
+  render() {
+    const { isLoaded, isLoading } = this.props
+    if (!isLoaded) {
+      return (
+        <button
+          className="app_load-button"
+          type="button"
+          onClick={this.handleLoad}
+          hidden={isLoaded}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : 'Load'}
+        </button>
+      );
+    }
     return (
-      <button
-        className="app_load-button"
-        type="button"
-        onClick={this.handleLoad}
-        hidden={isLoaded}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Loading...' : 'Load'}
-      </button>
+      <div className="app">
+        <div>
+          <label>
+            <input
+              type="text"
+              placeholder="Search post by body or title..."
+              onChange={this.filteringPosts}
+              className="app_search-input"
+            />
+          </label>
+        </div>
+        <PostList loadedPosts={this.props.loadedPosts} />
+      </div>
     );
   }
-  return (
-    <div className="app">
-      <div>
-        <label>
-          <input
-            type="text"
-            placeholder="Search post by body or title..."
-            onChange={this.filteringPosts}
-            className="app_search-input"
-          />
-        </label>
-      </div>
-      <PostList loadedPosts={this.props.loadedPosts} />
-    </div>
-  );
-}
 }
 
 const getProps = state => ({

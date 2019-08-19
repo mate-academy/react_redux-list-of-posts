@@ -27,8 +27,7 @@ export const getData = async() => {
     ...post,
     userData: users.find(user => user.id === post.userId),
     userComments: comments.filter(comment => post.id === comment.postId),
-
-  })
+    })
   );
   return postsWithUserAndComments;
 };
