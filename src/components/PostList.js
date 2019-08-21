@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getPosps, getSearchProps, getSearchText } from './store';
+import {
+  getPosps, getSearchProps, getSearchText, searchFields,
+} from './store';
 import Post from './Post/Post';
 
 const getFiltringFunk = (byField, value) => {
   switch (byField) {
-    case 'body':
+    case searchFields.b:
       return post => post.body.includes(value);
-    case 'titlebody':
+    case searchFields.t + searchFields.b:
       return post => post.title.includes(value) || post.body.includes(value);
     default:
       return post => post.title.includes(value);
@@ -25,6 +27,9 @@ const PostList = ({ posts, searchText, searchProps }) => {
 
   return (
     <div>
+      <div className="count-of-pages">
+        {`${filtredPosts.length} of ${posts.length}`}
+      </div>
       {
         filtredPosts.map(post => (
           <Post {...post} key={post.id} />

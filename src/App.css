@@ -16,3 +16,7 @@ h1, h2 {
 .search-form__input {
   margin-bottom: 10px;
 }
+
+.count-of-pages {
+  text-align: center;
+}

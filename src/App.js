@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './App.css';
 import { loading } from './components/store';
 import PostList from './components/PostList';
@@ -45,6 +46,10 @@ const App = ({ loadPosts }) => {
       }
     </div>
   );
+};
+
+App.propTypes = {
+  loadPosts: PropTypes.func.isRequired,
 };
 
 const getMethods = dispatch => ({

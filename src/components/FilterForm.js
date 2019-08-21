@@ -1,12 +1,19 @@
+/* eslint-disable no-shadow */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getSearchText, setSearchText, setSearchProps } from './store';
+import {
+  getSearchText, getSearchProps, setSearchText, setSearchProps, searchFields,
+} from './store';
 
-const FilterForm = ({ currentSearch, setFilterProps, setFiterText }) => {
+const FilterForm = ({
+  currentSearch, currentSProp, setFilterProps, setFiterText,
+}) => {
   const [searchInput, setSearch] = useState(currentSearch);
-  const [searchByTitle, setByTitle] = useState('title');
-  const [searchByBody, setByBody] = useState('');
+  let searchBy = {
+    searchByTitle: currentSProp.includes(searchFields.t),
+    searchByBody: currentSProp.includes(searchFields.b),
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,15 +24,20 @@ const FilterForm = ({ currentSearch, setFilterProps, setFiterText }) => {
   };
 
   const handleChange = (e) => {
-    const { value } = e.target;
+    const { name } = e.target;
+    searchBy = {
+      ...searchBy,
+      [name]: !searchBy[name],
+    };
 
-    if (value === 'title') {
-      setByTitle(searchByTitle === '' ? 'title' : '');
-    } else {
-      setByBody(searchByBody === '' ? 'body' : '');
-    }
-
-    setFilterProps(searchByTitle + searchByBody);
+    const newProps = (
+      `${searchBy.searchByTitle
+        ? searchFields.t
+        : ''}${searchBy.searchByBody
+        ? searchFields.b
+        : ''}`
+    );
+    setFilterProps(newProps);
   };
 
   const filterBlur = () => {
@@ -58,7 +70,7 @@ const FilterForm = ({ currentSearch, setFilterProps, setFiterText }) => {
           type="checkbox"
           value="title"
           id="checkTitle"
-          checked={searchByTitle === 'title'}
+          checked={searchBy.searchByTitle}
           onChange={handleChange}
         />
         by post title
@@ -70,7 +82,7 @@ const FilterForm = ({ currentSearch, setFilterProps, setFiterText }) => {
           type="checkbox"
           value="body"
           id="checkBody"
-          checked={searchByBody === 'body'}
+          checked={searchBy.searchByBody}
           onChange={handleChange}
         />
         by post text
@@ -81,12 +93,14 @@ const FilterForm = ({ currentSearch, setFilterProps, setFiterText }) => {
 
 FilterForm.propTypes = {
   currentSearch: PropTypes.string.isRequired,
+  currentSProp: PropTypes.string.isRequired,
   setFilterProps: PropTypes.func.isRequired,
   setFiterText: PropTypes.func.isRequired,
 };
 
 const getData = state => ({
   currentSearch: getSearchText(state),
+  currentSProp: getSearchProps(state),
 });
 
 const getMethods = dispatch => ({
