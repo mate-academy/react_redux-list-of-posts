@@ -15,6 +15,12 @@ class App extends React.Component {
     filterPosts(target.value);
   }
 
+  handleReset = () => {
+    this.setState({ filterInputValue: '' });
+    const { resetPosts } = this.props;
+    resetPosts();
+  }
+
   render() {
     const {
       isLoading, originalPosts, getData,
@@ -40,6 +46,13 @@ class App extends React.Component {
     return (
       <main>
         <Header />
+        <button
+          type="button"
+          className="reset-button"
+          onClick={this.handleReset}
+        >
+          Return back posts and comments
+        </button>
         <input
           type="text"
           onChange={this.handleInputFilter}

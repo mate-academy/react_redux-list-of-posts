@@ -71,6 +71,7 @@ const initialState = {
   posts: [],
   originalPosts: [],
   comments: [],
+  originalComments: [],
   users: [],
   isLoading: false,
 };
@@ -87,6 +88,7 @@ const reducer = (state = initialState, action = {}) => {
       return {
         ...state,
         posts: [...state.originalPosts],
+        comments: [...state.originalComments],
       };
     case ACTION_TYPES.ISLOADING_TODOS:
       return {
@@ -99,6 +101,7 @@ const reducer = (state = initialState, action = {}) => {
         posts: action.payload.postsData,
         originalPosts: action.payload.postsData,
         comments: action.payload.commentsData,
+        originalComments: action.payload.commentsData,
         users: action.payload.users,
       };
     case ACTION_TYPES.DELETE_POST:
