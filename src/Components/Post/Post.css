@@ -1,0 +1,55 @@
+.post {
+  box-sizing: border-box;
+  font-size: 22px;
+  width: 400px;
+  height: auto;
+  border-radius: 20px;
+  background-color: rgb(247, 210, 226);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding: 20px 15px;
+  margin: 0 auto 30px;
+  text-align: center;
+  position: relative;
+}
+
+.post__title {
+  color: rgb(131, 26, 86);
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.post__text {
+  color: rgb(52, 38, 92);
+  font-size: 18px;
+}
+
+.destroy {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  bottom: 0;
+  width: 60px;
+  height: 60px;
+  margin: 15px 0;
+  padding: 0;
+  font-size: 30px;
+  color: #cc9a9a;
+  margin-bottom: 11px;
+  transition: color 0.2s ease-out;
+  background-color: rgb(247, 210, 226);
+  border: none;
+}
+
+.destroy:hover {
+  color: rgb(245, 82, 73);
+}
+
+.destroy:after {
+  content: "×";
+}
+
+.post:hover .destroy {
+  display: block;
+}
