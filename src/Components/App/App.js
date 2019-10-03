@@ -5,21 +5,21 @@ import { Header } from '../Header';
 import { AppProps } from '../PropTypes/PropTypes';
 
 class App extends React.Component {
-  // state = {
-  //   filterInputValue: '',
-  // };
+  state = {
+    filterInputValue: '',
+  };
 
-  // handleInputFilter({ target }) {
-  //   this.setState({ filterInputValue: target.value });
-  //   const { filterPosts } = this.props;
-  //   filterPosts(this.state.filterInputValue);
-  // }
+  handleInputFilter = ({ target }) => {
+    this.setState({ filterInputValue: target.value });
+    const { filterPosts } = this.props;
+    filterPosts(target.value);
+  }
 
   render() {
     const {
       isLoading, originalPosts, getData,
     } = this.props;
-    // const { filterInputValue } = this.state;
+    const { filterInputValue } = this.state;
 
     if (isLoading) {
       return <p className="loading-text">Posts are loading now...</p>;
@@ -40,12 +40,12 @@ class App extends React.Component {
     return (
       <main>
         <Header />
-        {/* <input
+        <input
           type="text"
           onChange={this.handleInputFilter}
           value={filterInputValue}
           className="filter-input"
-        /> */}
+        />
         <PostList />
       </main>
     );

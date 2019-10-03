@@ -5,7 +5,7 @@ import { resetPosts, getData, filterPosts } from '../../Store';
 const mapDispatchToProps = dispatch => ({
   resetPosts: () => dispatch(resetPosts()),
   getData: () => dispatch(getData()),
-  filterPosts: () => dispatch(filterPosts),
+  filterPosts: value => dispatch(filterPosts(value)),
 });
 
 const ImprovedApp = connect(
