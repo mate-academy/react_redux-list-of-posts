@@ -7,6 +7,7 @@
   "license": "GPL-3.0",
   "homepage": ".",
   "dependencies": {
+    "gh-pages": "^2.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
@@ -27,9 +28,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "git subtree push --prefix build origin gh-pages"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
