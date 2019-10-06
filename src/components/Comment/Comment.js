@@ -2,18 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import User from '../User/User';
 
-function Comment({ comment }) {
+const CommentItem = ({ comment }) => {
   const { body } = comment;
 
   return (
     <>
       <User user={comment} />
       <p>{body}</p>
+      <button
+        type="button"
+        className="button-delete-item"
+      >
+        delete comment
+      </button>
     </>
   );
-}
+};
 
-Comment.propTypes = {
+CommentItem.propTypes = {
   comment: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string,
@@ -21,4 +27,4 @@ Comment.propTypes = {
   }).isRequired,
 };
 
-export default Comment;
+export default CommentItem;

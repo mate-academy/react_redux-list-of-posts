@@ -1,54 +1,54 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
 import PostList from '../PostList/Index';
 import Search from '../Search/Index';
 
-class App extends Component {
-  loadData = () => {
-    const { loadDataFromServer } = this.props;
+const App = (props) => {
+  const {
+    loadDataFromServer,
+    filteredList,
+    isLoaded,
+    isLoading,
+    buttonText,
+    isError,
+  } = props;
+
+  const loadData = () => {
     loadDataFromServer();
   };
 
-  render() {
-    const {
-      filteredList,
-      isLoaded,
-      isLoading,
-      buttonText,
-      isError,
-    } = this.props;
-    if (!isLoaded) {
-      let errorText = null;
-      if (isError) {
-        errorText = <p>No data, try again</p>;
-      }
-      return (
-        <div>
-          {errorText}
-          <button
-            type="submit"
-            disabled={isLoading}
-            onClick={this.loadData}
-          >
-            {buttonText}
-          </button>
-        </div>
-      );
+  if (!isLoaded) {
+    let errorText = null;
+    if (isError) {
+      errorText = <p>No data, try again</p>;
     }
 
     return (
-      <div className="App">
-        <header className="header">
-          <h1>Dynamic list of posts</h1>
-          <h2>{`Posts: ${filteredList.length}`}</h2>
-          <Search />
-        </header>
-        <PostList />
+      <div>
+        {errorText}
+        <button
+          type="submit"
+          disabled={isLoading}
+          onClick={loadData}
+        >
+          {buttonText}
+        </button>
       </div>
     );
   }
-}
+
+  return (
+    <div className="App">
+      <header className="header">
+        <h1>Dynamic list of posts</h1>
+        <h2>{`Posts: ${filteredList.length}`}</h2>
+        <Search />
+      </header>
+      <PostList />
+    </div>
+  );
+};
 
 App.propTypes = {
   loadDataFromServer: PropTypes.func.isRequired,

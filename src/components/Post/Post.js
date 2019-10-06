@@ -14,6 +14,12 @@ function Post({ post }) {
     <div className="post">
       <h2>{title}</h2>
       <p>{body}</p>
+      <button
+        type="button"
+        className="button-delete-item"
+      >
+        delete post
+      </button>
       <hr />
       <User user={user} />
       <CommentList comments={comments} />
