@@ -56,7 +56,16 @@ App.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   buttonText: PropTypes.string.isRequired,
   isError: PropTypes.bool.isRequired,
-  filteredList: PropTypes.arrayOf.isRequired,
+  filteredList: PropTypes.arrayOf(
+    PropTypes.shape({
+      userId: PropTypes.number,
+      id: PropTypes.number,
+      title: PropTypes.string,
+      body: PropTypes.string,
+      user: PropTypes.object.isRequired,
+      comments: PropTypes.array.isRequired,
+    }).isRequired,
+  ).isRequired,
 };
 
 export default App;

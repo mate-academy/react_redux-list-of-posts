@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Address.css';
 
-function Address({ address }) {
+const Address = ({ address }) => {
   const {
     street, suite, city, zipcode,
   } = address;
@@ -18,7 +18,7 @@ function Address({ address }) {
     )
       : null
   );
-}
+};
 
 Address.propTypes = {
   address: PropTypes.shape({

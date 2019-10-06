@@ -5,7 +5,7 @@ import User from '../User/User';
 import CommentList from '../CommentList/CommentList';
 import './Post.css';
 
-function Post({ post }) {
+const Post = ({ post }) => {
   const {
     title, body, user, comments,
   } = post;
@@ -25,7 +25,7 @@ function Post({ post }) {
       <CommentList comments={comments} />
     </div>
   );
-}
+};
 
 Post.propTypes = {
   post: PropTypes.shape({
