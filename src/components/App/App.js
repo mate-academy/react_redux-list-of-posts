@@ -1,71 +1,26 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
 import PostList from '../PostList/PostList';
-import getPostsWithUsers from '../../utils/getPostsWithUsers';
-import getPostWithComments from '../../utils/getPostWithComments';
 import Search from '../Search/Search';
 
-const API_URL = 'https://jsonplaceholder.typicode.com/';
-
-const getData = dataName => (
-  fetch(`${API_URL}${dataName}`)
-    .then(response => response.json())
-);
-
 class App extends Component {
-  state = {
-    postList: [],
-    filteredList: [],
-    isLoading: false,
-    isLoaded: false,
-    isError: false,
-    buttonText: 'Load',
-  }
-
-  loadDataFromServer = () => {
-    this.setState({
-      buttonText: 'loading...',
-      isLoading: true,
-    });
-
-    Promise.all([
-      getData('comments'),
-      getData('posts'),
-      getData('users'),
-    ])
-      .then(([comments, posts, users]) => {
-        const postsWithComments = getPostWithComments(
-          getPostsWithUsers(posts, users), comments
-        );
-
-        this.setState({
-          postList: postsWithComments,
-          filteredList: postsWithComments,
-          isLoaded: true,
-          isLoading: false,
-          isError: false,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          buttonText: 'try again',
-          isLoading: false,
-          isError: true,
-        });
-      });
+  loadData = () => {
+    const { loadDataFromServer } = this.props;
+    loadDataFromServer();
   };
 
-  filterList = (searchStr) => {
-    this.setState(prevState => ({
-      filteredList: searchStr
-        ? [...prevState.postList]
-          .filter(post => (
-            post.title.indexOf(searchStr) > 0
-            || post.body.indexOf(searchStr) > 0
-          ))
-        : [...prevState.postList],
-    }));
-  }
+  // filterList = (searchStr) => {
+  //   this.setState(prevState => ({
+  //     filteredList: searchStr
+  //       ? [...prevState.postList]
+  //         .filter(post => (
+  //           post.title.indexOf(searchStr) > 0
+  //           || post.body.indexOf(searchStr) > 0
+  //         ))
+  //       : [...prevState.postList],
+  //   }));
+  // }
 
   render() {
     const {
@@ -74,7 +29,7 @@ class App extends Component {
       isLoading,
       buttonText,
       isError,
-    } = this.state;
+    } = this.props;
 
     if (!isLoaded) {
       let errorText = null;
@@ -87,7 +42,7 @@ class App extends Component {
           <button
             type="submit"
             disabled={isLoading}
-            onClick={this.loadDataFromServer}
+            onClick={this.loadData}
           >
             {buttonText}
           </button>
@@ -107,5 +62,14 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  loadDataFromServer: PropTypes.func.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  buttonText: PropTypes.string.isRequired,
+  isError: PropTypes.bool.isRequired,
+  filteredList: PropTypes.arrayOf.isRequired,
+};
 
 export default App;

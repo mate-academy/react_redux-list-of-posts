@@ -20,9 +20,9 @@ export const HANDLE_ERROR = 'HANDLE_ERROR';
 
 const startLoading = () => ({ type: START_LOADING });
 
-const handleSuccess = postsWithUsers => ({
+const handleSuccess = postsWithComments => ({
   type: HANDLE_SUCCESS,
-  postsWithUsers,
+  postsWithComments,
 });
 
 const handleError = () => ({ type: HANDLE_ERROR });
@@ -53,6 +53,7 @@ const reducer = (state, action) => {
       };
 
     case HANDLE_SUCCESS:
+
       return {
         ...state,
         postListFromServer: action.postsWithComments,
