@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import PostList from './components/PostList/PostList';
-import getPostsWithUsers from './getPostsWithUsers';
-import getPostWithComments from './getPostWithComments';
-import Search from './components/Search/Search';
+import PostList from '../PostList/PostList';
+import getPostsWithUsers from '../../utils/getPostsWithUsers';
+import getPostWithComments from '../../utils/getPostWithComments';
+import Search from '../Search/Search';
 
 const API_URL = 'https://jsonplaceholder.typicode.com/';
 
@@ -18,8 +18,8 @@ class App extends Component {
     filteredList: [],
     isLoading: false,
     isLoaded: false,
+    isError: false,
     buttonText: 'Load',
-    errorText: null,
   }
 
   loadDataFromServer = () => {
@@ -43,13 +43,14 @@ class App extends Component {
           filteredList: postsWithComments,
           isLoaded: true,
           isLoading: false,
+          isError: false,
         });
       })
       .catch(() => {
         this.setState({
           buttonText: 'try again',
           isLoading: false,
-          errorText: <p>No data, try again</p>,
+          isError: true,
         });
       });
   };
@@ -72,10 +73,14 @@ class App extends Component {
       isLoaded,
       isLoading,
       buttonText,
-      errorText,
+      isError,
     } = this.state;
 
     if (!isLoaded) {
+      let errorText = null;
+      if (isError) {
+        errorText = <p>No data, try again</p>;
+      }
       return (
         <div>
           {errorText}
