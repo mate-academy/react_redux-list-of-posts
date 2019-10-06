@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
-import PostList from '../PostList/PostList';
+import PostList from '../PostList/Index';
 import Search from '../Search/Index';
 
 class App extends Component {
@@ -44,7 +44,7 @@ class App extends Component {
           <h2>{`Posts: ${filteredList.length}`}</h2>
           <Search />
         </header>
-        <PostList posts={filteredList} />
+        <PostList />
       </div>
     );
   }
