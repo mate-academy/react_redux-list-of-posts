@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import App from './App';
 import {
+  filterListOfPosts,
   loadData,
 } from '../../store/store';
 
 const mapStateToProps = state => ({
-
   postListFromServer: state.postListFromServer,
-  postList: state.postListFromServer,
-  filteredList: state.postListFromServer,
+  postList: state.postList,
+  filteredList: state.filteredList,
   isLoading: state.isLoading,
   isLoaded: state.isLoaded,
   isError: state.isError,
@@ -17,6 +17,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadDataFromServer: () => dispatch(loadData()),
+  filterList: searchStr => dispatch(filterListOfPosts(searchStr)),
 });
 
 export default connect(

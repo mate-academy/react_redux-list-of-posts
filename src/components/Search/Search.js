@@ -7,24 +7,21 @@ class Search extends Component {
     searchValue: '',
   }
 
-  handleSearchText = (event) => {
-    const { value } = event.target;
-
+  handleSearchText = (e) => {
+    const { value } = e.target;
     this.setState({ searchValue: value });
   };
 
-  handleSubmitPosts = (event) => {
-    event.preventDefault();
+  handleSubmitPosts = (e) => {
+    e.preventDefault();
     const { filterList } = this.props;
     const { searchValue } = this.state;
-
     filterList(searchValue);
   }
 
   handleResetList = () => {
     this.setState({ searchValue: '' });
     const { filterList } = this.props;
-
     filterList('');
   }
 

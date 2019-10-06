@@ -2,25 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
 import PostList from '../PostList/PostList';
-import Search from '../Search/Search';
+import Search from '../Search/Index';
 
 class App extends Component {
   loadData = () => {
     const { loadDataFromServer } = this.props;
     loadDataFromServer();
   };
-
-  // filterList = (searchStr) => {
-  //   this.setState(prevState => ({
-  //     filteredList: searchStr
-  //       ? [...prevState.postList]
-  //         .filter(post => (
-  //           post.title.indexOf(searchStr) > 0
-  //           || post.body.indexOf(searchStr) > 0
-  //         ))
-  //       : [...prevState.postList],
-  //   }));
-  // }
 
   render() {
     const {
@@ -30,7 +18,6 @@ class App extends Component {
       buttonText,
       isError,
     } = this.props;
-
     if (!isLoaded) {
       let errorText = null;
       if (isError) {
@@ -55,7 +42,7 @@ class App extends Component {
         <header className="header">
           <h1>Dynamic list of posts</h1>
           <h2>{`Posts: ${filteredList.length}`}</h2>
-          <Search filterList={this.filterList} />
+          <Search />
         </header>
         <PostList posts={filteredList} />
       </div>

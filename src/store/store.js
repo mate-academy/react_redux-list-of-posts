@@ -14,9 +14,10 @@ const initialState = {
   buttonText: 'Load',
 };
 
-export const START_LOADING = 'START_LOADING';
-export const HANDLE_SUCCESS = 'HANDLE_SUCCESS';
-export const HANDLE_ERROR = 'HANDLE_ERROR';
+const START_LOADING = 'START_LOADING';
+const HANDLE_SUCCESS = 'HANDLE_SUCCESS';
+const HANDLE_ERROR = 'HANDLE_ERROR';
+const FILTER_LIST = 'FILTER_LIST';
 
 const startLoading = () => ({ type: START_LOADING });
 
@@ -26,6 +27,11 @@ const handleSuccess = postsWithComments => ({
 });
 
 const handleError = () => ({ type: HANDLE_ERROR });
+
+export const filterListOfPosts = searchStr => ({
+  type: FILTER_LIST,
+  searchStr,
+});
 
 export const loadData = () => (dispatch) => {
   dispatch(startLoading());
@@ -71,6 +77,18 @@ const reducer = (state, action) => {
         isLoaded: false,
         isLoading: false,
         isError: true,
+      };
+
+    case FILTER_LIST:
+      return {
+        ...state,
+        filteredList: action.searchStr
+          ? state.postList
+            .filter(post => (
+              (post.title.indexOf(action.searchStr) >= 0)
+            || (post.body.indexOf(action.searchStr) >= 0)
+            ))
+          : [...state.postList],
       };
 
     default: return state;
