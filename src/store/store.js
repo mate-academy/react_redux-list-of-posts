@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import getData from '../utils/api';

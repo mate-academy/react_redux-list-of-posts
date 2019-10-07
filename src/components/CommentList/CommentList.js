@@ -1,14 +1,13 @@
-/* eslint-disable no-shadow */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Comment from '../CommentItem/Index';
+import CommentItem from '../CommentItem/Index';
 import './CommentList.css';
 
 const CommentList = ({ comments }) => (
   <div className="comment-list">
     {
       comments.map(comment => (
-        <Comment key={comment.id} comment={comment} />
+        <CommentItem key={comment.id} comment={comment} />
       ))
     }
   </div>

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import User from '../User/User';
@@ -22,7 +21,10 @@ const CommentItem = ({ comment, deleteCommentFromPost }) => {
 };
 
 CommentItem.propTypes = {
+  deleteCommentFromPost: PropTypes.func.isRequired,
   comment: PropTypes.shape({
+    postId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string,
     email: PropTypes.string,
     body: PropTypes.string,

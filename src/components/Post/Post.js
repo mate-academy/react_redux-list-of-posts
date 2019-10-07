@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import User from '../User/User';
@@ -33,7 +32,28 @@ const Post = (props) => {
 };
 
 Post.propTypes = {
+  deletePostFromPostList: PropTypes.func.isRequired,
   post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    user: PropTypes.shape({
+      name: PropTypes.string,
+      email: PropTypes.string,
+      address: PropTypes.shape({
+        street: PropTypes.string,
+        suite: PropTypes.string,
+        city: PropTypes.string,
+        zipcode: PropTypes.string,
+      }),
+    }).isRequired,
+    comments: PropTypes.arrayOf(
+      PropTypes.shape({
+        postId: PropTypes.number.isRequired,
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string,
+        email: PropTypes.string,
+        body: PropTypes.string,
+      }).isRequired,
+    ).isRequired,
     title: PropTypes.string,
     body: PropTypes.string,
   }).isRequired,
