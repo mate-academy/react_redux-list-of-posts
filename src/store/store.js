@@ -21,6 +21,7 @@ const HANDLE_ERROR = 'HANDLE_ERROR';
 const FILTER_LIST = 'FILTER_LIST';
 const DELETE_COMMENT = 'DELETE_COMMENT';
 const DELETE_POST = 'DELETE_POST';
+const RESET_LIST = 'RESET_LIST';
 
 const startLoading = () => ({ type: START_LOADING });
 
@@ -61,6 +62,10 @@ export const deleteComment = (postId, commentId) => ({
 export const deletePost = postId => ({
   type: DELETE_POST,
   postId,
+});
+
+export const resetListOfPosts = () => ({
+  type: RESET_LIST,
 });
 
 const findElemIndex = (list, elemId) => (
@@ -157,6 +162,13 @@ const reducer = (state, action) => {
         ...state,
         postList: delPostFromState(state.postList, action.postId),
         filteredList: delPostFromState(state.filteredList, action.postId),
+      };
+
+    case RESET_LIST:
+      return {
+        ...state,
+        postList: [...state.postListFromServer],
+        filteredList: [...state.postListFromServer],
       };
 
     default: return state;

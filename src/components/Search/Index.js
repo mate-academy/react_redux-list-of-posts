@@ -2,17 +2,15 @@ import { connect } from 'react-redux';
 import Search from './Search';
 import {
   filterListOfPosts,
+  resetListOfPosts,
 } from '../../store/store';
-
-const mapStateToProps = state => ({
-  filteredList: state.postListFromServer,
-});
 
 const mapDispatchToProps = dispatch => ({
   filterList: searchStr => dispatch(filterListOfPosts(searchStr)),
+  resetPostList: () => dispatch(resetListOfPosts()),
 });
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(Search);
