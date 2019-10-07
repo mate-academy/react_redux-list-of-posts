@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Comment from '../Comment/Comment';
+import Comment from '../CommentItem/Index';
 import './CommentList.css';
 
 const CommentList = ({ comments }) => (

@@ -5,7 +5,8 @@ import User from '../User/User';
 import CommentList from '../CommentList/CommentList';
 import './Post.css';
 
-const Post = ({ post }) => {
+const Post = (props) => {
+  const { post } = props;
   const {
     title, body, user, comments,
   } = post;

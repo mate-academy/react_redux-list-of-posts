@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Post from '../Post/Post';
+import Post from '../Post/Index';
 
 const PostList = ({ posts }) => (
   posts.map(post => <Post key={post.id} post={post} />));
