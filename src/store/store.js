@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import getData from '../utils/api';
@@ -18,6 +19,8 @@ const START_LOADING = 'START_LOADING';
 const HANDLE_SUCCESS = 'HANDLE_SUCCESS';
 const HANDLE_ERROR = 'HANDLE_ERROR';
 const FILTER_LIST = 'FILTER_LIST';
+const DELETE_COMMENT = 'DELETE_COMMENT';
+const DELETE_POST = 'DELETE_POST';
 
 const startLoading = () => ({ type: START_LOADING });
 
@@ -27,11 +30,6 @@ const handleSuccess = postsWithComments => ({
 });
 
 const handleError = () => ({ type: HANDLE_ERROR });
-
-export const filterListOfPosts = searchStr => ({
-  type: FILTER_LIST,
-  searchStr,
-});
 
 export const loadData = () => (dispatch) => {
   dispatch(startLoading());
@@ -49,6 +47,59 @@ export const loadData = () => (dispatch) => {
     .catch(() => dispatch(handleError()));
 };
 
+export const filterListOfPosts = searchStr => ({
+  type: FILTER_LIST,
+  searchStr,
+});
+
+export const deleteComment = (postId, commentId) => ({
+  type: DELETE_COMMENT,
+  postId,
+  commentId,
+});
+
+export const deletePost = postId => ({
+  type: DELETE_POST,
+  postId,
+});
+
+const findElemIndex = (list, elemId) => (
+  list.findIndex(elem => elem.id === elemId)
+);
+
+const delPostFromState = (listOfPosts, postId) => {
+  const foundPostIndex = findElemIndex(listOfPosts, postId);
+  return [
+    ...listOfPosts.slice(0, foundPostIndex),
+    ...listOfPosts.slice(foundPostIndex + 1),
+  ];
+};
+
+const delCommentFromState = (listOfPosts, postId, commentId) => {
+  const foundPostIndex = findElemIndex(listOfPosts, postId);
+  const foundCommentIndex = findElemIndex(
+    listOfPosts[foundPostIndex].comments,
+    commentId
+  );
+
+  return [
+    ...listOfPosts.slice(0, foundPostIndex),
+
+    {
+      ...listOfPosts[foundPostIndex],
+      comments: [
+        ...listOfPosts[foundPostIndex]
+          .comments.slice(0, foundCommentIndex),
+
+        ...listOfPosts[foundPostIndex]
+          .comments.slice(foundCommentIndex + 1),
+      ],
+    },
+
+    ...listOfPosts.slice(foundPostIndex + 1),
+  ];
+};
+
 const reducer = (state, action) => {
   switch (action.type) {
     case START_LOADING:
@@ -59,7 +110,6 @@ const reducer = (state, action) => {
       };
 
     case HANDLE_SUCCESS:
-
       return {
         ...state,
         postListFromServer: action.postsWithComments,
@@ -89,6 +139,24 @@ const reducer = (state, action) => {
             || (post.body.indexOf(action.searchStr) >= 0)
             ))
           : [...state.postList],
+      };
+
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        postList: delCommentFromState(
+          state.postList, action.postId, action.commentId
+        ),
+        filteredList: delCommentFromState(
+          state.filteredList, action.postId, action.commentId
+        ),
+      };
+
+    case DELETE_POST:
+      return {
+        ...state,
+        postList: delPostFromState(state.postList, action.postId),
+        filteredList: delPostFromState(state.filteredList, action.postId),
       };
 
     default: return state;

@@ -6,7 +6,10 @@ import CommentList from '../CommentList/CommentList';
 import './Post.css';
 
 const Post = (props) => {
-  const { post } = props;
+  const {
+    post,
+    deletePostFromPostList,
+  } = props;
   const {
     title, body, user, comments,
   } = post;
@@ -16,6 +19,7 @@ const Post = (props) => {
       <h2>{title}</h2>
       <p>{body}</p>
       <button
+        onClick={() => { deletePostFromPostList(post.id); }}
         type="button"
         className="button-delete-item"
       >
