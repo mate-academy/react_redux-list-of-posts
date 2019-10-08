@@ -1,30 +1,65 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { connect } from 'react-redux';
+import PostList from './components/PostList/PostList';
+import { loadDataFromServer } from './store';
 
-function App() {
+const App = ({posts, isLoading, hasError, loadData}) => {
+  const titleButton = (hasError ? 'Try again' : 'Load posts');
+  const classForButton = (
+    isLoading
+      ? 'btn btn-secondary'
+      : 'btn btn-primary'
+  );
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.js</code>
-          {' '}
-and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Static list of posts</h1>
+
+      {posts.length
+        ? (
+          <>
+            <span>posts: </span>
+            {posts.length}
+          </>
+        )
+        : (
+          <>
+            <p>No posts yet..</p>
+            {hasError
+              ? <p className="alert alert-danger">Error occurred!</p>
+              : null
+            }
+            <button
+              type="button"
+              className={classForButton}
+              onClick={loadData}
+              disabled={isLoading}
+            >
+              {isLoading
+                ? 'Loading...'
+                : titleButton
+              }
+            </button>
+          </>
+        )
+      }
+      <PostList />
     </div>
   );
-}
+};
 
-export default App;
+const getDataState = state => ({
+  posts: state.posts,
+  isLoading: state.isLoading,
+  hasError: state.hasError,
+});
+
+const getMethod = dispatch => ({
+  loadData: () => dispatch(loadDataFromServer()),
+});
+
+export default connect(
+  getDataState,
+  getMethod
+)(App);
