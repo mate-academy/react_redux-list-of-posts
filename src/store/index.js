@@ -27,7 +27,7 @@ export const loadDataFromServer = () => (dispatch) => {
   }).catch(() => dispatch(errorOccur()));
 };
 
-export const ACTION_TYPES = {
+const ACTION_TYPES = {
   DELETE_POST: 'DELETE_POST',
   DELETE_COMMENT: 'DELETE_COMMENT',
   FINISH_LOAD: 'FINISH_LOAD',
