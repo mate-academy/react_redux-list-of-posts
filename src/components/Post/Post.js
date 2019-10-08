@@ -7,7 +7,12 @@ import User from '../User/User';
 import { deletePost } from '../../store';
 
 function Post({ post, deleteIdPost }) {
-  const { title, body, comments, id } = post;
+  const {
+    title,
+    body,
+    comments,
+    id,
+  } = post;
 
   return (
     <ul className="list-group post">
@@ -15,8 +20,9 @@ function Post({ post, deleteIdPost }) {
         <button
           id={id}
           type="button"
-          className="btn btn-danger btn-sm"
-          onClick={event => deleteIdPost(Number(event.target.id))}
+          className="btn btn-danger btn-sm btn-del"
+          title="Delete post"
+          onClick={({ target }) => deleteIdPost(Number(target.id))}
         >
           x
         </button>
@@ -33,6 +39,8 @@ function Post({ post, deleteIdPost }) {
 
 Post.propTypes = {
   post: PropTypes.shape({
+    id: PropTypes.number,
+    userId: PropTypes.number,
     title: PropTypes.string,
     body: PropTypes.string,
     user: PropTypes.shape({
@@ -53,6 +61,7 @@ Post.propTypes = {
       }),
     })),
   }).isRequired,
+  deleteIdPost: PropTypes.func.isRequired,
 };
 
 const getMethod = dispatch => ({

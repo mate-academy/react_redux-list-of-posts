@@ -1,10 +1,16 @@
 import React from 'react';
-import './App.css';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import './App.css';
 import PostList from './components/PostList/PostList';
 import { loadDataFromServer } from './store';
 
-const App = ({posts, isLoading, hasError, loadData}) => {
+const App = ({
+  posts,
+  isLoading,
+  hasError,
+  loadData,
+}) => {
   const titleButton = (hasError ? 'Try again' : 'Load posts');
   const classForButton = (
     isLoading
@@ -13,7 +19,7 @@ const App = ({posts, isLoading, hasError, loadData}) => {
   );
 
   return (
-    <div className="App">
+    <div className="app">
       <h1>Static list of posts</h1>
 
       {posts.length
@@ -58,6 +64,18 @@ const getDataState = state => ({
 const getMethod = dispatch => ({
   loadData: () => dispatch(loadDataFromServer()),
 });
+
+App.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.number,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    body: PropTypes.string,
+  })).isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  hasError: PropTypes.bool.isRequired,
+  loadData: PropTypes.func.isRequired,
+};
 
 export default connect(
   getDataState,

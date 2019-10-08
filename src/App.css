@@ -1,3 +1,8 @@
-.App {
+.app {
   text-align: center;
 }
+
+.btn-del {
+  margin-right: 10px;
+}
+
