@@ -1,0 +1,76 @@
+@import url(https://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700);
+
+body {
+  background: #F5F1E3;
+  font-family: "Old Standard TT", "Times New Roman", serif;
+  font-size: 16px;
+  color: #433F3F;
+}
+
+#root {
+  display: grid;
+  grid-gap: 20px;
+  justify-content: center;
+  grid-template-columns: repeat(2, 50%);
+  margin: 20px 20px;
+  position: relative;
+}
+
+.loading {
+  font-size: 50px;
+  display: block;
+  position: absolute;
+  top: 250px;
+  left: 45%;
+}
+
+h2 {
+  text-transform: uppercase;
+  font-size: 22px;
+}
+
+h4 {
+  margin: 0;
+}
+
+p {
+  font-size: 20px;
+  text-align: left;
+}
+
+.removeComment, .removeArticle {
+  text-align: center;
+  border-radius: 50%;
+  border: 1px solid black;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.removeArticle {
+  float: right;
+  width: 30px;
+  height: 30px;
+  font-size: 22px;
+}
+
+.removeComment {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+
+.removeArticle:hover, .removeComment:hover {
+  color: red;
+  border-color: red;
+  font-weight: bold;
+}
+
+.article p::first-letter {
+  text-transform: uppercase;
+  font-size: 30px;
+}
+
+blockquote {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
