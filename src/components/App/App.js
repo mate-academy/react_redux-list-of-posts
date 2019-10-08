@@ -51,11 +51,11 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  loadDataFromServer: PropTypes.func.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  isError: PropTypes.bool.isRequired,
+  loadDataFromServer: PropTypes.func,
+  isLoaded: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
+  buttonText: PropTypes.string,
   filteredList: PropTypes.arrayOf(
     PropTypes.shape({
       userId: PropTypes.number,
@@ -65,7 +65,16 @@ App.propTypes = {
       user: PropTypes.object.isRequired,
       comments: PropTypes.array.isRequired,
     }).isRequired,
-  ).isRequired,
+  ),
+};
+
+App.defaultProps = {
+  loadDataFromServer: () => {},
+  filteredList: [],
+  isLoaded: false,
+  isLoading: false,
+  isError: false,
+  buttonText: '',
 };
 
 export default App;
