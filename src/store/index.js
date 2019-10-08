@@ -40,8 +40,8 @@ export const addTextForFilter = text => ({
   payload: text,
 });
 
-export const sortPosts = (event) => {
-  event.preventDefault();
+export const sortPosts = (eventSubmit) => {
+  eventSubmit.preventDefault();
 
   return {
     type: ACTION_TYPES.POSTS_SORT,
