@@ -21,7 +21,7 @@ const App = (props) => {
   if (!isLoaded) {
     let errorText = null;
     if (isError) {
-      errorText = <p>No data, try again</p>;
+      errorText = <p>No data, try again!!!</p>;
     }
 
     return (
