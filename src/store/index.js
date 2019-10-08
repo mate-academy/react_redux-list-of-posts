@@ -69,7 +69,17 @@ function reducer(state = initialState, action = {}) {
     case ACTION_TYPES.DELETE_COMMENT:
       return ({
         ...state,
-        posts: [...state.posts.map(item => ({ ...item, comments: item.comments.filter(comment => comment.id !== action.deleteId) }))],
+        posts: [
+          ...state.posts
+            .map(item => (
+              {
+                ...item,
+                comments: [
+                  ...item.comments
+                    .filter(comment => comment.id !== action.deleteId),
+                ],
+              })),
+        ],
       });
     case ACTION_TYPES.DELETE_POST:
       return ({
