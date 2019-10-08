@@ -3,7 +3,10 @@ import Comment from './Comment';
 import { deleteComment } from '../../store/index';
 
 const mapDispatchYoProps = dispatch => ({
-  deleteComment: (idComment, idPost) => dispatch(deleteComment(idComment, idPost)),
+  deleteComment: (
+    idComment,
+    idPost
+  ) => dispatch(deleteComment(idComment, idPost)),
 });
 
 const EnhancedComment = connect(

@@ -4,7 +4,6 @@ import PostList from './PostList';
 const EnhancedPostList = connect(
   state => ({
     postsSorted: state.postsSorted,
-    isSorted: state.isSorted,
   }),
 )(PostList);
 
