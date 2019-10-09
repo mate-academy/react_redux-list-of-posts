@@ -7,17 +7,19 @@ const Address = ({ address }) => {
     street, suite, city, zipcode,
   } = address;
 
-  return (
-    Object.keys(address).length !== 0 ? (
+  let showedAddress = null;
+  if (Object.keys(address).length !== 0) {
+    showedAddress = (
       <div className="address">
         <span>{street}</span>
         <span>{suite}</span>
         <span>{city}</span>
         <span>{zipcode}</span>
       </div>
-    )
-      : null
-  );
+    );
+  }
+
+  return showedAddress;
 };
 
 Address.propTypes = {
