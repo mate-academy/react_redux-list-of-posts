@@ -48,8 +48,11 @@ export const loadPosts = () => (dispatch) => {
     fetch(`${BASE_URL}/users`),
     fetch(`${BASE_URL}/comments`),
   ])
-    .then(([posts, users, comments]) => Promise
-      .all([posts.json(), users.json(), comments.json()]))
+    .then(([posts, users, comments]) => Promise.all([
+      posts.json(),
+      users.json(),
+      comments.json(),
+    ]))
     .then(([posts, users, comments]) => {
       const postsWithComments = posts.map(post => ({
         ...post,
@@ -108,20 +111,19 @@ function reducer(state = initialState, action = {}) {
     }
 
     case ACTION_TYPES.DELETE_COMMENT: {
+      const filterComments = (array, id) => (
+        array
+          .map(item => ({
+            ...item,
+            comments: item.comments
+              .filter(comment => comment.id !== id),
+          }))
+      );
+
       return {
         ...state,
-        posts: state.posts
-          .map(post => ({
-            ...post,
-            comments: post.comments
-              .filter(comment => comment.id !== action.payload),
-          })),
-        originalPosts: state.originalPosts
-          .map(post => ({
-            ...post,
-            comments: post.comments
-              .filter(comment => comment.id !== action.payload),
-          })),
+        posts: filterComments(state.posts, action.payload),
+        originalPosts: filterComments(state.originalPosts, action.payload),
       };
     }
 
