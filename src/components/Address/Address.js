@@ -6,8 +6,8 @@ const Address = ({ address }) => {
   const {
     street, suite, city, zipcode,
   } = address;
-
   let showedAddress = null;
+
   if (Object.keys(address).length !== 0) {
     showedAddress = (
       <div className="address">
