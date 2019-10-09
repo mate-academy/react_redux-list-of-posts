@@ -129,11 +129,14 @@ function reducer(state = initialState, action = {}) {
     }
 
     case ACTION_TYPES.POSTS_SORT: {
+      const sortPostsWithTemplate = posts => (
+        posts
+          .filter(post => post.title.includes(state.templateForFilter)
+          || post.body.includes(state.templateForFilter)));
+
       return {
         ...state,
-        postsSorted: state.posts
-          .filter(post => post.title.includes(state.templateForFilter)
-        || post.body.includes(state.templateForFilter)),
+        postsSorted: sortPostsWithTemplate(state.posts),
         templateForFilter: '',
       };
     }
@@ -153,39 +156,34 @@ function reducer(state = initialState, action = {}) {
     }
 
     case ACTION_TYPES.DELETE_POST: {
+      const deletePostWithList = postWillDeleted => postWillDeleted
+        .filter(post => post.id !== action.payload)
+
       return {
         ...state,
-        posts: state.posts.filter(post => post.id !== action.payload),
-        postsSorted: state.postsSorted
-          .filter(post => post.id !== action.payload),
+        posts: deletePostWithList(state.posts),
+        postsSorted: deletePostWithList(state.postsSorted),
       };
     }
 
     case ACTION_TYPES.DELETE_COMMENT: {
+      const deleteCommentWithPost = commentWillDelete => commentWillDelete
+        .map((post) => {
+          if (post.id === action.idPost) {
+            return {
+              ...post,
+              comments: post.comments
+                .filter(comment => comment.id !== action.payload),
+            };
+          }
+
+          return post;
+        });
+
       return {
         ...state,
-        posts: state.posts.map((post) => {
-          if (post.id === action.idPost) {
-            return {
-              ...post,
-              comments: post.comments
-                .filter(comment => comment.id !== action.payload),
-            };
-          }
-
-          return post;
-        }),
-        postsSorted: state.postsSorted.map((post) => {
-          if (post.id === action.idPost) {
-            return {
-              ...post,
-              comments: post.comments
-                .filter(comment => comment.id !== action.payload),
-            };
-          }
-
-          return post;
-        }),
+        posts: deleteCommentWithPost(state.posts),
+        postsSorted: deleteCommentWithPost(state.postsSorted),
       };
     }
 
