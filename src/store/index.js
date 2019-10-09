@@ -1,42 +1,45 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
+const BASE_URL_POSTS = 'https://jsonplaceholder.typicode.com/posts';
+const BASE_URL_USERS = 'https://jsonplaceholder.typicode.com/users';
+const BASE_URL_COMMENTS = 'https://jsonplaceholder.typicode.com/comments';
+
 const ACTION_TYPES = {
-  ADD_POSTS: 'POSTS::ADD',
-  SWITCH_LOADING: 'LOADING::SWITCH',
-  IS_INITIALIZED: 'INITIALIZED::IS',
-  HAS_ERROR: 'ERROR::HAS',
-  IS_SORT: 'IS::SORT',
-  ADD_SORTED_POSTS: 'SORTED_POSTS::ADD',
-  DELETE_POST: 'POST::DELETE',
-  ADD_TEXT: 'TEXT::ADD',
+  POSTS_ADD: 'POSTS::ADD',
+  SWITCH_LOADING: 'SWITCH::LOADING',
+  POSTS_INITIALIZE: 'INITIALIZED::IS',
+  ERROR_HANDLE: 'ERROR::HANDLE',
+  SORTED_POSTS_ADD: 'SORTED_POSTS::ADD',
+  POST_DELETE: 'POST::DELETE',
+  TEXT_ADD: 'TEXT::ADD',
   POSTS_SORT: 'POST::SORT',
-  RESET_FILTER: 'RESET::FILTER',
-  DELETE_COMMENT: 'DELETE::COMMENT',
+  FILTERED_POSTS_RESET: 'FILTERED_POSTS::RESET',
+  COMMENT_DELETE: 'COMMENT::DELETE',
 };
 
 export const deletePost = idPost => ({
-  type: ACTION_TYPES.DELETE_POST,
+  type: ACTION_TYPES.POST_DELETE,
   payload: idPost,
 });
 
 export const deleteComment = (idComment, idPost) => ({
-  type: ACTION_TYPES.DELETE_COMMENT,
+  type: ACTION_TYPES.COMMENT_DELETE,
   payload: idComment,
   idPost,
 });
 
 export const addPosts = posts => ({
-  type: ACTION_TYPES.ADD_POSTS,
+  type: ACTION_TYPES.POSTS_ADD,
   payload: posts,
 });
 
 export const resetFilter = () => ({
-  type: ACTION_TYPES.RESET_FILTER,
+  type: ACTION_TYPES.FILTERED_POSTS_RESET,
 });
 
 export const addTextForFilter = text => ({
-  type: ACTION_TYPES.ADD_TEXT,
+  type: ACTION_TYPES.TEXT_ADD,
   payload: text,
 });
 
@@ -49,7 +52,7 @@ export const sortPosts = (eventSubmit) => {
 };
 
 export const addSortedPosts = postsSorted => ({
-  type: ACTION_TYPES.ADD_SORTED_POSTS,
+  type: ACTION_TYPES.SORTED_POSTS_ADD,
   payload: postsSorted,
 });
 
@@ -59,12 +62,12 @@ export const switchLoading = isLoading => ({
 });
 
 export const initialized = isInitialized => ({
-  type: ACTION_TYPES.IS_INITIALIZED,
+  type: ACTION_TYPES.POSTS_INITIALIZE,
   payload: isInitialized,
 });
 
 export const errorPosts = hasError => ({
-  type: ACTION_TYPES.HAS_ERROR,
+  type: ACTION_TYPES.ERROR_HANDLE,
   payload: hasError,
 });
 
@@ -74,9 +77,9 @@ export const receivePosts = () => (dispatch) => {
   dispatch(errorPosts(false));
 
   Promise.all([
-    fetch('https://jsonplaceholder.typicode.com/posts'),
-    fetch('https://jsonplaceholder.typicode.com/users'),
-    fetch('https://jsonplaceholder.typicode.com/comments'),
+    fetch(BASE_URL_POSTS),
+    fetch(BASE_URL_USERS),
+    fetch(BASE_URL_COMMENTS),
   ])
     .then(([responsePosts, responseUsers, responseComments]) => Promise
       .all([
@@ -121,7 +124,7 @@ const initialState = {
 
 function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case ACTION_TYPES.ADD_POSTS: {
+    case ACTION_TYPES.POSTS_ADD: {
       return {
         ...state,
         posts: [...action.payload],
@@ -141,21 +144,21 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.RESET_FILTER: {
+    case ACTION_TYPES.FILTERED_POSTS_RESET: {
       return {
         ...state,
         postsSorted: [...state.posts],
       };
     }
 
-    case ACTION_TYPES.ADD_TEXT: {
+    case ACTION_TYPES.TEXT_ADD: {
       return {
         ...state,
         templateForFilter: action.payload,
       };
     }
 
-    case ACTION_TYPES.DELETE_POST: {
+    case ACTION_TYPES.POST_DELETE: {
       const deletePostWithList = postWillDeleted => postWillDeleted
         .filter(post => post.id !== action.payload)
 
@@ -166,7 +169,7 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.DELETE_COMMENT: {
+    case ACTION_TYPES.COMMENT_DELETE: {
       const deleteCommentWithPost = commentWillDelete => commentWillDelete
         .map((post) => {
           if (post.id === action.idPost) {
@@ -187,7 +190,7 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.ADD_SORTED_POSTS: {
+    case ACTION_TYPES.SORTED_POSTS_ADD: {
       return {
         ...state,
         postsSorted: [...action.payload],
@@ -201,27 +204,19 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.IS_INITIALIZED: {
+    case ACTION_TYPES.POSTS_INITIALIZE: {
       return {
         ...state,
         isInitialized: action.payload,
       };
     }
 
-    case ACTION_TYPES.HAS_ERROR: {
+    case ACTION_TYPES.ERROR_HANDLE: {
       return {
         ...state,
         hasError: action.payload,
       };
     }
-
-    case ACTION_TYPES.IS_SORT: {
-      return {
-        ...state,
-        isSorted: !state.isSorted,
-      };
-    }
-
     default:
       return state;
   }
