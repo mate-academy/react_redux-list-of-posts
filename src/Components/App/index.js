@@ -9,7 +9,10 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const ImprovedApp = connect(
-  state => ({ originalPosts: state.originalPosts, isLoading: state.isLoading }),
+  state => ({
+    originalPosts: state.originalPosts,
+    isLoading: state.isLoading,
+  }),
   mapDispatchToProps,
 )(App);
 

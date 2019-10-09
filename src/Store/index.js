@@ -2,9 +2,7 @@ import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import getDataFromServer from '../Api';
 
-const APIPOSTS_URl = 'https://jsonplaceholder.typicode.com/posts';
-const APICOMMENTS_URl = 'https://jsonplaceholder.typicode.com/comments';
-const APIUSERS_URl = 'https://jsonplaceholder.typicode.com/users';
+const API_URl = 'https://jsonplaceholder.typicode.com/';
 
 const ACTION_TYPES = {
   FILTER_POSTS: 'POSTS::FILTER',
@@ -56,13 +54,14 @@ export const getData = () => (dispatch) => {
   store.dispatch(toogleLoadingMode());
   Promise
     .all([
-      getDataFromServer(APIPOSTS_URl),
-      getDataFromServer(APIUSERS_URl),
-      getDataFromServer(APICOMMENTS_URl),
+      getDataFromServer(`${API_URl}posts`),
+      getDataFromServer(`${API_URl}users`),
+      getDataFromServer(`${API_URl}comments`),
     ])
     .then(([posts, users, comments]) => {
-      store
-        .dispatch(setDataToStore(addingUsers(posts, users), comments, users));
+      store.dispatch(
+        setDataToStore(addingUsers(posts, users), comments, users)
+      );
       store.dispatch(toogleLoadingMode());
     });
 };
