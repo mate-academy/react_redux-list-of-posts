@@ -1,0 +1,7 @@
+.comment-item {
+  background-color: gray;
+  border-radius: 20px;
+  box-shadow: 3px 2px 3px black;
+  padding: 20px 0;
+  margin: 15px;
+}

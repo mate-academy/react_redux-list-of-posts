@@ -1,0 +1,19 @@
+
+.App {
+  text-align: center;
+  background-color: gray;
+  padding: 20px 0;
+}
+
+.btn-remove {
+  background-color: white;
+  font-size: 18px;
+  color: red;
+  border: none;
+  border-radius: 2px;
+  outline: none;
+}
+
+.btn-remove:hover {
+  transform: translateY(2px);
+}

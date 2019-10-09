@@ -1,0 +1,17 @@
+.post {
+  margin: 15px 30px;
+  background-color: pink;
+  border-radius: 20px;
+  box-shadow: 3px 2px 3px black;
+  padding: 30px;
+  position: relative;
+}
+
+.post__title {
+  margin: 30px 10px 40px;
+}
+
+.btn-post {
+  position: absolute;
+  right: 30px;
+}
