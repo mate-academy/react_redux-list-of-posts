@@ -1,0 +1,10 @@
+.user {
+  margin: 50px 0;
+  text-align: right;
+}
+.user__name {
+  color: pink
+}
+.user__bottom-line {
+  width: 90%;
+}
