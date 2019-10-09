@@ -6,3 +6,15 @@
   margin-right: 10px;
 }
 
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  border-bottom: 1px solid  rgba(0, 0, 0, 0.5);
+}
+
+.filter {
+  text-align: left;
+  margin-left: 10px;
+}

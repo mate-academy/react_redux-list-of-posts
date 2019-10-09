@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import uuid from 'uuidv4';
 import Post from '../Post/Post';
-import { getPosts } from '../../store';
+import { getfilteredPosts } from '../../store';
 
-const PostList = ({ posts }) => (
-  posts.map(item => (
-    <Post post={item} key={item.id} />
+const PostList = ({ filteredPosts }) => (
+  filteredPosts.map(item => (
+    <Post post={item} key={uuid()} />
   ))
 );
 
 PostList.propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape({
+  filteredPosts: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.string,
     user: PropTypes.shape({
@@ -35,7 +36,7 @@ PostList.propTypes = {
 };
 
 const getData = state => ({
-  posts: getPosts(state),
+  filteredPosts: getfilteredPosts(state),
 });
 
 export default connect(

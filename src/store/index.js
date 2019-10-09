@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import { createSelector } from 'reselect';
 import getDataFromServer from '../api';
 
 export const loadDataFromServer = () => (dispatch) => {
@@ -32,7 +33,8 @@ const ACTION_TYPES = {
   DELETE_COMMENT: 'DELETE_COMMENT',
   FINISH_LOAD: 'FINISH_LOAD',
   START_LOAD: 'START_LOAD',
-  HAS_ERROR: 'HAS_ERROR',
+  SHOW_ERROR: 'SHOW_ERROR',
+  CHANGE_FILTER: 'CHANGE_FILTER',
 };
 
 const finishLoad = posts => ({
@@ -45,23 +47,29 @@ const startLoad = () => ({
 });
 
 const errorOccur = () => ({
-  type: ACTION_TYPES.HAS_ERROR,
+  type: ACTION_TYPES.SHOW_ERROR,
 });
 
 const initialState = {
   posts: [],
   isLoading: false,
   hasError: false,
+  filter: '',
 };
 
 export const deletePost = id => ({
   type: ACTION_TYPES.DELETE_POST,
-  deleleId: id,
+  deletedId: id,
 });
 
 export const deleteComment = id => ({
   type: ACTION_TYPES.DELETE_COMMENT,
-  deleteId: id,
+  deletedId: id,
+});
+
+export const changeFilter = text => ({
+  type: ACTION_TYPES.CHANGE_FILTER,
+  filter: text,
 });
 
 function reducer(state = initialState, action = {}) {
@@ -76,7 +84,7 @@ function reducer(state = initialState, action = {}) {
                 ...item,
                 comments: [
                   ...item.comments
-                    .filter(comment => comment.id !== action.deleteId),
+                    .filter(comment => comment.id !== action.deletedId),
                 ],
               })),
         ],
@@ -84,7 +92,7 @@ function reducer(state = initialState, action = {}) {
     case ACTION_TYPES.DELETE_POST:
       return ({
         ...state,
-        posts: [...state.posts.filter(item => item.id !== action.deleleId)],
+        posts: [...state.posts.filter(item => item.id !== action.deletedId)],
       });
     case ACTION_TYPES.START_LOAD:
       return ({
@@ -98,17 +106,29 @@ function reducer(state = initialState, action = {}) {
         posts: [...action.posts],
         isLoading: false,
       });
-    case ACTION_TYPES.HAS_ERROR:
+    case ACTION_TYPES.SHOW_ERROR:
       return ({
+        ...state,
         hasError: true,
         isLoading: false,
+      });
+    case ACTION_TYPES.CHANGE_FILTER:
+      return ({
+        ...state,
+        filter: action.filter,
       });
     default:
       return state;
   }
 }
 
-export const getPosts = state => state.posts;
+const getPosts = state => state.posts;
+const getFilter = state => state.filter;
+
+export const getfilteredPosts = createSelector(
+  [getPosts, getFilter],
+  (posts, filter) => posts.filter(post => post.title.includes(filter))
+);
 
 export const store = createStore(
   reducer,
