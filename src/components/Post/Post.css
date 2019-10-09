@@ -1,0 +1,29 @@
+.post {
+  border: 1px solid #ccc;
+  margin: 15px;
+  padding: 25px;
+}
+
+.post__header {
+  color: rgb(8, 5, 134);
+}
+
+.post__title {
+  font-size: 25px;
+}
+
+.post__body {
+  font-size: 17px;
+}
+
+.post__user {
+  text-align: left;
+}
+
+.post__footer {
+  display: inline-block;
+  color: green;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 50px 0 20px;
+}
