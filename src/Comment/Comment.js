@@ -12,7 +12,12 @@ const Comment = ({ comment, deleteComment }) => {
         {body}
       </p>
       <User name={name} email={email} />
-      <button type="button" onClick={() => deleteComment(comment.id)}>Delete comment</button>
+      <button
+        type="button"
+        onClick={() => deleteComment(comment.id)}
+      >
+        Delete comment
+      </button>
     </div>
   );
 };

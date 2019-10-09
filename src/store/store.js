@@ -2,13 +2,13 @@ import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
 const ACTION_TYPES = {
-  GET_POSTS: 'GET::POSTS',
+  GET_POSTS: 'POSTS::GET',
   TOGGLE_LOADING: 'TOGGLE::LOADING',
-  FILTER: 'FILTER',
-  DELETE_POST: 'DELETE::POST',
-  DELETE_COMMENT: 'DELETE::COMMENT',
-  RESET: 'RESET',
-  HANDLE_INPUT: 'HANDLE::INPUT',
+  FILTER_POSTS: 'POSTS::FILTER',
+  DELETE_POST: 'POST::DELETE',
+  DELETE_COMMENT: 'COMMENT::DELETE',
+  RESET_FILTER: 'FILTER::RESET',
+  HANDLE_INPUT: 'INPUT::HANDLE',
 };
 
 const initialState = {
@@ -19,6 +19,8 @@ const initialState = {
   isFiltered: false,
   searchWord: '',
 };
+
+const baseURL = 'https://jsonplaceholder.typicode.com/';
 
 export const addPosts = posts => ({
   type: ACTION_TYPES.GET_POSTS,
@@ -31,7 +33,7 @@ export const toggleLoading = isLoading => ({
 });
 
 export const filterPosts = () => ({
-  type: ACTION_TYPES.FILTER,
+  type: ACTION_TYPES.FILTER_POSTS,
 });
 
 export const deletePost = id => ({
@@ -50,7 +52,7 @@ export const handleSearchInputChange = value => ({
 });
 
 export const resetPostsFiltering = () => ({
-  type: ACTION_TYPES.RESET,
+  type: ACTION_TYPES.RESET_FILTER,
   payload: '',
 });
 
@@ -58,9 +60,9 @@ export const getPosts = () => (dispatch) => {
   dispatch(toggleLoading(true));
 
   Promise.all([
-    fetch('https://jsonplaceholder.typicode.com/posts'),
-    fetch('https://jsonplaceholder.typicode.com/users'),
-    fetch('https://jsonplaceholder.typicode.com/comments'),
+    fetch(`${baseURL}posts`),
+    fetch(`${baseURL}users`),
+    fetch(`${baseURL}comments`),
   ])
     .then(([posts, users, comments]) => Promise
       .all([posts.json(), users.json(), comments.json()]))
@@ -104,21 +106,20 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.FILTER: {
+    case ACTION_TYPES.FILTER_POSTS: {
       return {
         ...state,
         filteredPosts: state.posts
-          .filter(el => el.title.includes(state.searchWord)
-            || el.body.includes(state.searchWord)),
+          .filter(el => el.body.includes(state.searchWord)),
         isFiltered: state.searchWord !== '',
         searchWord: '',
       };
     }
 
     case ACTION_TYPES.DELETE_POST: {
-      const posts = state.posts.filter(el => el.id !== action.payload);
-      const filteredPosts = state.filteredPosts
-        .filter(el => el.id !== action.payload);
+      const callback = el => el.id !== action.payload;
+      const posts = state.posts.filter(callback);
+      const filteredPosts = state.filteredPosts.filter(callback);
 
       return {
         ...state,
@@ -128,14 +129,12 @@ function reducer(state = initialState, action = {}) {
     }
 
     case ACTION_TYPES.DELETE_COMMENT: {
-      const posts = state.posts.map(el => ({
+      const callback = el => ({
         ...el,
         comments: el.comments.filter(elem => elem.id !== action.payload),
-      }));
-      const filteredPosts = state.filteredPosts.map(el => ({
-        ...el,
-        comments: el.comments.filter(elem => elem.id !== action.payload),
-      }));
+      });
+      const posts = state.posts.map(callback);
+      const filteredPosts = state.filteredPosts.map(callback);
 
       return {
         ...state,
@@ -144,7 +143,7 @@ function reducer(state = initialState, action = {}) {
       };
     }
 
-    case ACTION_TYPES.RESET: {
+    case ACTION_TYPES.RESET_FILTER: {
       return {
         ...state,
         filteredPosts: state.posts,

@@ -16,7 +16,12 @@ const Post = ({ post, deletePost }) => {
         email={user.email}
         address={user.address}
       />
-      <button type="button" onClick={() => deletePost(post.id)}>Delete post</button>
+      <button
+        type="button"
+        onClick={() => deletePost(post.id)}
+      >
+        Delete post
+      </button>
       <CommentList comments={comments} />
     </div>
   );
