@@ -1,0 +1,13 @@
+.post {
+  box-sizing: border-box;
+  width: 80%;
+  padding: 1em;
+  margin: 1em auto;
+  background-color: #eee;
+  border-radius: 10px;
+  box-shadow: 5px 5px 20px #999;
+}
+
+.button-delete-item {
+  margin: 0.5em;
+}
