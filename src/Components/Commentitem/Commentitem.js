@@ -1,7 +1,7 @@
 import React from 'react';
-import './Comment.css';
+import './CommentItem.css';
 import PropTypes from 'prop-types';
-import Userincomment from '../Userincomments/Userincomments';
+import Userincomment from '../UserEmail/UserEmail';
 
 const CommentItem = ({ id, comment, removeComment }) => {
   const { body, email } = comment;
@@ -9,7 +9,7 @@ const CommentItem = ({ id, comment, removeComment }) => {
   return (
     <div className="comment-item">
       <li className="comment-text">{body}</li>
-      <Userincomment user={email} />
+      <Userincomment email={email} />
       <button
         className="btn-remove"
         type="button"

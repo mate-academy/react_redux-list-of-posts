@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ConnectedPostlist from '../Postlist/ConnectedPostlist';
 import './App.css';
 
@@ -48,4 +49,12 @@ class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  isLoaded: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  hasError: PropTypes.bool,
+  loadData: PropTypes.func,
+}.isRequaired;
+
 export default App;

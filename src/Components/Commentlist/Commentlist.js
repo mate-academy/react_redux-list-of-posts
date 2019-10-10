@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './Commentlist.css';
-import ConnectedComment from '../Commentitem/ConnectedComment';
+import ConnectedComment from '../CommentItem/ConnectedComment';
 
 const Commentlist = ({ comments }) => (
   <ul className="comments-list">
@@ -24,4 +24,5 @@ Commentlist.propTypes = {
     email: PropTypes.string,
   })),
 }.isRequaired;
+
 export default Commentlist;

@@ -42,6 +42,20 @@ export const removeComment = commentId => ({
   payload: commentId,
 });
 
+const remove = (list, id, type) => {
+  if (type === REMOVE_POST) {
+    return list.filter(item => item.id !== id);
+  }
+  if (type === REMOVE_COMMENT) {
+    return (list.map(item => ({
+      ...item,
+      comments: [...item.comments]
+        .filter(comment => comment.id !== id),
+    })));
+  }
+  return list;
+};
+
 export const loadData = () => (dispatch) => {
   dispatch(startLoading());
 
@@ -61,7 +75,6 @@ export const loadData = () => (dispatch) => {
           ),
         })
       );
-      console.log(posts);
       dispatch(handleSeccess(posts));
     })
     .catch(() => dispatch(handleError()));
@@ -101,37 +114,29 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         filteredList: [...state.listWithUsersCommentsPosts]
-          .sort((a, b) => (a.title > b.title ? 1 : -1)),
+          .sort((a, b) => (a.title).localeCompare(b.title)),
       };
     case SORT_BY_TITLE_REVERSE:
       return {
         ...state,
         filteredList: [...state.listWithUsersCommentsPosts]
-          .sort((a, b) => (a.title > b.title ? 1 : -1)).reverse(),
+          .sort((a, b) => (a.title).localeCompare(b.title)).reverse(),
       };
     case REMOVE_POST:
       return {
         ...state,
-        listWithUsersCommentsPosts: [...state.listWithUsersCommentsPosts]
-          .filter(item => item.id !== action.payload),
-        filteredList: [...state.filteredList]
-          .filter(item => item.id !== action.payload),
+        listWithUsersCommentsPosts:
+          remove(state.listWithUsersCommentsPosts, action.payload, action.type),
+        filteredList:
+          remove(state.filteredList, action.payload, action.type),
       };
     case REMOVE_COMMENT:
       return {
         ...state,
-        listWithUsersCommentsPosts: [...state.listWithUsersCommentsPosts]
-          .map(post => ({
-            ...post,
-            comments: [...post.comments]
-              .filter(comment => comment.id !== action.payload),
-          })),
-        filteredList: [...state.filteredList]
-          .map(post => ({
-            ...post,
-            comments: [...post.comments]
-              .filter(comment => comment.id !== action.payload),
-          })),
+        listWithUsersCommentsPosts:
+          remove(state.listWithUsersCommentsPosts, action.payload, action.type),
+        filteredList:
+          remove(state.filteredList, action.payload, action.type),
       };
     default:
       return state;

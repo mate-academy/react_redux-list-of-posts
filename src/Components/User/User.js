@@ -3,38 +3,35 @@ import PropTypes from 'prop-types';
 import './User.css';
 
 function User({ user }) {
-  const {
-    // eslint-disable-next-line no-shadow
-    name, username, email, address,
-  } = user;
-
   return (
     <div className="post__user">
       <p className="user__name">
         Name:
-        {name}
+        {user.name}
       </p>
       <p className="user__username">
         Userame:
-        {username}
+        {user.username}
       </p>
       <p className="user__email">
         Email:
-        {email}
+        {user.email}
       </p>
       <p className="user__city">
         City:
-        {address.city}
+        {user.address.city}
       </p>
     </div>
   );
 }
 
 User.propTypes = {
-  name: PropTypes.string,
-  username: PropTypes.string,
-  email: PropTypes.string,
-  address: PropTypes.object,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    address: PropTypes.object,
+  }),
 }.isRequaired;
 
 export default User;

@@ -8,10 +8,6 @@ const mapStateToProps = state => ({
   hasError: state.hasError,
 });
 
-const mapMethodsToprops = dispatch => ({
-  loadData: () => dispatch(loadData()),
-});
-
-const ConnectedApp = connect(mapStateToProps, mapMethodsToprops)(App);
+const ConnectedApp = connect(mapStateToProps, { loadData })(App);
 
 export default ConnectedApp;
