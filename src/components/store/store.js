@@ -1,20 +1,17 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
-const USERS_API_URL = 'https://jsonplaceholder.typicode.com/users';
-const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
+function filteringByData(data, state) {
+  return data.filter(item => (
+    item.user.name.toLowerCase().includes(state.userRequest)));
+}
 
-const ACTION_TYPES = {
-  ADD_DATA: 'DATA::ADD',
-  LOAD_DATA: 'LOAD::ADD',
-  SORT_DATA: 'SORT::DATA',
-  INPUT_NAME: 'NAME::ADD',
-  USER_LIST: 'USER::LIST',
-  RESET_SORT: 'SORT::RESET',
-};
+function filteringByUsers(data, state) {
+  return data.filter(user => (
+    user.name.toLowerCase().includes(state.userRequest)));
+}
 
-function fullData(comments, users, posts) {
+function getMergedОbjects(comments, users, posts) {
   return posts.map(post => ({
     ...post,
     comments: comments.filter(comment => comment.postId === post.id),
@@ -23,8 +20,19 @@ function fullData(comments, users, posts) {
   }));
 }
 
+const API_URL = 'https://jsonplaceholder.typicode.com';
+
+const ACTION_TYPES = {
+  ADD_DATA: 'ADD_DATA',
+  LOAD_DATA: 'LOAD_DATA',
+  FILTR_DATA: 'FILTR_DATA',
+  USER_REQUEST: 'USER_REQUEST',
+  USERS_LIST: 'USERS_LIST',
+  RESET_SORT: 'RESET_SORT',
+};
+
 const userList = data => ({
-  type: ACTION_TYPES.USER_LIST,
+  type: ACTION_TYPES.USERS_LIST,
   payload: data,
 });
 
@@ -34,7 +42,7 @@ export const addData = data => ({
 });
 
 export const sortData = data => ({
-  type: ACTION_TYPES.SORT_DATA,
+  type: ACTION_TYPES.FILTR_DATA,
   payload: data,
 });
 
@@ -43,40 +51,41 @@ export const resetSort = data => ({
   payload: data,
 });
 
-export const inputName = data => ({
-  type: ACTION_TYPES.INPUT_NAME,
+export const valueToSort = data => ({
+  type: ACTION_TYPES.USER_REQUEST,
   payload: data,
 });
 
-const loadData = data => ({
+const acceptData = () => ({
   type: ACTION_TYPES.LOAD_DATA,
-  payload: data,
 });
 
 const initialState = {
   originalData: [],
   sortedData: [],
   users: [],
-  usersToDisplay: [],
-  inputtedName: '',
+  usersNamesList: [],
+  userRequest: '',
   isLoading: false,
 };
 
 export const getData = () => (dispatch) => {
-  store.dispatch(loadData());
+  dispatch(acceptData());
   Promise.all([
-    fetch(COMMENTS_API_URL),
-    fetch(USERS_API_URL),
-    fetch(POSTS_API_URL),
+    fetch(`${API_URL}/comments`),
+    fetch(`${API_URL}/users`),
+    fetch(`${API_URL}/posts`),
   ])
-    .then(([res1, res2, res3]) => Promise.all([
-      res1.json(),
-      res2.json(),
-      res3.json(),
+    .then(([comments, users, posts]) => Promise.all([
+      comments.json(),
+      users.json(),
+      posts.json(),
     ]))
-    .then(([comments, users, posts]) => store.dispatch(addData(fullData(comments, users, posts)),
-      store.dispatch(userList(users)),
-      store.dispatch(loadData())));
+    .then(([comments, users, posts]) => (
+      dispatch(addData(getMergedОbjects(comments, users, posts))),
+      dispatch(userList(users)),
+      dispatch(acceptData())
+    ));
 };
 
 function reducer(state = initialState, action = {}) {
@@ -98,30 +107,28 @@ function reducer(state = initialState, action = {}) {
       return {
         ...state,
         sortedData: [...state.originalData],
-        inputtedName: '',
-        usersToDisplay: [...state.users],
+        userRequest: '',
+        usersNamesList: [...state.users],
       };
     }
-    case ACTION_TYPES.SORT_DATA: {
+    case ACTION_TYPES.FILTR_DATA: {
       return {
         ...state,
-        sortedData: [...state.originalData].filter(data => (
-          data.user.name.toLowerCase().includes(state.inputtedName))),
-        usersToDisplay: [...state.users].filter(data => (
-          data.name.toLowerCase().includes(state.inputtedName))),
+        sortedData: filteringByData([...state.originalData], state),
+        usersNamesList: filteringByUsers([...state.users], state),
       };
     }
-    case ACTION_TYPES.INPUT_NAME: {
+    case ACTION_TYPES.USER_REQUEST: {
       return {
         ...state,
-        inputtedName: action.payload,
+        userRequest: action.payload,
       };
     }
-    case ACTION_TYPES.USER_LIST: {
+    case ACTION_TYPES.USERS_LIST: {
       return {
         ...state,
         users: action.payload,
-        usersToDisplay: action.payload,
+        usersNamesList: action.payload,
       };
     }
     default:

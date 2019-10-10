@@ -2,7 +2,7 @@ import React from 'react';
 import Post from '../Post/Post';
 import './PostList.css';
 
-const PostList = ({ fullPosts }) => fullPosts.map(post => (
+const PostList = ({ posts }) => posts.map(post => (
   <Post post={post} key={post.id} />
 ));
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './User.css';
 
 function User({ user }) {
-  const { name, email } = user;
+  const { name, email, address } = user;
 
   return (
     <div>
@@ -11,9 +11,9 @@ function User({ user }) {
       <div>{email}</div>
       <div>
         {`
-          ${user.address.city},
-          ${user.address.street},
-          ${user.address.suite}
+          ${address.city},
+          ${address.street},
+          ${address.suite}
         `}
       </div>
     </div>
