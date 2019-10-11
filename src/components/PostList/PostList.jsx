@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Post from '../../containers/PostHandler';
 import './PostsList.scss';
 
@@ -7,12 +7,14 @@ function PostsList(props) {
     preparedPosts, isLoading, hasError, isLoaded,
   } = props;
 
-  const [posts, setPosts] = useState();
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    setPosts(preparedPosts);
-  }, [preparedPosts]);
+  const updateSearch = (e) => {
+    setSearch(e.target.value);
+  };
+  const filteredPosts = preparedPosts
+    .filter(post => post.title.indexOf(search) !== -1
+      || post.body.indexOf(search) !== -1);
 
   return (
     (isLoading && (
@@ -49,24 +51,11 @@ function PostsList(props) {
               className="text-center"
               type="search"
               placeholder="search please"
-              onChange={(e) => {
-                if (e.target.value) {
-                  const filteredPosts = preparedPosts
-                    .filter(post => post.title.toLowerCase()
-                      .includes(search.toLowerCase())
-                      || post.body.toLowerCase()
-                        .includes(search.toLowerCase()));
-                  setPosts(filteredPosts);
-                } else {
-                  setPosts(preparedPosts);
-                }
-                setSearch(e.target.value);
-              }
-              }
               value={search}
+              onChange={updateSearch}
             />
           </div>
-          {posts.map(post => (
+          {filteredPosts.map(post => (
             <Post key={post.id} post={post} />
           ))}
         </div>
