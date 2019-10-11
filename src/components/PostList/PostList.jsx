@@ -53,8 +53,9 @@ function PostsList(props) {
                 if (e.target.value) {
                   const filteredPosts = preparedPosts
                     .filter(post => post.title.toLowerCase()
-                      .includes(search.toLowerCase()) || post.body.toLowerCase()
-                      .includes(search.toLowerCase()));
+                      .includes(search.toLowerCase())
+                      || post.body.toLowerCase()
+                        .includes(search.toLowerCase()));
                   setPosts(filteredPosts);
                 } else {
                   setPosts(preparedPosts);
