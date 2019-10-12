@@ -1,0 +1,25 @@
+.comment {
+  position: relative;
+  background-color: rgb(255, 211, 211);
+  border: 2px solid seagreen;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+.commentList h1 {
+  display: block;
+  width: 200px;
+  margin: auto;
+  text-align: center;
+  font-size: 30px;
+  color: darkolivegreen;
+  border-bottom: 1px solid black;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+

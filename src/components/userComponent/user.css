@@ -1,0 +1,22 @@
+.user li {
+  list-style-type: none;
+  font-size: 17px;
+}
+
+.user ul {
+  padding: 0;
+}
+
+.user .addressHead {
+  display: block;
+  margin: 10px 0;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: underline;
+}
+
+.address {
+  display: block;
+  width: 200px;
+}

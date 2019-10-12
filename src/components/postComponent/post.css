@@ -1,0 +1,72 @@
+article {
+  box-sizing: border-box;
+  position: relative;
+  border: 3px solid slateblue;
+  margin-bottom: 30px;
+  padding: 20px;
+  width: 100%;
+  background-color: aquamarine;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+article span.remove {
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  font-size: 40px;
+  cursor: pointer;
+  font-weight: 700;
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none;
+  -khtml-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
+}
+
+article span.remove:hover {
+  color: red;
+}
+
+.titlePost {
+  font-size: 25px;
+  text-align: center;
+}
+
+button.load {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background-color: black;
+  outline: none;
+  color: white;
+  font-size: 25px;
+  text-align: center;
+  cursor: pointer;
+  left: calc(50% - 100px);
+  top: calc(50% - 100px);
+  border-radius: 50%;
+  transition: 1s ease-out;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  -webkit-transition: 1s ease-out;
+  -moz-transition: 1s ease-out;
+  -ms-transition: 1s ease-out;
+  -o-transition: 1s ease-out;
+}
+
+button.load:hover {
+  background-color: red;
+  transform: scale(2);
+  -webkit-transform: scale(2);
+  -moz-transform: scale(2);
+  -ms-transform: scale(2);
+  -o-transform: scale(2);
+}
