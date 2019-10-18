@@ -4,9 +4,9 @@ export const initialState = {
   users: [],
   posts: [],
   comments: [],
+  hasError: false,
   isLoading: false,
   isLoaded: false,
-  hasError: false,
 };
 
 export const reducer = (state = initialState, action) => {
