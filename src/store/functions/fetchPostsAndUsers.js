@@ -15,12 +15,7 @@ const loadPostsAndUsers = () => (dispatch) => {
       .then(([res1, res2, res3]) => Promise
         .all([res1.json(), res2.json(), res3.json()]))
       .then(([posts, users, comments]) => {
-        const preparedPosts = posts.map(post => ({
-          ...post,
-          user: users.find(user => user.id === post.userId),
-          comments: comments.filter(comment => comment.postId === post.id),
-        }));
-        dispatch(handleSuccess(preparedPosts));
+        dispatch(handleSuccess({ posts, users, comments }));
       })
       .catch(() => {
         dispatch(handleError());

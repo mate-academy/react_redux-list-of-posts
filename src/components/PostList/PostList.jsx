@@ -12,9 +12,12 @@ function PostsList(props) {
   const updateSearch = (e) => {
     setSearch(e.target.value);
   };
+
   const filteredPosts = preparedPosts
     .filter(post => post.title.indexOf(search) !== -1
       || post.body.indexOf(search) !== -1);
+
+  console.log('select');
 
   return (
     (isLoading && (

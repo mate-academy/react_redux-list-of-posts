@@ -1,20 +1,17 @@
 import ACTION_TYPES from './actionTypes';
 
 export const initialState = {
-  preparedPosts: [],
+  users: [],
+  posts: [],
+  comments: [],
   isLoading: false,
   isLoaded: false,
   hasError: false,
 };
 
 export const reducer = (state = initialState, action) => {
-  const posts = state.preparedPosts;
   const filterComments = (array, id) => (
-    array.map(item => ({
-      ...item,
-      comments: item.comments
-        .filter(comment => comment.id !== id),
-    }))
+    array.filter(comment => comment.id !== id)
   );
 
   switch (action.type) {
@@ -27,7 +24,9 @@ export const reducer = (state = initialState, action) => {
     case ACTION_TYPES.HANDLE_SUCCESS:
       return {
         ...state,
-        preparedPosts: action.payload,
+        users: action.payload.users,
+        posts: action.payload.posts,
+        comments: action.payload.comments,
         isLoaded: true,
         isLoading: false,
       };
@@ -40,13 +39,13 @@ export const reducer = (state = initialState, action) => {
     case ACTION_TYPES.HANDLE_DELETE_POST:
       return {
         ...state,
-        preparedPosts: state.preparedPosts
+        posts: [...state.posts]
           .filter(post => post.id !== action.payload),
       };
     case ACTION_TYPES.HANDLE_DELETE_COMMENT:
       return {
         ...state,
-        preparedPosts: filterComments(posts, action.payload),
+        comments: filterComments(state.comments, action.payload),
       };
 
     default:
