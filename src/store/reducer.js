@@ -5,8 +5,8 @@ export const initialState = {
   posts: [],
   comments: [],
   hasError: false,
-  isLoading: false,
   isLoaded: false,
+  isLoading: false,
 };
 
 export const reducer = (state = initialState, action) => {

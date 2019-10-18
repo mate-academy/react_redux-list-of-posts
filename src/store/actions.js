@@ -8,12 +8,12 @@ export const handleSuccess = ({ users, comments, posts }) => ({
   payload: { users, comments, posts },
 });
 
-export const deletePost = itemId => ({
-  type: ACTION_TYPES.HANDLE_DELETE_POST,
+export const deleteComment = itemId => ({
+  type: ACTION_TYPES.HANDLE_DELETE_COMMENT,
   payload: itemId,
 });
 
-export const deleteComment = itemId => ({
-  type: ACTION_TYPES.HANDLE_DELETE_COMMENT,
+export const deletePost = itemId => ({
+  type: ACTION_TYPES.HANDLE_DELETE_POST,
   payload: itemId,
 });

@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 
+export const commentsSelector = state => state.comments;
 const usersSelector = state => state.users;
 const postsSelector = state => state.posts;
-export const commentsSelector = state => state.comments;
 
 export const selectPosts = createSelector(
   usersSelector,
