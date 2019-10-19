@@ -1,4 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import { getData } from '../api/data';
 
 // action types
 const ACTION_TYPES = {
@@ -22,6 +24,19 @@ export const getPostsWithUsers = (posts, users, comments) => ({
   comments,
   users,
 });
+
+export const getDataFromApi = () => (dispatch) => {
+  dispatch(loading());
+  Promise.all(
+    [getData('posts'),
+      getData('users'),
+      getData('comments')]
+  ).then(([posts, users, comments]) => {
+    dispatch(loading());
+    dispatch(getPostsWithUsers(posts, users, comments));
+    dispatch(loaded());
+  });
+};
 
 const initialState = {
   posts: [],
@@ -48,7 +63,7 @@ function reducer(state = initialState, action = {}) {
         ...state,
         posts: action.posts.map(post => ({
           ...post,
-          user: action.users.find(item => item.id === post.userId),
+          users: action.users.find(item => item.id === post.userId),
           comments: action.comments.filter(comment => comment.postId === post.id),
         })),
       };
@@ -58,4 +73,10 @@ function reducer(state = initialState, action = {}) {
   }
 }
 
-export const store = createStore(reducer);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export const store = createStore(reducer,
+  composeEnhancers(
+    applyMiddleware(thunk)
+  )
+);

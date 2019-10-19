@@ -1,10 +1,8 @@
 import React from 'react';
 import './LoadingPage.css';
 
-import { store } from '../../store';
 
-export const LoadingPage = () => {
-  const { isLoading } = store.getState();
+export const LoadingPage = ({ isLoading }) => {
   return (
     <>
       {isLoading && (
