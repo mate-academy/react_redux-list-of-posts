@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Post from '../Post';
+import Post from '../Post/Post';
 import './PostsList.css';
 
 const PostsList = ({ posts }) => (
@@ -12,11 +11,3 @@ const PostsList = ({ posts }) => (
 );
 
 export default PostsList;
-
-PostsList.propTypes = {
-  posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-    }).isRequired,
-  ).isRequired,
-};

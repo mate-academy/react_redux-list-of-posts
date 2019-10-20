@@ -7,8 +7,6 @@
   background: #7e7e7e;
   transition: transform 0.2s,
     background 0.2s;
-  position: relative;
-  padding-top: 40px;
 }
 .comment:hover {
   background:#afafaf;

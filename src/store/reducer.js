@@ -4,15 +4,17 @@ const {
   LOAD,
   HANDLE_SUCCESS,
   HANDLE_ERROR,
-  HANDLE_REMOVE,
-  HANDLE_SORT,
+  HANDLE_REMOVE_POST,
+  HANDLE_REMOVE_COMMENT,
 } = ACTION_TYPES;
 
 export const initialState = {
+  loaded: false,
   isLoading: false,
   hasError: false,
-  disabled: false,
-  todosWithUsers: [],
+  posts: [],
+  users: [],
+  comments: [],
 };
 
 export const reducer = (state = initialState, action = {}) => {
@@ -27,10 +29,12 @@ export const reducer = (state = initialState, action = {}) => {
     case HANDLE_SUCCESS:
       return {
         ...state,
-        todosWithUsers: action.todosWithUsers,
+        posts: action.payload.posts,
+        users: action.payload.users,
+        comments: action.payload.comments,
         isLoading: false,
         hasError: false,
-        disabled: true,
+        loaded: true,
       };
 
     case HANDLE_ERROR:
@@ -40,39 +44,19 @@ export const reducer = (state = initialState, action = {}) => {
         hasError: true,
       };
 
-    case HANDLE_REMOVE:
+    case HANDLE_REMOVE_POST:
       return {
         ...state,
-        todosWithUsers: [...state.todosWithUsers]
-          .filter(todo => todo.id !== action.payload),
+        posts: [...state.posts]
+          .filter(post => post.id !== action.payload),
       };
 
-    case HANDLE_SORT:
-      switch (action.payload) {
-        case 'By user':
-          return {
-            ...state,
-            todosWithUsers: [...state.todosWithUsers]
-              .sort((a, b) => a.user.username.localeCompare(b.user.username)),
-          };
-
-        case 'By title':
-          return {
-            ...state,
-            todosWithUsers: [...state.todosWithUsers]
-              .sort((a, b) => a.title.localeCompare(b.title)),
-          };
-
-        case 'By status':
-          return {
-            ...state,
-            todosWithUsers: [...state.todosWithUsers]
-              .sort((a, b) => a.completed - b.completed),
-          };
-
-        default:
-          return state;
-      }
+    case HANDLE_REMOVE_COMMENT:
+      return {
+        ...state,
+        comments: [...state.comments]
+          .filter(comment => comment.id !== action.payload),
+      };
 
     default:
       return state;

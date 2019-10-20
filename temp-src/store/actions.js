@@ -2,16 +2,16 @@ export const ACTION_TYPES = {
   LOAD: 'LOAD',
   HANDLE_SUCCESS: 'HANDLE_SUCCESS',
   HANDLE_ERROR: 'HANDLE_ERROR',
-  HANDLE_REMOVE_POST: 'HANDLE_REMOVE_POST',
-  HANDLE_REMOVE_COMMENT: 'HANDLE_REMOVE_COMMENT',
+  HANDLE_REMOVE: 'HANDLE_REMOVE',
+  HANDLE_SORT: 'HANDLE_SORT',
 };
 
 const {
   LOAD,
   HANDLE_SUCCESS,
   HANDLE_ERROR,
-  HANDLE_REMOVE_POST,
-  HANDLE_REMOVE_COMMENT,
+  HANDLE_REMOVE,
+  HANDLE_SORT,
 } = ACTION_TYPES;
 
 export const startLoading = () => ({ type: LOAD });
@@ -20,12 +20,11 @@ export const handleSuccess = ({ posts, users, comments }) => ({
   payload: { posts, users, comments },
 });
 export const handleError = () => ({ type: HANDLE_ERROR });
-
-export const handleRemovePost = id => ({
-  type: HANDLE_REMOVE_POST,
+export const handleRemove = id => ({
+  type: HANDLE_REMOVE,
   payload: id,
 });
-export const handleRemoveComment = id => ({
-  type: HANDLE_REMOVE_COMMENT,
-  payload: id,
+export const handleSort = e => ({
+  type: HANDLE_SORT,
+  payload: e,
 });

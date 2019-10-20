@@ -1,12 +1,23 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import './Comment.css';
+import PropTypes from 'prop-types';
 
-const Comment = ({ comment }) => {
-  const { name, email, body } = comment;
-
+const Comment = (props) => {
+  const {
+    name, email, body, id,
+  } = props.comment;
   return (
     <div className="comment">
-      <button type="button" className="remove comment-remove">✕</button>
+      <button
+        type="button"
+        className="remove remove-comment"
+        onClick={id => props.handleRemoveComment(id)}
+      >
+          ✕
+      </button>
       <div className="comment__name">
         { name.charAt(0).toUpperCase() + name.slice(1) }
       </div>
@@ -21,3 +32,13 @@ const Comment = ({ comment }) => {
 };
 
 export default Comment;
+
+Comment.propTypes = {
+  comment: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+  handleRemoveComment: PropTypes.func.isRequired,
+};

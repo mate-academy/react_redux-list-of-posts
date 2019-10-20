@@ -1,16 +1,9 @@
-/* eslint-disable no-shadow */
 import React from 'react';
-import PropTypes from 'prop-types';
 import './User.css';
 
 const User = ({ user }) => {
-  const { email, name } = user;
-  const {
-    street,
-    suite,
-    city,
-    zipcode,
-  } = user.address;
+  const { email, name, address } = user;
+  const { street, suite, city, zipcode } = address;
 
   return (
     <div className="user">
@@ -39,16 +32,3 @@ const User = ({ user }) => {
 };
 
 export default User;
-
-User.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    address: PropTypes.shape({
-      street: PropTypes.string.isRequired,
-      suite: PropTypes.string.isRequired,
-      city: PropTypes.string.isRequired,
-      zipcode: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};

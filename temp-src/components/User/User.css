@@ -1,8 +1,8 @@
 .user {
   font-style: italic;
   top: 18px;
-  text-align: left;
-  left: 30px;
+  text-align: right;
+  right: 10px;
   position: relative;
   color: #817c7c;
 
