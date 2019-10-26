@@ -1,14 +1,12 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-const BASE_URL_POSTS = 'https://jsonplaceholder.typicode.com/posts';
-const BASE_URL_USERS = 'https://jsonplaceholder.typicode.com/users';
-const BASE_URL_COMMENTS = 'https://jsonplaceholder.typicode.com/comments';
+const BASE_URL = 'https://jsonplaceholder.typicode.com/';
 
 const ACTION_TYPES = {
   POSTS_ADD: 'POSTS::ADD',
   SWITCH_LOADING: 'SWITCH::LOADING',
-  POSTS_INITIALIZE: 'INITIALIZED::IS',
+  POSTS_INITIALIZE: 'POSTS::INITIALIZE',
   ERROR_HANDLE: 'ERROR::HANDLE',
   SORTED_POSTS_ADD: 'SORTED_POSTS::ADD',
   POST_DELETE: 'POST::DELETE',
@@ -77,9 +75,9 @@ export const receivePosts = () => (dispatch) => {
   dispatch(errorPosts(false));
 
   Promise.all([
-    fetch(BASE_URL_POSTS),
-    fetch(BASE_URL_USERS),
-    fetch(BASE_URL_COMMENTS),
+    fetch(`${BASE_URL}posts`),
+    fetch(`${BASE_URL}users`),
+    fetch(`${BASE_URL}comments`),
   ])
     .then(([responsePosts, responseUsers, responseComments]) => Promise
       .all([
