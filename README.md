@@ -11,13 +11,10 @@ By requesting [https://jsonplaceholder.typicode.com/posts](https://jsonplacehold
 
 Create and use the following components:
 - `PostList`,
-- `PostListHandler` (Redux container for `PostList`),
 - `Post`,
-- `PostHandler` (Redux container for `Post`),
 - `User`,
 - `CommentList`,
 - `Comment`,
-- `CommentHandler` (Redux container for `Comment`).
 
 You can use the `User` component from both `Post` (with address) and `Comment` (without providing any address). 
 
