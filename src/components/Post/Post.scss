@@ -1,0 +1,16 @@
+.post {
+  position: relative;
+  border: 2px solid black;
+}
+
+.post__name {
+  font-size: 23px;
+  margin: 0 auto;
+  padding: 30px;
+  height: 70px;
+}
+
+.post__body {
+  font-size: 20px;
+  padding: 30px;
+}
