@@ -151,8 +151,11 @@ a {
   position: relative;
 }
 
+.button_delete {
+  cursor: pointer;
+}
+
 .comment {
-  margin-top: 20px;
   color: blue;
 }
 

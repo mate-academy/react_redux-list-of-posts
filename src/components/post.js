@@ -17,13 +17,10 @@ const Post = ({
 }) => (
   <article className="post">
     <h2 className="post__title">
-      <button
-        type="button"
-        className="post__delete"
+      <DeleteForeverIcon
+        className="button_delete"
         onClick={() => deleteSinglePost(id)}
-      >
-        <DeleteForeverIcon />
-      </button>
+      />
       {title}
     </h2>
     <p className="post__body">{body}</p>

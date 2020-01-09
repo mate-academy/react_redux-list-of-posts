@@ -7,13 +7,10 @@ import { deleteComment } from '../actions';
 const SingleComment = ({ title, body, email, id, removeComment }) => (
   <section className="comment">
     <h4 className="comment__header">
-      <button
-        className="post__delete"
-        type="button"
+      <DeleteIcon
+        className="button_delete"
         onClick={() => removeComment(id)}
-      >
-        <DeleteIcon />
-      </button>
+      />
       {title}
     </h4>
     <article>{body}</article>
