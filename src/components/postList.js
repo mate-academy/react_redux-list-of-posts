@@ -1,13 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import { loadPosts } from '../actions';
 import Post from './post';
+
+const useStyles = makeStyles(theme => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+}));
 
 const PostList = ({ isLoaded, loading, loadingData, posts }) => {
   const loadData = async() => {
     await loadingData();
   };
+
+  const classes = useStyles();
 
   return (
     <div>
@@ -29,7 +42,7 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
             ))}
           </section>
         ) : (
-          <div>
+          <div className="load">
             { loading ? (
               <>
                 <div className="loadingio-spinner-double-ring-9q7pnd89ma7">
@@ -46,13 +59,17 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
                 </div>
               </>
             ) : (
-              <button
-                className="ui positive basic button"
-                type="button"
+              <Button
+                variant="outlined"
+                color="secondary"
+                href="/#"
+                size="large"
+                className={classes.margin}
                 onClick={loadData}
               >
-                Click me
-              </button>
+                Load
+              </Button>
+
             )}
           </div>
         )}

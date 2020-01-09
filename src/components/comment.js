@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteComment } from '../actions';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const SingleComment = ({ title, body, email, id, removeComment }) => (
   <section className="comment">
@@ -11,7 +12,7 @@ const SingleComment = ({ title, body, email, id, removeComment }) => (
         type="button"
         onClick={() => removeComment(id)}
       >
-        Delete
+        <DeleteIcon />
       </button>
       {title}
     </h4>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import CommentsList from './commentsList';
 import { deletePost } from '../actions';
 
@@ -21,7 +22,7 @@ const Post = ({
         className="post__delete"
         onClick={() => deleteSinglePost(id)}
       >
-        Delete post
+        <DeleteForeverIcon />
       </button>
       {title}
     </h2>
