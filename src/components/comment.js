@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { deleteComment } from '../actions';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { deleteComment } from '../actions';
 
 const SingleComment = ({ title, body, email, id, removeComment }) => (
   <section className="comment">
