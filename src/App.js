@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { DebounceInput as SearchInput } from 'react-debounce-input';
 import PropTypes from 'prop-types';
@@ -6,14 +6,17 @@ import { POSTS_URL, USERS_URL, COMMENTS_URL } from './constants';
 import PostList from './PostList';
 import { loadFromServer } from './api';
 import './App.css';
-import { getSearchQuery, getPosts } from './store';
+import { getSearchQuery, getPosts, getIsLoading } from './store';
 import { setPosts } from './store/posts';
 import { setSearchQuery } from './store/searchQuery';
+import { setIsLoading } from './store/isLoading';
 
-// eslint-disable-next-line no-shadow
-function App({ posts, searchQuery, setPosts, setSearchQuery }) {
-  const [isLoading, setIsLoading] = useState(false);
-
+const App = (
+  { posts,
+    isLoading,
+    // eslint-disable-next-line no-shadow
+    searchQuery, setPosts, setSearchQuery, setIsLoading }
+) => {
   const normalizePosts = (postsList, usersList, commentsList) => postsList
     .map(post => ({
       ...post,
@@ -77,20 +80,23 @@ function App({ posts, searchQuery, setPosts, setSearchQuery }) {
       )}
     </>
   );
-}
+};
 
 const mapStateToProps = state => ({
   posts: getPosts(state),
   searchQuery: getSearchQuery(state),
+  isLoading: getIsLoading(state),
 });
 
 export default connect(mapStateToProps, {
-  setPosts, setSearchQuery,
+  setPosts, setSearchQuery, setIsLoading,
 })(App);
 
 App.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isLoading: PropTypes.bool.isRequired,
   searchQuery: PropTypes.string.isRequired,
   setPosts: PropTypes.func.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
+  setIsLoading: PropTypes.func.isRequired,
 };
