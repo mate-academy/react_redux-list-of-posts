@@ -67,6 +67,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         postsList: state.postsList.filter(item => item.id !== action.payload),
+        mixedPosts: state.postsList.filter(item => item.id !== action.payload),
       };
 
     case HANDLE_SEARCH:
