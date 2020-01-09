@@ -62,7 +62,6 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
               <Button
                 variant="outlined"
                 color="secondary"
-                href="/#"
                 size="large"
                 className={classes.margin}
                 onClick={loadData}
