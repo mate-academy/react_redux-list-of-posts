@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import CommentsList from './commentsList';
 import { deletePost } from '../actions';
+import { getDeletePosts } from '../store/posts';
 
 const Post = ({
   id,
@@ -25,7 +26,7 @@ const Post = ({
     </h2>
     <p className="post__body">{body}</p>
     <p className="post__user">
-      Author:
+      Author:&nbsp;
       {userName}
     </p>
     <address className="post__address">{address}</address>
@@ -37,7 +38,7 @@ const Post = ({
 );
 
 const mapStateToProps = state => ({
-  posts: state.posts,
+  posts: getDeletePosts(state),
 });
 
 const mapDispatchToProps = {

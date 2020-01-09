@@ -5,6 +5,9 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { loadPosts } from '../actions';
 import Post from './post';
+import { getPosts } from '../store/posts';
+import { getLoading } from '../store/loading';
+import { getIsLoaded } from '../store/loaded';
 
 const useStyles = makeStyles(theme => ({
   margin: {
@@ -77,9 +80,9 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
 };
 
 const mapStateToProps = state => ({
-  posts: state.posts,
-  isLoaded: state.isLoaded,
-  loading: state.loading,
+  posts: getPosts(state.posts),
+  isLoaded: getIsLoaded(state.isLoaded),
+  loading: getLoading(state.loading),
 });
 
 const mapDispatchToProps = {
@@ -100,7 +103,11 @@ PostList.propTypes = {
       PropTypes.number,
       PropTypes.object,
     ])),
-  })).isRequired,
+  })),
+};
+
+PostList.defaultProps = {
+  posts: [],
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostList);

@@ -1,34 +1,21 @@
-import { START_LOADING,
-  HANDLE_SUCCESS,
-  DELETE_POST,
-  DELETE_COMMENT,
-  LOADING } from './actions';
+import { DELETE_COMMENT, DELETE_POST, HANDLE_SUCCESS } from '../actions';
 
-export const reducer = (state, action) => {
+export const getPosts = state => state.posts;
+export const getDeletePosts = state => state.posts;
+export const getDeleteComment = state => state.posts;
+
+export const postReducer = (state = [], action) => {
   switch (action.type) {
-    case START_LOADING:
-      return {
-        ...state,
-        isLoaded: true,
-      };
-    case LOADING:
-      return {
-        ...state,
-        loading: true,
-      };
     case HANDLE_SUCCESS:
       return {
-        ...state,
         posts: action.posts,
       };
     case DELETE_POST:
       return {
-        ...state,
         posts: state.posts.filter(post => post.id !== action.id),
       };
     case DELETE_COMMENT:
       return {
-        ...state,
         posts: state.posts.map(post => (
           {
             ...post,

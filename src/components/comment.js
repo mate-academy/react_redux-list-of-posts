@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { deleteComment } from '../actions';
+import { getDeleteComment } from '../store/posts';
 
 const SingleComment = ({ title, body, email, id, removeComment }) => (
   <section className="comment">
@@ -25,7 +26,7 @@ const SingleComment = ({ title, body, email, id, removeComment }) => (
 );
 
 const mapStateToProps = state => ({
-  posts: state.posts,
+  posts: getDeleteComment(state.posts),
 });
 
 const mapDispatchToProps = {
