@@ -1,17 +1,23 @@
 {
-  "name": "react_task-boilerplate-ci",
+  "homepage": "http://banduraweb.github.io/react_redux-list-of-posts/",
   "version": "0.1.0",
   "private": true,
   "keywords": [],
   "author": "Mate Academy",
   "license": "GPL-3.0",
-  "homepage": ".",
   "dependencies": {
+    "axios": "^0.19.1",
+    "gh-pages": "^2.2.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-debounce-input": "^3.2.2",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "react-scripts": "3.0.1",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.2"
   },
   "devDependencies": {
     "@mate-academy/eslint-config": "*",
@@ -25,11 +31,14 @@
     "stylelint": "^10.0.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
+    "lint": "eslint --ext .jsx,.js ./src/",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "git subtree push --prefix build origin gh-pages"
+    "eject": "react-scripts eject"
+
   },
   "eslintConfig": {
     "extends": "react-app"
