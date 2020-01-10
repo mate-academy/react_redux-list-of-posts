@@ -7,11 +7,15 @@
   "license": "GPL-3.0",
   "homepage": ".",
   "dependencies": {
+    "node-sass": "^4.13.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-redux": "^7.1.0",
+    "react-redux": "^7.1.3",
     "react-scripts": "3.0.1",
-    "redux": "^4.0.1"
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "thunk": "0.0.1"
   },
   "devDependencies": {
     "@mate-academy/eslint-config": "*",
