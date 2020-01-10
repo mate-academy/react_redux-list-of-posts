@@ -5,6 +5,7 @@ export const HANDLE_SUCCESS = 'HANDLE_SUCCESS';
 export const DELETE_POST = 'DELETE_POST';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const LOADING = 'LOADING';
+export const CHANGE_QUERY = 'CHANGE_QUERY';
 
 const startLoading = () => ({ type: START_LOADING });
 const loadingProcess = () => ({ type: LOADING });
@@ -35,6 +36,10 @@ export const loadPosts = () => async(dispatch) => {
 
   dispatch(startLoading());
 };
+
+export const changeQuery = query => ({
+  type: CHANGE_QUERY, query,
+});
 
 export const deletePost = id => ({
   type: DELETE_POST, id,
