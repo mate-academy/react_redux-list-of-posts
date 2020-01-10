@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Post from './Post';
 import './App.css';
-import { handleChange } from './store/searchInputReducer';
-import { finishShowing } from './store/showingReducer';
+import { postsLoaded as postLoadedAction } from './store/postsLoadedReducer';
 import { finishLoading, startLoading } from './store/loadingReducer';
 import { loadPreparedPosts } from './store/postsReducer';
-import { getPostsWithComments, getIsloading, getisShown } from './store/index';
+import { setSearchTermValue } from './store/searchInputReducer';
+import { getPostsWithComments, getIsloading, getisLoaded } from './store/index';
 
 const PostsList = ({
-  isShown,
+  isLoaded,
   isLoading,
   preparePosts,
-  inputChangeHandler,
+  setSearchTerm,
   startLoad,
-  finishShow,
+  postsLoaded,
   finishLoad,
   preparedPosts,
 }) => {
@@ -23,8 +23,9 @@ const PostsList = ({
     startLoad();
     await preparePosts();
     finishLoad();
-    finishShow();
+    postsLoaded();
   };
+
   const debounce = (f, delay) => {
     let timer;
 
@@ -33,13 +34,15 @@ const PostsList = ({
       timer = setTimeout(() => f(...args), delay);
     };
   };
-
+  const inputChangeHandler = (value) => {
+    setSearchTerm(value.trim().toLowerCase());
+  };
   const debouncedInputChangeHandler = debounce(inputChangeHandler, 1000);
 
   return (
     <div className="App">
       {
-        isShown ? (
+        !isLoaded ? (
           <button
             type="button"
             className="button button--init"
@@ -81,26 +84,26 @@ const PostsList = ({
 
 const mapStateToProps = state => ({
   isLoading: getIsloading(state),
-  isShown: getisShown(state),
+  isLoaded: getisLoaded(state),
   preparedPosts: getPostsWithComments(state),
 });
 const mapDispatchToProps = dispatch => ({
   preparePosts: () => dispatch(loadPreparedPosts()),
-  inputChangeHandler: value => dispatch(handleChange(value)),
+  setSearchTerm: value => dispatch(setSearchTermValue(value)),
   finishLoad: () => dispatch(finishLoading()),
   startLoad: () => dispatch(startLoading()),
-  finishShow: () => dispatch(finishShowing()),
+  postsLoaded: () => dispatch(postLoadedAction()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostsList);
 
 PostsList.propTypes = {
-  isShown: PropTypes.bool.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  inputChangeHandler: PropTypes.func.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
   preparePosts: PropTypes.func.isRequired,
   startLoad: PropTypes.func.isRequired,
   finishLoad: PropTypes.func.isRequired,
-  finishShow: PropTypes.func.isRequired,
+  postsLoaded: PropTypes.func.isRequired,
   preparedPosts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

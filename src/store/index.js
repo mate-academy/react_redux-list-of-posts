@@ -4,19 +4,18 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import postsReducer from './postsReducer';
 import loadingReducer from './loadingReducer';
 import searchInputReducer from './searchInputReducer';
-import showingReducer from './showingReducer';
+import postsLoadedReducer from './postsLoadedReducer';
 
+export const getSearchTerm = state => state.searchTerm;
 export const getIsloading = state => state.isLoading;
-export const getisShown = state => state.isShown;
+export const getisLoaded = state => state.postsLoaded;
 export const getPostsWithComments = state => state.preparedPosts
-  .filter(post => post.title.toLowerCase()
-    .includes(state.searchTerm)
-|| post.body.toLowerCase()
-  .includes(state.searchTerm));
+  .filter(post => `${post.title} ${post.body}`.toLowerCase()
+    .includes(state.searchTerm));
 
 const reducer = combineReducers({
   isLoading: loadingReducer,
-  isShown: showingReducer,
+  postsLoaded: postsLoadedReducer,
   preparedPosts: postsReducer,
   searchTerm: searchInputReducer,
 });
