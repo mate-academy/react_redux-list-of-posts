@@ -47,20 +47,18 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
         ) : (
           <div className="load">
             { loading ? (
-              <>
-                <div className="loadingio-spinner-double-ring-9q7pnd89ma7">
-                  <div className="ldio-825x8t7zp7o">
+              <div className="loadingio-spinner-double-ring-9q7pnd89ma7">
+                <div className="ldio-825x8t7zp7o">
+                  <div />
+                  <div />
+                  <div>
                     <div />
+                  </div>
+                  <div>
                     <div />
-                    <div>
-                      <div />
-                    </div>
-                    <div>
-                      <div />
-                    </div>
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
               <Button
                 variant="outlined"
@@ -80,9 +78,9 @@ const PostList = ({ isLoaded, loading, loadingData, posts }) => {
 };
 
 const mapStateToProps = state => ({
-  posts: getPosts(state.posts),
-  isLoaded: getIsLoaded(state.isLoaded),
-  loading: getLoading(state.loading),
+  posts: getPosts(state),
+  isLoaded: getIsLoaded(state),
+  loading: getLoading(state),
 });
 
 const mapDispatchToProps = {

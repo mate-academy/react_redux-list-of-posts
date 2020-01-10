@@ -2,15 +2,13 @@ import { START_LOADING } from '../actions';
 
 export const getIsLoaded = state => state.isLoaded;
 
-export const loadedReducer = (state = {
-  isLoaded: false,
-}, action) => {
+export const loadedReducer = (
+  isLoaded = false, action
+) => {
   switch (action.type) {
     case START_LOADING:
-      return {
-        isLoaded: true,
-      };
+      return true;
     default:
-      return state;
+      return isLoaded;
   }
 };
