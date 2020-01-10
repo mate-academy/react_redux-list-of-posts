@@ -5,7 +5,9 @@ import './App.scss';
 import { debounce } from '../../helpers/debounce';
 import PostList from '../PostList';
 
-const App = ({posts, isLoading, hasError, loadData, setQuery}) => {
+const App = (
+  {posts, isLoading, hasError, isLoaded, loadData, setQuery}
+) => {
   const [highlightedValue, setHighlightedValue] = useState('');
 
   const applySearchWithDebounce = useCallback(
@@ -27,7 +29,7 @@ const App = ({posts, isLoading, hasError, loadData, setQuery}) => {
     <div className="App">
       <h1 className="main-title">Dynamic list of posts</h1>
 
-      {posts.length ? (
+      {isLoaded ? (
         <>
           <input
             type="search"
@@ -70,6 +72,7 @@ App.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool.isRequired,
   hasError: PropTypes.bool.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
   loadData: PropTypes.func.isRequired,
   setQuery: PropTypes.func.isRequired,
 };

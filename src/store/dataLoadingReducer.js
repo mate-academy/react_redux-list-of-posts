@@ -43,6 +43,7 @@ export const loadData = () => async(dispatch) => {
 
 const initialState = {
   posts: [],
+  isLoaded: false,
   isLoading: false,
   hasError: false,
 };
@@ -61,6 +62,7 @@ const dataLoadingReducer = (state = initialState, action) => {
         ...state,
         posts: action.posts,
         isLoading: false,
+        isLoaded: true,
       };
 
     case DATA_LOADING_FAIL:
