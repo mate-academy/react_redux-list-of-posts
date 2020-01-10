@@ -1,33 +1,84 @@
-.App {
+.App h1 {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.post {
+  margin: 10px 20px;
+  padding: 5px 25px;
+  border: 1px solid black;
+  background-color: rgb(243, 237, 170);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.post--header {
+  text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
+.post--body {
+  font-size: 120%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.user {
+  color: navy;
+  text-align: right;
+}
+
+.user--name {
+  font-size: 110%;
+}
+
+.user--email {
+  color: blue;
+  font-style: italic;
+}
+
+.user--address {
+  font-style: italic;
+}
+
+.comment {
+  background-color: rgb(255, 254, 241);
+  margin: 5px;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.comment--email {
+  font-style: italic;
+  color: blue;
+}
+
+.comment--body {
+  font-style: italic;
+}
+
+.button--load {
+  display: block;
+  width: 200px;
+  height: 50px;
+  margin: auto;
+  background-color: rgb(255, 254, 241);
+  border: 2px solid rgb(243, 237, 170);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button--load:hover {
+  background-color: rgb(255, 250, 187);
+  border: 2px solid rgb(243, 237, 170);
+}
+
+.button--delete {
+  display: block;
+  width: 150px;
+  height: 30px;
+  margin: 10px auto;
+  background-color: rgb(255, 233, 233);
+  border: 2px solid rgb(158, 62, 56);
+  color: rgb(158, 62, 56);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.filter--input {
+  width: 200px;
 }
