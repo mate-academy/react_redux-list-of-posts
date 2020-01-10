@@ -1,17 +1,21 @@
 {
-  "name": "react_task-boilerplate-ci",
+  "name": "react_redux-list-of-posts",
   "version": "0.1.0",
   "private": true,
   "keywords": [],
   "author": "Mate Academy",
   "license": "GPL-3.0",
-  "homepage": ".",
+  "homepage": "https://idinale.github.io/react_redux-list-of-posts/",
   "dependencies": {
+    "node-sass": "^4.13.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-redux": "^7.1.0",
+    "react-redux": "^7.1.3",
     "react-scripts": "3.0.1",
-    "redux": "^4.0.1"
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "thunk": "0.0.1"
   },
   "devDependencies": {
     "@mate-academy/eslint-config": "*",
@@ -22,6 +26,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-react": "^7.13.0",
+    "gh-pages": "^2.2.0",
     "stylelint": "^10.0.0"
   },
   "scripts": {
@@ -29,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "git subtree push --prefix build origin gh-pages"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
