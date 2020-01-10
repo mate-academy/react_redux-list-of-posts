@@ -11,16 +11,20 @@ import 'semantic-ui-css/semantic.min.css';
 import PostItem from './PostItem';
 import '../App.css';
 import {
+  getPosts,
+  getStatusLoading,
+  getError,
+  getStatusIsInit,
+  getSearchQuery,
+} from '../store/store';
+
+import {
   createActionStartLoading,
   createActionHandleError,
   createActionHandleSuccess,
   createActionloadTodos,
-  getPosts,
-  getStatusLoading,
-  getError,
   createActionSearchQuery,
-  getStatusIsInit,
-} from '../store/store';
+} from '../store/actions';
 
 function PostList(
   {
@@ -28,30 +32,38 @@ function PostList(
     isLoading,
     hasError,
     loadDataFromServer,
-    searchQuery,
+    query,
     isInit,
+    searchQuery,
   }
 ) {
   const loadPosts = () => {
     loadDataFromServer();
   };
+  const visiblePosts = query === ''
+    ? combineData
+    : combineData.filter(({ title, body }) => (title + body)
+      .toLowerCase()
+      .includes(query.toLowerCase()));
+
+  console.log(visiblePosts);
 
   return (
     <Container className="App">
       {
-        (combineData.length > 0 || isInit)
+        (visiblePosts.length > 0 || isInit)
           && (
             <>
               <DebounceInput
                 debounceTimeout={500}
-                onChange={searchQuery}
+                onChange={e => searchQuery(e.target.value)}
                 icon="search"
                 placeholder="Search..."
               />
               <Button.Group>
                 <Button>
                   Now is shown
-                  {combineData.length}
+                  {visiblePosts.length}
                   {' '}
                   posts
                 </Button>
@@ -75,7 +87,7 @@ function PostList(
           </>
         )
       }
-      {combineData.length === 0 && !hasError && !isInit
+      {visiblePosts.length === 0 && !hasError && !isInit
         ? (
           <>
             <p>No Posts yet </p>
@@ -91,7 +103,7 @@ function PostList(
           <Grid columns={3} divided>
             <Grid.Row>
 
-              {combineData.map(post => (
+              {visiblePosts.map(post => (
                 <Grid.Column key={post.id}>
                   <PostItem post={post} />
                 </Grid.Column>
@@ -110,6 +122,7 @@ const mapStateToProps = state => ({
   isLoading: getStatusLoading(state),
   hasError: getError(state),
   isInit: getStatusIsInit(state),
+  query: getSearchQuery(state),
 
 });
 
@@ -131,6 +144,7 @@ PostList.propTypes = {
   loadDataFromServer: PropTypes.func.isRequired,
   searchQuery: PropTypes.func.isRequired,
   isInit: PropTypes.bool,
+  query: PropTypes.string.isRequired,
 };
 
 PostList.defaultProps = {

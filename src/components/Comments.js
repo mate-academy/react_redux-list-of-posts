@@ -1,8 +1,16 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Comment as CommentTag, Icon, Message } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
-const Comments = ({ currentComments }) => (
+import { Button,
+  Comment as CommentTag,
+  Icon,
+  Message } from 'semantic-ui-react';
+import {
+  createActionDeleteComment,
+} from '../store/actions';
+
+const Comments = ({ currentComments, deleteComment }) => (
   <>
     {currentComments.map(({ email, body, id, name: userName }) => (
       <Fragment key={id}>
@@ -16,10 +24,20 @@ const Comments = ({ currentComments }) => (
             <CommentTag.Content>
               <CommentTag.Author>
                 <Message>
+                  <p>
+                    <span>Comments ID:</span>
+                    {id}
+                  </p>
                   <Message.Header>{userName}</Message.Header>
                   <p>
                     {body}
                   </p>
+                  <p>
+                    <Button onClick={() => deleteComment(id)} basic color="red">
+                        delete comment
+                    </Button>
+                  </p>
+
                 </Message>
 
                 <p />
@@ -29,20 +47,25 @@ const Comments = ({ currentComments }) => (
                 <div>2 days ago</div>
                 <div>
                   <Icon name="star" />
-                  5 Faves
+                    5 Faves
                 </div>
               </CommentTag.Metadata>
             </CommentTag.Content>
           </CommentTag>
+
         </CommentTag.Group>
       </Fragment>
     ))
     }
   </>
 );
+const mapDispatchToProps = {
+  deleteComment: createActionDeleteComment,
+};
 
-export default Comments;
+export default connect(null, mapDispatchToProps)(Comments);
 
 Comments.propTypes = {
+  deleteComment: PropTypes.func.isRequired,
   currentComments: PropTypes.arrayOf(PropTypes.any).isRequired,
 };

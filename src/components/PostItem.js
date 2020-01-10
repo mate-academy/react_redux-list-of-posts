@@ -5,13 +5,14 @@ import { Card, Icon, Image as ImageTag, Button } from 'semantic-ui-react';
 import User from './User';
 import Comments from './Comments';
 import {
-  createActionDeletePost,
   getPosts,
 } from '../store/store';
+import {
+  createActionDeletePost,
+} from '../store/actions';
 
 const PostItem = ({ post, deletePost }) => {
   const { title, body, id, user, comments } = post;
-
   const img = [
     'https://react.semantic-ui.com/images/avatar/large/matthew.png',
     'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
