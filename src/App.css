@@ -2,32 +2,67 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.post-list {
+  width: 80%;
+  background-color: lightblue;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.post {
+  background-color: #889b9c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post__title {
+  font-weight: bold;
   color: white;
+  text-align: center;
+  width: 80%;
+  margin: 10px 0 0;
 }
 
-.App-link {
-  color: #61dafb;
+.post__text {
+  margin: 10px 0;
+  text-align: center;
+  color: #ffde0b;
+  border: 3px solid #867c3c;
+  padding: 10px;
+  background-color: #363a36;
+  width: 90%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.userSection {
+  background-color: #798395;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.commentSection {
+  background-color: lightgray;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 20px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.headers {
+  margin: 10px 0 0;
+}
+
+.allPost {
+  border: 3px solid black;
+  width: 80%;
+  margin: 20px 0;
+}
+
+.remove_post {
+  background-color: #ff7979;
+  padding: 5px;
+  margin: 3px;
+  border: 0;
 }
