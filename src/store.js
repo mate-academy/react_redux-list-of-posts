@@ -2,23 +2,18 @@ import { createStore } from 'redux';
 
 // Action Types
 const ACTION_TYPE_SET_POSTS = 'SET_POSTS';
-const ACTION_TYPE_SET_VISIBLE_POSTS = 'SET_VISIBLE_POSTS';
 const ACTION_TYPE_DELETE_POST = 'DELETE_POST';
 const ACTION_TYPE_DELETE_COMMENT = 'DELETE_COMMENT';
+const ACTION_TYPE_SET_QUERY_SELECTOR = 'SET_QUERY_SELECTOR';
 
 const ACTION_TYPE_START_LOADING = 'START_LOADING';
 const ACTION_TYPE_FINISH_LOADING = 'FINISH_LOADING';
 const ACTION_TYPE_LOADING_BUTTON_IS_OFF = 'LOADING_BUTTON_IS_OFF';
 
 // Action Creators
-export const setPosts = allPosts => ({
+export const setPosts = posts => ({
   type: ACTION_TYPE_SET_POSTS,
-  allPosts,
-});
-
-export const setVisiblePosts = visiblePosts => ({
-  type: ACTION_TYPE_SET_VISIBLE_POSTS,
-  visiblePosts,
+  posts,
 });
 
 export const deletePost = postId => ({
@@ -30,6 +25,11 @@ export const deleteComment = (commentId, postId) => ({
   type: ACTION_TYPE_DELETE_COMMENT,
   commentId,
   postId,
+});
+
+export const setQuerySelector = inputValue => ({
+  type: ACTION_TYPE_SET_QUERY_SELECTOR,
+  inputValue,
 });
 
 export const startLoading = () => ({
@@ -44,42 +44,33 @@ export const hideLoadingButton = () => ({
   type: ACTION_TYPE_LOADING_BUTTON_IS_OFF,
 });
 
+// Selectors
+export const getPosts = state => state.posts
+  .filter(post => (post.title + post.body).includes(state.querySelector));
+
 // Reducer
 const rootReducer = (state, action) => {
   switch (action.type) {
     case ACTION_TYPE_SET_POSTS:
       return {
         ...state,
-        allPosts: action.allPosts,
+        posts: action.posts,
       };
-    case ACTION_TYPE_SET_VISIBLE_POSTS:
+    case ACTION_TYPE_SET_QUERY_SELECTOR:
       return {
         ...state,
-        visiblePosts: action.visiblePosts,
+        querySelector: action.inputValue,
       };
     case ACTION_TYPE_DELETE_POST:
       return {
         ...state,
-        visiblePosts: state.visiblePosts
-          .filter(post => post.id !== action.postId),
-        allPosts: state.allPosts
+        posts: state.posts
           .filter(post => post.id !== action.postId),
       };
     case ACTION_TYPE_DELETE_COMMENT:
       return {
         ...state,
-        visiblePosts: state.visiblePosts.map((post) => {
-          if (post.id === action.postId) {
-            post.comments = post.comments
-              .filter(c => c.id !== action.commentId);
-          }
-
-          return {
-            ...post,
-            comments: post.comments,
-          };
-        }),
-        allPosts: state.allPosts.map((post) => {
+        posts: state.posts.map((post) => {
           if (post.id === action.postId) {
             post.comments = post.comments
               .filter(c => c.id !== action.commentId);
@@ -112,10 +103,10 @@ const rootReducer = (state, action) => {
 };
 
 const initialState = {
-  allPosts: [],
-  visiblePosts: [],
+  posts: [],
   isLoading: false,
   loadingButton: true,
+  querySelector: '',
 };
 
 const store = createStore(rootReducer, initialState);

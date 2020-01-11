@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import PostList from './PostList';
 import './App.css';
 import { getUsers, getComments, getPosts } from './api';
+// eslint-disable-next-line import/no-duplicates
 import * as actionCreators from './store';
+// eslint-disable-next-line import/no-duplicates
+import * as selectors from './store';
 
 const App = ({
   startLoading,
@@ -13,9 +16,9 @@ const App = ({
   setPosts,
   isLoading,
   loadingButton,
-  setVisiblePosts,
-  allPosts,
-  countPosts,
+  countAllPosts,
+  setQuerySelector,
+  countVisiblePosts,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const handleLoading = async() => {
@@ -37,7 +40,6 @@ const App = ({
     }));
 
     setPosts(postsWithUsersAndComments);
-    setVisiblePosts(postsWithUsersAndComments);
 
     return postsWithUsersAndComments;
   };
@@ -57,13 +59,12 @@ const App = ({
   };
 
   const filterPosts = (value) => {
-    setVisiblePosts(allPosts
-      .filter(post => (post.title + post.body).includes(value)));
+    setQuerySelector(value);
   };
 
   const planFilterPosts = useCallback(
     debounce(filterPosts, 1000),
-    [allPosts]
+    []
   );
 
   if (isLoading) {
@@ -87,11 +88,14 @@ const App = ({
     : (
       <div className="App">
         <div className="filter">
-          <h1>
-            Redux List of Posts -
+          <h1>Redux List of Posts</h1>
+          <p>
+            all posts:
+            {countAllPosts}
             {' '}
-            {countPosts}
-          </h1>
+            visible posts:
+            {countVisiblePosts}
+          </p>
           <input
             type="text"
             className="filter__input"
@@ -107,8 +111,8 @@ const App = ({
 const mapStateToProps = state => ({
   isLoading: state.isLoading,
   loadingButton: state.loadingButton,
-  allPosts: state.allPosts,
-  countPosts: state.visiblePosts.length,
+  countAllPosts: state.posts.length,
+  countVisiblePosts: selectors.getPosts(state).length,
 });
 
 const mapDispatchToProps = {
@@ -116,7 +120,7 @@ const mapDispatchToProps = {
   startLoading: actionCreators.startLoading,
   finishLoading: actionCreators.finishLoading,
   hideLoadingButton: actionCreators.hideLoadingButton,
-  setVisiblePosts: actionCreators.setVisiblePosts,
+  setQuerySelector: actionCreators.setQuerySelector,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
@@ -128,7 +132,7 @@ App.propTypes = {
   setPosts: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   loadingButton: PropTypes.bool.isRequired,
-  setVisiblePosts: PropTypes.func.isRequired,
-  allPosts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  countPosts: PropTypes.number.isRequired,
+  countAllPosts: PropTypes.number.isRequired,
+  countVisiblePosts: PropTypes.number.isRequired,
+  setQuerySelector: PropTypes.string.isRequired,
 };
