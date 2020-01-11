@@ -60,12 +60,13 @@ const rootReducer = (state, action) => {
     case ACTION_TYPE_DELETE_POST:
       return {
         ...state,
-        allPosts: state.allPosts.filter(post => post.id !== action.postId),
+        visiblePosts: state.visiblePosts
+          .filter(post => post.id !== action.postId),
       };
     case ACTION_TYPE_DELETE_COMMENT:
       return {
         ...state,
-        allPosts: state.allPosts.map((post) => {
+        visiblePosts: state.visiblePosts.map((post) => {
           if (post.id === action.postId) {
             post.comments = post.comments
               .filter(c => c.id !== action.commentId);
