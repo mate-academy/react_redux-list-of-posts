@@ -1,15 +1,15 @@
-export const setPost = newpost => ({
+export const setPost = post => ({
   type: 'CHANGE_POST',
-  post: newpost,
+  postArray: post
 });
 
-const postReducer = (post = [], action) => {
+const postReducer = (postArray = [], action) => {
   switch(action.type) {
     case 'CHANGE_POST':
-      return  action.post;
+      return  action.postArray;
 
     default:
-      return post;
+      return postArray;
   }
 };
 

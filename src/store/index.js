@@ -5,8 +5,7 @@ import postReducer, { setPost } from './post';
 import getDataFromServer from '../api/GetDataFromServer';
 import thunk from 'redux-thunk';
 
-export const loadPosts = () => {
-  return async (dispatch) => {
+export const loadPosts = () => async (dispatch) => {
     dispatch(setIsLoading(true));
     const [allUsers, allComments, allPosts]
       = await Promise.all([
@@ -25,8 +24,7 @@ export const loadPosts = () => {
     dispatch(setPost(unitedPost));
     dispatch(setIsLoading(false));
     dispatch(setIsLoaded(true));
-  };
-}
+  }
 
 const rootReducer = combineReducers({
   isLoaded: isLoadedReducer,
