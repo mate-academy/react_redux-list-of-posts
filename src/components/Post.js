@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CommentList from './CommentList';
 import User from './User';
-import * as postFunctions from './PostsReducer';
+import * as postFunctions from '../reducers/PostsReducer';
 
 const Post = ({ post, deletePost }) => (
   <div className="post">
@@ -31,7 +31,6 @@ const getExtraMethods = dispatch => ({
     postFunctions.deletePost(value)
   ),
 });
-const getExtraData = state => ({});
 
 Post.propTypes = {
   post: PropTypes.oneOfType([PropTypes.string,
@@ -42,4 +41,4 @@ Post.propTypes = {
 
 Post.propTypes = { deletePost: PropTypes.func.isRequired };
 
-export default connect(getExtraData, getExtraMethods)(Post);
+export default connect(null, getExtraMethods)(Post);

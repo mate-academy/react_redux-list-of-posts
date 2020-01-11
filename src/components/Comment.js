@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as postFunctions from './PostsReducer';
+import * as postFunctions from '../reducers/PostsReducer';
 
 const CurrComment = ({ comment, postId, deleteComment }) => (
   <li>
@@ -23,7 +23,6 @@ const getExtraMethods = dispatch => ({
     postFunctions.deleteComment(postId, commentId)
   ),
 });
-const getExtraData = state => ({});
 
 CurrComment.propTypes = {
   deleteComment: PropTypes.func.isRequired,
@@ -31,4 +30,4 @@ CurrComment.propTypes = {
   comment: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(getExtraData, getExtraMethods)(CurrComment);
+export default connect(null, getExtraMethods)(CurrComment);
