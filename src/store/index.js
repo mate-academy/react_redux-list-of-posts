@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import isLoadedReducer, { setIsLoaded } from './isLoaded';
 import loadingReducer, { setIsLoading } from './loading';
 import postReducer, { setPosts } from './post';
-import textInputReducer, { setTextInput } from './textInput';
+import textInputReducer from './textInput';
 import getDataFromServer from '../api/GetDataFromServer';
 import thunk from 'redux-thunk';
 
