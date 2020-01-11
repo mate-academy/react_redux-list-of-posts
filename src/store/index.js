@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import isLoadedReducer, { setIsLoaded } from './isLoaded';
 import loadingReducer, { setIsLoading } from './loading';
 import postReducer, { setPosts } from './post';
+import textInputReducer, { setTextInput } from './textInput';
 import getDataFromServer from '../api/GetDataFromServer';
 import thunk from 'redux-thunk';
 
@@ -29,13 +30,22 @@ export const loadPosts = () => async (dispatch) => {
 const rootReducer = combineReducers({
   isLoaded: isLoadedReducer,
   loading: loadingReducer,
-  post: postReducer,
+  posts: postReducer,
+  textInput: textInputReducer,
 });
 
-export const removePost = (ownpost, post) => dispatch => {
-  dispatch (setPosts(post.filter(post => post.id !== ownpost.id)));
+export const removePost = (ownpost, posts) => dispatch => {
+  dispatch (setPosts(posts.filter(post => post.id !== ownpost.id)));
 }
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
+
+export const filteredPost = (store) => {
+  return store.posts.filter((post) => {
+    const postContent = post.title + post.body;
+
+    return postContent.includes(store.textInput);
+  });
+}
 
 export default store;

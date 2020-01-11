@@ -4,14 +4,14 @@ import Comment from './Comment';
 import { connect } from 'react-redux';
 import { removePost } from './store/index';
 
-const Post = ({ ownpost, post, removePost }) => {
+const Post = ({ ownpost, posts, removePost }) => {
 
   return (
     <>
       <button
         type="button"
         className="remove_post"
-        onClick={() => removePost(ownpost, post)}
+        onClick={() => removePost(ownpost, posts)}
       >
         Remove
       </button>
@@ -45,12 +45,12 @@ const Post = ({ ownpost, post, removePost }) => {
   )};
 
 const getPosts = (state) => ({
-  post: state.post,
+  posts: state.posts,
 });
 
 Post.propTypes = {
   ownpost: PropTypes.objectOf(PropTypes.any).isRequired,
-  post: PropTypes.arrayOf(PropTypes.any).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.any).isRequired,
   removePost: PropTypes.func.isRequired,
 };
 

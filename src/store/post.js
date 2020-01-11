@@ -1,6 +1,6 @@
-export const setPosts = post => ({
+export const setPosts = posts => ({
   type: 'CHANGE_POST',
-  posts: post
+  posts: posts
 });
 
 const postReducer = (posts = [], action) => {

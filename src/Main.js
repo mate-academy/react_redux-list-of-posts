@@ -1,20 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as isLoaded from './store/isLoaded';
 import * as loading from './store/loading';
 import * as post from './store/post';
 import * as index from './store/index';
+import * as textInput from './store/textInput';
+
 import PostList from './PostList';
+import { filteredPost } from './store/index';
 
-const Main = ({ isLoaded, loading, post, loadPosts }) => {
-  const [textInput, setTextInput] = useState('');
-
-  const filteredPost = post.filter((post) => {
-    const postContent = post.title + post.body;
-
-    return postContent.includes(textInput);
-  });;
+const Main = ({ isLoaded, loading, posts, loadPosts, setTextInput }) => {
 
   function debounce(f, delay) {
     let timer;
@@ -52,11 +48,11 @@ const Main = ({ isLoaded, loading, post, loadPosts }) => {
         onChange={event => inputText(event.target.value)}
       />
       <p>
-        {filteredPost.length}
+        {posts.length}
         {' '}
         posts found
       </p>
-      <PostList posts={filteredPost} />
+      <PostList posts={posts} />
     </section>
   );
 };
@@ -64,7 +60,7 @@ const Main = ({ isLoaded, loading, post, loadPosts }) => {
 const getStateFromStore = state => ({
   isLoaded: state.isLoaded,
   loading: state.loading,
-  post: state.post,
+  posts: filteredPost(state),
 })
 
 const setStateToStore = {
@@ -72,6 +68,7 @@ const setStateToStore = {
   setIsLoading: loading.setIsLoading,
   setPost: post.setPosts,
   loadPosts: index.loadPosts,
+  setTextInput: textInput.setTextInput,
 };
 
 Main.propTypes = {

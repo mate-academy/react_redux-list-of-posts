@@ -3,9 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as post from './store/post';
 
-const Comment = ({ comment, post, setPost }) => {
+const Comment = ({ comment, posts, setPost }) => {
   const removeComment = () => {
-    setPost(post.map(post => {
+    setPost(posts.map(post => {
       if (comment.postId === post.id) {
         post.comments = post.comments.filter(newComments => {
           return newComments.id !== comment.id;
@@ -32,7 +32,7 @@ const Comment = ({ comment, post, setPost }) => {
 )};
 
 const getPosts = (state) => ({
-  post: state.post,
+  posts: state.posts,
 });
 
 const removePost = {
@@ -41,7 +41,7 @@ const removePost = {
 
 Comment.propTypes = {
   comment: PropTypes.objectOf(PropTypes.any).isRequired,
-  post: PropTypes.arrayOf(PropTypes.any).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.any).isRequired,
   setPost: PropTypes.func.isRequired,
 };
 
