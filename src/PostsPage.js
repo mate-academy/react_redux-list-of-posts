@@ -12,7 +12,10 @@ const PostList = ({ posts }) => (
         person={post.user}
         address
       />
-      <Comments postComments={post.comments} />
+      <Comments
+        postId={post.id}
+        postComments={post.comments}
+      />
     </section>
   ))
 );

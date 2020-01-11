@@ -46,3 +46,15 @@
   border: 1px solid #000;
   border-radius: 20px;
 }
+
+.comment__delete {
+  font-weight: bold;
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 5px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
