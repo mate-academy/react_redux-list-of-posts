@@ -7,7 +7,10 @@ import Comments from './Comments';
 const PostList = ({ posts }) => (
   posts.map(post => (
     <section className="post">
-      <Post postContent={post} />
+      <Post
+        postId={post.id}
+        postContent={post}
+      />
       <User
         person={post.user}
         address
