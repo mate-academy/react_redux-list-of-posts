@@ -1,33 +1,124 @@
+body,
+h2,
+hr {
+  margin: 0;
+}
+
+body * {
+  outline: none;
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.post {
+  padding-top: 30px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.post__content {
+  width: 80%;
+  margin: auto;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+.post__user {
+  text-align: right;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.post__user p {
+  margin: 0;
+}
+
+.comment {
+  margin-bottom: 10px;
+  padding-top: 5px;
+}
+
+.comment-list {
+  margin: auto;
+  width: 60%;
+  padding-bottom: 30px;
+}
+
+.comment__name {
+  font-weight: bold;
+  text-align: left;
+  font-style: italic;
+}
+
+.comment__body {
+  text-align: left;
+  font-style: italic;
+}
+
+.comment__email {
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+.post:nth-child(even) {
+  background-color: rgba(247, 188, 222, 0.5);
+}
+
+.post:nth-child(even) .post__content {
+  background-color: #fdecf5;
+}
+
+.post:nth-child(odd) {
+  background-color: rgba(247, 188, 222, 0.3);
+}
+
+.post:nth-child(odd) .post__content {
+  background-color: #fbdeef;
+}
+
+.load-button {
+  width: 120px;
+  height: 80px;
+  margin: 100px auto;
+  border: 1px solid black;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: rgba(247, 188, 222, 0.3);
+  transition: background-color 1s;
+}
+
+.load-button:hover {
+  cursor: pointer;
+  background-color: rgba(247, 188, 222, 0.8);
+}
+
+.posts__search {
+  margin: 20px auto;
+  width: 60%;
+  height: 40px;
+  border: 2px solid rgba(247, 188, 222, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 20px;
+}
+
+.post__delete-button {
+  color: red;
+  background-color: rgba(247, 188, 222, 0.4);
+  border: 1px solid grey;
+  border-radius: 5px;
+  width: 40px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.post__delete-button:hover {
+  cursor: pointer;
+  background-color: rgba(247, 188, 222, 0.8);
+}
+
+hr {
+  background-color: grey;
+  color: grey;
+  box-shadow: none;
+  border: none;
+  height: 2px;
 }

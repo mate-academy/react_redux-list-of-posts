@@ -1,30 +1,79 @@
 import React from 'react';
-import logo from './logo.svg';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { DebounceInput } from 'react-debounce-input';
+import {
+  getLoading,
+  getError,
+  getInitialized,
+  getPostsFromServer,
+} from './redux/store';
+import { setQuery } from './redux/queryReducer';
+import PostList from './PostList';
 import './App.css';
 
-function App() {
+const App = ({ isLoading, hasError, isInitialized,
+  setQuery, getPostsFromServer }) => {
+  const handleSearchingInputChange = ({ target: { value } }) => {
+    setQuery(value.toLowerCase().trim());
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.js</code>
-          {' '}
-and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      {isInitialized && (
+        <DebounceInput
+          debounceTimeout={500}
+          type="text"
+          placeholder="Search"
+          className="posts__search"
+          onChange={handleSearchingInputChange}
+        />
+      )}
+
+      {!isInitialized && !hasError && (
+        <button
+          className="load-button"
+          type="button"
+          disabled={isLoading}
+          onClick={getPostsFromServer}
         >
-          Learn React
-        </a>
-      </header>
+          {isLoading ? 'Loading...' : 'Load posts'}
+        </button>
+      )}
+      {!isInitialized && hasError && (
+        <button
+          className="load-button"
+          type="button"
+          disabled={isLoading}
+          onClick={getPostsFromServer}
+        >
+          {isLoading ? 'Loading...' : 'Try again'}
+        </button>
+      )}
+      { isInitialized && (
+        <PostList />
+      )}
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = state => ({
+  isLoading: getLoading(state),
+  hasError: getError(state),
+  isInitialized: getInitialized(state),
+});
+
+const mapDispatchToProps = {
+  setQuery,
+  getPostsFromServer,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+App.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
+  hasError: PropTypes.bool.isRequired,
+  isInitialized: PropTypes.bool.isRequired,
+  setQuery: PropTypes.func.isRequired,
+  getPostsFromServer: PropTypes.func.isRequired,
+};
