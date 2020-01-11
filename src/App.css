@@ -16,8 +16,12 @@
   right: 10px;
 }
 
+.comment-wrapper {
+  position: relative;
+}
+
 .post:hover .delete-post,
-dt:hover .delete-comment {
+.comment-wrapper:hover .delete-comment {
   opacity: 1;
 }
 
@@ -46,7 +50,6 @@ dl {
 
 dt {
   color: #37075a;
-  position: relative;
 }
 
 dd {

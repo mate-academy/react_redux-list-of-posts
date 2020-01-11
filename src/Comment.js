@@ -5,7 +5,7 @@ import { deleteComment } from './reducers/postsReducer';
 
 // eslint-disable-next-line no-shadow
 const Comment = ({ commentData, deleteComment }) => (
-  <>
+  <div className="comment-wrapper">
     <dt>
       <button
         type="button"
@@ -19,7 +19,7 @@ const Comment = ({ commentData, deleteComment }) => (
       {commentData.email}
     </dt>
     <dd>{commentData.body}</dd>
-  </>
+  </div>
 );
 
 Comment.propTypes = {
