@@ -1,33 +1,114 @@
 .App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post {
+  display: block;
+  width: 500px;
+  padding: 5px 20px 20px;
+  margin-bottom: 20px;
+
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.post__title {
+  margin-top: 5px;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: lightskyblue;
+  border-radius: 10px;
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.post__body {
+  font-size: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.post__author {
+  font-style: italic;
+  border-bottom: 1px solid black;
+}
+
+.post__author p {
+  margin: 5px;
+}
+
+.post__button {
+  color: lightskyblue;
+  background-color: white;
+  border: white;
+  border-radius: 5px;
+  outline: none;
+}
+
+.post__button:hover {
+  background-color: lightskyblue;
+  color: white;
+  cursor: pointer;
+}
+
+.comments__list {
+  list-style: none;
+  padding: 0;
+}
+
+.comments__name {
+  font-weight: bold;
+}
+
+.comments__email {
+  font-style: italic;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.comments__item {
+  padding: 5px;
+  transition: 0.5s;
+}
+
+.comments__item:hover {
+  background-color: lightskyblue;
+  border-radius: 10px;
+}
+
+.filter {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.filter__input {
+  width: 520px;
+  height: 25px;
+  border: 1px solid lightskyblue;
+  border-radius: 5px;
+  outline: none;
+  /*margin-right: 25px;*/
+  margin-bottom: 20px;
+  padding: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.filter__button {
+  background-color: lightskyblue;
+  color: black;
+  border: 1px solid lightskyblue;
+  border-radius: 5px;
+  height: 35px;
+  width: 75px;
+  font-weight: bold;
+}
+
+.button {
+  width: 150px;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
