@@ -1,13 +1,13 @@
-const ACTION_TYPE_SET_QUERY = 'setQuery';
+const SET_QUERY = 'SET_QUERY';
 
 export const setQuery = query => ({
-  type: ACTION_TYPE_SET_QUERY,
+  type: SET_QUERY,
   query,
 });
 
 const queryReducer = (query = '', action) => {
   switch (action.type) {
-    case ACTION_TYPE_SET_QUERY:
+    case SET_QUERY:
       return action.query;
     default:
       return query;

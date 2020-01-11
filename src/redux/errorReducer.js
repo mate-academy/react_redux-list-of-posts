@@ -1,13 +1,13 @@
-const ACTION_TYPE_SET_ERROR = 'setError';
+const SET_ERROR = 'SET_ERROR';
 
 export const setError = value => ({
-  type: ACTION_TYPE_SET_ERROR,
+  type: SET_ERROR,
   value,
 });
 
 const errorReducer = (hasError = false, action) => {
   switch (action.type) {
-    case ACTION_TYPE_SET_ERROR:
+    case SET_ERROR:
       return action.value;
     default:
       return hasError;

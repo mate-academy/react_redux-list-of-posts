@@ -1,32 +1,32 @@
-const ACTION_TYPE_SET_POSTS = 'setPosts';
-const ACTION_TYPE_DELETE_POST = 'deletePost';
-const ACTION_TYPE_DELETE_COMMENT = 'deleteComment';
+const SET_POSTS = 'SET_POSTS';
+const DELETE_POST = 'DELETE_POST';
+const DELETE_COMMENT = 'DELETE_COMMENT';
 
 export const setPosts = posts => ({
-  type: ACTION_TYPE_SET_POSTS,
+  type: SET_POSTS,
   posts,
 });
 
 export const deletePost = postId => ({
-  type: ACTION_TYPE_DELETE_POST,
+  type: DELETE_POST,
   postId,
 });
 
 export const deleteComment = (postId, commentId) => ({
-  type: ACTION_TYPE_DELETE_COMMENT,
+  type: DELETE_COMMENT,
   postId,
   commentId,
 });
 
 const postsReducer = (posts = [], action) => {
   switch (action.type) {
-    case ACTION_TYPE_SET_POSTS:
+    case SET_POSTS:
       return action.posts;
 
-    case ACTION_TYPE_DELETE_POST:
+    case DELETE_POST:
       return posts.filter(post => post.id !== action.postId);
 
-    case ACTION_TYPE_DELETE_COMMENT:
+    case DELETE_COMMENT:
       return posts.map(post => (post.id === action.postId
         ? {
           ...post,

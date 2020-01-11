@@ -1,13 +1,13 @@
-const ACTION_TYPE_SET_INITIALIZED = 'setInitialized';
+const SET_INITIALIZED = 'SET_INITIALIZED';
 
 export const setInitialized = value => ({
-  type: ACTION_TYPE_SET_INITIALIZED,
+  type: SET_INITIALIZED,
   value,
 });
 
 const initializedReducer = (isInitialized = false, action) => {
   switch (action.type) {
-    case ACTION_TYPE_SET_INITIALIZED:
+    case SET_INITIALIZED:
       return action.value;
     default:
       return isInitialized;

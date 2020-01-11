@@ -26,27 +26,26 @@ const getPostsWithUsersAndComments = (allPosts, allUsers, allComments) => (
   }))
 );
 
-export const getPostsFromServer = () => (dispatch) => {
+export const getPostsFromServer = () => async(dispatch) => {
   dispatch(setError(false));
   dispatch(setLoading(true));
 
-  return Promise.all(
-    [getDataFromServer(postsURL),
+  try {
+    const [posts, users, comments] = await Promise.all([
+      getDataFromServer(postsURL),
       getDataFromServer(usersURL),
-      getDataFromServer(commentsURL)]
-  )
-    .then(([posts, users, comments]) => {
-      dispatch(setPosts(
-        getPostsWithUsersAndComments(posts, users, comments)
-      ));
-      dispatch(setInitialized(true));
-    })
-    .catch(() => {
-      dispatch(setError(true));
-    })
-    .finally(() => {
-      dispatch(setLoading(false));
-    });
+      getDataFromServer(commentsURL),
+    ]);
+
+    dispatch(setPosts(
+      getPostsWithUsersAndComments(posts, users, comments)
+    ));
+    dispatch(setInitialized(true));
+  } catch {
+    dispatch(setError(true));
+  }
+
+  dispatch(setLoading(false));
 };
 
 const rootReducer = combineReducers({

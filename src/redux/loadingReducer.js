@@ -1,13 +1,13 @@
-const ACTION_TYPE_SET_LOADING = 'setLoading';
+const SET_LOADING = 'SET_LOADING';
 
 export const setLoading = value => ({
-  type: ACTION_TYPE_SET_LOADING,
+  type: SET_LOADING,
   value,
 });
 
 const loadingReducer = (isLoading = false, action) => {
   switch (action.type) {
-    case ACTION_TYPE_SET_LOADING:
+    case SET_LOADING:
       return action.value;
     default:
       return isLoading;
