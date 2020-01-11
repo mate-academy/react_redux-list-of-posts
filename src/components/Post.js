@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { createActionDeletePost } from '../store/store';
+import { createActionDeletePost } from '../store/posts';
 import User from './User';
 import CommentList from './CommentList';
 

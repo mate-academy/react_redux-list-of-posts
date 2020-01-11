@@ -2,104 +2,77 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {
-  selectPosts,
-  selectLoading,
-  selectSearchError,
-  createActionSetPosts,
-  createActionSetLoading,
-  createActionFilterPosts,
-} from './store/store';
+import { selectPosts, selectIsLoading, selectIsSearchError, selectIsLoaded } from './store';
+import { createActionLoadData } from './API/loadData';
+import { createActionSetQuery } from './store/query';
 
 import './App.scss';
-import { getPosts, getUsers, getComments } from './api';
 import PostList from './components/PostList';
 
-const App = ({ isLoading, setLoading, posts, setPosts, filterPosts, isSearchError }) => {
-  const loadData = async() => {
-    setLoading(true);
+const App = ({ loadData, isLoading, posts, setQuery, isLoaded }) => (
+  <main className="list">
+    <h1>Dynamic list of posts</h1>
 
-    try {
-      const [
-        posts,
-        users,
-        comments,
-      ] = await Promise.all([getPosts(), getUsers(), getComments()]);
+    {isLoaded && (
+      <section className="search-bar">
+        <input
+          type="text"
+          placeholder="search post"
+          className="input"
+          onChange={event => setQuery(event.target.value.toLowerCase().trim())}
+        />
+      </section>
+    )}
 
-      setPosts(posts.map(post => ({
-        ...post,
-        user: users.find(user => user.id === post.userId),
-        comments: comments.filter(comment => comment.postId === post.id),
-      })));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    {isLoading && (
+      <button
+        type="button"
+        className="button button--non-active"
+      >
+        Loading
+      </button>
+    )}
 
-  return (
-    <main className="list">
-      <h1>Dynamic list of posts</h1>
-      {posts.length !== 0 && (
-        <section className="search-bar">
-          <input
-            type="text"
-            placeholder="search post"
-            className="input"
-            onChange={event => filterPosts(event.target.value.toLowerCase().trim())}
-          />
+    {!isLoading && !isLoaded && (
+      <button
+        className="button"
+        type="button"
+        onClick={loadData}
+      >
+        Load
+      </button>
+    )}
 
-          {isSearchError && (
-            <p className="warning">
-              There are no such posts, please try another search combination
-            </p>
-          )}
-        </section>
-      )}
+    {isLoaded && posts.length !== 0 && (
+      <PostList />
+    )}
 
-      {isLoading && (
-        <button
-          type="button"
-          className="button button--non-active"
-        >
-          Loading
-        </button>
-      )}
-      {!isLoading && (posts.length === 0 ? (
-        <button
-          className="button"
-          type="button"
-          onClick={loadData}
-        >
-          Load
-        </button>
-      ) : (
-        <PostList />
-      ))}
-    </main>
-  );
-};
+    {isLoaded && posts.length === 0 && (
+      <p className="warning">
+        There are no such posts, please try another search combination
+      </p>
+    )}
+  </main>
+);
 
 const mapStateToProps = state => ({
   posts: selectPosts(state),
-  isLoading: selectLoading(state),
-  isSearchError: selectSearchError(state),
+  isLoading: selectIsLoading(state),
+  isSearchError: selectIsSearchError(state),
+  isLoaded: selectIsLoaded(state),
 });
 
 const mapDispatchToProps = {
-  setPosts: createActionSetPosts,
-  setLoading: createActionSetLoading,
-  filterPosts: createActionFilterPosts,
+  loadData: createActionLoadData,
+  setQuery: createActionSetQuery,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 App.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  setLoading: PropTypes.func.isRequired,
   posts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  setPosts: PropTypes.func.isRequired,
-  filterPosts: PropTypes.func.isRequired,
-  isSearchError: PropTypes.bool.isRequired,
+  loadData: PropTypes.func.isRequired,
+  setQuery: PropTypes.func.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 };

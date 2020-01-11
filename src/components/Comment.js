@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { createActionDeleteComment } from '../store/store';
+import { createActionDeleteComment } from '../store/posts';
 
 const Comment = ({ postId, deleteComment, comment: { id, name, email, body } }) => (
   <section className="comment">
