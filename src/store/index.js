@@ -1,15 +1,38 @@
-import { createStore, combineReducers } from 'redux';
-import postsReducer from './posts';
-import isLoadedReducer from './isLoaded';
-import loadingReducer from './loading';
-import originalPostReducer from './originalPost';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import isLoadedReducer, { setIsLoaded } from './isLoaded';
+import loadingReducer, { setIsLoading } from './loading';
+import postReducer, { setPost } from './post';
+import getDataFromServer from '../api/GetDataFromServer';
+import thunk from 'redux-thunk';
+
+export const loadPosts = () => {
+  return async (dispatch) => {
+    dispatch(setIsLoading(true));
+    const [allUsers, allComments, allPosts]
+      = await Promise.all([
+    getDataFromServer('https://jsonplaceholder.typicode.com/users'),
+    getDataFromServer('https://jsonplaceholder.typicode.com/comments'),
+    getDataFromServer('https://jsonplaceholder.typicode.com/posts'),
+    ]);
+
+    dispatch(setIsLoading(true));
+    const unitedPost = allPosts.map(post => ({
+      ...post,
+      user: allUsers.find(user => user.id === post.userId),
+      comments: allComments.filter(commentId => commentId.postId === post.id),
+    }));
+
+    dispatch(setPost(unitedPost));
+    dispatch(setIsLoading(false));
+    dispatch(setIsLoaded(true));
+  };
+}
 
 const rootReducer = combineReducers({
-  posts: postsReducer,
   isLoaded: isLoadedReducer,
   loading: loadingReducer,
-  originalPost: originalPostReducer,
+  post: postReducer,
 });
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store;
