@@ -109,9 +109,9 @@ const App = ({
 };
 
 const mapStateToProps = state => ({
-  isLoading: state.isLoading,
-  loadingButton: state.loadingButton,
-  countAllPosts: state.posts.length,
+  isLoading: selectors.getIsLoading(state),
+  loadingButton: selectors.getLoadingButton(state),
+  countAllPosts: selectors.getAllPostsCount(state),
   countVisiblePosts: selectors.getPosts(state).length,
 });
 

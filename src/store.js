@@ -48,6 +48,12 @@ export const hideLoadingButton = () => ({
 export const getPosts = state => state.posts
   .filter(post => (post.title + post.body).includes(state.querySelector));
 
+export const getIsLoading = state => state.isLoading;
+
+export const getLoadingButton = state => state.loadingButton;
+
+export const getAllPostsCount = state => state.posts.length;
+
 // Reducer
 const rootReducer = (state, action) => {
   switch (action.type) {
