@@ -70,7 +70,7 @@ const getStateFromStore = state => ({
 const setStateToStore = {
   setIsLoaded: isLoaded.setIsLoaded,
   setIsLoading: loading.setIsLoading,
-  setPost: post.setPost,
+  setPost: post.setPosts,
   loadPosts: index.loadPosts,
 };
 

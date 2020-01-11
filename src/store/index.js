@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import isLoadedReducer, { setIsLoaded } from './isLoaded';
 import loadingReducer, { setIsLoading } from './loading';
-import postReducer, { setPost } from './post';
+import postReducer, { setPosts } from './post';
 import getDataFromServer from '../api/GetDataFromServer';
 import thunk from 'redux-thunk';
 
@@ -21,7 +21,7 @@ export const loadPosts = () => async (dispatch) => {
       comments: allComments.filter(commentId => commentId.postId === post.id),
     }));
 
-    dispatch(setPost(unitedPost));
+    dispatch(setPosts(unitedPost));
     dispatch(setIsLoading(false));
     dispatch(setIsLoaded(true));
   }
@@ -31,6 +31,11 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   post: postReducer,
 });
+
+export const removePost = (ownpost, post) => dispatch => {
+  dispatch (setPosts(post.filter(post => post.id !== ownpost.id)));
+}
+
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store;

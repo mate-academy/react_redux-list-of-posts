@@ -36,7 +36,7 @@ const getPosts = (state) => ({
 });
 
 const removePost = {
-  setPost: post.setPost,
+  setPost: post.setPosts,
 }
 
 Comment.propTypes = {

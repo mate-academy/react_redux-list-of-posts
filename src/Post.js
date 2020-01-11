@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Comment from './Comment';
-import {connect} from 'react-redux';
-import * as post from './store/post';
+import { connect } from 'react-redux';
+import { removePost } from './store/index';
 
-
-const Post = ({ ownpost, post, setPost }) => {
-  const removePost = () => {
-    setPost(post.filter(post => post.id !== ownpost.id));
-  }
+const Post = ({ ownpost, post, removePost }) => {
 
   return (
     <>
-      <button type="button" className="remove_post" onClick={removePost}>
+      <button
+        type="button"
+        className="remove_post"
+        onClick={() => removePost(ownpost, post)}
+      >
         Remove
       </button>
       <section className="post">
@@ -48,14 +48,10 @@ const getPosts = (state) => ({
   post: state.post,
 });
 
-const removePost = {
-  setPost: post.setPost,
-}
-
 Post.propTypes = {
   ownpost: PropTypes.objectOf(PropTypes.any).isRequired,
   post: PropTypes.arrayOf(PropTypes.any).isRequired,
-  setPost: PropTypes.func.isRequired,
+  removePost: PropTypes.func.isRequired,
 };
 
-export default connect(getPosts, removePost)(Post);
+export default connect(getPosts, { removePost })(Post);
