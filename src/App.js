@@ -2,42 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import './App.css';
-import {
-  getPostsFromServer, getUsersFromServer, getCommentsFromServer,
-} from './api';
 import { debounce } from './debounce';
 import {
-  getPosts, getLoading, getLoaded, getFilter,
-  setPostsAC, setLoadingAC, setLoadedAC, setFilterAC,
+  getPosts, getLoading, getLoaded, getFilter, loadPostsFromServer,
 } from './store';
+import { setFilterAC } from './filterReducer';
 import PostList from './PostList';
 
-const App = ({ posts, loading, loaded, filter,
-  setPosts, setLoading, setLoaded, setFilter }) => {
-  const loadPosts = async() => {
-    setLoading(true);
-
-    const [postsFromServer,
-      usersFromServer,
-      commentsFromServer] = await Promise.all(
-      [getPostsFromServer(), getUsersFromServer(), getCommentsFromServer()]
-    );
-
-    const preparedPosts = postsFromServer.map((post) => {
-      const user = usersFromServer.find(item => item.id === post.userId);
-      const comments = commentsFromServer
-        .filter(comment => comment.postId === post.id);
-
-      return {
-        ...post, user, comments,
-      };
-    });
-
-    setPosts(preparedPosts);
-    setLoaded(true);
-    setLoading(false);
-  };
-
+const App = ({ posts, loading, loaded, filter, loadPosts, setFilter }) => {
   const filterPosts = debounce((input) => {
     setFilter(input);
   }, 500);
@@ -57,7 +29,7 @@ const App = ({ posts, loading, loaded, filter,
           >
             {!loading
               ? 'Load list of posts'
-              : 'loading... Please wait...'}
+              : 'Loading... Please wait...'}
           </button>
         )
         : (
@@ -76,10 +48,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchtoProps = {
-  setPosts: setPostsAC,
-  setLoading: setLoadingAC,
-  setLoaded: setLoadedAC,
   setFilter: setFilterAC,
+  loadPosts: loadPostsFromServer,
 };
 
 App.propTypes = {
@@ -87,10 +57,8 @@ App.propTypes = {
   filter: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   loaded: PropTypes.bool.isRequired,
-  setPosts: PropTypes.func.isRequired,
   setFilter: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
-  setLoaded: PropTypes.func.isRequired,
+  loadPosts: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchtoProps)(App);
