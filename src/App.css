@@ -2,32 +2,134 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background-color: #e8dcdc;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.h1 {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.posts {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.post-title {
+  margin: 0;
+  font-size: 30px;
+  font-style: italic;
+}
+
+.post {
+  background: #a7ccc4;
+  color: white;
+  width: 400px;
+  padding-left: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.post-topic {
+  color: bisque;
+  font-weight: bold;
+}
+
+.post:last-child {
+  margin: 0 auto;
+}
+
+.comments {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  width: 360px;
+}
+
+.comment:hover {
+  background: rgb(230, 228, 224);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  color: cornflowerblue;
+}
+
+.comment {
+  border-radius: 10px;
+  background: #91b7d7;
   color: white;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-.App-link {
-  color: #61dafb;
+.user {
+  padding: 5px;
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  font-size: 20px;
+  width: 200px;
+  height: 60px;
+  display: block;
+  margin: auto;
+  outline: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: antiquewhite;
+  color: red;
+}
+
+.input {
+  color:#4bf2ce;
+  width: 300px;
+  height: 30px;
+  font-size: 20px;
+  border-radius: 10px;
+  padding-left: 7px;
+}
+
+.posts-found {
+  font-size: 18px;
+}
+
+.comment-title {
+  display: flex;
+}
+
+.comment-title__id {
+  text-align: center;
+  margin: 10px auto;
+}
+
+.comment-body {
+  margin: 0;
+}
+
+.comment-email {
+  color: cornflowerblue;
+  font-style: italic;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 5px;
+}
+
+.delete-post,
+.delete-comments {
+  cursor: pointer;
+}
+
+.delete-post:hover,
+.delete-comments:hover
+{
+  opacity: 0.5;
 }
