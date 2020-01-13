@@ -1,30 +1,86 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './App.css';
+import PostList from './PostList';
+import { loadPosts } from './store';
 
-function App() {
+function App({ posts, loadingButton, visibleContent, loadPosts }) {
+  const [valueInput, setValue] = useState('');
+
+  const setInputUsers = (event) => {
+    setValue(event.target.value);
+  };
+
+  const filterPost = () => {
+    const searchInText = valueInput.trim().toLowerCase();
+
+    if (valueInput.length === 0) {
+      return posts;
+    }
+
+    return posts.filter((post) => {
+      if ((post.body + post.title).toLowerCase().includes(searchInText)) {
+        return post;
+      }
+
+      return false;
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.js</code>
-          {' '}
-and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="main">
+      <h1 className="title">Dynamic list of posts</h1>
+      {!visibleContent ? (
+        <button
+          type="button"
+          onClick={loadPosts}
+          className="loadButton"
         >
-          Learn React
-        </a>
-      </header>
+          {loadingButton}
+        </button>
+      ) : (
+        <>
+          <div className="input">
+            <h2 className="input__title">Search post: </h2>
+            <input
+              type="text"
+              className="input__searсh"
+              value={valueInput}
+              onChange={setInputUsers}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  return filterPost;
+                }
+              }}
+            />
+          </div>
+          <PostList
+            filterPost={filterPost()}
+          />
+        </>
+      )
+      }
     </div>
   );
 }
 
-export default App;
+App.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  loadingButton: PropTypes.string.isRequired,
+  visibleContent: PropTypes.bool.isRequired,
+  loadPosts: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  posts: state.posts,
+  loadingButton: state.loadingButton,
+  visibleContent: state.visibleContent,
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    loadPosts,
+  }
+)(App);
