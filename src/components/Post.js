@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { handleDelete } from '../store';
+import { handleDeletePost } from '../store';
 import User from './User';
 import CommentList from './CommentList';
 
-// eslint-disable-next-line no-shadow
-const Post = ({ post, handleDelete }) => {
+// eslint-disable-next-line no-shadow,react/prop-types
+const Post = ({ post, handleDeletePost }) => {
   const { title, body, user, id, comments } = post;
 
   return (
@@ -14,7 +14,7 @@ const Post = ({ post, handleDelete }) => {
       <div className="flip-container">
         <button
           className="delete-post"
-          onClick={() => handleDelete(id)}
+          onClick={() => handleDeletePost(id)}
           type="button"
         >
           Delete
@@ -27,7 +27,7 @@ const Post = ({ post, handleDelete }) => {
           </div>
           <div className="back">
             <p className="back-heading">Comments:</p>
-            <CommentList comments={comments} />
+            <CommentList comments={comments} postId={id} />
           </div>
         </div>
       </div>
@@ -50,4 +50,4 @@ Post.propTypes = {
   }).isRequired,
 };
 
-export default connect(mapStateToProps, { handleDelete })(Post);
+export default connect(mapStateToProps, { handleDeletePost })(Post);

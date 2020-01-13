@@ -7,7 +7,8 @@ import { getPosts } from './api/posts';
 const ACTION_TYPES = {
   ADD_DATA: 'ADD_DATA',
   LOAD_DATA: 'LOAD_DATA',
-  DELETE_DATA: 'DELETE_DATA',
+  DELETE_POST: 'DELETE_POST',
+  DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
 const loadData = data => ({
@@ -20,9 +21,15 @@ export const addData = data => ({
   payload: data,
 });
 
-export const handleDelete = idItem => ({
-  type: ACTION_TYPES.DELETE_DATA,
-  payload: idItem,
+export const handleDeletePost = postId => ({
+  type: ACTION_TYPES.DELETE_POST,
+  payload: postId,
+});
+
+export const handleDeleteComment = (postId, commentId) => ({
+  type: ACTION_TYPES.DELETE_COMMENT,
+  postId,
+  commentId,
 });
 
 const initialState = {
@@ -65,10 +72,23 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
 
-    case ACTION_TYPES.DELETE_DATA: {
+    case ACTION_TYPES.DELETE_POST: {
       return {
         ...state,
-        data: state.data.filter(item => item.id !== action.payload),
+        data: state.data.filter(post => post.id !== action.payload),
+      };
+    }
+
+    case ACTION_TYPES.DELETE_COMMENT: {
+      return {
+        ...state,
+        data: state.data.map(post => (post.id === action.postId
+          ? {
+            ...post,
+            comments: post.comments
+              .filter(comment => comment.id !== action.commentId),
+          }
+          : post)),
       };
     }
 
