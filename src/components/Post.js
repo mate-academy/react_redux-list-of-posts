@@ -5,9 +5,9 @@ import { handleDelete } from '../store';
 import User from './User';
 import CommentList from './CommentList';
 
-const Post = ({ post,  handleDelete }) => {
-  // eslint-disable-next-line no-shadow
-  const { title, body, user, id, comments} = post;
+// eslint-disable-next-line no-shadow
+const Post = ({ post, handleDelete }) => {
+  const { title, body, user, id, comments } = post;
 
   return (
     <div className="posts">
