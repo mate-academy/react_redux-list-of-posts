@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { deleteComment } from './store';
+import { deleteComment } from './redux/postsReducer';
 
-const Comments = ({ comment, deleteComment }) => (
+const Comment = ({ comment, deleteComment }) => (
   <li key={comment.id}>
     <h3 className="comment__name">
       {comment.name}
@@ -27,7 +27,7 @@ const Comments = ({ comment, deleteComment }) => (
   </li>
 );
 
-Comments.propTypes = {
+Comment.propTypes = {
   comment: PropTypes.shape({
     userId: PropTypes,
     id: PropTypes.number,
@@ -45,4 +45,4 @@ const makeStateToProps = state => ({
 export default connect(
   makeStateToProps,
   { deleteComment }
-)(Comments);
+)(Comment);

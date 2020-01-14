@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
+import CommentsList from './CommentList';
 
-const Post = ({ title, body, name, email, city, idPost }) => (
-  <>
+const Post = ({ title, body, name, email, city, idPost, comments }) => (
+  <div className="post" key={idPost}>
     <h2 className="post__title">
       {title}
     </h2>
@@ -18,7 +19,9 @@ const Post = ({ title, body, name, email, city, idPost }) => (
       city={city}
       idPost={idPost}
     />
-  </>
+    <hr className="line" />
+    <CommentsList comments={comments} />
+  </div>
 );
 
 Post.propTypes = {
@@ -28,6 +31,7 @@ Post.propTypes = {
   email: PropTypes.string.isRequired,
   city: PropTypes.string.isRequired,
   idPost: PropTypes.number.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Post;

@@ -1,19 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Comments from './Comments';
+import Comment from './Comment';
 
 const CommentsList = ({ comments }) => (
   <>
-    <h2 className="comment__title">
-  Comments:
-    </h2>
-    <ol type="1">
-      {comments.map(comment => (
-        <Comments
-          comment={comment}
-        />
-      ))}
-    </ol>
+    {comments.length > 0 ? (
+      <>
+        <h2 className="comment__title">
+          Comments:
+        </h2>
+        <ol type="1">
+          {comments.map(item => (
+            <Comment
+              comment={item}
+            />
+          ))}
+        </ol>
+      </>
+    ) : (
+      <h3>No comments for this post</h3>
+    )
+    }
   </>
 );
 

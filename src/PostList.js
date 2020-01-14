@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Post from './Post';
-import CommentsList from './CommentList';
 
-const PostList = ({ filterPost }) => (
+const PostList = ({ filteredPost }) => (
   <section className="postList">
-    {filterPost.length > 0 ? filterPost.map(item => (
-      <div className="post" key={item.id}>
+    {console.log(filteredPost)}
+    {filteredPost.length ? filteredPost.map(item => (
+      <>
         <Post
           title={item.title}
           body={item.body}
@@ -14,18 +14,17 @@ const PostList = ({ filterPost }) => (
           email={item.user.email}
           city={item.user.address.city}
           idPost={item.id}
+          comments={item.comments}
         />
-        <hr className="line" />
-        <CommentsList comments={item.comments} />
-      </div>
-    )) : (<h3 className="postList__not-found">Comment not found...</h3>)
+      </>
+    )) : (<h3 className="postList__not-found">Post not found...</h3>)
     }
 
   </section>
 );
 
 PostList.propTypes = {
-  filterPost: PropTypes.arrayOf(PropTypes.object).isRequired,
+  filteredPost: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default PostList;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { deletePost } from './store';
+import { deletePost } from './redux/postsReducer';
 
 const User = ({ name, email, city, idPost, deletePost }) => (
   <>

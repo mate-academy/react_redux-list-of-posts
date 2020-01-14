@@ -104,20 +104,18 @@ a {
 }
 
 .input {
-  position: relative;
-}
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  width: 60%;
 
-.input__title {
-  position: absolute;
-  left: 370px;
-  bottom: 14px;
 }
 
 .input__searсh {
-  display: block;
-  margin: 25px auto;
-  width: 450px;
-  height: 50px;
+  margin: 10px 0 15px 10px;
+  width: 350px;
+  height: 40px;
   font-size: 18px;
   padding: 0 20px;
 }

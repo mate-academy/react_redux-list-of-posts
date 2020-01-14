@@ -5,7 +5,7 @@
   "keywords": [],
   "author": "Mate Academy",
   "license": "GPL-3.0",
-  "homepage": ".",
+  "homepage": "https://boom40.github.io/react_redux-list-of-posts/",
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
