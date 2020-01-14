@@ -1,33 +1,131 @@
-.App {
-  text-align: center;
+body,
+h1,
+h2 {
+  margin: 0;
+  font-family: Crimson Text, serif;
+  background: #f3f1f1;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+a {
+  text-decoration: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.loadButton {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 40px;
+  font-size: 20px;
+  background: #9494e6;
+  border-radius: 15px;
+  outline: none;
+  border: black 1.5px solid;
+  color: #f3f1f1;
+}
+
+.button-delete {
+  display: block;
+  margin: 30px 85% 0;
+  width: 130px;
   color: white;
+  border-radius: 4px;
+  outline: none;
+  border: solid 1px black;
+  background: #9494e6;
 }
 
-.App-link {
-  color: #61dafb;
+.button-delete:focus {
+  color: #fc7c7c;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title {
+  text-align: center;
+  margin: 40px;
+}
+
+.postList {
+  border: 2px solid black;
+  width: 60%;
+  padding: 25px;
+  margin: 0 auto;
+  background: #5454ebc9;
+}
+
+.postList__not-found {
+  color: white;
+  font-size: 22px;
+  letter-spacing: 1.5px;
+}
+
+.post {
+  border: 1px solid black;
+  margin-bottom: 25px;
+  padding: 20px 20px 0;
+  background: #f3f1f1;
+}
+
+.post__title {
+  text-align: center;
+  font-size: 30px;
+  color: #292977;
+}
+
+.post__body {
+  color: #192a5e;
+  font-size: 22px;
+  font-style: italic;
+}
+
+.userInfo {
+  text-align: right;
+  font-size: 24px;
+  color: rgb(13, 65, 56);
+}
+
+.userInfo__name {
+  color: rgb(77, 33, 179);
+}
+
+.userInfo__email {
+  margin: 10px;
+  color: black;
+}
+
+.comment__sender {
+  text-align: right;
+  font-size: 24px;
+  color: rgb(13, 65, 56);
+}
+
+.line {
+  margin: 30px;
+  height: 2px;
+  background: rgb(6, 43, 20);
+  border-radius: 2px;
+}
+
+.input {
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  width: 60%;
+
+}
+
+.input__searсh {
+  margin: 10px 0 15px 10px;
+  width: 350px;
+  height: 40px;
+  font-size: 18px;
+  padding: 0 20px;
+}
+
+.comment__body {
+  font-size: 22px;
+  font-style: italic;
+}
+
+.comment__name {
+  font-size: 24px;
+  color: rgb(13, 65, 56);
 }
