@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function User({ user }) {
-  // eslint-disable-next-line no-shadow
   const { name, email } = user;
 
   return (

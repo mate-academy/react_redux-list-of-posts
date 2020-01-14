@@ -14,10 +14,9 @@ const CommentList = ({ postId, comments }) => (
   </div>
 );
 
-CommentList.propTypes
-  = {
-    postId: PropTypes.number.isRequired,
-    comments: PropTypes.oneOfType([PropTypes.array]).isRequired,
-  };
+CommentList.propTypes = {
+  postId: PropTypes.number.isRequired,
+  comments: PropTypes.oneOfType([PropTypes.array]).isRequired,
+};
 
 export default CommentList;

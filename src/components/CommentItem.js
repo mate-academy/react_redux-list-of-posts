@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { handleDeleteComment } from '../store';
+import { deleteComment } from '../reducers/postsReducer';
 
-// eslint-disable-next-line no-shadow
-const CommentItem = ({ postId, comment, handleDeleteComment }) => {
+const CommentItem = ({ postId, comment, deleteComment }) => {
   const { id, name, body, email } = comment;
 
   return (
@@ -16,7 +15,7 @@ const CommentItem = ({ postId, comment, handleDeleteComment }) => {
         {email}
       </p>
       <button
-        onClick={() => handleDeleteComment(postId, id)}
+        onClick={() => deleteComment(postId, id)}
         className="delete-comment"
         type="button"
       >
@@ -35,7 +34,7 @@ CommentItem.propTypes
   = {
     postId: PropTypes.number.isRequired,
     comment: PropTypes.oneOfType([PropTypes.object]).isRequired,
-    handleDeleteComment: PropTypes.func.isRequired,
+    deleteComment: PropTypes.func.isRequired,
   };
 
-export default connect(mapStateToProps, { handleDeleteComment })(CommentItem);
+export default connect(mapStateToProps, { deleteComment })(CommentItem);

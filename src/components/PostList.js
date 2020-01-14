@@ -1,29 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getSearchPosts } from '../store';
 import Post from './Post';
 
-const PostList = ({ data }) => (
+const PostList = ({ posts }) => (
   <>
-    <input
-      className="search"
-      type="text"
-      placeholder="Search"
-    />
-    {data
-      .map(currentPost => (
-        <Post
-          post={currentPost}
-          key={currentPost.id}
-        />
-      ))}
+    <h1 className="count-posts">
+      Count of posts:
+      {' '}
+      {posts.length}
+    </h1>
+    {posts.map(currentPost => (
+      <Post post={currentPost} key={currentPost.id} />
+    ))}
   </>
 );
 
-PostList.propTypes = {
-  data: PropTypes.oneOfType([PropTypes.array]).isRequired,
-};
+const mapStateToProps = state => ({
+  posts: getSearchPosts(state),
+});
 
-const mapStateToProps = () => ({ data }) => ({ data });
+PostList.propTypes = {
+  posts: PropTypes.oneOfType([PropTypes.array]).isRequired,
+};
 
 export default connect(mapStateToProps)(PostList);
