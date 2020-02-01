@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Posts from './Post';
 
-import Post from './Post';
-
-const PostList = ({ posts, deletePost, deleteComment }) => (
+const PostList = ({ posts }) => (
   <table className="ui red table">
     <thead>
       <tr>
@@ -15,11 +14,9 @@ const PostList = ({ posts, deletePost, deleteComment }) => (
     </thead>
     <tbody>
       {posts.map(post => (
-        <Post
+        <Posts
           post={post}
           key={post.id}
-          deletePost={deletePost}
-          deleteComment={deleteComment}
         />
       ))}
     </tbody>
@@ -27,8 +24,6 @@ const PostList = ({ posts, deletePost, deleteComment }) => (
 );
 
 PostList.propTypes = {
-  deletePost: PropTypes.func.isRequired,
-  deleteComment: PropTypes.func.isRequired,
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

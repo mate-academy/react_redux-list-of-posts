@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Comment from './Comment';
+import Comments from './Comment';
 
-const CommentList = ({ comments, deleteComment }) => (
+const CommentList = ({ comments }) => (
   <table>
     {comments.map(comment => (
-      <Comment
+      <Comments
         comment={comment}
         key={comment.id}
-        deleteComment={deleteComment}
       />
     ))}
   </table>
@@ -16,7 +15,6 @@ const CommentList = ({ comments, deleteComment }) => (
 
 CommentList.propTypes = {
   comments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  deleteComment: PropTypes.func.isRequired,
 };
 
 export default CommentList;

@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { commentDelete } from './redux/actions';
 
 const Comment = ({ comment, deleteComment }) => {
   const commentDeletor = (e, commentId) => {
-
     e.preventDefault();
     deleteComment(commentId);
-  }
+  };
 
   return (
     <tr>
@@ -32,7 +33,16 @@ const Comment = ({ comment, deleteComment }) => {
       </td>
     </tr>
   );
-}
+};
+
+const mapDispatch2Props = dispatch => ({
+  deleteComment: commentId => dispatch(commentDelete(commentId)),
+});
+
+const Comments = connect(
+  null,
+  mapDispatch2Props,
+)(Comment);
 
 Comment.propTypes = {
   comment: PropTypes.shape({
@@ -44,4 +54,4 @@ Comment.propTypes = {
   deleteComment: PropTypes.func.isRequired,
 };
 
-export default Comment;
+export default Comments;

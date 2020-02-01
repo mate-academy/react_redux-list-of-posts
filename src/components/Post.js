@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Button, Icon } from 'semantic-ui-react';
 import User from './User';
 import CommentList from './CommentList';
+import { postDelete } from './redux/actions';
 
-const Post = ({ post, deleteComment, deletePost }) => {
+const Posts = ({ post, deletePost }) => {
   const postDeletor = (e, postId) => {
-
     e.preventDefault();
     deletePost(postId);
   };
@@ -18,7 +19,6 @@ const Post = ({ post, deleteComment, deletePost }) => {
       <User user={post.user} />
       <CommentList
         comments={post.comments}
-        deleteComment={deleteComment}
       />
       <td>
         <Button icon>
@@ -32,9 +32,17 @@ const Post = ({ post, deleteComment, deletePost }) => {
   );
 };
 
-Post.propTypes = {
+const mapDispatch2Props = dispatch => ({
+  deletePost: postId => dispatch(postDelete(postId)),
+});
+
+const Post = connect(
+  null,
+  mapDispatch2Props,
+)(Posts);
+
+Posts.propTypes = {
   deletePost: PropTypes.func.isRequired,
-  deleteComment: PropTypes.func.isRequired,
   post: PropTypes.shape({
     comments: PropTypes.string,
     body: PropTypes.string,
