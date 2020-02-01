@@ -5,8 +5,9 @@
   "keywords": [],
   "author": "Mate Academy",
   "license": "GPL-3.0",
-  "homepage": "https://mate-academy.github.io/react_redux-list-of-posts",
+  "homepage": "https://github.com/Andrii-Pavlenko/react_redux-list-of-posts",
   "dependencies": {
+    "gh-pages": "^2.2.0",
     "i": "^0.3.6",
     "npm": "^6.13.6",
     "prop-types": "^15.7.2",
