@@ -1,5 +1,9 @@
-import { createStore, AnyAction, applyMiddleware } from 'redux';
+import {
+  createStore, AnyAction, applyMiddleware, Dispatch,
+} from 'redux';
 import thunk from 'redux-thunk';
+
+import { getCommentsFromAPI, getUsersFromAPI, getPostsFromAPI } from './util';
 
 
 const initStore: StoragePosts = {
@@ -96,6 +100,35 @@ export const reducer = (store: StoragePosts | undefined, action: AnyAction): Sto
       return store;
     }
   }
+};
+
+export const loadAllData = () => {
+  return (dispatch: Dispatch) => {
+    dispatch(setError(false));
+    dispatch(setLoading(true));
+
+    return Promise.all([
+      getUsersFromAPI(),
+      getPostsFromAPI(),
+      getCommentsFromAPI(),
+    ])
+      .then(([usersFromApi, postsFromApi, commentsFromApi]) => {
+        dispatch(setLoading(false));
+        const newPosts = postsFromApi.map(post => {
+          return {
+            ...post,
+            user: (usersFromApi.find(item => item.id === post.userId) as User),
+            comments: commentsFromApi.filter(item => item.postId === post.id),
+          };
+        });
+
+        dispatch(setPosts(newPosts));
+      })
+      .catch(() => {
+        dispatch(setError(true));
+        dispatch(setLoading(false));
+      });
+  };
 };
 
 export const store = createStore(reducer, initStore, applyMiddleware(thunk));
