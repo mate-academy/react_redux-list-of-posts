@@ -47,3 +47,9 @@ export interface PostsWithUserAndComments extends PostInterface{
   user: UserInterface;
   comments: CommentInterface[];
 }
+
+export interface State {
+  posts: PostsWithUserAndComments[];
+  isLoading: boolean;
+  query: string;
+}

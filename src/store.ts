@@ -1,11 +1,7 @@
-import { AnyAction, createStore } from 'redux';
-import { PostsWithUserAndComments } from './constants/types';
-
-export interface State {
-  posts: PostsWithUserAndComments[];
-  isLoading: boolean;
-  query: string;
-}
+import {AnyAction, applyMiddleware, createStore, Dispatch} from 'redux';
+import thunk from 'redux-thunk';
+import { PostsWithUserAndComments, State } from './constants/types';
+import {getPostsWithUserAndComments} from "./utils/api";
 
 const initialState: State = {
   posts: [],
@@ -30,6 +26,22 @@ export const getPosts = (state: State) => state.posts;
 export const getLoading = (state: State) => state.isLoading;
 export const getQuery = (state: State) => state.query;
 
+// thunk
+export const loadData = () => {
+  return async (dispatch: Dispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const filteredPosts = await getPostsWithUserAndComments();
+
+      dispatch(setPosts(filteredPosts));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+};
 
 const reducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
@@ -61,4 +73,5 @@ const reducer = (state = initialState, action: AnyAction) => {
 export const store = createStore(
   reducer,
   initialState,
+  applyMiddleware(thunk),
 );

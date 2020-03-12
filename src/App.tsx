@@ -7,17 +7,22 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
-import { getPostsWithUserAndComments, searchCallback } from './utils/api';
-import { PostsWithUserAndComments } from './constants/types';
+import {
+  searchCallback,
+} from './utils/api';
+import {
+  PostsWithUserAndComments,
+  State,
+} from './constants/types';
 import { PostList } from './components/PostList/PostList';
 import {
   getLoading,
   getPosts,
   setLoading,
-  State,
   setPosts,
   getQuery,
   setQuery,
+  loadData,
 } from './store';
 
 interface Props {
@@ -27,21 +32,12 @@ interface Props {
   isLoading: boolean;
   setQuery: (value: string) => void;
   query: string;
+  loadData: () => void;
 }
 
 const App: FC<Props> = (props) => {
   const handleStart = async () => {
-    try {
-      props.setLoading(true);
-      const filteredPosts = await getPostsWithUserAndComments();
-
-      props.setPosts(filteredPosts);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-    } finally {
-      props.setLoading(false);
-    }
+    props.loadData();
   };
 
   const searchWithDelay = useCallback(
@@ -56,7 +52,8 @@ const App: FC<Props> = (props) => {
   };
 
   const searchedPosts
-    = useMemo(() => props.posts.filter(searchCallback(props.query)), [props.posts, props.query]);
+    = useMemo(() => props.posts
+      .filter(searchCallback(props.query)), [props.posts, props.query]);
 
   return (
     <div className="app">
@@ -89,7 +86,12 @@ const App: FC<Props> = (props) => {
   );
 };
 
-const mapDispatchToProps = { setLoading, setPosts, setQuery };
+const mapDispatchToProps = {
+  setLoading,
+  setPosts,
+  setQuery,
+  loadData,
+};
 
 const mapStateToProps = (state: State) => ({
   posts: getPosts(state),
