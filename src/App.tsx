@@ -23,6 +23,7 @@ import {
   getQuery,
   setQuery,
   loadData,
+  getError,
 } from './store';
 
 interface Props {
@@ -33,6 +34,7 @@ interface Props {
   setQuery: (value: string) => void;
   query: string;
   loadData: () => void;
+  error: boolean;
 }
 
 const App: FC<Props> = (props) => {
@@ -61,6 +63,7 @@ const App: FC<Props> = (props) => {
         ? (
           <>
             <h1>Dynamic list of posts</h1>
+            {props.error && (<p className="text-danger">Error occured</p>)}
             <button
               type="button"
               className="btn btn-primary"
@@ -97,6 +100,7 @@ const mapStateToProps = (state: State) => ({
   posts: getPosts(state),
   isLoading: getLoading(state),
   query: getQuery(state),
+  error: getError(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

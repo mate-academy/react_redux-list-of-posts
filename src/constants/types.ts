@@ -52,4 +52,5 @@ export interface State {
   posts: PostsWithUserAndComments[];
   isLoading: boolean;
   query: string;
+  error: boolean;
 }

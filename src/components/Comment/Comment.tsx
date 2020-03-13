@@ -1,18 +1,21 @@
 import React, { FC } from 'react';
+import { connect } from 'react-redux';
 import { CommentInterface } from '../../constants/types';
+import { deleteCommentThunk } from '../../store';
 
 interface Props {
   comment: CommentInterface;
-  handleDelete: (id: number) => void;
+  deleteCommentThunk: (value: number) => void;
 }
 
-export const Comment: FC<Props> = (props) => {
+export const CommentTemplate: FC<Props> = (props) => {
   const {
     name,
     body,
     email,
     id,
   } = props.comment;
+
 
   return (
     <div className="card text-white bg-info mb-3">
@@ -32,10 +35,16 @@ export const Comment: FC<Props> = (props) => {
       <button
         type="button"
         className="btn btn-light"
-        onClick={() => props.handleDelete(id)}
+        onClick={() => props.deleteCommentThunk(id)}
       >
         Delete comment
       </button>
     </div>
   );
 };
+
+const mapDispatchToProps = {
+  deleteCommentThunk,
+};
+
+export const Comment = connect(null, mapDispatchToProps)(CommentTemplate);
