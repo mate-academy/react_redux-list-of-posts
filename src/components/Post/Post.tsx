@@ -28,7 +28,6 @@ export const PostTemplate: FC<Props> = (props) => {
       <div className="card">
         <h4 className="card-header">{title}</h4>
         <div className="card-body">
-
           <blockquote className="blockquote mb-0">
             <p>
               {body}

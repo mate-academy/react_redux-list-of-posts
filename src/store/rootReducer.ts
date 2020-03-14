@@ -8,6 +8,7 @@ export const initialState: State = {
   query: '',
   error: false,
 };
+
 export const reducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ActionTypes.SET_POSTS:

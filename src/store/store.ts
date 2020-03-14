@@ -1,6 +1,6 @@
 import { applyMiddleware, createStore, Dispatch } from 'redux';
 import thunk from 'redux-thunk';
-import { initialState, reducer } from './rootReducer';
+import {initialState, reducer} from './rootReducer';
 import {
   deleteComment,
   setError,
