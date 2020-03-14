@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { CommentInterface } from '../../constants/types';
-import { deleteCommentThunk } from '../../store';
+import { deleteCommentThunk } from '../../store/store';
+import { CommentInterface } from '../../constants';
 
 interface Props {
   comment: CommentInterface;
@@ -9,12 +9,16 @@ interface Props {
 }
 
 export const CommentTemplate: FC<Props> = (props) => {
+  const { deleteCommentThunk: deleteComment } = props;
   const {
     name,
     body,
     email,
     id,
   } = props.comment;
+
+  const handleDelete = useCallback(() => deleteComment(id),
+    [id, deleteComment]);
 
 
   return (
@@ -35,7 +39,7 @@ export const CommentTemplate: FC<Props> = (props) => {
       <button
         type="button"
         className="btn btn-light"
-        onClick={() => props.deleteCommentThunk(id)}
+        onClick={handleDelete}
       >
         Delete comment
       </button>

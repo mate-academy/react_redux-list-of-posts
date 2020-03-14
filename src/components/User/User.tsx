@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
-import { UserInterface } from '../../constants/types';
+import { UserInterface } from '../../constants';
 
 interface Props {
   user: UserInterface;
 }
 
-export const User: FC<Props> = ({ user }) => {
+export const User: FC<Props> = (props) => {
+  const { user } = props;
+
   return (
     <div className="user">
       <p>Contact info:</p>

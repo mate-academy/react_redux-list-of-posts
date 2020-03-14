@@ -8,23 +8,21 @@ import 'bootstrap/dist/css/bootstrap.css';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import {
-  searchCallback,
-} from './utils/api';
-import {
   PostsWithUserAndComments,
   State,
-} from './constants/types';
+} from './constants';
 import { PostList } from './components/PostList/PostList';
+import { loadData } from './store/store';
 import {
+  getError,
   getLoading,
   getPosts,
+  getQuery,
   setLoading,
   setPosts,
-  getQuery,
   setQuery,
-  loadData,
-  getError,
-} from './store';
+} from './store/actionCreators';
+import { searchCallback } from './utils';
 
 interface Props {
   posts: PostsWithUserAndComments[];
@@ -38,12 +36,21 @@ interface Props {
 }
 
 const App: FC<Props> = (props) => {
-  const handleStart = async () => {
-    props.loadData();
+  const {
+    query,
+    posts,
+    error,
+    isLoading,
+    loadData: loadDataTemplate,
+    setQuery: setQueryTemplate,
+  } = props;
+
+  const handleStart = () => {
+    loadDataTemplate();
   };
 
   const searchWithDelay = useCallback(
-    debounce(props.setQuery, 1000),
+    debounce(setQueryTemplate, 1000),
     [],
   );
 
@@ -53,9 +60,8 @@ const App: FC<Props> = (props) => {
     searchWithDelay(value.toLowerCase());
   };
 
-  const searchedPosts
-    = useMemo(() => props.posts
-      .filter(searchCallback(props.query)), [props.posts, props.query]);
+  const searchedPosts = useMemo(() => posts
+    .filter(searchCallback(query)), [posts, query]);
 
   return (
     <div className="app">
@@ -63,13 +69,13 @@ const App: FC<Props> = (props) => {
         ? (
           <>
             <h1>Dynamic list of posts</h1>
-            {props.error && (<p className="text-danger">Error occured</p>)}
+            {error && (<p className="text-danger">Error occured</p>)}
             <button
               type="button"
               className="btn btn-primary"
               onClick={handleStart}
             >
-              {props.isLoading ? 'Loading.......' : 'Start load'}
+              {isLoading ? 'Loading.......' : 'Start load'}
             </button>
           </>
         )
@@ -82,7 +88,7 @@ const App: FC<Props> = (props) => {
               placeholder="type search"
               onChange={handleSearch}
             />
-            <PostList posts={props.query ? searchedPosts : props.posts} />
+            <PostList posts={query ? searchedPosts : posts} />
           </>
         )}
     </div>

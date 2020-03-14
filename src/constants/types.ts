@@ -1,3 +1,20 @@
+export interface UserInterface {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: Address;
+  phone: string;
+  website: string;
+  company: Company;
+}
+
+interface Company {
+  name: string;
+  catchPhrase: string;
+  bs: string;
+}
+
 export interface CommentInterface {
   postId: number;
   id: number;
@@ -24,23 +41,6 @@ interface Address {
 interface Geo {
   lat: string;
   lng: string;
-}
-
-interface Company {
-  name: string;
-  catchPhrase: string;
-  bs: string;
-}
-
-export interface UserInterface {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: Address;
-  phone: string;
-  website: string;
-  company: Company;
 }
 
 export interface PostsWithUserAndComments extends PostInterface{

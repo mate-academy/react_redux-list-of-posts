@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { PostsWithUserAndComments } from '../../constants/types';
+import { PostsWithUserAndComments } from '../../constants';
 import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
-import { deletePost } from '../../store';
+import { deletePost } from '../../store/actionCreators';
 
 interface Props {
   post: PostsWithUserAndComments;
@@ -11,6 +11,7 @@ interface Props {
 }
 
 export const PostTemplate: FC<Props> = (props) => {
+  const { deletePost: deletePostThunk } = props;
   const {
     title,
     body,
@@ -18,6 +19,9 @@ export const PostTemplate: FC<Props> = (props) => {
     user,
     comments,
   } = props.post;
+
+  const handleDelete = useCallback(() => deletePostThunk(id),
+    [id, deletePostThunk]);
 
   return (
     <div className="list__item">
@@ -36,7 +40,7 @@ export const PostTemplate: FC<Props> = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={() => props.deletePost(id)}
+            onClick={handleDelete}
           >
             Delete post
           </button>
