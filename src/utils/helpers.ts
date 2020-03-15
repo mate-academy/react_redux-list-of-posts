@@ -1,5 +1,10 @@
 import { loadPosts, loadUsers, loadComments } from './api';
-import { User, Post, Comment } from '../constants/types';
+import {
+  User,
+  Post,
+  Comment,
+  FullPost,
+} from '../constants/types';
 
 export const getPosts = async () => {
   const [initialPosts, initialUsers, initialComments] = await Promise.all([
@@ -21,4 +26,16 @@ export const getPosts = async () => {
   });
 
   return posts;
+};
+
+export const getVisiblePosts = (
+  posts: FullPost[],
+  query: string,
+): FullPost[] => {
+  return posts.filter(post => {
+    return (
+      post.title.toLowerCase().includes(query.toLowerCase())
+      || post.body.toLowerCase().includes(query.toLowerCase())
+    );
+  });
 };

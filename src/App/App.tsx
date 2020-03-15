@@ -1,36 +1,34 @@
 import React, { FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Search } from '../Search/Search';
-import { Button } from '../Button/Button';
+import { Search } from '../components/Search';
+import { Button } from '../components/Button';
+import { PostList } from '../components/PostList';
 
-import { InitialState, FullPost } from '../../constants/types';
-import { RootDispatcher } from '../../store/root-reducer';
+import { loadData } from '../store/actions';
+import { InitialState } from '../constants/types';
 import './App.css';
 
 interface StateProps {
   isLoading: boolean;
   isLoadSuccess: boolean;
   isLoadError: boolean;
-  posts: FullPost[];
 }
 
 
 export const App: FC = () => {
   const {
-    isLoading, isLoadSuccess, isLoadError, posts,
+    isLoading, isLoadSuccess, isLoadError,
   } = useSelector<InitialState, StateProps>((state: InitialState) => ({
     isLoading: state.isLoading,
     isLoadSuccess: state.isLoadSuccess,
     isLoadError: state.isLoadError,
-    posts: state.posts,
   }));
 
   const dispatch = useDispatch();
-  const rootDispatcher = new RootDispatcher(dispatch);
 
   const handleButtonClick = () => {
-    rootDispatcher.loadData();
+    dispatch(loadData());
   };
 
   const renderButton = () => {
@@ -68,13 +66,8 @@ export const App: FC = () => {
       <Search />
 
       {renderButton()}
-      {isLoadSuccess ? (
-        posts.map(post => (
-          <li>
-            {post.id}
-          </li>
-        ))
-      ) : ''}
+
+      {isLoadSuccess && <PostList />}
     </div>
   );
 };

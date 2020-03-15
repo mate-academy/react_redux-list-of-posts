@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action as ReduxAction } from 'redux';
 
 export interface InitialState {
   inputValue: string;
@@ -25,11 +25,63 @@ export enum ActionType {
   LoadData,
   SetIsLoadSuccess,
   SetIsLoadError,
+  DeletePost,
+  DeleteComment,
 }
 
-export interface DispatchAction extends Action<ActionType> {
-  payload: Partial<InitialState>;
+interface SetInputValueAction extends ReduxAction {
+  type: ActionType.SetInputValue;
+  payload: string;
 }
+
+interface SetFilterValueAction extends ReduxAction {
+  type: ActionType.SetFilterValue;
+  payload: string;
+}
+
+interface SetIsLoadingAction extends ReduxAction {
+  type: ActionType.SetIsLoading;
+  payload: boolean;
+}
+
+interface LoadDataAction extends ReduxAction {
+  type: ActionType.LoadData;
+  payload: FullPost[];
+}
+
+interface SetIsLoadSuccessAction extends ReduxAction {
+  type: ActionType.SetIsLoadSuccess;
+  payload: boolean;
+}
+
+interface SetIsLoadErrorAction extends ReduxAction {
+  type: ActionType.SetIsLoadError;
+  payload: boolean;
+}
+
+interface DeletePostAction extends ReduxAction {
+  type: ActionType.DeletePost;
+  payload: number;
+}
+
+interface DeleteCommentAction extends ReduxAction {
+  type: ActionType.DeleteComment;
+  payload: {
+    postId: number;
+    commentId: number;
+  };
+}
+
+export type Action = (
+  SetInputValueAction
+  | SetFilterValueAction
+  | SetIsLoadingAction
+  | LoadDataAction
+  | SetIsLoadSuccessAction
+  | SetIsLoadErrorAction
+  | DeletePostAction
+  | DeleteCommentAction
+);
 
 export interface Post {
   userId: number;

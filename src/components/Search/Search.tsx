@@ -2,8 +2,11 @@ import React, { FC, ChangeEvent, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'lodash/debounce';
 
+import {
+  setFilterValue,
+  setInputValue,
+} from '../../store/actions';
 import { InitialState } from '../../constants/types';
-import { RootDispatcher } from '../../store/root-reducer';
 
 const DEBOUNCE_TIMEOUT = 1000;
 
@@ -18,24 +21,22 @@ export const Search: FC = () => {
   }));
 
   const dispatch = useDispatch();
-  const rootDispatcher = new RootDispatcher(dispatch);
-
-  const setFilterValueWithDebounce = useCallback(
-    debounce(rootDispatcher.setFilterValue, DEBOUNCE_TIMEOUT),
+  const dispatchWithDebounce = useCallback(
+    debounce(dispatch, DEBOUNCE_TIMEOUT),
     [],
   );
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    rootDispatcher.setInputValue(event.target.value);
-    setFilterValueWithDebounce(event.target.value);
+    dispatch(setInputValue(event.target.value));
+    dispatchWithDebounce(setFilterValue(event.target.value));
   };
 
   return (
     <div>
       <input
         type="text"
-        placeholder="Filter posts"
         value={inputValue}
+        placeholder="Filter posts"
         onChange={handleInputChange}
       />
     </div>
