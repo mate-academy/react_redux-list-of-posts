@@ -5,17 +5,18 @@ import {
   Dispatch,
 } from 'redux';
 import thunk from 'redux-thunk';
-import { Actions } from './actionTypes';
+import {
+  Actions,
+  LOAD_POSTS,
+  SET_LOADING,
+  SET_STARTED,
+  SET_QUERY,
+  SET_FILTER_QUERY,
+  REMOVE_POST,
+  REMOVE_COMMENT,
+} from './actionTypes';
 
 import { getPosts, getUsers, getComments } from './api/api';
-
-const LOAD_POSTS = 'LOAD_POSTS';
-const SET_LOADING = 'SET_LOADING';
-const SET_STARTED = 'SET_STARTED';
-const SET_QUERY = 'SET_QUERY';
-const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
-const REMOVE_POST = 'REMOVE_POST';
-const REMOVE_COMMENT = 'REMOVE_COMMENT';
 
 const initialState: State = {
   posts: [],

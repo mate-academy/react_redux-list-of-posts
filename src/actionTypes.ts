@@ -1,5 +1,13 @@
 import { Action as ReduxAction } from 'redux';
 
+export const LOAD_POSTS = 'LOAD_POSTS';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_STARTED = 'SET_STARTED';
+export const SET_QUERY = 'SET_QUERY';
+export const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
+export const REMOVE_POST = 'REMOVE_POST';
+export const REMOVE_COMMENT = 'REMOVE_COMMENT';
+
 export enum ActionTypes {
   setPosts = 'LOAD_POSTS',
   setLoading = 'SET_LOADING',

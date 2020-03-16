@@ -38,6 +38,7 @@
   color: #cc9a9a;
   outline: none;
   transition: color 0.2s ease-out;
+  cursor: pointer;
 }
 
 .destroy:after {
