@@ -1,0 +1,9 @@
+export const SET_POSTS = 'SET_POSTS';
+export const SET_USERS = 'SET_USERS';
+export const SET_COMMENTS = 'SET_COMMENTS';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_IS_LOADED = 'SET_IS_LOADED';
+export const SET_ERROR = 'SET_ERROR';
+export const SET_QUERY = 'SET_QUERY';
+export const REMOVER = 'REMOVER';
+export const REMOVE_COMMENT = 'REMOVE_COMMENT';
