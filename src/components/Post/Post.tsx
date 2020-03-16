@@ -4,14 +4,14 @@ import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 import { FullPostType } from '../../utils/interfaces';
 import './Post.css';
-import { remover as removePost } from '../../store/actionCreators';
+import { removePost as deletePost } from '../../store/actionCreators';
 
 interface Props {
   post: FullPostType;
-  remover: (id: number) => void;
+  removePost: (id: number) => void;
 }
 
-export const PostTemplate: FC<Props> = ({ post, remover }) => {
+export const PostTemplate: FC<Props> = ({ post, removePost }) => {
   const {
     title,
     body,
@@ -22,7 +22,7 @@ export const PostTemplate: FC<Props> = ({ post, remover }) => {
 
   return (
     <>
-      <button type="button" onClick={() => remover(id)}>X</button>
+      <button type="button" onClick={() => removePost(id)}>X</button>
       <h2 className="post__title">{title}</h2>
       <p className="post__text">{body}</p>
       <User user={user} />
@@ -34,7 +34,7 @@ export const PostTemplate: FC<Props> = ({ post, remover }) => {
 
 
 const mapDispatchToProps = {
-  remover: removePost,
+  removePost: deletePost,
 };
 
 export const Post = connect(null, mapDispatchToProps)(PostTemplate);

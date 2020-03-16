@@ -9,7 +9,7 @@ import {
   SET_ERROR,
   SET_IS_LOADED,
   SET_QUERY,
-  REMOVER,
+  REMOVE_POST,
   REMOVE_COMMENT,
 } from './actionTypes';
 
@@ -53,8 +53,8 @@ export const setQuery = (query: string) => ({
   payload: query,
 });
 
-export const remover = (id: number) => ({
-  type: REMOVER,
+export const removePost = (id: number) => ({
+  type: REMOVE_POST,
   payload: id,
 });
 
