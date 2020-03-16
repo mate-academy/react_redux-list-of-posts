@@ -8,13 +8,6 @@ import { errorReducer } from './errorReducer';
 import { loadedReducer } from './loadedReducer';
 import { queryReducer } from './queryReducer';
 
-// export const getPosts = (state: RootState) => state.posts;
-// export const getComments = (state: RootState) => state.comments;
-// export const getUsers = (state: RootState) => state.users;
-// export const getIsError = (state: RootState) => state.isError;
-// export const getIsLoading = (state: RootState) => state.isLoading;
-// export const getIsLoaded = (state: RootState) => state.isLoading;
-
 export const initialState = {
   posts: [],
   users: [],
