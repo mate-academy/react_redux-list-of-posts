@@ -2,13 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { State } from '../../redux/store';
 import { PreparedPost } from '../../types';
-import {
-  setIsLoading,
-  setIsLoaded,
-  setPosts,
-  setHasError,
-} from '../../redux/actionCreators';
-import { getPreparedPosts } from '../../api_helpers';
+import { showedAllPosts } from '../../redux/actionCreators';
 import { SearchPost } from '../SearchPost/SearchPost';
 import { Post } from '../Post/Post';
 import '../../App.css';
@@ -20,16 +14,10 @@ interface StateProps {
   hasError: boolean;
   posts: PreparedPost[] | [];
   searchValue: string;
+  changeAllPosts: () => void;
 }
 
-interface Methods {
-  changeIsLoading: (status: boolean) => void;
-  changeIsLoaded: () => void;
-  changeHasError: (status: boolean) => void;
-  changeposts: (postsFromApi: PreparedPost[]) => void;
-}
-
-type Props = StateProps & Methods;
+type Props = StateProps;
 
 export const PostListTemplate: FC<Props> = ({
   isLoading,
@@ -37,29 +25,8 @@ export const PostListTemplate: FC<Props> = ({
   hasError,
   posts,
   searchValue,
-  changeIsLoading,
-  changeIsLoaded,
-  changeHasError,
-  changeposts,
-
+  changeAllPosts,
 }) => {
-  const showedAllPosts = async () => {
-    changeIsLoading(true);
-    changeHasError(false);
-
-    try {
-      const postsFromApi = await getPreparedPosts();
-
-      changeposts(postsFromApi);
-    } catch (error) {
-      changeHasError(true);
-    }
-
-    changeIsLoading(false);
-    changeIsLoaded();
-  };
-
-
   const searchedPost = useMemo(() => posts.filter(
     post => post.title.toLowerCase().includes(searchValue)
     || post.body.toLowerCase().includes(searchValue),
@@ -82,7 +49,7 @@ export const PostListTemplate: FC<Props> = ({
         <button
           type="button"
           className="loading_button"
-          onClick={showedAllPosts}
+          onClick={changeAllPosts}
         >
           Try again
         </button>
@@ -103,7 +70,7 @@ export const PostListTemplate: FC<Props> = ({
               <button
                 type="button"
                 className="loading_button"
-                onClick={showedAllPosts}
+                onClick={changeAllPosts}
               >
                 Load
               </button>
@@ -131,10 +98,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = {
-  changeIsLoading: setIsLoading,
-  changeIsLoaded: setIsLoaded,
-  changeHasError: setHasError,
-  changeposts: setPosts,
+  changeAllPosts: showedAllPosts,
 };
 
 export const PostList = connect(

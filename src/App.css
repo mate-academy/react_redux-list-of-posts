@@ -10,7 +10,8 @@
   font-weight: 600;
 }
 
-.loading_button {
+.loading_button,
+.delete_button {
   display: block;
   margin: auto;
   cursor: pointer;
@@ -25,7 +26,12 @@
     color 300ms linear;
 }
 
-.loading_button:hover {
+.loading_button:hover,
+.delete_button:hover {
   background-color: #62989e;
   color: #fff;
+}
+
+.delete_button-comment {
+  margin-right: 0;
 }
