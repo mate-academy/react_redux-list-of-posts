@@ -1,4 +1,6 @@
-import React, {FC} from 'react';
+import React, { FC } from 'react';
+
+import './CommentItem.css';
 
 interface CommentItemProps {
   comment: Comment;
@@ -6,10 +8,10 @@ interface CommentItemProps {
 
 export const CommentItem: FC<CommentItemProps> = ({ comment }) => {
   return (
-    <div className="comment-item">
-      <p>{ comment.name }</p>
-      <p>{ comment.email }</p>
+    <div className="notification comment-item box is-warning">
+      <p className="comment-item-name">{ comment.name }</p>
       <p>{ comment.body }</p>
+      <p className="comment-item-email">{ comment.email }</p>
     </div>
   );
 };

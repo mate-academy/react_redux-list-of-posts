@@ -1,0 +1,21 @@
+.post-item {
+  margin: 50px auto !important;
+}
+
+.post-item-header {
+  text-align: right;
+}
+
+.post-item-header-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-item-header-description {
+  text-align: left !important;
+}
+
+.post-item-description {
+  margin-top: 20px;
+}

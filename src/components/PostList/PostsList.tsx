@@ -1,6 +1,8 @@
 import React, {FC} from 'react';
 import { PostItem } from '../PostItem/PostItem';
 
+import './PostList.css';
+
 interface PostListProps {
   filteredPosts: PostsWithUser[];
 }

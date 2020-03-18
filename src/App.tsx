@@ -1,8 +1,12 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
+
 import './App.css';
 import { loadData } from './store/store';
 import { PostList } from './components/PostList/PostsList';
+import {FilterField} from './components/FilterField/FilterField';
+
+
 
 interface AppProps {
   isLoaded: boolean;
@@ -26,24 +30,30 @@ const App: FC<AppProps> = (props) => {
   console.log(filteredPosts);
 
   return (
-    <div className="App">
-      <h1>Hello Mate!</h1>
-      <p>
-        isLoaded
-        {` ${isLoaded}`}
-      </p>
-      <p>
-        isLoading
-        {` ${isLoading}`}
-      </p>
-      <button type="button" onClick={handleClick}>
-        Load Data
-      </button>
+    <div className={`app ${isLoaded ? 'app-loaded' : ''}`}>
+      <h1 className="title is-1">Hello Mate!</h1>
       {
         isLoaded
-          ? <PostList filteredPosts={filteredPosts} />
-          : null
+          ? (
+            <>
+              <FilterField />
+              <PostList filteredPosts={filteredPosts} />
+            </>
+          )
+          : (
+            <button type="button" onClick={handleClick} className="button is-primary is-outlined">
+              Load Data
+            </button>
+          )
       }
+
+      {
+        isLoading
+          && (
+            <p>is Loading...</p>
+          )
+      }
+
     </div>
   );
 };
