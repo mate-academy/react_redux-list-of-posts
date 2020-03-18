@@ -1,23 +1,25 @@
 import React, { FC } from 'react';
-import { UserItem } from '../UserItem/UserItem';
-import { CommentList } from '../CommentsList/CommentsList';
-import './PostItem.css';
+import {CommentList} from '../CommentList/CommentList';
 
-interface Props {
-  postItem: PrepearedPost;
+interface PostsItemProps {
+  post: PostsWithUser;
 }
 
-export const PostItem: FC<Props> = ({ postItem }) => (
-  <div className="post">
-    <UserItem user={postItem.user} />
+export const PostItem: FC<PostsItemProps> = ({ post }) => {
 
-    <div className="post-body">
-      <p className="post-title">{postItem.title}</p>
-      <p className="post-desctiption">{postItem.body}</p>
-    </div>
+  return (
+    <div className="post-item">
+      <div className="post-item-header">
+        <p>{post.user.name}</p>
+        <p>{post.user.username}</p>
+      </div>
 
-    <div className="post-comments">
-      <CommentList comments={postItem.comments} />
+      <div className="post-item-description">
+        <p>{post.title}</p>
+        <p>{post.body}</p>
+      </div>
+
+      <CommentList comments={post.comments} />
     </div>
-  </div>
-);
+  );
+};

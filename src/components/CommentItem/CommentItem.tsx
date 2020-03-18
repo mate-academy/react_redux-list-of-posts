@@ -1,17 +1,15 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 
-interface Props {
-  comments: Comment;
+interface CommentItemProps {
+  comment: Comment;
 }
 
-export const CommentItem: FC<Props> = ({ comments }) => {
-  const { name, body, email } = comments;
-
+export const CommentItem: FC<CommentItemProps> = ({ comment }) => {
   return (
-    <div className="post-comments__item">
-      <h4 className="post-comments__title">{name}</h4>
-      <p className="post-comments__body">{body}</p>
-      <p className="post-comments__email">{email}</p>
+    <div className="comment-item">
+      <p>{ comment.name }</p>
+      <p>{ comment.email }</p>
+      <p>{ comment.body }</p>
     </div>
   );
 };

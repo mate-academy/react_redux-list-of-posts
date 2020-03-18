@@ -43,16 +43,16 @@ interface User {
 }
 
 interface PostsWithUser extends Post {
-  comments: Comment[];
   user: User;
+  comments: Comment[];
 }
 
 interface InitialStateInterface {
   isLoading: boolean;
   isLoaded: boolean;
-  users: User[] | [];
+  users: User[];
   posts: Post[];
-  comments: Comment[] | [];
-  filteredPosts: PostsWithUser[] | [];
+  comments: Comment[];
+  filteredPosts: PostsWithUser[];
 }
 

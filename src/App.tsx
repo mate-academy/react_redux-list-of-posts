@@ -2,16 +2,20 @@ import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import { loadData } from './store/store';
+import { PostList } from './components/PostList/PostsList';
 
-const App: FC<any> = (props) =>{
+interface AppProps {
+  isLoaded: boolean;
+  isLoading: boolean;
+  loadData: any; // Как описать action
+  filteredPosts: PostsWithUser[];
+}
 
+const App: FC<AppProps> = (props) => {
   const {
     isLoaded,
     isLoading,
     loadData,
-    posts,
-    users,
-    comments,
     filteredPosts,
   } = props;
 
@@ -19,9 +23,7 @@ const App: FC<any> = (props) =>{
     loadData();
   };
 
-  console.log(
-    filteredPosts
-  );
+  console.log(filteredPosts);
 
   return (
     <div className="App">
@@ -37,17 +39,11 @@ const App: FC<any> = (props) =>{
       <button type="button" onClick={handleClick}>
         Load Data
       </button>
-      <ul>
-        {
-          users.length && posts.length && comments.length
-            ? (
-              users.map((user: User) => (
-                <li>{user.id}</li>
-              ))
-            )
-            : null
-        }
-      </ul>
+      {
+        isLoaded
+          ? <PostList filteredPosts={filteredPosts} />
+          : null
+      }
     </div>
   );
 };
@@ -86,10 +82,7 @@ const showPreperedPost = (state: InitialStateInterface) => {
 const mapStateToProps = (state: InitialStateInterface) => ({
   isLoading: state.isLoading,
   isLoaded: state.isLoaded,
-  posts: state.posts,
   filteredPosts: showPreperedPost(state),
-  users: state.users,
-  comments: state.comments,
 });
 
 const mapDipatchToProps = (dispatch: any) => ({
