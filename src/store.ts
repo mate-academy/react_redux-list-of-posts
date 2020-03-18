@@ -1,10 +1,10 @@
 import {
-  createStore, AnyAction, applyMiddleware, Dispatch,
+  createStore, AnyAction, applyMiddleware, Dispatch, Reducer
 } from 'redux';
 import thunk from 'redux-thunk';
-
-import { getCommentsFromAPI, getUsersFromAPI, getPostsFromAPI } from './util';
-
+import {
+  getCommentsFromAPI, getUsersFromAPI, getPostsFromAPI
+} from './util';
 
 const initStore: StoragePosts = {
   posts: [] as PostWithComments[],
@@ -42,7 +42,7 @@ export const deleteComment = (postId: number, commentId: number): AnyAction => (
 });
 
 
-export const reducer = (store: StoragePosts | undefined, action: AnyAction): StoragePosts => {
+export const reducer: Reducer = (store: StoragePosts = initStore, action: AnyAction): StoragePosts => {
   if (store === undefined) {
     return {
       posts: [] as PostWithComments[],
@@ -111,23 +111,20 @@ export const loadAllData = () => {
       getUsersFromAPI(),
       getPostsFromAPI(),
       getCommentsFromAPI(),
-    ])
-      .then(([usersFromApi, postsFromApi, commentsFromApi]) => {
-        dispatch(setLoading(false));
-        const newPosts = postsFromApi.map(post => {
-          return {
-            ...post,
-            user: (usersFromApi.find(item => item.id === post.userId) as User),
-            comments: commentsFromApi.filter(item => item.postId === post.id),
-          };
-        });
-
-        dispatch(setPosts(newPosts));
-      })
-      .catch(() => {
-        dispatch(setError(true));
-        dispatch(setLoading(false));
+    ]).then(([usersFromApi, postsFromApi, commentsFromApi]) => {
+      dispatch(setLoading(false));
+      const newPosts = postsFromApi.map(post => {
+        return {
+          ...post,
+          user: (usersFromApi.find(item => item.id === post.userId) as User),
+          comments: commentsFromApi.filter(item => item.postId === post.id),
+        };
       });
+      dispatch(setPosts(newPosts));
+    }).catch(() => {
+      dispatch(setError(true));
+      dispatch(setLoading(false));
+    });
   };
 };
 
