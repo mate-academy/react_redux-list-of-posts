@@ -1,8 +1,7 @@
 import { applyMiddleware, createStore, Dispatch } from 'redux';
 import thunk from 'redux-thunk';
-import {initialState, reducer} from './rootReducer';
+import { initialState, reducer } from './rootReducer';
 import {
-  deleteComment,
   setError,
   setLoading,
   setPosts,
@@ -28,10 +27,6 @@ export const loadData = () => {
       dispatch(setLoading(false));
     }
   };
-};
-
-export const deleteCommentThunk = (id: number) => (dispatch: Dispatch) => {
-  dispatch(deleteComment(id));
 };
 
 const enhancer = composeEnhancers(applyMiddleware(thunk));

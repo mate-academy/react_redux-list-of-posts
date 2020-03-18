@@ -1,25 +1,21 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
-import { deleteCommentThunk } from '../../store/store';
 import { CommentInterface } from '../../constants';
+import { deleteComment } from '../../store/actionCreators';
 
 interface Props {
   comment: CommentInterface;
-  deleteCommentThunk: (value: number) => void;
+  deleteComment: (value: number) => void;
 }
 
 export const CommentTemplate: FC<Props> = (props) => {
-  const { deleteCommentThunk: deleteComment } = props;
+  const { deleteComment: deleteCommentProps } = props;
   const {
     name,
     body,
     email,
     id,
   } = props.comment;
-
-  const handleDelete = useCallback(() => deleteComment(id),
-    [id, deleteComment]);
-
 
   return (
     <div className="card text-white bg-info mb-3">
@@ -39,7 +35,7 @@ export const CommentTemplate: FC<Props> = (props) => {
       <button
         type="button"
         className="btn btn-light"
-        onClick={handleDelete}
+        onClick={() => deleteCommentProps(id)}
       >
         Delete comment
       </button>
@@ -48,7 +44,7 @@ export const CommentTemplate: FC<Props> = (props) => {
 };
 
 const mapDispatchToProps = {
-  deleteCommentThunk,
+  deleteComment,
 };
 
 export const Comment = connect(null, mapDispatchToProps)(CommentTemplate);

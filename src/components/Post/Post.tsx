@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { connect } from 'react-redux';
 import { PostsWithUserAndComments } from '../../constants';
 import { User } from '../User/User';
@@ -20,9 +20,6 @@ export const PostTemplate: FC<Props> = (props) => {
     comments,
   } = props.post;
 
-  const handleDelete = useCallback(() => deletePostThunk(id),
-    [id, deletePostThunk]);
-
   return (
     <div className="list__item">
       <div className="card">
@@ -39,7 +36,7 @@ export const PostTemplate: FC<Props> = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={handleDelete}
+            onClick={() => deletePostThunk(id)}
           >
             Delete post
           </button>

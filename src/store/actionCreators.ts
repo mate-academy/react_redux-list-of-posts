@@ -1,4 +1,4 @@
-import { PostsWithUserAndComments, State } from '../constants';
+import { PostsWithUserAndComments } from '../constants';
 import { ActionTypes } from './actionTypes';
 
 export const setPosts = (value: PostsWithUserAndComments[]) => ({
@@ -25,8 +25,3 @@ export const setError = (value: boolean) => ({
   type: ActionTypes.SET_ERROR,
   payload: value,
 });
-
-export const getPosts = (state: State) => state.posts;
-export const getLoading = (state: State) => state.isLoading;
-export const getQuery = (state: State) => state.query;
-export const getError = (state: State) => state.error;

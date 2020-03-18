@@ -6,13 +6,13 @@ interface Props {
 }
 
 export const User: FC<Props> = (props) => {
-  const { user } = props;
+  const { name, address, email } = props.user;
 
   return (
     <div className="user">
       <p>Contact info:</p>
-      <p>{`name: ${user.name}, email: ${user.email}`}</p>
-      <p>{`address: ${user.address.zipcode}, ${user.address.street}, ${user.address.city}`}</p>
+      <p>{`name: ${name}, email: ${email}`}</p>
+      <p>{`address: ${address.zipcode}, ${address.street}, ${address.city}`}</p>
     </div>
   );
 };

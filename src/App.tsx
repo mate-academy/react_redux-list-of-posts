@@ -14,15 +14,14 @@ import {
 import { PostList } from './components/PostList/PostList';
 import { loadData } from './store/store';
 import {
-  getError,
-  getLoading,
-  getPosts,
-  getQuery,
   setLoading,
   setPosts,
   setQuery,
 } from './store/actionCreators';
 import { searchCallback } from './utils';
+import {
+  getError, getLoading, getPosts, getQuery,
+} from './store/rootReducer';
 
 interface Props {
   posts: PostsWithUserAndComments[];
@@ -44,10 +43,6 @@ const App: FC<Props> = (props) => {
     loadData: loadDataTemplate,
     setQuery: setQueryTemplate,
   } = props;
-
-  const handleStart = () => {
-    loadDataTemplate();
-  };
 
   const searchWithDelay = useCallback(
     debounce(setQueryTemplate, 1000),
@@ -73,7 +68,7 @@ const App: FC<Props> = (props) => {
             <button
               type="button"
               className="btn btn-primary"
-              onClick={handleStart}
+              onClick={loadDataTemplate}
             >
               {isLoading ? 'Loading.......' : 'Start load'}
             </button>

@@ -9,6 +9,12 @@ export const initialState: State = {
   error: false,
 };
 
+// selectors
+export const getPosts = (state: State) => state.posts;
+export const getLoading = (state: State) => state.isLoading;
+export const getQuery = (state: State) => state.query;
+export const getError = (state: State) => state.error;
+
 export const reducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ActionTypes.SET_POSTS:
