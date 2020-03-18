@@ -13,7 +13,7 @@ export const getData = async <T>(url: string): Promise<T> => {
   return response.json();
 };
 
-export const getPosts = (): Promise<Post[]> => {
+export const getPosts = () => {
   return getData<Post[]>(`${API_URL}posts`);
 };
 

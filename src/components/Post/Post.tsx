@@ -25,8 +25,12 @@ export const PostTemplate: FC<Props> = ({ post, removePost }) => {
     <li className="post">
       <h2 className="post__title">{title}</h2>
       <p className="post__body">{body}</p>
+
+
       {user && <User user={user} />}
       {comments && <Comments comments={comments} />}
+
+
       <button
         type="button"
         className="delete_button"

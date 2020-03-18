@@ -9,7 +9,6 @@ import './SearchPost.css';
 interface Props {
   changeSearchValue: (search: string) => void;
   searchValue: string;
-
 }
 
 export const SearchPostTemplate: FC<Props> = ({ searchValue, changeSearchValue }) => {

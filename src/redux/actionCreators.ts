@@ -21,9 +21,9 @@ export const setHasError = (status: boolean) => ({
   hasError: status,
 });
 
-export const setIsLoaded = () => ({
+export const setIsLoaded = (status: boolean) => ({
   type: SET_IS_LOADED,
-  isLoaded: true,
+  isLoaded: status,
 });
 
 export const setPosts = (postsFromApi: PreparedPost[]) => ({
@@ -59,5 +59,5 @@ export const showedAllPosts = () => async (dispatch: Dispatch) => {
   }
 
   dispatch(setIsLoading(false));
-  dispatch(setIsLoaded());
+  dispatch(setIsLoaded(true));
 };
