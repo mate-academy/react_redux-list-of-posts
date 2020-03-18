@@ -19,22 +19,3 @@ export const getComments = (): Promise<CommentInterface[]> => {
 export const getUsers = (): Promise<UserInterface[]> => {
   return getData(URL + USERS);
 };
-
-export const getPreparedPosts = async (): Promise<PreparedPostInterface[]> => {
-  const [
-    postsFromServer,
-    usersFromServer,
-    commentsFromServer,
-  ]
-    = await Promise.all([
-      getPosts(),
-      getUsers(),
-      getComments(),
-    ]);
-
-  return postsFromServer.map(post => ({
-    ...post,
-    user: usersFromServer.find(user => user.id === post.userId) as UserInterface,
-    comments: commentsFromServer.filter(comment => comment.postId === post.id),
-  }));
-};
