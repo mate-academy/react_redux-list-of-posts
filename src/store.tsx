@@ -10,7 +10,6 @@ import {
   LOAD_POSTS,
   SET_LOADING,
   SET_STARTED,
-  SET_QUERY,
   SET_FILTER_QUERY,
   REMOVE_POST,
   REMOVE_COMMENT,
@@ -41,11 +40,6 @@ export const setStarted = (payload: boolean) => ({
   payload,
 });
 
-export const setQuery = (payload: string) => ({
-  type: SET_QUERY,
-  payload,
-});
-
 export const setFilterQuery = (payload: string) => ({
   type: SET_FILTER_QUERY,
   payload,
@@ -65,7 +59,7 @@ export const loadPosts = () => {
   return (dispatch: Dispatch) => {
     dispatch(setLoading(true));
 
-    Promise.all([getPosts(), getUsers(), getComments()])
+    return Promise.all([getPosts(), getUsers(), getComments()])
       .then(([postsFromApi, usersFromApi, commentsFromApi]) => {
         const preparedPosts = postsFromApi.map(post => ({
           ...post,
@@ -80,13 +74,10 @@ export const loadPosts = () => {
   };
 };
 
-export const handleInputChange = (value: string) => {
-  return (dispatch: Dispatch) => {
-    dispatch(setQuery(value));
-  };
-};
-
-const todosReducer: Reducer<State, Actions> = (state = initialState, action) => {
+const todosReducer: Reducer<State, Actions> = (
+  state = initialState,
+  action,
+) => {
   switch (action.type) {
     case LOAD_POSTS:
       return {
@@ -104,12 +95,6 @@ const todosReducer: Reducer<State, Actions> = (state = initialState, action) => 
       return {
         ...state,
         isStarted: action.payload,
-      };
-
-    case SET_QUERY:
-      return {
-        ...state,
-        query: action.payload,
       };
 
     case SET_FILTER_QUERY:
