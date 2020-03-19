@@ -4,7 +4,14 @@ import {
 import thunk from 'redux-thunk';
 import {
   getCommentsFromAPI, getUsersFromAPI, getPostsFromAPI
-} from './util';
+} from '../util';
+
+import { ActionTypes } from './actionTypes'
+import {
+  setLoading,
+  setError,
+  setPosts
+} from './actionCreators'
 
 const initStore: StoragePosts = {
   posts: [] as PostWithComments[],
@@ -13,34 +20,6 @@ const initStore: StoragePosts = {
   query: '',
   filterQuery: '',
 };
-
-const TYPE_SET_POSTS = 'TYPE_SET_POSTS';
-const TYPE_SET_ERROR = 'TYPE_SET_ERROR';
-const TYPE_SET_LOADING = 'TYPE_SET_LOADING';
-const TYPE_SET_QUERY = 'TYPE_SET_QUERY';
-const TYPE_SET_FILTERED_QUERY = 'TYPE_SET_FILTERED_QUERY';
-const TYPE_DELETE_POST = 'TYPE_DELETE_POST';
-const TYPE_DELETE_COMMENT = 'TYPE_DELETE_COMMENT';
-
-
-export const getPosts = (state: StoragePosts) => state.posts;
-export const getError = (state: StoragePosts) => state.isError;
-export const getLoading = (state: StoragePosts) => state.isLoading;
-export const getQuery = (state: StoragePosts) => state.query;
-export const getFilteredQuery = (state: StoragePosts) => state.filterQuery;
-
-export const setPosts = (value: PostWithComments[]): AnyAction => ({ type: TYPE_SET_POSTS, value });
-export const setError = (value: boolean): AnyAction => ({ type: TYPE_SET_ERROR, value });
-export const setLoading = (value: boolean): AnyAction => ({ type: TYPE_SET_LOADING, value });
-export const setQuery = (value: string): AnyAction => ({ type: TYPE_SET_QUERY, value });
-export const setFilteredQuery = (value: string): AnyAction => ({
-  type: TYPE_SET_FILTERED_QUERY, value,
-});
-export const deletePost = (value: number): AnyAction => ({ type: TYPE_DELETE_POST, value });
-export const deleteComment = (postId: number, commentId: number): AnyAction => ({
-  type: TYPE_DELETE_COMMENT, postId, commentId,
-});
-
 
 export const reducer: Reducer = (store: StoragePosts = initStore, action: AnyAction): StoragePosts => {
   if (store === undefined) {
@@ -54,7 +33,7 @@ export const reducer: Reducer = (store: StoragePosts = initStore, action: AnyAct
   }
 
   switch (action.type) {
-    case 'TYPE_DELETE_COMMENT': {
+    case ActionTypes.TYPE_DELETE_COMMENT: {
       return {
         ...store,
         posts: store.posts.map(post => {
@@ -72,27 +51,29 @@ export const reducer: Reducer = (store: StoragePosts = initStore, action: AnyAct
       };
     }
 
-    case 'TYPE_DELETE_POST': {
-      return { ...store, posts: store.posts.filter(item => item.id !== action.value) };
+    case ActionTypes.TYPE_DELETE_POST: {
+      return {
+        ...store,
+        posts: store.posts.filter(item => item.id !== action.value) };
     }
 
-    case 'TYPE_SET_POSTS': {
+    case ActionTypes.TYPE_SET_POSTS: {
       return { ...store, posts: action.value };
     }
 
-    case 'TYPE_SET_ERROR': {
+    case ActionTypes.TYPE_SET_ERROR: {
       return { ...store, isError: action.value };
     }
 
-    case 'TYPE_SET_LOADING': {
+    case ActionTypes.TYPE_SET_LOADING: {
       return { ...store, isLoading: action.value };
     }
 
-    case 'TYPE_SET_QUERY': {
+    case ActionTypes.TYPE_SET_QUERY: {
       return { ...store, query: action.value };
     }
 
-    case 'TYPE_SET_FILTERED_QUERY': {
+    case ActionTypes.TYPE_SET_FILTERED_QUERY: {
       return { ...store, filterQuery: action.value };
     }
 
@@ -102,7 +83,7 @@ export const reducer: Reducer = (store: StoragePosts = initStore, action: AnyAct
   }
 };
 
-export const loadAllData = () => {
+export const loadData = () => {
   return (dispatch: Dispatch) => {
     dispatch(setError(false));
     dispatch(setLoading(true));

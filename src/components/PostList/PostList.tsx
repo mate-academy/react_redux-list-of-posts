@@ -12,23 +12,21 @@ interface Props {
 
 export const PostList: FC<Props> = ({ postList, onDeletePost, onDeleteComment }) => (
   <ul className="postList">
-    {postList.map((post) => {
-      return (
-        <Fragment key={post.id}>
-          <Post
-            post={post}
-            onDelete={onDeleteComment}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              onDeletePost(post.id);
-            }}
-          >
-            delete Post
-          </button>
-        </Fragment>
-      );
-    })}
+    {postList.map((post) => (
+      <Fragment key={post.id}>
+        <Post
+          post={post}
+          onDelete={onDeleteComment}
+        />
+        <button
+          type="button"
+          onClick={() => {
+            onDeletePost(post.id);
+          }}
+        >
+          delete Post
+        </button>
+      </Fragment>
+    ))}
   </ul>
 );

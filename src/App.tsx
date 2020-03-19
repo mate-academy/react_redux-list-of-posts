@@ -10,15 +10,19 @@ import { PostList } from './components/PostList/PostList';
 import {
   getLoading,
   getError,
-  getQuery, getPosts,
+  getQuery,
+  getPosts,
   getFilteredQuery,
+} from './store/selectors';
 
+import { loadData as loadDataStore } from './store/store';
+
+import {
   setQuery as setQueryStore,
   setFilteredQuery as setFilteredQueryStore,
   deletePost as deletePostStore,
   deleteComment as deleteCommentStore,
-  loadAllData as loadAllDataStore,
-} from './store';
+} from './store/actionCreators'
 
 
 interface Props {
@@ -32,7 +36,7 @@ interface Props {
   setFilterQuery: (value: string) => void;
   deletePost: (value: number) => void;
   deleteComment: (postId: number, commentId: number) => void;
-  loadAllData: () => void;
+  loadData: () => void;
 }
 
 const App: FC<Props> = (props) => {
@@ -47,7 +51,7 @@ const App: FC<Props> = (props) => {
     setFilterQuery,
     deletePost,
     deleteComment,
-    loadAllData,
+    loadData,
   } = props;
 
   function filterPosts(initialPosts: PostWithComments[], filter: string): PostWithComments[] {
@@ -79,7 +83,7 @@ const App: FC<Props> = (props) => {
         <h1>Redux list of posts</h1>
         <button
           type="button"
-          onClick={loadAllData}
+          onClick={loadData}
           disabled={isLoading}
         >
           Load posts
@@ -118,7 +122,7 @@ const getMethods = {
   setFilterQuery: setFilteredQueryStore,
   deletePost: deletePostStore,
   deleteComment: deleteCommentStore,
-  loadAllData: loadAllDataStore,
+  loadData: loadDataStore,
 };
 
 const getData = (state: StoragePosts) => ({

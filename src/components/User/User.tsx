@@ -5,18 +5,9 @@ interface Props {
 }
 
 
-export const User: FC<Props> = (props) => {
-  const {
-    user: {
-      name,
-      email,
-      address: {
-        city,
-        street,
-        zipcode,
-      },
-    },
-  } = props;
+export const User: FC<Props> = ({ user }) => {
+  const { name, email, address } = user;
+  const { city, street, zipcode } = address
 
   return (
     <div className="user">
