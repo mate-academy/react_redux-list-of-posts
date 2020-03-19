@@ -1,0 +1,16 @@
+.comment-item {
+  max-width: 500px;
+  margin-left: 60px;
+  text-align: left;
+  margin-top: 20px;
+  padding-right: 15px !important;
+}
+
+.comment-item-email {
+  text-align: right;
+}
+
+.comment-item-name {
+  margin: 10px auto;
+  font-size: 19px;
+}
