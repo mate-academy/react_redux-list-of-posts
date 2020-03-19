@@ -22,8 +22,8 @@ const App: FC<AppProps> = (props) => {
   const {
     isLoaded,
     isLoading,
-    loadData,
     filterPosts,
+    loadData,
     setFiledQuery,
   } = props;
 
@@ -59,43 +59,12 @@ const App: FC<AppProps> = (props) => {
   );
 };
 
-// import { SORT_TYPES} from "./store/store";
-
-
-
-// SELECTOR FUNCTION
-// const getSortedPosts = (state: any) => {
-//   const { filteredPosts, sortField } = state;
-//
-//   switch (sortField) {
-//     case SORT_TYPES.name:
-//       return [...filteredPosts].sort();
-//
-//
-//
-//     default:
-//       return filteredPosts;
-//   }
-// };
-
-
-const showPreperedPost = (state: InitialStateInterface) => {
-  const { posts, users, comments } = state;
-
-  return posts.map((post) => (
-    {
-      ...post,
-      user: users.find((user) => user.id === post.userId) as User,
-      comments: comments.filter((comment) => comment.postId === post.id),
-    }
-  ));
-};
 
 const filterPosts = (state: InitialStateInterface) => {
-  const prepearedPost = showPreperedPost(state);
+  const preparedPost = state.preparedPosts;
   const { fieldQuery } = state;
 
-  return prepearedPost
+  return preparedPost
     .filter(post => post.body.includes(fieldQuery) || post.title.includes(fieldQuery));
 };
 
@@ -105,12 +74,12 @@ const mapStateToProps = (state: InitialStateInterface) => ({
   filterPosts: filterPosts(state),
 });
 
-const mapDipatchToProps = (dispatch: ThunkDispatch< {}, {}, AnyAction>) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch< {}, {}, AnyAction>) => ({
   loadData: () => dispatch(loadData()),
   setFiledQuery: (value: string) => dispatch(fieldFilter(value)),
 });
 
 export default connect(
   mapStateToProps,
-  mapDipatchToProps,
+  mapDispatchToProps,
 )(App);

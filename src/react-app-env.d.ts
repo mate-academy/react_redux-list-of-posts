@@ -53,7 +53,6 @@ interface InitialStateInterface {
   users: User[];
   posts: Post[];
   comments: Comment[];
-  filteredPosts: PostsWithUser[];
+  preparedPosts: PostsWithUser[];
   fieldQuery: string;
 }
-

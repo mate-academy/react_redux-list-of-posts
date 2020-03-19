@@ -1,4 +1,7 @@
-import React, {ChangeEvent, FC, useEffect, useState} from 'react';
+import React, {ChangeEvent, FC, useEffect, useMemo, useState} from 'react';
+// @ts-ignore
+import debounce from 'lodash/debounce';
+
 import './FilterField.css';
 
 interface FilterFieldInterface {
@@ -7,13 +10,20 @@ interface FilterFieldInterface {
 
 export const FilterField: FC<FilterFieldInterface> = ({ setFiledQuery }) => {
   const [serachQuery, setSearchQuery] = useState('');
+  const [currentSearchQuery, setCurrentSearchQuery] = useState('');
 
   useEffect(() => {
     setFiledQuery(serachQuery);
   }, [serachQuery]);
 
+  const setWithDebounce = useMemo(
+    () => debounce(setSearchQuery, 500),
+    [serachQuery],
+  );
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    setCurrentSearchQuery(event.target.value);
+    setWithDebounce(event.target.value);
   };
 
   return (
@@ -23,7 +33,7 @@ export const FilterField: FC<FilterFieldInterface> = ({ setFiledQuery }) => {
           className="input is-medium is-rounded"
           type="text"
           placeholder="Search..."
-          value={serachQuery}
+          value={currentSearchQuery}
           onChange={handleChange}
         />
       </div>

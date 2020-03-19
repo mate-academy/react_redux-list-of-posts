@@ -24,6 +24,11 @@ export const loadComments = (comments: Comment[]): LoadCommentsInterface => ({
   comments,
 });
 
+export const preparedPosts = (preparedPosts: PostsWithUser[]): PreparedPostInterface => ({
+  type: actionType.PREPARED_POSTS,
+  preparedPosts,
+});
+
 export const fieldFilter = (value: string): FieldFilterInterface => ({
   type: actionType.FIELD_FILTER,
   value,
@@ -53,6 +58,11 @@ interface LoadCommentsInterface {
   comments: Comment[];
 }
 
+interface PreparedPostInterface {
+  type: typeof actionType.PREPARED_POSTS;
+  preparedPosts: PostsWithUser[];
+}
+
 interface FieldFilterInterface {
   type: typeof actionType.FIELD_FILTER;
   value: string;
@@ -65,4 +75,5 @@ export type ActionCreatorsTypes =
   & LoadPostsInterface
   & LoadUsersInterface
   & LoadCommentsInterface
+  & PreparedPostInterface
   & FieldFilterInterface;

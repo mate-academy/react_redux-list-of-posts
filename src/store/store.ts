@@ -9,7 +9,7 @@ import {
   isLoadingCreator,
   loadComments,
   loadPosts,
-  loadUsers
+  loadUsers, preparedPosts,
 } from './actionCreators';
 import {getData} from '../api/api';
 
@@ -26,9 +26,19 @@ const initialState = {
   posts: [],
   comments: [],
   filteredPosts: [],
+  preparedPosts: [],
   fieldQuery: '',
 };
 
+const showPreparedPost = (posts: any, users: any, comments: any) => {
+  return posts.map((post:any) => (
+    {
+      ...post,
+      user: users.find((user:any) => user.id === post.userId) as User,
+      comments: comments.filter((comment: any) => comment.postId === post.id),
+    }
+  ));
+};
 
 export const loadData = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
   return async (dispatch: ThunkDispatch< {}, {}, AnyAction>): Promise<void> => {
@@ -42,8 +52,8 @@ export const loadData = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
       dispatch(loadPosts(posts));
       dispatch(loadUsers(users));
       dispatch(loadComments(comments));
+      dispatch(preparedPosts(showPreparedPost(posts, users, comments)))
     });
-
     dispatch(isLoadedCreator());
   };
 };
@@ -87,6 +97,13 @@ const reducer = (state: InitialStateInterface = initialState, action: ActionCrea
       };
       break;
 
+    case actionType.PREPARED_POSTS:
+      return {
+        ...state,
+        preparedPosts: action.preparedPosts,
+      };
+      break;
+
     case actionType.FIELD_FILTER:
       return {
         ...state,
@@ -96,7 +113,6 @@ const reducer = (state: InitialStateInterface = initialState, action: ActionCrea
 
     default:
       return state;
-
   }
 };
 
