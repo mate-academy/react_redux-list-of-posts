@@ -54,5 +54,6 @@ interface InitialStateInterface {
   posts: Post[];
   comments: Comment[];
   filteredPosts: PostsWithUser[];
+  fieldQuery: string;
 }
 

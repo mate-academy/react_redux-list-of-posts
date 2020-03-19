@@ -1,18 +1,21 @@
 import React, { FC } from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
 import './App.css';
 import { loadData } from './store/store';
 import { PostList } from './components/PostList/PostsList';
-import {FilterField} from './components/FilterField/FilterField';
-
+import { FilterField } from './components/FilterField/FilterField';
+import {fieldFilter} from './store/actionCreators';
 
 
 interface AppProps {
   isLoaded: boolean;
   isLoading: boolean;
-  loadData: any; // Как описать action
-  filteredPosts: PostsWithUser[];
+  loadData: () => void;
+  filterPosts: PostsWithUser[];
+  setFiledQuery: (arg0: string) => void;
 }
 
 const App: FC<AppProps> = (props) => {
@@ -20,14 +23,13 @@ const App: FC<AppProps> = (props) => {
     isLoaded,
     isLoading,
     loadData,
-    filteredPosts,
+    filterPosts,
+    setFiledQuery,
   } = props;
 
   const handleClick = () => {
     loadData();
   };
-
-  console.log(filteredPosts);
 
   return (
     <div className={`app ${isLoaded ? 'app-loaded' : ''}`}>
@@ -36,8 +38,8 @@ const App: FC<AppProps> = (props) => {
         isLoaded
           ? (
             <>
-              <FilterField />
-              <PostList filteredPosts={filteredPosts} />
+              <FilterField setFiledQuery={setFiledQuery} />
+              <PostList filterPosts={filterPosts} />
             </>
           )
           : (
@@ -53,7 +55,6 @@ const App: FC<AppProps> = (props) => {
             <p>is Loading...</p>
           )
       }
-
     </div>
   );
 };
@@ -77,8 +78,9 @@ const App: FC<AppProps> = (props) => {
 //   }
 // };
 
+
 const showPreperedPost = (state: InitialStateInterface) => {
- const { posts, users, comments } = state;
+  const { posts, users, comments } = state;
 
   return posts.map((post) => (
     {
@@ -89,14 +91,23 @@ const showPreperedPost = (state: InitialStateInterface) => {
   ));
 };
 
+const filterPosts = (state: InitialStateInterface) => {
+  const prepearedPost = showPreperedPost(state);
+  const { fieldQuery } = state;
+
+  return prepearedPost
+    .filter(post => post.body.includes(fieldQuery) || post.title.includes(fieldQuery));
+};
+
 const mapStateToProps = (state: InitialStateInterface) => ({
   isLoading: state.isLoading,
   isLoaded: state.isLoaded,
-  filteredPosts: showPreperedPost(state),
+  filterPosts: filterPosts(state),
 });
 
-const mapDipatchToProps = (dispatch: any) => ({
+const mapDipatchToProps = (dispatch: ThunkDispatch< {}, {}, AnyAction>) => ({
   loadData: () => dispatch(loadData()),
+  setFiledQuery: (value: string) => dispatch(fieldFilter(value)),
 });
 
 export default connect(

@@ -4,14 +4,14 @@ import { PostItem } from '../PostItem/PostItem';
 import './PostList.css';
 
 interface PostListProps {
-  filteredPosts: PostsWithUser[];
+  filterPosts: PostsWithUser[];
 }
 
-export const PostList: FC<PostListProps> = ({ filteredPosts }) => {
+export const PostList: FC<PostListProps> = ({ filterPosts }) => {
   return (
     <div className="post-list">
       {
-        filteredPosts.map(post => (
+        filterPosts.map(post => (
           <PostItem key={post.id} post={post} />
         ))
       }

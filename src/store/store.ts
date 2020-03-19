@@ -1,6 +1,6 @@
-import { createStore, applyMiddleware } from 'redux';
-import {Dispatch} from 'react';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, AnyAction } from 'redux';
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+
 
 import { actionType } from './actionType';
 import {
@@ -26,12 +26,12 @@ const initialState = {
   posts: [],
   comments: [],
   filteredPosts: [],
-  sortField: SORT_TYPES.name,
+  fieldQuery: '',
 };
 
 
-export const loadData = () => {
-  return async (dispatch: Dispatch<ActionCreatorsTypes>) => {
+export const loadData = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch< {}, {}, AnyAction>): Promise<void> => {
     dispatch(isLoadingCreator());
 
     await Promise.all([
@@ -49,7 +49,7 @@ export const loadData = () => {
 };
 
 
-const reducer = (state: InitialStateInterface = initialState, action: any) => { // ActionCreatorsTypes
+const reducer = (state: InitialStateInterface = initialState, action: ActionCreatorsTypes) => { // ActionCreatorsTypes
   switch (action.type) {
     case actionType.IS_LOADING:
       return {
@@ -84,6 +84,13 @@ const reducer = (state: InitialStateInterface = initialState, action: any) => { 
       return {
         ...state,
         comments: action.comments,
+      };
+      break;
+
+    case actionType.FIELD_FILTER:
+      return {
+        ...state,
+        fieldQuery: action.value,
       };
       break;
 

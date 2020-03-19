@@ -5,4 +5,5 @@ export const actionType = {
   LOAD_POSTS: 'LOAD_POSTS',
   LOAD_USERS: 'LOAD_USERS',
   LOAD_COMMENTS: 'LOAD_COMMENTS',
+  FIELD_FILTER: 'FIELD_FILTER',
 };

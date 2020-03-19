@@ -24,6 +24,11 @@ export const loadComments = (comments: Comment[]): LoadCommentsInterface => ({
   comments,
 });
 
+export const fieldFilter = (value: string): FieldFilterInterface => ({
+  type: actionType.FIELD_FILTER,
+  value,
+});
+
 
 interface IsLoadingCreatorInterface {
   type: typeof actionType.IS_LOADING;
@@ -48,10 +53,16 @@ interface LoadCommentsInterface {
   comments: Comment[];
 }
 
+interface FieldFilterInterface {
+  type: typeof actionType.FIELD_FILTER;
+  value: string;
+}
+
 
 export type ActionCreatorsTypes =
-  | IsLoadingCreatorInterface
-  | IsLoadedCreatorInterface
-  | LoadPostsInterface
-  | LoadUsersInterface
-  | LoadCommentsInterface;
+  & IsLoadingCreatorInterface
+  & IsLoadedCreatorInterface
+  & LoadPostsInterface
+  & LoadUsersInterface
+  & LoadCommentsInterface
+  & FieldFilterInterface;
