@@ -30,7 +30,7 @@ export const preparedPosts = (preparedPosts: PostsWithUser[]): PreparedPostInter
 });
 
 export const fieldFilter = (value: string): FieldFilterInterface => ({
-  type: actionType.FIELD_FILTER,
+  type: actionType.SET_FILTER_VALUE,
   value,
 });
 
@@ -64,7 +64,7 @@ interface PreparedPostInterface {
 }
 
 interface FieldFilterInterface {
-  type: typeof actionType.FIELD_FILTER;
+  type: typeof actionType.SET_FILTER_VALUE;
   value: string;
 }
 

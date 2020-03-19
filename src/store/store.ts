@@ -25,17 +25,16 @@ const initialState = {
   users: [],
   posts: [],
   comments: [],
-  filteredPosts: [],
   preparedPosts: [],
   fieldQuery: '',
 };
 
-const showPreparedPost = (posts: any, users: any, comments: any) => {
-  return posts.map((post:any) => (
+const showPreparedPost = (posts: Post[], users: User[], comments: Comment[]) => {
+  return posts.map((post) => (
     {
       ...post,
-      user: users.find((user:any) => user.id === post.userId) as User,
-      comments: comments.filter((comment: any) => comment.postId === post.id),
+      user: users.find((user) => user.id === post.userId) as User,
+      comments: comments.filter((comment) => comment.postId === post.id),
     }
   ));
 };
@@ -104,7 +103,7 @@ const reducer = (state: InitialStateInterface = initialState, action: ActionCrea
       };
       break;
 
-    case actionType.FIELD_FILTER:
+    case actionType.SET_FILTER_VALUE:
       return {
         ...state,
         fieldQuery: action.value,
