@@ -1,2 +1,0 @@
-(this["webpackJsonpreact_redux-list-of-posts"]=this["webpackJsonpreact_redux-list-of-posts"]||[]).push([[0],{3:function(e,t,n){e.exports=n(9)},8:function(e,t,n){},9:function(e,t,n){"use strict";n.r(t);var s=n(0),o=n.n(s),r=n(2),a=n.n(r),c=(n(8),function(){return o.a.createElement("div",{className:"App"},o.a.createElement("h1",null,"Redux list of posts"))});a.a.render(o.a.createElement(c,null),document.getElementById("root"))}},[[3,1,2]]]);
-//# sourceMappingURL=main.996bc1dc.chunk.js.map
