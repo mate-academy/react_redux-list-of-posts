@@ -31,7 +31,7 @@ export const PostsList = ({ posts }: PostsListProps) => {
 
     dispatch(setQuery(e.target.value));
     setFilteredQueryWithDebounce(e.target.value);
-  }, [setFilteredQueryWithDebounce]);
+  }, [dispatch, setFilteredQueryWithDebounce]);
   return (
     <>
       <Search handleSearch={handleSearch} />
