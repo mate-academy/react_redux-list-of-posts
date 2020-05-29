@@ -5,7 +5,7 @@ import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import postsReducer, { setPosts } from './posts';
-import { fetchPreparedPosts } from '../api/posts';
+import { fetchPreparedPosts } from '../../helpers/api';
 import errorReducer, { setError } from './error';
 import initializedReducer, { setInitialized } from './initialized';
 import queryReducer from './query';
@@ -20,11 +20,6 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const isLoading = (state: RootState) => state.isLoading;
-export const getPosts = (state: RootState) => state.posts;
-export const getError = (state: RootState) => state.hasError;
-export const getInitialized = (state: RootState) => state.isInitialized;
-export const getQuery = (state: RootState) => state.query;
 
 export const loadPosts = () => {
   return async (dispatch: Dispatch<any>) => {

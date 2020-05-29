@@ -38,6 +38,10 @@ interface Comment {
   email: string;
 }
 
+interface CommentProps extends Comment {
+  postId: number;
+}
+
 type SearchProps = {
   handleSearch: React.ChangeEventHandler;
 }

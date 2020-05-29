@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { User } from './User';
-import { CommentList } from './CommentList';
 import { Search } from './Search';
 import debounce from '../helpers/debounce';
-import { setQuery } from '../store/query';
+import { setQuery } from '../redux/store/query';
 import { useDispatch } from 'react-redux';
-import { deletePost } from '../store/posts';
+import { Post } from './Post';
 
 export const PostsList = ({ posts }: PostsListProps) => {
   const [filteredQuery, setFilteredQuery] = useState('');
@@ -28,30 +26,16 @@ export const PostsList = ({ posts }: PostsListProps) => {
   );
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-
     dispatch(setQuery(e.target.value));
     setFilteredQueryWithDebounce(e.target.value);
   }, [dispatch, setFilteredQueryWithDebounce]);
+
+
   return (
     <>
       <Search handleSearch={handleSearch} />
       <article className="app__post-list">
-        {visiblePosts.map(({
-          id, title, user, body, comments,
-        }) => (
-          <section className="post" key={id}>
-            <h5 className="post__title">{title}</h5>
-            <span className="post__delete"
-                  onClick={() => dispatch(deletePost(id))}
-            >
-              Delete post
-            </span>
-            <p className="post__body">{body}</p>
-            <User {...user} />
-            <p className="comment__heading">Comments</p>
-            <CommentList comments={comments} postId={id}/>
-          </section>
-        ))}
+        {visiblePosts.map((post) => <Post key={post.id} {...post} />)}
       </article>
     </>
   );

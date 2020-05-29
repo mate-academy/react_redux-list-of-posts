@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-export const User: FC<User> = ({ name, email, address }) => {
+export const User = ({ name, email, address }: User) => {
   return (
     <section className="user post__user">
       <p className="user__name">{name}</p>

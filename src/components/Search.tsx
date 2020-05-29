@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getQuery } from '../store';
+import { getQuery } from '../redux/selectors';
 
 export const Search = ({ handleSearch }: SearchProps) => {
   const query = useSelector(getQuery);
@@ -14,7 +14,7 @@ export const Search = ({ handleSearch }: SearchProps) => {
               id="textarea1"
               value={query}
               className="materialize-textarea"
-              onChange={(event) => handleSearch(event)}
+              onChange={handleSearch}
             />
             <label htmlFor="textarea1">
               Type something to search post...
