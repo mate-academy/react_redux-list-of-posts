@@ -1,22 +1,49 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
-import { Start } from './components/Start';
 
-import { isLoading, getMessage } from './store';
+import { isLoading, getPosts, getError, getInitialized, loadPosts } from './store';
+import { PostsList } from './components/PostsList';
 
 const App = () => {
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const initialized = useSelector(getInitialized);
+  const posts = useSelector(getPosts);
+  const error = useSelector(getError);
+  const dispatch = useDispatch();
+
+  const loadData = () => {
+    dispatch(loadPosts())
+  };
 
   return (
-    <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
-    </div>
+    <main className="app">
+      <div className="app__header">
+        <h2 className="app__heading">Dynamic list of posts</h2>
+        {!loading && !initialized
+        && (
+          <button
+            type="button"
+            className="waves-effect waves-light btn deep-purple accent-3"
+            onClick={loadData}
+          >
+            load data
+          </button>
+        )}
+        {loading && <p>Loading...</p>}
+        {error && (
+          <button
+            type="button"
+            className="waves-effect waves-light btn deep-purple accent-3"
+            onClick={loadData}
+          >
+            try again
+          </button>
+        )}
+      </div>
+      {!error && !loading && initialized && <PostsList posts={posts} />}
+    </main>
   );
 };
 
