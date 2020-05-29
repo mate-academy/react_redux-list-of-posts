@@ -1,17 +1,17 @@
 const API_URL = 'https://jsonplaceholder.typicode.com';
 
 const fetchPosts = () => {
-  return fetch(`${API_URL}/posts`, { mode: 'no-cors'})
+  return fetch(`${API_URL}/posts`)
     .then(response => response.json());
 };
 
 const fetchUsers = () => {
-  return fetch(`${API_URL}/users`, { mode: 'no-cors'})
+  return fetch(`${API_URL}/users`)
     .then(response => response.json());
 };
 
 const fetchComments = () => {
-  return fetch(`${API_URL}/comments`, { mode: 'no-cors'})
+  return fetch(`${API_URL}/comments`)
     .then(response => response.json());
 };
 
