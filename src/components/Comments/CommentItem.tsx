@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteComment } from '../../store/comments';
+import { deleteComment } from '../../store';
 
 interface Props {
   id: number;

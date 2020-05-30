@@ -8,7 +8,7 @@ import loadedReducer, { setLoaded } from './loaded';
 import errordReducer, { setErrorMessage } from './error';
 import postReducer, { setPosts } from './posts';
 import userReducer, { setUsers } from './users';
-import commentReducer, { setComments } from './comments';
+import commentReducer, { setComments, deleteComment } from './comments';
 import { getData } from '../helpers/api';
 
 const rootReducer = combineReducers({
@@ -28,6 +28,7 @@ export const getError = (state: RootState) => state.errorMessage;
 export const getPosts = (state: RootState) => state.posts;
 export const getUsers = (state: RootState) => state.users;
 export const getComments = (state: RootState) => state.comments;
+export { deleteComment };
 
 export const loadPosts = () => {
   return async (dispatch: Dispatch<any>) => {

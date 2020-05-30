@@ -19,7 +19,7 @@ const reducer = (comments = [], action: AnyAction) => {
       return action.comments;
 
     case DELETE_COMMENT:
-      return [...comments].filter((comment: Comment) => comment.id !== action.commentId);
+      return comments.filter((comment: Comment) => comment.id !== action.commentId);
 
     default:
       return comments;
