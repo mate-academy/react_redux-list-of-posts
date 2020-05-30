@@ -4,45 +4,48 @@ import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import loadedReducer, { setLoaded } from './loaded';
+import errordReducer, { setErrorMessage } from './error';
+import postReducer, { setPosts } from './posts';
+import userReducer, { setUsers } from './users';
+import commentReducer, { setComments } from './comments';
+import { getData } from '../helpers/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
-  message: messageReducer,
+  loaded: loadedReducer,
+  errorMessage: errordReducer,
+  posts: postReducer,
+  users: userReducer,
+  comments: commentReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const isLoaded = (state: RootState) => state.loaded;
+export const getError = (state: RootState) => state.errorMessage;
+export const getPosts = (state: RootState) => state.posts;
+export const getUsers = (state: RootState) => state.users;
+export const getComments = (state: RootState) => state.comments;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
+export const loadPosts = () => {
   return async (dispatch: Dispatch<any>) => {
     dispatch(startLoading());
 
     try {
-      const message = await fetchMessage();
+      const [posts, users, comments] = await Promise.all([
+        getData<PostFromServer>('posts.json'),
+        getData<User>('users.json'),
+        getData<Comment>('comments.json'),
+      ]);
 
-      dispatch(setMessage(message));
+      dispatch(setPosts(posts));
+      dispatch(setUsers(users));
+      dispatch(setComments(comments));
+      dispatch(setLoaded());
     } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
+      dispatch(setErrorMessage(`Error occurred when loading data: ${error}`));
     }
 
     dispatch(finishLoading());

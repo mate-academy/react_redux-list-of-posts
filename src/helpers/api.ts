@@ -1,8 +1,8 @@
-export function fetchMessage(): Promise<string> {
-  // this is just a fake promise resolved in 2 seconds
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('Message from server');
-    }, 2000);
-  });
+const API_URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api';
+
+export async function getData<T>(url: string): Promise<T[]> {
+  const response = await fetch(`${API_URL}/${url}`);
+  const json = await response.json();
+
+  return json;
 }
