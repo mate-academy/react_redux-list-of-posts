@@ -8,7 +8,6 @@ const App = () => {
     <div className="App">
       <h1>Redux list of posts</h1>
       <PostList />
-
     </div>
   );
 };

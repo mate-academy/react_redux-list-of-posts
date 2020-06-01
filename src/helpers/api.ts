@@ -8,23 +8,23 @@ export function fetchMessage(): Promise<string> {
     }, 2000);
   });
 }
-
+const baseURL = "https://mate-academy.github.io/react_dynamic-list-of-posts/api/"
 export const getPosts = () => {
-  return fetch("https://mate-academy.github.io/react_dynamic-list-of-posts/api/posts.json")
-  .then(responce => responce.json())
-  .then(posts => posts)
+  return fetch(baseURL + "posts.json")
+    .then(responce => responce.json())
+    .then(posts => posts)
 }
 export const getUsers = () => {
-  return fetch("https://mate-academy.github.io/react_dynamic-list-of-posts/api/users.json")
-  .then(responce => responce.json())
-  .then(users => users)
+  return fetch(baseURL + "users.json")
+    .then(responce => responce.json())
+    .then(users => users)
 }
 export const getComments = () => {
-  return fetch("https://mate-academy.github.io/react_dynamic-list-of-posts/api/comments.json")
-  .then(responce => responce.json())
-  .then(comments => comments)
+  return fetch(baseURL + "comments.json")
+    .then(responce => responce.json())
+    .then(comments => comments)
 }
 
 export const getAllData = () => {
- return Promise.all([getPosts(), getUsers(), getComments()])
+  return Promise.all([getPosts(), getUsers(), getComments()])
 }

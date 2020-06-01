@@ -1,5 +1,5 @@
 
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { getAllData } from '../helpers/api';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -13,9 +13,6 @@ import { Post } from './Post';
 import { setFilterFieldCreator } from '../store/filterField';
 import { setFilteredPostsCreator } from '../store/filteredPosts';
 import { debounce } from '../helpers/debounce';
-
-
-
 
 type PropsType = {
   setMessage: (message: string) => void;
@@ -56,21 +53,23 @@ const PostList = ({
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFilterField(event.target.value);
-    debounce(() => {
-      setFilteredPosts(posts.filter(
-        (post: PostType) => post.body.includes(filterField)
-          || post.title.includes(filterField)))
-    },
-      1000)
   }
 
-
+  useEffect(() => {
+    debounce(() => {
+      if (filterField === "") {
+        setFilteredPosts(posts);
+      } else {
+        setFilteredPosts(posts.filter(
+          (post: PostType) => post.body.includes(filterField)
+            || post.title.includes(filterField)))
+      }
+    },
+      1000)
+  }, [filterField, filteredPosts, setFilteredPosts, posts])
 
   return (
     <div>
-
-
-
       {message === 'Loaded'
         ? (<>
           <span>For filtering: </span>
@@ -85,11 +84,9 @@ const PostList = ({
                 <li key={post.id}>
                   <Post post={post} />
                 </li>
-
               )
             })}
           </ul>
-
         </>)
         : <button
           onClick={handleButtonClick}
@@ -105,8 +102,6 @@ const mapState = (state: RootState) => ({
   posts: state.posts,
   filterField: state.filterField,
   filteredPosts: state.filteredPosts,
-
-
 })
 
 const mapDispatch = (dispatch: Dispatch) => ({
@@ -118,8 +113,4 @@ const mapDispatch = (dispatch: Dispatch) => ({
   setFilteredPosts: (filteredPosts: PostType[]) => dispatch(setFilteredPostsCreator(filteredPosts))
 })
 
-
-
-
 export default connect(mapState, mapDispatch)(PostList)
-

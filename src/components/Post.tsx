@@ -5,7 +5,6 @@ import { RootState } from '../store'
 import { User } from './User';
 import { Comments } from './Comments';
 
-
 type PropsType = {
   post: PostType;
 }

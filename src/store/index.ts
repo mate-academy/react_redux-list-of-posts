@@ -2,7 +2,6 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
-
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import usersReducer from './users';
@@ -12,15 +11,6 @@ import { fetchMessage } from '../helpers/api';
 import filterFieldReducer from './filterField';
 import filteredPostsReducer from './filteredPosts';
 
-
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
@@ -29,7 +19,6 @@ const rootReducer = combineReducers({
   posts: postsReducer,
   filterField: filterFieldReducer,
   filteredPosts: filteredPostsReducer,
-
 });
 
 // We automatically get types returned by concrete reducers
@@ -52,19 +41,15 @@ export const loadMessage = () => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
     dispatch(startLoading());
-
     try {
       const message = await fetchMessage();
-
       dispatch(setMessage(message));
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }
-
     dispatch(finishLoading());
   };
 };
-
 
 const initialState = {
   message: 'Press to load',
