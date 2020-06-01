@@ -10,7 +10,6 @@ import { setPostsData } from './store/posts';
 import { setLoaded } from './store/loaded';
 import { DownloadButton } from './components/DownloadButton';
 import { PostsList } from './components/PostsList';
-import { SearchInput } from './components/Input';
 
 const App = () => {
   const loading = useSelector(isLoading);
@@ -37,12 +36,7 @@ const App = () => {
         />
       )}
       {loading && <SpinnerLoad />}
-      {loaded && (
-        <>
-          <SearchInput />
-          <PostsList />
-        </>
-      )}
+      {loaded && <PostsList />}
     </div>
   );
 };

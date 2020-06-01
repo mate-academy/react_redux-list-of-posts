@@ -1,12 +1,12 @@
 import { AnyAction } from 'redux';
 
-const LOADING = 'LOADING';
+const IS_LOADING = 'IS_LOADING';
 
-export const setLoading = (status: boolean) => ({ type: LOADING, status });
+export const setLoading = (status: boolean) => ({ type: IS_LOADING, status });
 
 const loadingReducer = (state = false, action: AnyAction) => {
   switch (action.type) {
-    case LOADING:
+    case IS_LOADING:
       return action.status;
 
     default:

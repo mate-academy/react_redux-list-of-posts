@@ -1,12 +1,12 @@
 import { AnyAction } from 'redux';
 
-const LOADED = 'LOADED';
+const IS_LOADED = 'IS_LOADED';
 
-export const setLoaded = () => ({ type: LOADED });
+export const setLoaded = () => ({ type: IS_LOADED });
 
 const loadedReducer = (state = false, action: AnyAction) => {
   switch (action.type) {
-    case LOADED:
+    case IS_LOADED:
       return true;
 
     default:

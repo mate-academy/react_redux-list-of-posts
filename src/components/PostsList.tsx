@@ -1,13 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getPosts, queryValue } from '../store';
+import { getPosts } from '../store';
 import { deleteComm, deletePost } from '../store/posts';
 import { filterPosts } from '../helpers/filterPosts';
+import { debounce } from '../helpers/debounce';
+import { SearchInput } from './Input';
 
 export const PostsList: React.FC = () => {
+  const [query, setQuery] = useState('');
   const posts: Post[] = useSelector(getPosts);
   const dispatch = useDispatch();
-  const query = useSelector(queryValue);
+
+  const debounceWrapper = debounce(
+    (value: string) => setQuery(value),
+    1000,
+  );
+
+  const startDebounce = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debounceWrapper(e.target.value);
+  };
 
   const visiblePosts: Post[] = useMemo(
     () => filterPosts(posts, query),
@@ -16,6 +27,7 @@ export const PostsList: React.FC = () => {
 
   return (
     <>
+    <SearchInput startDebounce={startDebounce} />
       {visiblePosts.map(post => (
         <div className="post" key={post.id}>
           <button

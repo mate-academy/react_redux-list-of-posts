@@ -1,19 +1,11 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setQuery } from '../store/query';
-import { debounce } from '../helpers/debounce';
+import React, { ChangeEvent } from 'react';
 
-export const SearchInput: React.FC = () => {
-  const dispatch = useDispatch();
+interface Props {
+  startDebounce: (e: ChangeEvent<HTMLInputElement>) => void;
+}
 
-  const debounceWrapper = debounce(
-    (value: string) => dispatch(setQuery(value)),
-    1000,
-  );
+export const SearchInput: React.FC<Props> = ({ startDebounce }) => {
 
-  const startDebounce = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debounceWrapper(e.target.value);
-  };
 
   return (
     <div className="inputContainer">
