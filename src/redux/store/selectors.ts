@@ -1,4 +1,4 @@
-import { RootState } from './store';
+import { RootState } from './index';
 
 export const getLoading = (state: RootState) => state.isLoading;
 export const getPosts = (state: RootState) => state.posts;

@@ -5,7 +5,7 @@ import './App.scss';
 
 import {
   getLoading, getPosts, getErrorState, getInitialized,
-} from './redux/selectors';
+} from './redux/store/selectors';
 import { loadPosts } from './redux/store';
 import { PostsList } from './components/PostsList';
 

@@ -21,10 +21,15 @@ export const PostsList = ({ posts }: PostsListProps) => {
     [],
   );
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQuery(e.target.value);
-    setFilteredQueryWithDebounce(e.target.value);
-  }, [setQuery, setFilteredQueryWithDebounce]);
+  const handleSearch = useCallback(
+    ({ target }: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const { value } = target;
+
+    setQuery(value);
+    setFilteredQueryWithDebounce(value);
+  },
+    [setQuery, setFilteredQueryWithDebounce]
+  );
 
   return (
     <>

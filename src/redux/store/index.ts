@@ -7,13 +7,13 @@ import loadingReducer, { finishLoading, startLoading } from './loading';
 import postsReducer, { setPosts } from './posts';
 import { fetchPreparedPosts } from '../../helpers/api';
 import errorReducer, { setError } from './error';
-import initializedReducer, { setInitialized } from './initialized';
+import initialReducer, { setInitialized } from './initialized';
 
 const rootReducer = combineReducers({
   isLoading: loadingReducer,
   posts: postsReducer,
   hasError: errorReducer,
-  isInitialized: initializedReducer,
+  isInitialized: initialReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
