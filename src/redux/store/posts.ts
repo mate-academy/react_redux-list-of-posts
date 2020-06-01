@@ -9,13 +9,13 @@ export const setPosts = (posts: []) => ({ type: SET_POSTS, posts });
 export const deletePost = (postId: number) => ({
   type: DELETE_POST,
   postId,
-})
+});
 
 export const deleteComment = (postId: number, commentId: number) => ({
   type: DELETE_COMMENT,
   postId,
   commentId,
-})
+});
 
 const postsReducer = (posts: Post[] = [], action: AnyAction) => {
   switch (action.type) {
@@ -24,14 +24,13 @@ const postsReducer = (posts: Post[] = [], action: AnyAction) => {
     case DELETE_COMMENT:
       return posts.map(post => (
         post.id === action.postId
-        ? {
-          ...post,
-          comments: post.comments
-            .filter(comment => comment.id !== action.commentId),
-        } : post)
-      );
+          ? {
+            ...post,
+            comments: post.comments
+              .filter(comment => comment.id !== action.commentId),
+          } : post));
     case DELETE_POST:
-      return posts.filter(post => post.id !== action.postId)
+      return posts.filter(post => post.id !== action.postId);
     default:
       return posts;
   }

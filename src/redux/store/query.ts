@@ -5,7 +5,7 @@ const SET_QUERY = 'SET_QUERY';
 export const setQuery = (query: string) => ({
   type: SET_QUERY,
   query,
-})
+});
 
 const queryReducer = (query = '', action: AnyAction) => {
   switch (action.type) {
@@ -14,6 +14,6 @@ const queryReducer = (query = '', action: AnyAction) => {
     default:
       return query;
   }
-}
+};
 
 export default queryReducer;

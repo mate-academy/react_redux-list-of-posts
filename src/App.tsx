@@ -3,29 +3,33 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
 
-import { isLoading, getPosts, getError, getInitialized } from './redux/selectors';
+import {
+  getLoading, getPosts, getError, getInitialized,
+} from './redux/selectors';
 import { loadPosts } from './redux/store';
 import { PostsList } from './components/PostsList';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const initialized = useSelector(getInitialized);
+  const isLoading = useSelector(getLoading);
+  const isInitialized = useSelector(getInitialized);
   const posts = useSelector(getPosts);
-  const error = useSelector(getError);
+  const hasError = useSelector(getError);
   const dispatch = useDispatch();
 
   const loadData = () => {
-    dispatch(loadPosts())
+    dispatch(loadPosts());
   };
 
-  const shouldButtonHide = useMemo(() => !loading && !initialized, [loading, initialized]);
-  const shouldPostsRender = useMemo(() => !error && !loading && initialized, [error, loading, initialized]);
+  const isButtonVisible = useMemo(() => !isLoading && !isInitialized,
+    [isLoading, isInitialized]);
+  const shouldPostsRender = useMemo(() => !hasError && !isLoading && isInitialized,
+    [hasError, isLoading, isInitialized]);
 
   return (
     <main className="app">
       <div className="app__header">
         <h2 className="app__heading">Dynamic list of posts</h2>
-        {shouldButtonHide
+        {isButtonVisible
         && (
           <button
             type="button"
@@ -35,8 +39,8 @@ const App = () => {
             load data
           </button>
         )}
-        {loading && <p>Loading...</p>}
-        {error && (
+        {isLoading && <p>Loading...</p>}
+        {hasError && (
           <button
             type="button"
             className="waves-effect waves-light btn deep-purple accent-3"

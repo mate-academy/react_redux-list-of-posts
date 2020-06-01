@@ -14,6 +14,6 @@ const errorReducer = (error = false, action: AnyAction) => {
     default:
       return error;
   }
-}
+};
 
 export default errorReducer;

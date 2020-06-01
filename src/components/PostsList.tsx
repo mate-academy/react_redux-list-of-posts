@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Search } from './Search';
 import debounce from '../helpers/debounce';
 import { setQuery } from '../redux/store/query';
-import { useDispatch } from 'react-redux';
 import { Post } from './Post';
 
 export const PostsList = ({ posts }: PostsListProps) => {
@@ -10,14 +10,12 @@ export const PostsList = ({ posts }: PostsListProps) => {
   const dispatch = useDispatch();
 
   const visiblePosts = useMemo(() => {
-    const filteredPosts = [...posts].filter(post => {
+    return posts.filter(post => {
       const title = post.title.toLowerCase();
       const body = post.body.toLowerCase();
 
       return (title + body).includes(filteredQuery.toLowerCase());
     });
-
-    return filteredPosts;
   }, [posts, filteredQuery]);
 
   const setFilteredQueryWithDebounce = useCallback(

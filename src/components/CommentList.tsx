@@ -8,4 +8,4 @@ export const CommentList = ({ comments, postId }: CommentsProps) => {
       {comments.map((item) => <Comment key={item.id} {...item} postId={postId} />)}
     </>
   );
-}
+};
