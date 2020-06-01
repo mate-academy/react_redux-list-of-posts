@@ -5,7 +5,13 @@ import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
+import usersReducer from './users';
+import postsReducer from './posts';
+import commentsReducer from './comments';
 import { fetchMessage } from '../helpers/api';
+import filterFieldReducer from './filterField';
+import filteredPostsReducer from './filteredPosts';
+
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -18,6 +24,12 @@ import { fetchMessage } from '../helpers/api';
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  users: usersReducer,
+  comments: commentsReducer,
+  posts: postsReducer,
+  filterField: filterFieldReducer,
+  filteredPosts: filteredPostsReducer,
+
 });
 
 // We automatically get types returned by concrete reducers
@@ -26,6 +38,10 @@ export type RootState = ReturnType<typeof rootReducer>;
 // Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
+export const getUsers = (state: RootState) => state.users;
+export const getPosts = (state: RootState) => state.posts;
+export const getComments = (state: RootState) => state.comments;
+export const getFilteredPostss = (state: RootState) => state.filteredPosts;
 
 /**
  * Thunk - is a function that should be used as a normal action creator
@@ -49,8 +65,18 @@ export const loadMessage = () => {
   };
 };
 
+
+const initialState = {
+  message: 'Press to load',
+  loading: false,
+  posts: [],
+  users: [],
+  comments: [],
+}
+
 const store = createStore(
   rootReducer,
+  initialState,
   composeWithDevTools(applyMiddleware(thunk)),
 );
 

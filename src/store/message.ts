@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux';
 
 // Action types
-const SET_MESSAGE = 'SET_MESSAGE';
+export const SET_MESSAGE = 'SET_MESSAGE';
 
 // Action creators
 export const setMessage = (message: string) => ({ type: SET_MESSAGE, message });
