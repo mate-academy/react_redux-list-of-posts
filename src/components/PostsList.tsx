@@ -1,13 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Search } from './Search';
 import debounce from '../helpers/debounce';
-import { setQuery } from '../redux/store/query';
 import { Post } from './Post';
 
 export const PostsList = ({ posts }: PostsListProps) => {
   const [filteredQuery, setFilteredQuery] = useState('');
-  const dispatch = useDispatch();
+  const [query, setQuery] = useState('');
 
   const visiblePosts = useMemo(() => {
     return posts.filter(post => {
@@ -24,14 +22,13 @@ export const PostsList = ({ posts }: PostsListProps) => {
   );
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setQuery(e.target.value));
+    setQuery(e.target.value);
     setFilteredQueryWithDebounce(e.target.value);
-  }, [dispatch, setFilteredQueryWithDebounce]);
-
+  }, [setQuery, setFilteredQueryWithDebounce]);
 
   return (
     <>
-      <Search handleSearch={handleSearch} />
+      <Search handleSearch={handleSearch} query={query} />
       <article className="app__post-list">
         {visiblePosts.map((post) => <Post key={post.id} {...post} />)}
       </article>

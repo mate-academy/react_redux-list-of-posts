@@ -8,14 +8,12 @@ import postsReducer, { setPosts } from './posts';
 import { fetchPreparedPosts } from '../../helpers/api';
 import errorReducer, { setError } from './error';
 import initializedReducer, { setInitialized } from './initialized';
-import queryReducer from './query';
 
 const rootReducer = combineReducers({
   isLoading: loadingReducer,
   posts: postsReducer,
   hasError: errorReducer,
   isInitialized: initializedReducer,
-  query: queryReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

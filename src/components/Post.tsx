@@ -8,8 +8,10 @@ export const Post = ({
   id, title, user, body, comments,
 }: Post) => {
   const dispatch = useDispatch();
-  const handleDeletePost = useCallback(() => dispatch(deletePost(id)),
-    [dispatch, id]);
+  const handleDeletePost = useCallback(
+    () => dispatch(deletePost(id)),
+    [dispatch, id]
+  );
 
   return (
     <section className="post">

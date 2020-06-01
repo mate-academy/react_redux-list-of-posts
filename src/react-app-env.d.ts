@@ -44,4 +44,5 @@ interface CommentProps extends Comment {
 
 type SearchProps = {
   handleSearch: React.ChangeEventHandler;
+  query: string;
 };

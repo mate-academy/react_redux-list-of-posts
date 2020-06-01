@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
 
 import {
-  getLoading, getPosts, getError, getInitialized,
+  getLoading, getPosts, getErrorState, getInitialized,
 } from './redux/selectors';
 import { loadPosts } from './redux/store';
 import { PostsList } from './components/PostsList';
@@ -13,17 +13,21 @@ const App = () => {
   const isLoading = useSelector(getLoading);
   const isInitialized = useSelector(getInitialized);
   const posts = useSelector(getPosts);
-  const hasError = useSelector(getError);
+  const hasError = useSelector(getErrorState);
   const dispatch = useDispatch();
 
   const loadData = () => {
     dispatch(loadPosts());
   };
 
-  const isButtonVisible = useMemo(() => !isLoading && !isInitialized,
-    [isLoading, isInitialized]);
-  const shouldPostsRender = useMemo(() => !hasError && !isLoading && isInitialized,
-    [hasError, isLoading, isInitialized]);
+  const isButtonVisible = useMemo(
+    () => !isLoading && !isInitialized,
+    [isLoading, isInitialized]
+  );
+  const shouldPostsRender = useMemo(
+    () => !hasError && !isLoading && isInitialized,
+    [hasError, isLoading, isInitialized]
+  );
 
   return (
     <main className="app">

@@ -7,12 +7,12 @@ export const setInitialized = (value: boolean) => ({
   value,
 });
 
-const initializedReducer = (error = false, action: AnyAction) => {
+const initializedReducer = (initialized = false, action: AnyAction) => {
   switch (action.type) {
     case SET_INITIALIZED:
       return action.value;
     default:
-      return error;
+      return initialized;
   }
 };
 

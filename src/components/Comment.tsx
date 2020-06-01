@@ -6,8 +6,10 @@ export const Comment = ({
   id, name, body, email, postId,
 }: CommentProps) => {
   const dispatch = useDispatch();
-  const handleDeleteComment = useCallback(() => dispatch(deleteComment(postId, id)),
-    [dispatch, postId, id]);
+  const handleDeleteComment = useCallback(
+    () => dispatch(deleteComment(postId, id)),
+    [dispatch, postId, id]
+  );
 
   return (
     <section className="post__comment">

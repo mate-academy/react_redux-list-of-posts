@@ -1,9 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { getQuery } from '../redux/selectors';
 
-export const Search = ({ handleSearch }: SearchProps) => {
-  const query = useSelector(getQuery);
+export const Search = ({ handleSearch, query }: SearchProps) => {
 
   return (
     <div className="row">
