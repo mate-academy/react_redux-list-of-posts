@@ -30,7 +30,7 @@ export const CommentItem: React.FC<Props> = ({
       <button
         type="button"
         className="button is-danger is-rounded comment__hidden-button"
-        onClick={() => dispatch(deleteComment(id))}
+        onClick={() => dispatch(deleteComment(postId, id))}
       >
         x
       </button>

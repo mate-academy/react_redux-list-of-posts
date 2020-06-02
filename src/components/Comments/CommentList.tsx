@@ -1,21 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import './CommentList.scss';
 import { CommentItem } from './CommentItem';
-import { getComments } from '../../store';
 
 interface Props {
-  postId: number;
+  comments: Comment[];
 }
 
-export const CommentList: React.FC<Props> = ({ postId }) => {
-  const comments: Comment[] = useSelector(getComments);
-  const postComments = [...comments].filter(comment => comment.postId === postId);
-
+export const CommentList: React.FC<Props> = ({ comments }) => {
   return (
     <ul>
-      {postComments.map((comment) => (
+      {comments.map((comment) => (
         <li key={comment.id}>
           <CommentItem {...comment} />
         </li>

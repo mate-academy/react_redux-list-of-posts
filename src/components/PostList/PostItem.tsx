@@ -1,24 +1,21 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-
 import { CommentList } from '../Comments';
-import { getUsers } from '../../store';
 
 interface Props {
   id: number;
-  userId: number;
   title: string;
   body: string;
+  author?: User;
+  comments?: Comment[];
 }
 
 export const PostItem: React.FC<Props> = ({
   id,
   title,
   body,
-  userId,
+  author,
+  comments,
 }) => {
-  const users: User[] = useSelector(getUsers);
-  const author = users.find(user => user.id === userId);
 
   return (
     <article className="message is-primary" id={`${id}`}>
@@ -34,7 +31,7 @@ export const PostItem: React.FC<Props> = ({
           </h2>
         )}
         {body}
-        <CommentList postId={id} />
+        {comments && <CommentList comments={comments} />}
       </div>
     </article>
   );

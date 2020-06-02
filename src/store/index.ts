@@ -6,9 +6,7 @@ import { Dispatch } from 'react';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import loadedReducer, { setLoaded } from './loaded';
 import errordReducer, { setErrorMessage } from './error';
-import postReducer, { setPosts } from './posts';
-import userReducer, { setUsers } from './users';
-import commentReducer, { setComments, deleteComment } from './comments';
+import postReducer, { setPosts, deleteComment } from './posts';
 import { getData } from '../helpers/api';
 
 const rootReducer = combineReducers({
@@ -16,8 +14,6 @@ const rootReducer = combineReducers({
   loaded: loadedReducer,
   errorMessage: errordReducer,
   posts: postReducer,
-  users: userReducer,
-  comments: commentReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -26,8 +22,6 @@ export const isLoading = (state: RootState) => state.loading;
 export const isLoaded = (state: RootState) => state.loaded;
 export const getError = (state: RootState) => state.errorMessage;
 export const getPosts = (state: RootState) => state.posts;
-export const getUsers = (state: RootState) => state.users;
-export const getComments = (state: RootState) => state.comments;
 export { deleteComment };
 
 export const loadPosts = () => {
@@ -41,9 +35,13 @@ export const loadPosts = () => {
         getData<Comment>('comments.json'),
       ]);
 
-      dispatch(setPosts(posts));
-      dispatch(setUsers(users));
-      dispatch(setComments(comments));
+      const preparedPosts = posts.map((post: Post) => ({
+        ...post,
+        user: users.find((user: User) => user.id === post.userId),
+        comments: comments.filter((comment: Comment) => comment.postId === post.id),
+      }));
+
+      dispatch(setPosts(preparedPosts));
       dispatch(setLoaded());
     } catch (error) {
       dispatch(setErrorMessage(`Error occurred when loading data: ${error}`));
