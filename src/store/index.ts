@@ -3,14 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import initialReducer, { setLoaded } from './initial';
+import loadingReducer, { finishLoading, startLoading, setLoaded } from './loading';
 import errordReducer, { setErrorMessage } from './error';
 import postReducer, { setPosts, deleteComment } from './posts';
 import { getData } from '../helpers/api';
 
 const rootReducer = combineReducers({
-  initial: initialReducer,
   loading: loadingReducer,
   errorMessage: errordReducer,
   posts: postReducer,
@@ -18,8 +16,8 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const isLoading = (state: RootState) => state.loading;
-export const isLoaded = (state: RootState) => state.initial;
+export const isLoading = (state: RootState) => state.loading.isLoading;
+export const isLoaded = (state: RootState) => state.loading.isLoaded;
 export const getError = (state: RootState) => state.errorMessage;
 export const getPosts = (state: RootState) => state.posts;
 export { deleteComment };
