@@ -4,48 +4,48 @@ import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './posts';
+import errorReducer, { setError } from './error';
+import queryReducer from './search';
+import * as api from '../helpers/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
-  message: messageReducer,
+  posts: postsReducer,
+  errorMessage: errorReducer,
+  query: queryReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const getPosts = (state: RootState) => state.posts;
+export const getErrorMessage = (state: RootState) => state.errorMessage;
+export const getSearchQuery = (state: RootState) => state.query;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
+export const loadPosts = () => {
   return async (dispatch: Dispatch<any>) => {
     dispatch(startLoading());
+    dispatch(setError(''));
 
-    try {
-      const message = await fetchMessage();
+    Promise.all([api.fetchPosts(), api.fetchUsers(), api.fetchComments()])
+      .then(([postsFromServer, usersFromServer, commentsFromServer]) => {
+        const preparedPosts = postsFromServer.map(post => {
+          return {
+            ...post,
+            user: usersFromServer.find(user => user.id === post.userId) || [],
+            comments: commentsFromServer.filter(comment => post.id === comment.postId) || [],
+          };
+        });
 
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
+        dispatch(setPosts(preparedPosts as Post[]));
+      })
+      .catch(e => {
+        dispatch(setError(e.message));
+      })
+      .finally(() => {
+        dispatch(finishLoading());
+      });
   };
 };
 
