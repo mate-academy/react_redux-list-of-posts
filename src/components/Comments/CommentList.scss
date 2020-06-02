@@ -1,0 +1,17 @@
+.comment {
+  position: relative;
+  margin: 20px 0;
+
+  &__hidden-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    visibility: hidden;
+  }
+
+  &:hover {
+    .comment__hidden-button {
+      visibility: visible;
+    }
+  }
+}
