@@ -10,6 +10,7 @@ import messageReducer, { setMessage } from './message';
 import postsReducer, { setPosts } from './post';
 import { getPostsFromServer } from '../helpers/api';
 import searchReducer from './search';
+import isLoadReducer, { setIsLoadCompleted } from './isLoadCompleted';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   message: messageReducer,
   posts: postsReducer,
   query: searchReducer,
+  isLoaded: isLoadReducer,
 });
 
 // We automatically get types returned by concrete reducers
@@ -34,6 +36,7 @@ export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
 export const getPosts = (state: RootState) => state.posts;
 export const getQuery = (state: RootState) => state.query;
+export const getIsLoaded = (state: RootState) => state.isLoaded;
 
 export const getFilteredPosts = (state: RootState) => {
   return (
@@ -58,6 +61,7 @@ export const loadMessage = () => {
 
       dispatch(setPosts(postsFromServer));
       dispatch(setMessage('Load Sucsess'));
+      dispatch(setIsLoadCompleted());
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }

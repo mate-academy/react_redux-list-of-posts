@@ -1,5 +1,5 @@
 import React from 'react';
-import Comment from './Comment';
+import CommentItem from './CommentItem';
 
 type Props = {
   comments: CommentProps[];
@@ -10,7 +10,7 @@ const CommentList: React.FC<Props> = ({ comments, postId }) => (
   <article className="comments">
     Comments:&nbsp;
     {comments.map((comment: CommentProps) => (
-      <Comment comment={comment} key={comment.id} postId={postId} />
+      <CommentItem comment={comment} key={comment.id} postId={postId} />
     ))}
   </article>
 );

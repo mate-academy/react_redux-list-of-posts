@@ -1,13 +1,13 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import User from './User';
-import { deletePosts } from './store/post';
+import { deletePost } from './store/post';
 
 type Props = {
   post: PostProps;
 };
 
-const Post: React.FC<Props> = ({ post }) => {
+const PostItem: React.FC<Props> = ({ post }) => {
   const dispatch = useDispatch();
 
   return (
@@ -18,7 +18,7 @@ const Post: React.FC<Props> = ({ post }) => {
         <button
           className="delete-button"
           type="button"
-          onClick={() => dispatch(deletePosts(post.id))}
+          onClick={() => dispatch(deletePost(post.id))}
         >
           x
         </button>
@@ -28,4 +28,4 @@ const Post: React.FC<Props> = ({ post }) => {
   );
 };
 
-export default Post;
+export default PostItem;

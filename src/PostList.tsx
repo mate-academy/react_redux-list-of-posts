@@ -1,5 +1,5 @@
 import React from 'react';
-import Post from './Post';
+import PostItem from './PostItem';
 
 type Props = {
   posts: PostProps[];
@@ -8,7 +8,7 @@ type Props = {
 const PostList: React.FC<Props> = ({ posts }) => (
   <>
     {posts.map((post: PostProps) => (
-      <Post post={post} key={post.id} />
+      <PostItem post={post} key={post.id} />
     ))}
   </>
 );
