@@ -15,7 +15,7 @@ interface UserProps {
   name: string;
   username?: string;
   email?: string;
-  address?: AddressProps;
+  address: AddressProps;
   phone?: number;
   website?: string;
   company?: {

@@ -32,7 +32,7 @@ const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof rootReducer>;
 
 // Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
+export const getIsLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
 export const getPosts = (state: RootState) => state.posts;
 export const getQuery = (state: RootState) => state.query;

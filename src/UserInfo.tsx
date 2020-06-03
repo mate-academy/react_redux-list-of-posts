@@ -7,7 +7,7 @@ type Props = {
 const UserInfo: React.FC<Props> = ({ author }) => {
   const {
     city, zipcode, street, suite,
-  } = { ...author.address };
+  } = author.address;
 
   return (
     <p className="address">

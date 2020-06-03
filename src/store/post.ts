@@ -8,8 +8,11 @@ const DELETE_COMMENT = 'DELETE_COMMENTS';
 // Action creators
 export const setPosts = (posts: PostProps[]) => ({ type: SET_POSTS, posts });
 export const deletePost = (postId: number) => ({ type: DELETE_POST, postId });
-export const deleteComment
-  = (postId: number, commentId: number) => ({ type: DELETE_COMMENT, postId, commentId });
+export const deleteComment = (postId: number, commentId: number) => ({
+  type: DELETE_COMMENT,
+  postId,
+  commentId,
+});
 
 const reducer = (posts: PostProps[] = [], action: AnyAction) => {
   switch (action.type) {
@@ -20,7 +23,8 @@ const reducer = (posts: PostProps[] = [], action: AnyAction) => {
     case DELETE_COMMENT:
       return posts.map(post => ({
         ...post,
-        comments: post.comments.filter((comment: CommentProps) => comment.id !== action.commentId),
+        comments: post.comments
+          .filter((comment: CommentProps) => comment.id !== action.commentId),
       }));
     default:
       return posts;

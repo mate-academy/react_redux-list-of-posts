@@ -1,22 +1,22 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './App.scss';
 import { Start } from './components/Start';
 import {
-  isLoading, getMessage, getFilteredPosts, getIsLoaded,
+  getIsLoading, getMessage, getFilteredPosts, getIsLoaded,
 } from './store';
 import { setQuery } from './store/search';
 import PostList from './PostList';
 
 const App = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(isLoading);
+  const loading = useSelector(getIsLoading);
   const message = useSelector(getMessage) || 'Ready!';
   const posts = useSelector(getFilteredPosts);
   const isLoaded = useSelector(getIsLoaded);
 
-  const onHandleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
+  const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
+    const { value } = event.target as HTMLInputElement;
 
     dispatch(setQuery(value));
   };
@@ -32,7 +32,7 @@ const App = () => {
         <input
           type="text"
           className="form-control mrl"
-          onChange={onHandleInput}
+          onChange={handleInput}
         />
       )}
       <PostList posts={posts} />
