@@ -1,11 +1,15 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+  createStore, combineReducers, applyMiddleware, AnyAction,
+} from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './post';
+import { getPostsFromServer } from '../helpers/api';
+import searchReducer from './search';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -18,6 +22,8 @@ import { fetchMessage } from '../helpers/api';
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  posts: postsReducer,
+  query: searchReducer,
 });
 
 // We automatically get types returned by concrete reducers
@@ -26,6 +32,16 @@ export type RootState = ReturnType<typeof rootReducer>;
 // Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
+export const getPosts = (state: RootState) => state.posts;
+export const getQuery = (state: RootState) => state.query;
+
+export const getFilteredPosts = (state: RootState) => {
+  return (
+    [...state.posts].filter((post: PostProps) => (post.title + post.body)
+      .toLowerCase()
+      .includes(state.query.toLowerCase()))
+  );
+};
 
 /**
  * Thunk - is a function that should be used as a normal action creator
@@ -34,13 +50,14 @@ export const getMessage = (state: RootState) => state.message;
  */
 export const loadMessage = () => {
   // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<AnyAction>) => {
     dispatch(startLoading());
 
     try {
-      const message = await fetchMessage();
+      const postsFromServer = await getPostsFromServer();
 
-      dispatch(setMessage(message));
+      dispatch(setPosts(postsFromServer));
+      dispatch(setMessage('Load Sucsess'));
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }

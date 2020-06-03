@@ -1,0 +1,97 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttons {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+.mrl {
+  margin: 20px 15%;
+  width: 50%;
+}
+
+.list {
+  list-style-type: none;
+  max-width: 800px;
+}
+
+.list__userInfo {
+  background-color: #f7f6f6;
+  border-radius: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 20px;
+  text-align: center;
+}
+
+.body {
+  font-size: 16px;
+  text-align: center;
+}
+
+.address,
+.email,
+.author {
+  font-size: 14px;
+}
+
+.address {
+  text-align: center;
+}
+
+.comment {
+  font-size: 14px;
+  background-color: rgb(207, 203, 203);
+  list-style-type: none;
+  border-radius: 20px;
+  position: relative;
+}
+
+ul {
+  padding-left: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.comments {
+  text-align: center;
+}
+
+.delete-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
