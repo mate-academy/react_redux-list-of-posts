@@ -5,7 +5,7 @@ import * as store from '../store';
 
 export const Start = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(store.isLoading);
+  const isLoading = useSelector(store.getIsLoading);
   const errorMessage = useSelector(store.getErrorMessage);
 
   const buttonText = (errorMessage ? 'Try again' : 'Load');
@@ -15,9 +15,9 @@ export const Start = () => {
       type="button"
       className="app__load-button"
       onClick={() => dispatch(store.loadPosts())}
-      disabled={loading}
+      disabled={isLoading}
     >
-      {loading ? 'Loading...' : buttonText}
+      {isLoading ? 'Loading...' : buttonText}
     </button>
   );
 };

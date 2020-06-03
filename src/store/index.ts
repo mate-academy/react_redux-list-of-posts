@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const isLoading = (state: RootState) => state.loading;
+export const getIsLoading = (state: RootState) => state.loading;
 export const getPosts = (state: RootState) => state.posts;
 export const getErrorMessage = (state: RootState) => state.errorMessage;
 export const getSearchQuery = (state: RootState) => state.query;
