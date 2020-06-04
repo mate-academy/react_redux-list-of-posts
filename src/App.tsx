@@ -1,21 +1,35 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import './App.scss';
+import { useSelector } from 'react-redux';
 import { Start } from './components/Start';
+import { PostLists } from './components/PostLists';
+import { Filter } from './components/Filter';
+import { getLoaded, isError } from './store';
 
-import { isLoading, getMessage } from './store';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  // const dispatch = useDispatch();
+  const loaded = useSelector(getLoaded);
+  const error = useSelector(isError);
 
   return (
-    <div className="App">
+    <div className="container">
       <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
+      {error && (
+        <>
+          <h1>Error</h1>
+          <Start text="load again" />
+        </>
+      )}
+      {!loaded
+        ? <Start text="load" />
+        : (
+          <div>
+            <Filter />
+            <PostLists />
+          </div>
+        )}
     </div>
   );
 };
