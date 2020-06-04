@@ -7,8 +7,7 @@ import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import postsReducer, { setPosts } from './posts';
 import queryReducer from './query';
-import { getAll } from '../helpers/api';
-
+import { loadPosts } from '../helpers/api';
 
 const rootReducer = combineReducers({
   loading: loadingReducer,
@@ -19,16 +18,16 @@ const rootReducer = combineReducers({
 
 export type RootState = {
   loading: {
-    loading: boolean;
-    visible: boolean;
+    isLoading: boolean;
+    isVisible: boolean;
   };
   message: string;
   posts: Post[];
   query: string;
 };
 
-export const isLoading = (state: RootState) => state.loading.loading;
-export const isVisible = (state: RootState) => state.loading.visible;
+export const isLoading = (state: RootState) => state.loading.isLoading;
+export const isVisible = (state: RootState) => state.loading.isVisible;
 export const getMessage = (state: RootState) => state.message;
 export const getPosts = (state: RootState) => state.posts;
 export const getQuery = (state: RootState) => state.query;
@@ -44,29 +43,14 @@ export const getVisiblePosts = createSelector(
   },
 );
 
-export const loadMessage = () => {
+export const loadData = () => {
   return async (dispatch: Dispatch<unknown>) => {
     dispatch(startLoading());
-
     try {
-      const postFromServer = await getAll<Post>('posts.json');
-      const usersFromServer = await getAll<User>('users.json');
-      const commentsFromServer = await getAll<Comment>('comments.json');
+      const postsFromServer = await loadPosts();
 
-      const preparedPosts = postFromServer.map((post: Post) => {
-        const user = usersFromServer.find((currentUser: User) => currentUser.id === post.userId);
-        const userComments = commentsFromServer
-          .filter((comment: Comment) => (comment.postId === post.id));
-
-        return {
-          ...post,
-          user,
-          userComments,
-        };
-      });
-
+      dispatch(setPosts(postsFromServer));
       dispatch(setMessage('Data was received'));
-      dispatch(setPosts(preparedPosts));
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }

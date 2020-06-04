@@ -10,6 +10,7 @@ const PostList = () => {
 
   return (
     <>
+      <p>{`Posts: ${visiblePosts.length}`}</p>
       <SearchField />
       <div className="post__container">
         {visiblePosts.map((post: Post) => (

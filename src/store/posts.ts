@@ -5,7 +5,7 @@ const DELETE_POST = 'DELETE_POST';
 const DELETE_COMMENT = 'DELETE_COMMENT';
 
 export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
-export const deletePosts = (postId: number) => ({ type: DELETE_POST, postId });
+export const deletePost = (postId: number) => ({ type: DELETE_POST, postId });
 export const deleteComment = (postId: number, commentId: number) => (
   { type: DELETE_COMMENT, postId, commentId });
 

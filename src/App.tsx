@@ -6,16 +6,16 @@ import { isLoading, getMessage, isVisible } from './store';
 import PostList from './components/PostList/PostList';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const visible = useSelector(isVisible);
+  const isLoad = useSelector(isLoading);
+  const isVisibleContent = useSelector(isVisible);
   const message = useSelector(getMessage) || 'Ready!';
 
   return (
     <div className="App">
       <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-      {!visible && <Start />}
-      {visible && <PostList />}
+      <h2>{isLoad ? 'Loading...' : message}</h2>
+      {!isVisibleContent && <Start />}
+      {isVisibleContent && <PostList />}
     </div>
   );
 };

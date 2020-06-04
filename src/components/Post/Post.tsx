@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import User from '../User/User';
 import CommentList from '../CommentList';
 import './Post.css';
-import { deletePosts } from '../../store/posts';
+import { deletePost } from '../../store/posts';
 
 interface Props {
   post: Post;
@@ -22,7 +22,7 @@ const Post: React.FC<Props> = ({
       <button
         className="btn bnt__post"
         type="button"
-        onClick={() => dispatch(deletePosts(id))}
+        onClick={() => dispatch(deletePost(id))}
       >
         <i className="fa fa-trash" />
       </button>

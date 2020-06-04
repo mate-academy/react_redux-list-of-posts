@@ -17,7 +17,6 @@ const SearchField = () => {
     dispatchWithDebounce(setQuery(newQuery));
   };
 
-
   return (
     <input
       type="text"
