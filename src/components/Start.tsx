@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isLoading, loadMessage } from '../store';
+import { isLoading, loadData } from '../store';
 
 export const Start = () => {
   const dispatch = useDispatch();
@@ -10,7 +10,8 @@ export const Start = () => {
   return (
     <button
       type="button"
-      onClick={() => dispatch(loadMessage())}
+      className="button"
+      onClick={() => dispatch(loadData())}
       disabled={loading}
     >
       {loading ? 'Loading...' : 'Load'}
