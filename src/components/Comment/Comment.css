@@ -1,0 +1,18 @@
+.comment {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin: 5px;
+  background-color: rgb(177, 177, 177);
+}
+
+.comments__container {
+  display: flex;
+}
+
+.btn__comment {
+  align-self: flex-end;
+  padding: 8px 12px;
+  font-size: 14px;
+}

@@ -2,45 +2,55 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
-
+import { createSelector } from 'reselect';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './posts';
+import queryReducer from './query';
+import { loadPosts } from '../helpers/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
+  posts: postsReducer,
   message: messageReducer,
+  query: queryReducer,
 });
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = {
+  loading: {
+    isLoading: boolean;
+    isVisible: boolean;
+  };
+  message: string;
+  posts: Post[];
+  query: string;
+};
 
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
+export const isLoading = (state: RootState) => state.loading.isLoading;
+export const isVisible = (state: RootState) => state.loading.isVisible;
 export const getMessage = (state: RootState) => state.message;
+export const getPosts = (state: RootState) => state.posts;
+export const getQuery = (state: RootState) => state.query;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+export const getVisiblePosts = createSelector(
+  getPosts,
+  getQuery,
+
+  (posts: Post[], query: string) => {
+    return posts.filter(post => (post.body + post.title)
+      .toLowerCase()
+      .includes(query.toLowerCase()));
+  },
+);
+
+export const loadData = () => {
+  return async (dispatch: Dispatch<unknown>) => {
     dispatch(startLoading());
-
     try {
-      const message = await fetchMessage();
+      const postsFromServer = await loadPosts();
 
-      dispatch(setMessage(message));
+      dispatch(setPosts(postsFromServer));
+      dispatch(setMessage('Data was received'));
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }
