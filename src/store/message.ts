@@ -11,7 +11,6 @@ const reducer = (message = '', action: AnyAction) => {
   switch (action.type) {
     case SET_MESSAGE:
       return action.message;
-
     default:
       return message;
   }
