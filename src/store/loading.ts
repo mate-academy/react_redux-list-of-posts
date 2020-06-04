@@ -10,7 +10,6 @@ const FINISH_LOADING = 'FINISH_LOADING';
 
 export const startLoading = () => ({ type: START_LOADING });
 export const finishLoading = () => ({ type: FINISH_LOADING });
-// export const handleError = () => ({ type: HANDLE_ERROR });
 
 
 const reducer = (loading = false, action: AnyAction) => {

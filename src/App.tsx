@@ -1,28 +1,42 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './App.scss';
+import debounce from 'lodash.debounce';
 import Loading from './components/Loading/Loading';
 import PostList from './components/PostList/PostList';
 import Button from './components/Button/Button';
 import {
-  loadPosts, getLoaded, getVisiblePosts, getLoading, getMessage, getPosts, getQuery,
-} from './store/index';
+  loadPosts, getLoaded, getVisiblePosts,
+  getLoading, getMessage, getPosts, getQuery,
+}
+  from './store/index';
 
 import { setQuery } from './store/search';
-
+// import { useHistory, useLocation } from 'react-router-dom';
+// import {debounce} from './helpers/debounce';
 const App: React.FC = () => {
+  // const history = useHistory();
+  // const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
+
   const dispatch = useDispatch();
   const isLoading = useSelector(getLoading);
-  const errorMessage = useSelector(getMessage) || '';
-  const posts = useSelector(getPosts) || [];
+  const errorMessage = useSelector(getMessage);
+  const posts = useSelector(getPosts);
   const isLoaded = useSelector(getLoaded);
   const query = useSelector(getQuery);
   const visiblePosts = useSelector(getVisiblePosts);
+  const [visibleQuery, setVisibleQuery] = useState(query);
+
+  const setVisibleQueryWithDebounce = useCallback(
+    debounce((actualQuery: string) => dispatch(setQuery(actualQuery)), 500), [],
+  );
 
   const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { value } = e.target as HTMLInputElement;
 
-    dispatch(setQuery(value));
+    setVisibleQuery(value);
+    setVisibleQueryWithDebounce(value);
   };
 
   return (
@@ -55,7 +69,7 @@ const App: React.FC = () => {
                 type="text"
                 id="inputFilter"
                 className="inputFilter"
-                value={query}
+                value={visibleQuery}
                 onChange={handleOnChange}
               />
             </label>

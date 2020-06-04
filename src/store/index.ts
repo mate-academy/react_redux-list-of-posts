@@ -8,11 +8,9 @@ import { Dispatch } from 'react';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import isLoadReducer, { setIsLoaded } from './loadedComleted';
-import posts, { handleSuccess } from './posts';
+import posts, { setPosts } from './posts';
 import queryReducer from './search';
 import { getPreparedPosts } from '../helpers/api';
-// import { fetchMessage } from '../helpers/api';
-
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -62,7 +60,7 @@ export const loadPosts = () => {
     getPreparedPosts()
       .then(postsFromServer => {
         dispatch(finishLoading());
-        dispatch(handleSuccess(postsFromServer));
+        dispatch(setPosts(postsFromServer));
         dispatch(setIsLoaded());
       })
       .catch(() => {
