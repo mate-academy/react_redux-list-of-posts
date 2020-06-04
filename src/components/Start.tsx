@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isLoading, loadMessage } from '../store';
+import { isLoading } from '../store';
+import { loadPosts } from './../store/index';
 
 export const Start = () => {
   const dispatch = useDispatch();
@@ -9,8 +10,9 @@ export const Start = () => {
 
   return (
     <button
+      className="btn btn-info"
       type="button"
-      onClick={() => dispatch(loadMessage())}
+      onClick={() => dispatch(loadPosts())}
       disabled={loading}
     >
       {loading ? 'Loading...' : 'Load'}
