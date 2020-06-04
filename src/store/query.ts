@@ -11,7 +11,7 @@ export const setQuery = (query: string) => (
     query,
   });
 
-// query reducer receives only the `posts.message` part, but not the entire Redux state
+
 const reducer = (query = '', action: AnyAction) => {
   switch (action.type) {
     case QUERY:

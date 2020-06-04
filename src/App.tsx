@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const message = useSelector(getMessage) || 'Ready!';
   const visiblePosts = useSelector(getVisiblePosts);
   const query = useSelector(getQuery);
-  const loadComplete = useSelector(getIsLoaded);
+  const isLoadingCompleted = useSelector(getIsLoaded);
 
   const handleSearchPhrase = (event: React.FormEvent<HTMLInputElement>) => {
     const { value } = event.target as HTMLInputElement;
@@ -33,7 +33,7 @@ const App: React.FC = () => {
     <div className="App">
       <h1>Redux list of posts</h1>
       <h2>{loading ? 'Loading...' : message}</h2>
-      {loadComplete
+      {isLoadingCompleted
         ? (
           <div className="control">
             <input

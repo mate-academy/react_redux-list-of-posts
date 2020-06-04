@@ -6,7 +6,6 @@ import { removePost } from '../store/post';
 
 type Props = {
   post: PostFromServer;
-  // postId: number;
 };
 
 export const PostItem: React.FC<Props> = ({ post }) => {

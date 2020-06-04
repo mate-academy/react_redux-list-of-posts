@@ -29,12 +29,11 @@ interface Comment {
   body: string;
 }
 
-interface PostFromServer {
-  userId: number;
-  // postId: number;
-  id: number;
-  title: string;
-  body: string;
+interface PostFromServer extends Post {
+  // userId: number;
+  // id: number;
+  // title: string;
+  // body: string;
   user: User;
   comments: Comment[];
 }
