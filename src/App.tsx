@@ -1,21 +1,39 @@
 import React from 'react';
+import PostList from './components/PostList';
 import { useSelector } from 'react-redux';
+import { Preloader } from './components/Preloader';
 
 import './App.scss';
-import { Start } from './components/Start';
-
-import { isLoading, getMessage } from './store';
+import { LoadButton } from './components/LoadButton';
+import { isLoading, isLoaded, getErrorMessage } from './store';
 
 const App = () => {
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const loaded = useSelector(isLoaded);
+  const errorMessage = useSelector(getErrorMessage);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      {!loaded && !loading
+        && (errorMessage.length === 0)
+        && (
+        <LoadButton />
+      )}
 
-      <Start />
+      {loading && !loaded && <Preloader />}
+
+      {loaded && (
+        <>
+          <h1>Redux list of posts</h1>
+          <PostList />
+        </>
+      )}
+
+      {!loaded
+        && (errorMessage.length > 0)
+        && (
+        <h1>{errorMessage}</h1>
+      )}
     </div>
   );
 };
