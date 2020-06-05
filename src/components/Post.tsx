@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import User from './User';
 import './Post.scss';
 import CommentsList from './CommentsList';
-import { REMOVE_POST } from '../store/actionTypes';
+import { removePost } from '../store/posts';
 
 type Props = {
   post: Post;
@@ -16,7 +16,7 @@ const Post: React.FunctionComponent<Props> = ({ post }) => {
     <article className="post">
       <button
         type="button"
-        onClick={() => dispatch({ type: REMOVE_POST, postId: post.id })}
+        onClick={() => dispatch(removePost(post.id))}
         className="button"
       >
         Remove
