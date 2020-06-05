@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import User from './User';
 import './Post.scss';
 import CommentsList from './CommentsList';
-import { REMOVE_POST } from '../store';
+import { REMOVE_POST } from '../store/actionTypes';
 
 type Props = {
   post: Post;

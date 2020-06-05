@@ -1,12 +1,14 @@
 import { createStore, AnyAction } from 'redux';
+import { useSelector } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import {
+  START_LOADING_DATA,
+  SUCCESSFUL_LOADING,
+  HANDLE_ERROR_LOADING,
+  SET_QUERY,
+  REMOVE_POST,
+} from './actionTypes';
 // import thunk from 'redux-thunk';
-
-export const START_LOADING_DATA = 'START_LOADING_DATA';
-export const SUCCESSFUL_LOADING = 'SUCCESSFUL_LOADING';
-export const HANDLE_ERROR_LOADING = 'HANDLER_ERROR_LOADING';
-export const SET_QUERY = 'SET_QUERY';
-export const REMOVE_POST = 'REMOVE_POST';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -27,6 +29,11 @@ export const REMOVE_POST = 'REMOVE_POST';
 // Selectors - a function receiving Redux state and returning some data from it
 // export const isLoading = (state: RootState) => state.loading;
 // export const getMessage = (state: RootState) => state.message;
+
+
+export const getPosts = useSelector((state: RootState) => state.posts);
+export const getLoadingStatus = useSelector((state: RootState) => state.isLoading);
+export const getErrorStatus = useSelector((state: RootState) => state.hasErrors);
 
 /**
  * Thunk - is a function that should be used as a normal action creator

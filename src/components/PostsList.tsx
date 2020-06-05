@@ -2,19 +2,21 @@ import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Post from './Post';
 import { RootState } from '../store';
+import { useDebounce } from '../helpers/use-debounce';
 
 const PostsList: React.FunctionComponent = () => {
   const posts = useSelector((state: RootState) => state.posts);
   const searchQuery = useSelector((state: RootState) => state.query);
+  const deboucedValue = useDebounce(searchQuery, 1000);
 
   const getSortedPosts = useCallback(() => {
-    const normalizedQuery: string = searchQuery.toLowerCase();
+    const normalizedQuery: string = deboucedValue.toLowerCase();
 
     return posts
       .filter((post: Post) => (post.body + post.title)
         .toLowerCase()
         .includes(normalizedQuery));
-  }, [posts, searchQuery]);
+  }, [posts, deboucedValue]);
 
   const visiblePosts = useMemo(() => getSortedPosts(), [getSortedPosts]);
 
