@@ -4,45 +4,49 @@ import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
+import loadedReducer, { isLoaded, notLoaded } from './loaded';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './posts';
+import sortedPostsReducer from './sortedPosts';
+import { getPost, getUsers, getComments } from '../helpers/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  posts: postsReducer,
+  sortedPosts: sortedPostsReducer,
+  loaded: loadedReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
+export const getPosts = (state: RootState) => state.posts;
+export const getSortedPosts = (state: RootState) => state.sortedPosts;
+export const getIsLoaded = (state: RootState) => state.loaded;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
 export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
     dispatch(startLoading());
 
     try {
-      const message = await fetchMessage();
+      const postFromServer = await getPost();
+      const userFromServer = await getUsers();
+      const commentsFromServer = await getComments();
 
-      dispatch(setMessage(message));
+      const preperedListOfPosts = postFromServer.map(item => ({
+        ...item,
+        user: userFromServer.find(itemId => (itemId.id === item.userId)),
+        comments: commentsFromServer.filter(postId => (postId.postId === item.userId)),
+      }));
+
+      dispatch(setPosts(preperedListOfPosts));
+      dispatch(setMessage('Loaded'));
+      dispatch(isLoaded());
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
+      dispatch(notLoaded());
     }
 
     dispatch(finishLoading());
