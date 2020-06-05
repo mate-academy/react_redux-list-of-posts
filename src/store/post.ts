@@ -1,11 +1,8 @@
 import { AnyAction } from 'redux';
 
-// Action types
 const SET_POSTS = 'SET_POSTS';
 const REMOVE_POST = 'REMOVE_POST';
 const REMOVE_COMMENT = 'REMOVE_COMMENT';
-
-// Action creators
 
 export const setPosts = (posts: PostFromServer[]) => ({ type: SET_POSTS, posts });
 export const removePost = (postsId: number) => ({ type: REMOVE_POST, postsId });
@@ -16,7 +13,6 @@ export const removeComment = (postsId: number, commentId: number) => (
     commentId,
   });
 
-// posts reducer receives only the `posts.message` part, but not the entire Redux state
 const reducer = (posts: PostFromServer[] = [], action: AnyAction) => {
   switch (action.type) {
     case SET_POSTS:

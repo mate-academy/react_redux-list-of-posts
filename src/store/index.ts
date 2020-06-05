@@ -12,7 +12,7 @@ import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import postReducer, { setPosts } from './post';
 import queryReducer from './query';
-import loadCompleteReducer, { setLoadComplete } from './loadComplete';
+import loadCompleteReducer, { setLoadCompleted } from './loadComplete';
 import { preparedPostList } from '../helpers/api';
 
 const rootReducer = combineReducers({
@@ -50,7 +50,7 @@ export const loadPosts = () => {
         dispatch(finishLoading());
         dispatch(setMessage('Success'));
         dispatch(setPosts(postsFromServer));
-        dispatch(setLoadComplete());
+        dispatch(setLoadCompleted());
       })
       .catch(() => {
         dispatch(setMessage('Error occurred when loading data'));

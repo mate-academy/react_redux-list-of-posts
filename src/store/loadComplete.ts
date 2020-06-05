@@ -1,16 +1,12 @@
 import { AnyAction } from 'redux';
 
-// Action types
-const LOAD_COMPLETE = 'LOAD_COMPLETE';
+const LOAD_COMPLETED = 'LOAD_COMPLETE';
 
-// Action creators
+export const setLoadCompleted = () => ({ type: LOAD_COMPLETED });
 
-export const setLoadComplete = () => ({ type: LOAD_COMPLETE });
-
-// query reducer receives only the `posts.message` part, but not the entire Redux state
 const reducer = (isloadComplete = false, action: AnyAction) => {
   switch (action.type) {
-    case LOAD_COMPLETE:
+    case LOAD_COMPLETED:
       return true;
     default:
       return isloadComplete;

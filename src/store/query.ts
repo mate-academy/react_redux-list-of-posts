@@ -1,9 +1,6 @@
 import { AnyAction } from 'redux';
 
-// Action types
 const QUERY = 'QUERY';
-
-// Action creators
 
 export const setQuery = (query: string) => (
   {

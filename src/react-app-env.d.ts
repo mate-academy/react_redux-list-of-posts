@@ -30,10 +30,6 @@ interface Comment {
 }
 
 interface PostFromServer extends Post {
-  // userId: number;
-  // id: number;
-  // title: string;
-  // body: string;
   user: User;
   comments: Comment[];
 }
