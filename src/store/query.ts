@@ -1,13 +1,19 @@
-import { AnyAction } from "redux";
+import { Action } from "redux";
 
 const SET_QUERY = 'SET_QUERY';
 
-export const setQuery = (query: string) => ({
+type SetQueryAction = Action<typeof SET_QUERY> & {
+  query: string
+};
+
+export const setQuery = (query: string): SetQueryAction => ({
   type: SET_QUERY,
   query
 });
 
-const reducer = (query = '', action: AnyAction) => {
+type AllowedActions = SetQueryAction;
+
+const reducer = (query = '', action: AllowedActions): string => {
   switch (action.type) {
     case SET_QUERY:
       return action.query

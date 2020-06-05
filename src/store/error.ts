@@ -1,15 +1,21 @@
-import { AnyAction } from "redux";
+import { Action } from "redux";
 
 const SET_ERROR = 'SET_ERROR';
 
-export const setError = (error: string) => {
+type SetError = Action<typeof SET_ERROR> & {
+  error: string
+};
+
+export const setError = (error: string): SetError => {
   return {
     type: SET_ERROR,
     error
   }
 };
 
-const reducer = (error = '', action: AnyAction) => {
+type AllowedActions = SetError;
+
+const reducer = (error = '', action: AllowedActions): string => {
   switch (action.type) {
     case SET_ERROR:
       return action.error;

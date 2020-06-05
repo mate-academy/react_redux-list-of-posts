@@ -1,30 +1,46 @@
-import { AnyAction } from 'redux';
+import { Action } from 'redux';
 
 const START_LOADING = 'START_LOADING';
 const FINISH_LOADING = 'FINISH_LOADING';
 
-export const startLoading = () => ({ type: START_LOADING });
-export const finishLoading = () => ({ type: FINISH_LOADING });
+type StartLoadingAction = Action<typeof START_LOADING>;
+type FinishLoadingAction = Action<typeof FINISH_LOADING>;
 
-const inititalState = { loading: false, loaded: false };
+export const startLoading = (): StartLoadingAction => ({
+  type: START_LOADING
+});
+export const finishLoading = (): FinishLoadingAction => ({
+  type: FINISH_LOADING
+});
 
-const reducer = (state = inititalState, action: AnyAction) => {
+type LoadingState = {
+  loading: boolean,
+  loaded: boolean
+};
+
+const defaultLoadingState: LoadingState = {
+  loading: false,
+  loaded: false
+};
+
+type AllowedActions = StartLoadingAction | FinishLoadingAction;
+
+const reducer = (loadingState = defaultLoadingState, action: AllowedActions) => {
   switch (action.type) {
     case START_LOADING:
       return {
-        ...state,
+        ...loadingState,
         loading: true,
       }
 
     case FINISH_LOADING:
       return {
-        ...state,
         loading: false,
         loaded: true,
       };
 
     default:
-      return state;
+      return loadingState;
   }
 };
 
