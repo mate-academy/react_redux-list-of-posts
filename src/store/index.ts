@@ -1,57 +1,148 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import { createStore, Action } from 'redux';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+const SET_LOADING = 'SET_LOADING';
+const SET_POSTS = 'SET_POSTS';
+const INPUT_VALUE = 'INPUT_VALUE';
+const SET_DEBOUNCE_INPUT_VALUE = 'SET_DEBOUNCE_INPUT_VALUE';
+const DELETE_POST = 'DELETE_POST';
+const DELETE_COMMENT = 'DELETE_COMMENT';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+type SetLoading = Action<typeof SET_LOADING> & {
+  loadingStatus: boolean;
 };
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
+type SetPosts = Action<typeof SET_POSTS> & {
+  posts: PostWithUserAndComment[];
+};
+
+type ChangeInputValue = Action<typeof INPUT_VALUE> & {
+  inputValue: string;
+};
+
+type ChangeDebounceInputValue = Action<typeof SET_DEBOUNCE_INPUT_VALUE> & {
+  debounceInputValue: string;
+};
+
+type DeletePost = Action<typeof DELETE_POST> & {
+  postId: number;
+};
+
+type DeleteComment = Action<typeof DELETE_COMMENT> & {
+  commentId: number;
+};
+
+export type AllActions = SetLoading
+| SetPosts
+| ChangeInputValue
+| ChangeDebounceInputValue
+| DeletePost
+| DeleteComment;
+
+export const setLoading = (loadingStatus: boolean): SetLoading => (
+  {
+    type: SET_LOADING,
+    loadingStatus,
+  }
 );
+export const setPosts = (posts: PostWithUserAndComment[]): SetPosts => (
+  {
+    type: SET_POSTS,
+    posts,
+  }
+);
+export const changeInputValue = (inputValue: string): ChangeInputValue => (
+  {
+    type: INPUT_VALUE,
+    inputValue,
+  }
+);
+
+export const changeDebounceInputValue = (
+  debounceInputValue: string,
+): ChangeDebounceInputValue => (
+  {
+    type: SET_DEBOUNCE_INPUT_VALUE,
+    debounceInputValue,
+  }
+);
+
+export const deletePost = (postId: number): DeletePost => (
+  {
+    type: DELETE_POST,
+    postId,
+  }
+);
+
+export const deleteComment = (commentId: number): DeleteComment => (
+  {
+    type: DELETE_COMMENT,
+    commentId,
+  }
+)
+
+export type InitialState = {
+  posts: PostWithUserAndComment[];
+  inputValue: string;
+  debounceInputValue: string;
+  loadingStatus: boolean;
+};
+
+const initialState: InitialState = {
+  posts: [],
+  inputValue: '',
+  debounceInputValue: '',
+  loadingStatus: false,
+};
+
+const postsReducer = (state = initialState, action: AllActions) => {
+  switch (action.type) {
+    case SET_LOADING: return {
+      ...state,
+      setLoading: action.loadingStatus,
+    };
+    case SET_POSTS: return {
+      ...state,
+      posts: action.posts,
+    };
+    case INPUT_VALUE: return {
+      ...state,
+      inputValue: action.inputValue,
+    };
+    case SET_DEBOUNCE_INPUT_VALUE: return {
+      ...state,
+      debounceInputValue: action.debounceInputValue,
+    };
+    case DELETE_POST: return {
+      ...state,
+      posts: [...state.posts].filter(post => post.id !== action.postId),
+    };
+    case DELETE_COMMENT: return {
+      ...state,
+      posts: [...state.posts].map(post => (
+        {
+          ...post,
+          comments: post.comments.filter(comment => (
+            comment.id !== action.commentId
+          )),
+        }
+      )),
+    };
+    default: return state;
+  }
+};
+
+export const filteredPosts = (state: InitialState): PostWithUserAndComment[] => {
+  if (!state.inputValue) {
+    return state.posts;
+  }
+
+  return [...state.posts].filter((post) => {
+    const string = (post.title + post.body).toLowerCase();
+
+    return string.includes(state.debounceInputValue.trim());
+  });
+};
+
+const store = createStore(postsReducer);
 
 export default store;
