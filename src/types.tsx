@@ -11,7 +11,6 @@ export interface UserType {
   username: string;
   email: string;
   address: AddressType;
-
 }
 
 export interface AddressType {
@@ -19,7 +18,12 @@ export interface AddressType {
   suite: string;
   city: string;
   zipcode: string;
-  geo: Object;
+  geo: Geo;
+}
+
+export interface Geo {
+  lat: string;
+  lng: string;
 }
 
 export interface CommentType {
