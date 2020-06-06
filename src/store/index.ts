@@ -1,56 +1,43 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import message from './message';
+import users from './users';
+import posts from './posts';
+import comments from './comments';
+import filterField from './filterField';
+import filteredPosts from './filteredPosts';
+import { LoadingFinishProps } from '../types';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+export const LOADING_FINISH = 'LOADING_FINISH';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
+export const loadingFinish = ({ users, comments, posts, message }: LoadingFinishProps) =>
+  ({ type: LOADING_FINISH, users, comments, posts, message })
+
 const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
+  message,
+  users,
+  comments,
+  posts,
+  filterField,
+  filteredPosts,
 });
 
 // We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
-};
+const initialState = {
+  message: 'Press for start loading',
+  users: [],
+  comments: [],
+  posts: [],
+  filterField: '',
+  filteredPosts: [],
+}
 
 const store = createStore(
   rootReducer,
+  initialState,
   composeWithDevTools(applyMiddleware(thunk)),
 );
 
