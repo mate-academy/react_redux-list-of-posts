@@ -1,22 +1,41 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
-import { Start } from './components/Start';
 
-import { isLoading, getMessage } from './store';
+import { getPostsFromServer } from './helpers/api';
+import PostList from './components/PostList';
+
+import { isLoading, getPosts } from './store';
+import { finishLoading, startLoading } from './store/loading';
 
 const App = () => {
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const posts = useSelector(getPosts);
+  const dispatch = useDispatch();
+
+  const handleLoadClick = () => {
+    dispatch(startLoading());
+
+    getPostsFromServer()
+      .then(
+        postsFromServer => dispatch(finishLoading(postsFromServer))
+      );
+  };
 
   return (
-    <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
-    </div>
+    <>
+      <div className="App">
+        <h1>Dynamic list of posts</h1>
+        {posts.length === 0 ? (
+          <button type="button" onClick={handleLoadClick} disabled={loading}>
+            {loading ? 'Loading' : 'Load'}
+          </button>
+        ) : (
+            <PostList />
+          )}
+      </div>
+    </>
   );
 };
 
