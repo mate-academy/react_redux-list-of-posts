@@ -1,15 +1,20 @@
 
 import React from 'react';
-import { AddressType } from '../types';
+import { UserType } from '../types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 type PropsType = {
-  name: string;
-  email: string;
-  address: AddressType;
+ id: number;
 }
 
-export const User: React.FC<PropsType> = ({ name, email, address }) => {
-  const { street, city, suite } = address;
+export const User: React.FC<PropsType> = ({ id }) => {
+  const user = useSelector(
+    (state:RootState) => state
+    .users
+    .filter((user: UserType) => user.id === id)[0])
+  const { street, city, suite } = user.address;
+  const {name, email} = user;
 
   return (
     <div>
@@ -19,4 +24,3 @@ export const User: React.FC<PropsType> = ({ name, email, address }) => {
     </div>
   )
 }
-

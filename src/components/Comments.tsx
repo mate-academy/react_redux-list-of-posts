@@ -1,12 +1,20 @@
 import './Comments.scss';
 import React from 'react';
 import { CommentType } from '../types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 type PropsType = {
-  comments: CommentType[]
+  postId: number;
 }
 
-export const Comments: React.FC<PropsType> = ({ comments }) => {
+export const Comments: React.FC<PropsType> = ({ postId }) => {
+  const comments = useSelector(
+    (state:RootState) => state
+    .comments
+    .filter((comment: CommentType) => comment.postId === postId)
+  )
+
   return (
     <ul className="Comments">
       {comments.map((comment: CommentType) => {

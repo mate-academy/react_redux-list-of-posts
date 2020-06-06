@@ -1,16 +1,21 @@
 import { AnyAction } from 'redux';
+import { FILTER_FIELD_CHANGE } from './filterField';
+import { LOADING_FINISH } from '.';
 import { PostType } from '../types';
 
-// Action types
-export const SET_FILTERED_POSTS = 'SET_FILTERED_POSTS';
 
-// Action creators
-export const setFilteredPostsCreator = (filteredPosts: PostType[]) => ({ type: SET_FILTERED_POSTS, filteredPosts });
 
-const reducer = (filteredPosts = [], action: AnyAction) => {
+const reducer = (filteredPosts: PostType[] = [], action: AnyAction): PostType[] => {
   switch (action.type) {
-    case SET_FILTERED_POSTS:
-      return action.filteredPosts;
+    case FILTER_FIELD_CHANGE:
+      if (action.filterField === '') {
+        return [...action.posts];
+      } else {
+        return action.posts.filter((post: PostType) => post.body.includes(action.filterField)
+          || post.title.includes(action.filterField));
+      };
+    case LOADING_FINISH:
+      return [...action.posts]
     default:
       return filteredPosts;
   }

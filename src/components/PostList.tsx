@@ -1,88 +1,55 @@
 
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { getAllData } from '../helpers/api';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { UserType, PostType, CommentType } from '../types';
-import { SET_COMMENTS } from '../store/comments';
-import { SET_USERS } from '../store/users';
-import { SET_POSTS } from '../store/posts';
-import { RootState } from '../store';
-import { SET_MESSAGE } from '../store/message';
-import { Post } from './Post';
-import { setFilterFieldCreator } from '../store/filterField';
-import { setFilteredPostsCreator } from '../store/filteredPosts';
+import { useDispatch, useSelector } from 'react-redux';
+import { PostType } from '../types';
 import { debounce } from '../helpers/debounce';
+import { filterFieldChange } from '../store/filterField';
+import { RootState, loadingFinish } from '../store';
+import { Post } from './Post';
+import { setMessage } from '../store/message';
 
-type PropsType = {
-  setMessage: (message: string) => void;
-  setUsers: (users: UserType[]) => void;
-  setComments: (comments: CommentType[]) => void;
-  setPosts: (posts: PostType[]) => void;
-  message: string;
-  posts: PostType[];
-  filterField: string;
-  setFilterField: (filterField: string) => void;
-  setFilteredPosts: (filteredPosts: PostType[]) => void;
-  filteredPosts: PostType[],
-}
-
-const PostList = ({
-  setMessage,
-  setComments,
-  setPosts,
-  setUsers,
-  message,
-  posts,
-  filterField,
-  setFilterField,
-  filteredPosts,
-  setFilteredPosts,
-}: PropsType) => {
+const PostList = () => {
+  const dispatch = useDispatch();
+  const message = useSelector((state: RootState) => state.message);
+  const filteredPosts = useSelector((state: RootState) => state.filteredPosts);
+  const posts = useSelector((state:RootState) => state.posts);
+  const [filterFieldValue, setFilterFieldValue] = useState('')
 
   const handleButtonClick = () => {
-    setMessage('Is loading');
+    dispatch(setMessage('Loading....'))
     getAllData().then(([posts, users, comments]) => {
-      setComments(comments);
-      setPosts(posts);
-      setFilteredPosts(posts)
-      setUsers(users);
-      setMessage('Loaded')
+      const message = 'Loaded';
+    dispatch(loadingFinish({posts, users, comments, message}))
     })
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFilterField(event.target.value);
+    setFilterFieldValue(event.target.value);
   }
 
   useEffect(() => {
     debounce(() => {
-      if (filterField === "") {
-        setFilteredPosts(posts);
-      } else {
-        setFilteredPosts(posts.filter(
-          (post: PostType) => post.body.includes(filterField)
-            || post.title.includes(filterField)))
-      }
-    },
+         dispatch(filterFieldChange(filterFieldValue, posts));
+     },
       1000)
-  }, [filterField, filteredPosts, setFilteredPosts, posts])
+  }, [filterFieldValue, dispatch, posts])
 
   return (
     <div>
-      {message === 'Loaded'
+      {filteredPosts.length !== 0
         ? (<>
           <span>For filtering: </span>
           <input
             type="text"
-            value={filterField}
+            value={filterFieldValue}
             onChange={handleInputChange}
           />
           <ul>
             {filteredPosts.map((post: PostType) => {
               return (
                 <li key={post.id}>
-                  <Post post={post} />
+                  <Post id={post.id} />
                 </li>
               )
             })}
@@ -97,20 +64,4 @@ const PostList = ({
   )
 }
 
-const mapState = (state: RootState) => ({
-  message: state.message,
-  posts: state.posts,
-  filterField: state.filterField,
-  filteredPosts: state.filteredPosts,
-})
-
-const mapDispatch = (dispatch: Dispatch) => ({
-  setUsers: (users: UserType[]) => dispatch({ type: SET_USERS, users }),
-  setComments: (comments: CommentType[]) => dispatch({ type: SET_COMMENTS, comments }),
-  setPosts: (posts: PostType[]) => dispatch({ type: SET_POSTS, posts }),
-  setMessage: (message: string) => dispatch({ type: SET_MESSAGE, message }),
-  setFilterField: (filterField: string) => dispatch(setFilterFieldCreator(filterField)),
-  setFilteredPosts: (filteredPosts: PostType[]) => dispatch(setFilteredPostsCreator(filteredPosts))
-})
-
-export default connect(mapState, mapDispatch)(PostList)
+export default PostList;

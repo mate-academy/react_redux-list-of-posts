@@ -30,3 +30,10 @@ export interface CommentType {
   body: string;
 }
 
+export interface LoadingFinishProps {
+  users: UserType[];
+  posts: PostType[];
+  comments: CommentType[];
+  message: string;
+}
+
