@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { removeCommentFromPost } from '../store/posts';
 
 type Props = {
   comment: Comment;
@@ -13,7 +14,7 @@ const Comment: React.FunctionComponent<Props> = ({ comment }) => {
       <button
         type="button"
         className="button button--remove-comment"
-        onClick={() => dispatch({ type: 'COMMENT', commentId: comment.id })}
+        onClick={() => dispatch(removeCommentFromPost(comment.id))}
       >
         Remove
       </button>

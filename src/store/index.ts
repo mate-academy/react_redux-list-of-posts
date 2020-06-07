@@ -4,7 +4,6 @@ import loadingReducer from './loading';
 import errorsReducer from './errors';
 import queryReducer from './query';
 import postsReducer from './posts';
-// import commentReducer from './comment';
 
 export type RootState = {
   posts: [];

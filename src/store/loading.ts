@@ -1,11 +1,12 @@
 import { AnyAction } from 'redux';
 import {
-  START_LOADING_DATA, SUCCESSFUL_LOADING,
+  START_LOADING_DATA,
+  SUCCESSFUL_LOADING,
   HANDLE_ERROR_LOADING,
 } from './actionTypes';
 
 export const startLoadingData = () => ({ type: START_LOADING_DATA });
-export const handleSuccessfulLoad = (data: Post) => ({ type: SUCCESSFUL_LOADING, posts: data });
+export const handleSuccessfulLoad = () => ({ type: SUCCESSFUL_LOADING });
 export const hanldeErrorLoad = () => ({ type: HANDLE_ERROR_LOADING });
 
 const reducer = (loading = false, action: AnyAction) => {
@@ -15,7 +16,7 @@ const reducer = (loading = false, action: AnyAction) => {
     case SUCCESSFUL_LOADING:
       return false;
     case HANDLE_ERROR_LOADING:
-      return true;
+      return false;
     default:
       return loading;
   }

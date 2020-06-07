@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPreparedDataFromServer } from './helpers/api';
 import { RootState } from './store';
 import { startLoadingData, handleSuccessfulLoad } from './store/loading';
-import { hanldeErrorLoad } from './store/errors';
+import { hanldeErrorLoad, dischargeError } from './store/errors';
 import { handleSearchQuery } from './store/query';
 import PostsList from './components/PostsList';
+import { setPosts } from './store/posts';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -16,12 +17,14 @@ const App = () => {
 
   const getData = async () => {
     try {
+      dispatch(dischargeError());
       dispatch(startLoadingData());
       const data = await getPreparedDataFromServer();
 
-      dispatch(handleSuccessfulLoad(data));
+      dispatch(setPosts(data));
+      dispatch(handleSuccessfulLoad());
     } catch {
-      dispatch(hanldeErrorLoad);
+      dispatch(hanldeErrorLoad());
     }
   };
 

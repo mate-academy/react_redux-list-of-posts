@@ -1,16 +1,17 @@
 import { AnyAction } from 'redux';
-import { SUCCESSFUL_LOADING, REMOVE_POST } from './actionTypes';
+import { REMOVE_POST, SET_POSTS, REMOVE_COMMENT } from './actionTypes';
 
-export const handleSuccessfulLoad = (data: Post) => ({ type: SUCCESSFUL_LOADING, posts: data });
+export const setPosts = (data: Post) => ({ type: SET_POSTS, posts: data });
 export const removePost = (postId: number) => ({ type: REMOVE_POST, postId });
+export const removeCommentFromPost = (commentId: number) => ({ type: REMOVE_COMMENT, commentId });
 
 const reducer = (posts = [], action: AnyAction) => {
   switch (action.type) {
-    case SUCCESSFUL_LOADING:
+    case SET_POSTS:
       return action.posts;
     case REMOVE_POST:
       return posts.filter((post: Post) => post.id !== action.postId);
-    case 'COMMENT':
+    case REMOVE_COMMENT:
       return posts.map((post: Post) => {
         return {
           ...post,
