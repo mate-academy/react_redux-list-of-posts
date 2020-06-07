@@ -1,57 +1,115 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, AnyAction } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+// Action types - is just a constant. MUST have a unique value.
+const START_LOADING = 'START_LOADING';
+const INIT_POSTS = 'INIT_TODOS';
+const HANDLE_ERROR = 'HANDLE_ERROR';
+const DELETE_POST = 'DELETE_POST';
+const SET_QUERY = 'SET_QUERY';
+const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
+// Action creators - a function returning an action object
+export const startLoading = () => ({ type: START_LOADING });
+export const initPosts = (posts: Post[]) => ({
+  type: INIT_POSTS,
+  posts,
 });
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+export const handleError = (errorMessage: string) => ({
+  type: HANDLE_ERROR,
+  errorMessage,
+});
+export const deletePost = (postTitle: string) => ({
+  type: DELETE_POST,
+  postTitle,
+});
+export const setQuery = (query: string) => ({
+  type: SET_QUERY,
+  query,
+})
+export const setFilterQuery = (filterQuery: string) => ({
+  type: SET_FILTER_QUERY,
+  filterQuery,
+})
 
 // Selectors - a function receiving Redux state and returning some data from it
+export const getPosts = (state: RootState) => state.posts;
 export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const hasError = (state: RootState) => state.errorMessage;
+export const getQuery = (state: RootState) => state.query;
+export const getVisiblePosts = (state: RootState) => {
+  return state.posts.filter(({ title, body }) => (`${title} ${body}`)
+    .toLocaleLowerCase()
+    .replace(/\s*/g, ' ')
+    .includes(state.filterQuery.toLocaleLowerCase().replace(/\s*/g, ' ')))
+}
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+// Initial state
+export type RootState = {
+  posts: Post[],
+  loading: boolean,
+  errorMessage: string,
+  query: string,
+  filterQuery: string,
 };
 
+const initialState: RootState = {
+  posts: [],
+  loading: false,
+  errorMessage: '',
+  query: '',
+  filterQuery: '',
+};
+
+// rootReducer - this function is called after dispatching an action
+const rootReducer = (state = initialState, action: AnyAction): RootState => {
+  switch (action.type) {
+    case START_LOADING:
+      return {
+        ...state,
+        loading: true,
+        errorMessage: '',
+      }
+
+    case INIT_POSTS:
+      return {
+        ...state,
+        loading: false,
+        posts: action.posts,
+      }
+
+    case HANDLE_ERROR:
+      return {
+        ...state,
+        errorMessage: action.errorMessage,
+        loading: false,
+      }
+
+    case DELETE_POST:
+      return {
+        ...state,
+        posts: state.posts.filter(post => post.title !== action.postTitle)
+      }
+    case SET_QUERY:
+      return {
+        ...state,
+        query: action.query
+      }
+    case SET_FILTER_QUERY:
+      return {
+        ...state,
+        filterQuery: action.filterQuery
+      }
+
+    default:
+      return state;
+  }
+}
+
+// The `store` should be passed to the <Provider store={store}> in `/src/index.tsx`
 const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
+  composeWithDevTools(),
 );
 
 export default store;
