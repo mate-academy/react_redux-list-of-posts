@@ -10,6 +10,13 @@ const reducer = (posts = [], action: AnyAction) => {
       return action.posts;
     case REMOVE_POST:
       return posts.filter((post: Post) => post.id !== action.postId);
+    case 'COMMENT':
+      return posts.map((post: Post) => {
+        return {
+          ...post,
+          comments: post.comments.filter((comment: Comment) => comment.id !== action.commentId),
+        };
+      });
     default:
       return posts;
   }

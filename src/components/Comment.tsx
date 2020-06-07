@@ -1,12 +1,22 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   comment: Comment;
 };
 
 const Comment: React.FunctionComponent<Props> = ({ comment }) => {
+  const dispatch = useDispatch();
+
   return (
     <section className="post__comment">
+      <button
+        type="button"
+        className="button button--remove-comment"
+        onClick={() => dispatch({ type: 'COMMENT', commentId: comment.id })}
+      >
+        Remove
+      </button>
       <p className="post__comment-body">{comment.body}</p>
       <div className="post__comment-author">
         <a href="/" className="post__comment-author-email">

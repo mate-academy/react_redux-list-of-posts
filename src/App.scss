@@ -26,6 +26,9 @@ a {
   padding: 10px;
   cursor: pointer;
   transition: 0.3s all;
+  &--remove-comment {
+    border: 1px solid;
+  }
 }
 
 .button:hover {
