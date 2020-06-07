@@ -1,4 +1,4 @@
-const URL = 'https://jsonplaceholder.typicode.com';
+const URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api/';
 
 const getPostsFromServer = () => {
   return fetch(`${URL}/posts`)
