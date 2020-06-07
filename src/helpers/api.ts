@@ -1,17 +1,17 @@
-const URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api/';
+const URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api';
 
 const getPostsFromServer = () => {
-  return fetch(`${URL}/posts`)
+  return fetch(`${URL}/posts.json`)
     .then(response => response.json());
 };
 
 const getCommentsFromServer = () => {
-  return fetch(`${URL}/comments`)
+  return fetch(`${URL}/comments.json`)
     .then(response => response.json());
 };
 
 const getUsersFromServer = () => {
-  return fetch(`${URL}/users`)
+  return fetch(`${URL}/users.json`)
     .then(response => response.json());
 };
 
