@@ -1,21 +1,58 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import './App.scss';
-import { Start } from './components/Start';
 
-import { isLoading, getMessage } from './store';
+import PostList from './PostList';
+import {
+
+  getVisiblePosts,
+  getIsLoading,
+  getError,
+  setQuery,
+  loadPosts,
+  getQuery,
+} from './store';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const dispatch = useDispatch();
+  const visiblePosts = useSelector(getVisiblePosts);
+  const isLoading = useSelector(getIsLoading);
+  const errorMessage = useSelector(getError);
+  const query = useSelector(getQuery);
+
+  const searchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target as HTMLInputElement;
+
+    dispatch(setQuery(value));
+  };
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
+      <h1>Dynamic list of posts</h1>
+      {!visiblePosts.length ? (
+        <>
+          <button
+            type="button"
+            className="button"
+            onClick={() => dispatch(loadPosts())}
+          >
+            {isLoading ? 'Loading...' : 'Click to Load'}
+          </button>
+          {errorMessage && <p className="error">{errorMessage}</p>}
+        </>
+      ) : (
+        <>
+          <input
+            type="text"
+            className="input"
+            placeholder="what you search"
+            value={query}
+            onChange={searchQuery}
+          />
+          <PostList posts={visiblePosts} />
+        </>
+      )}
     </div>
   );
 };
