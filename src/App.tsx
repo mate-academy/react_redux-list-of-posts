@@ -1,11 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import './App.scss';
-
 import PostList from './PostList';
 import {
-
   getVisiblePosts,
   getIsLoading,
   getError,
