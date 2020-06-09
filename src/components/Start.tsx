@@ -1,15 +1,15 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { isLoading, loadMessage } from '../store';
+import { getIsLoading, loadMessage } from '../store';
 
 export const Start = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(isLoading);
+  const loading = useSelector(getIsLoading);
 
   return (
     <button
       type="button"
+      className="btn btn-primary"
       onClick={() => dispatch(loadMessage())}
       disabled={loading}
     >
