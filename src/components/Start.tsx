@@ -9,7 +9,7 @@ export const Start = () => {
   return (
     <button
       type="button"
-      className="btn btn-primary"
+      className="button__loading"
       onClick={() => dispatch(loadMessage())}
       disabled={loading}
     >

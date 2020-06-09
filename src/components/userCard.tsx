@@ -12,15 +12,15 @@ const UserInfo: React.FC<Props> = ({ author }) => {
   return (
     <p className="address">
       City:&nbsp;
-  {city}
-, zipcode:&nbsp;
-  {zipcode}
-, street:&nbsp;
-  {street}
-, suite:&nbsp;
-  {suite}
-  </p>
-);
+      {city}
+      , zipcode:&nbsp;
+      {zipcode}
+      , street:&nbsp;
+      {street}
+      , suite:&nbsp;
+      {suite}
+    </p>
+  );
 };
 
 export default UserInfo;

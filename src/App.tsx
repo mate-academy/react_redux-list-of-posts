@@ -10,7 +10,6 @@ import { setQuery } from './store/search';
 import PostList from './components/postList';
 
 const App = () => {
-
   const dispatch = useDispatch();
   const loading = useSelector(getIsLoading);
   const message = useSelector(getMessage) || 'Ready!';
@@ -41,4 +40,5 @@ const App = () => {
     </div>
   );
 };
+
 export default App;

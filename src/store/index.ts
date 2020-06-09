@@ -36,24 +36,28 @@ export const getFilteredPosts = (state: RootState) => {
       .includes(state.query.toLowerCase()))
   );
 };
+
 export const loadMessage = () => {
-    return async (dispatch: Dispatch<AnyAction>) => {
-      dispatch(startLoading());
+  return async (dispatch: Dispatch<AnyAction>) => {
+    dispatch(startLoading());
 
-      try {
-        const postsFromServer = await getPostsFromServer();
+    try {
+      const postsFromServer = await getPostsFromServer();
 
-        dispatch(setPosts(postsFromServer));
-        dispatch(setMessage('Load Sucsess'));
-        dispatch(setIsLoadCompleted());
-      } catch (error) {
-        dispatch(setMessage('Error occurred when loading data'));
-      }
-      dispatch(finishLoading());
-    };
+      dispatch(setPosts(postsFromServer));
+      dispatch(setMessage('Load Sucsess'));
+      dispatch(setIsLoadCompleted());
+    } catch (error) {
+      dispatch(setMessage('Error occurred when loading data'));
+    }
+
+    dispatch(finishLoading());
   };
-  const store = createStore(
-    rootReducer,
-    composeWithDevTools(applyMiddleware(thunk)),
-  );
-  export default store;
+};
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk)),
+);
+
+export default store;
