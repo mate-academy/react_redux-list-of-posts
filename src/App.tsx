@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './App.scss';
+import debounce from 'lodash.debounce';
 import PostList from './PostList';
 import {
   getVisiblePosts,
@@ -17,11 +18,17 @@ const App = () => {
   const isLoading = useSelector(getIsLoading);
   const errorMessage = useSelector(getError);
   const query = useSelector(getQuery);
+  const [inputQuery, setInputQuery] = useState(query);
+
+  const queryWithDebounce = useCallback(
+    debounce((value: string) => dispatch(setQuery(value)), 500), [],
+  );
 
   const searchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target as HTMLInputElement;
+    const { value } = event.target;
 
-    dispatch(setQuery(value));
+    setInputQuery(value);
+    queryWithDebounce(value);
   };
 
   return (
@@ -44,7 +51,7 @@ const App = () => {
             type="text"
             className="input"
             placeholder="what you search"
-            value={query}
+            value={inputQuery}
             onChange={searchQuery}
           />
           <PostList posts={visiblePosts} />
