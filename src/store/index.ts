@@ -4,46 +4,41 @@ import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
+import loadedReducer, { setLoaded } from './loaded';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './posts';
+import filteredPostsReducer from './filteredPosts';
+import { getPreparedPosts } from '../helpers/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  posts: postsReducer,
+  filteredPosts: filteredPostsReducer,
+  loaded: loadedReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+export const getPosts = (state: RootState) => state.posts;
+export const getfilteredPosts = (state: RootState) => state.filteredPosts;
+export const getIsLoaded = (state: RootState) => state.loaded;
+export const loadPosts = () => {
+  return (dispatch: Dispatch<any>) => {
     dispatch(startLoading());
 
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
+    getPreparedPosts()
+      .then(postFromServer => {
+        dispatch(setPosts(postFromServer));
+        dispatch(setMessage('Loaded'));
+        dispatch(setLoaded(true));
+      })
+      .catch(() => {
+        dispatch(setMessage('Error occurred when loading data'));
+        dispatch(setLoaded(false));
+      });
 
     dispatch(finishLoading());
   };
