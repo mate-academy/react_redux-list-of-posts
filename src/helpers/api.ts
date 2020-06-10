@@ -10,3 +10,17 @@ const getAll = <T>(url: string): Promise<T[]> => {
 export const getPost = () => getAll<Posts>('/posts.json');
 export const getUsers = () => getAll<User>('/users.json');
 export const getComments = () => getAll<Comment>('/comments.json');
+
+export const getPreparedPosts = async () => {
+  const postFromServer = await getPost();
+  const userFromServer = await getUsers();
+  const commentsFromServer = await getComments();
+
+  const preparedListOfPosts = postFromServer.map(item => ({
+    ...item,
+    user: userFromServer.find(itemId => (itemId.id === item.userId)),
+    comments: commentsFromServer.filter(postId => (postId.postId === item.userId)),
+  }));
+
+  return preparedListOfPosts;
+};

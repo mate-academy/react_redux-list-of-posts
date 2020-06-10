@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isLoading, loadMessage, getIsLoaded } from '../store';
+import { isLoading, loadPosts, getIsLoaded } from '../store';
 import PostList from './PostList';
 
 export const Start = () => {
@@ -16,7 +16,7 @@ export const Start = () => {
         : (
           <button
             type="button"
-            onClick={() => dispatch(loadMessage())}
+            onClick={() => dispatch(loadPosts())}
             disabled={loading}
             className="btn btn-outline-primary"
           >
