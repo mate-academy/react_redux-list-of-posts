@@ -1,21 +1,53 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
-import { Start } from './components/Start';
 
-import { isLoading, getMessage } from './store';
+import { finishLoading, initPosts, startLoading } from './actions';
+import { getLoading, getPosts } from './reducers';
+
+import { getAppData } from './helpers/api';
+import Filter from './components/Filter';
+import Button from './components/Button';
+import PostList from './components/PostList';
+
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const dispatch = useDispatch();
+  const posts = useSelector(getPosts);
+  const loading = useSelector(getLoading);
+
+
+  const initData = () => {
+    dispatch(startLoading());
+
+    getAppData()
+      .then(postsFromServer => {
+        dispatch(initPosts(postsFromServer));
+      })
+      .finally(() => {
+        dispatch(finishLoading());
+      });
+  };
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
+      <div className="container">
+        <h1 className="text-center">
+          Redux list of posts
+          {posts.length}
+        </h1>
+        {!posts.length
+        && (
+          <Button
+            text={loading ? 'Loading...' : 'Init data'}
+            disabled={loading}
+            onClick={initData}
+          />
+        )}
+        {posts.length > 0 && <Filter />}
+        {posts.length > 0 && <PostList />}
+      </div>
     </div>
   );
 };
