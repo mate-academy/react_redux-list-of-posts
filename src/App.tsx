@@ -65,7 +65,11 @@ const App = () => {
           <div className="post-container">
             {visiblePosts
               .map(({
-                id, postUser, title, body, postComment,
+                id,
+                postUser,
+                title,
+                body,
+                postComment,
               }) => (
                 <div className="post" key={id}>
                   <h2 className="post_title">{title}</h2>
