@@ -17,7 +17,7 @@ export const getAppData = async () => {
   return postsFromServer.map((post) => ({
     ...post,
     postUser: usersFromServer.find((user: UserFromServer) => post.userId === user.id),
-    // eslint-disable-next-line max-len
-    postComment: commentsFromServer.filter((comment: CommentFromServer) => post.id === comment.postId),
+    postComment: commentsFromServer.filter((comment:
+    CommentFromServer) => post.id === comment.postId),
   }));
 };

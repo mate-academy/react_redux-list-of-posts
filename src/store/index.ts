@@ -1,5 +1,5 @@
-import {createStore, AnyAction} from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import { createStore, AnyAction } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 // Action types - is just a constant. MUST have a unique value.
 const START_LOADING = 'START_LOADING';
@@ -9,10 +9,10 @@ const DELETE_POST = 'DELETE_POST';
 const SET_QUERY = 'SET_QUERY';
 const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 
-export const startLoading = () => ({type: START_LOADING});
+export const startLoading = () => ({ type: START_LOADING });
 export const initPosts = (posts: {
   postUser: UserFromServer
-    | undefined; postComment: CommentFromServer[];
+  | undefined; postComment: CommentFromServer[];
   id: number; title: string; body: string; userId: number;
 }[]) => ({
   type: INIT_POSTS,
@@ -41,7 +41,7 @@ export const isLoading = (state: RootState) => state.loading;
 export const hasError = (state: RootState) => state.errorMessage;
 export const getQuery = (state: RootState) => state.query;
 export const getVisiblePosts = (state: RootState) => {
-  return state.posts.filter(({title, body}) => (`${title} ${body}`)
+  return state.posts.filter(({ title, body }) => (`${title} ${body}`)
     .toLocaleLowerCase()
     .replace(/\s*/g, ' ')
     .includes(state.filterQuery.toLocaleLowerCase().replace(/\s*/g, ' ')));

@@ -50,6 +50,6 @@ interface Post {
   id: number;
   title: string;
   body: string;
-  postUser: UserFromServer | null;
+  postUser: UserFromServer;
   postComment: CommentFromServer[];
 }
