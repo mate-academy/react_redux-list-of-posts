@@ -1,0 +1,8 @@
+.post-list__filter {
+  display: flex;
+  margin-bottom: 48px;
+}
+
+.post-list__filter-input {
+  margin-right: 18px;
+}

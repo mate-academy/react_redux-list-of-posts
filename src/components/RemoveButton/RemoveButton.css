@@ -1,0 +1,65 @@
+.remove-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: end;
+  position: relative;
+  padding: 0;
+
+  color: #fff;
+  background-color: rgba(231,137,201, 1);
+  border: 2px solid #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-btn::before,
+.remove-btn::after {
+  position: absolute;
+  display: block;
+  content: "";
+
+  background-color: #fff;
+}
+
+.remove-btn::before {
+  transform: rotate(45deg);
+}
+
+.remove-btn::after {
+  transform: rotate(-45deg);
+}
+
+.remove-btn:focus {
+  outline: none;
+}
+
+.remove-btn:hover {
+  background-color: rgb(255, 101, 206);
+}
+
+.remove-btn:active {
+  background-color: rgb(139, 51, 111);
+}
+
+.remove-btn--large {
+  width: 28px;
+  height: 28px;
+}
+
+.remove-btn--large::before,
+.remove-btn--large::after {
+  width: 20px;
+  height: 2px;
+}
+
+.remove-btn--small {
+  width: 18px;
+  height: 18px;
+}
+
+.remove-btn--small::before,
+.remove-btn--small::after {
+  width: 10px;
+  height: 2px;
+}
