@@ -1,22 +1,39 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import './App.scss';
-import { Start } from './components/Start';
+import { StartButton } from './components/StartButton/StartButton';
+import { PostList } from './components/PostList/PostList';
+import { PostFilter, filterPosts } from './components/PostFilter/PostFilter';
 
-import { isLoading, getMessage } from './store';
+import { getErrorMessage, getPosts, getFilterQuery } from './store';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const errorMessage = useSelector(getErrorMessage);
+  const posts = useSelector(getPosts);
+  const filterQuery = useSelector(getFilterQuery);
+
+  const visiblePosts = useMemo(() => filterPosts(filterQuery, posts), [
+    filterQuery,
+    posts,
+  ]);
 
   return (
-    <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+    <section className="post-list">
+      <h1 className="post-list__title">Dynamic list of posts</h1>
 
-      <Start />
-    </div>
+      {posts.length === 0 ? (
+        <>
+          <StartButton />
+          {errorMessage && (<p>{errorMessage}</p>)}
+        </>
+      ) : (
+        <>
+          <PostFilter />
+          <PostList posts={visiblePosts} />
+        </>
+      )}
+    </section>
   );
 };
 
