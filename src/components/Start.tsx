@@ -9,6 +9,7 @@ export const Start = () => {
 
   return (
     <button
+      className="btn btn-info ml"
       type="button"
       onClick={() => dispatch(loadMessage())}
       disabled={loading}
