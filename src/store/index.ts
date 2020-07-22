@@ -3,51 +3,60 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
+import { findAuthor, findComments } from '../helpers/findData';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPostsList } from './posts';
+import filterOptionReducer from './filterOption';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
+import {
+  fetchData, URLComments, URLUsers, URLPosts,
+} from '../helpers/api';
+import {
+  Comment, PostFromServer, User, Post,
+} from '../interfaces/interfaces';
+
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  posts: postsReducer,
+  option: filterOptionReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
+export const getPosts = (state: RootState) => state.posts;
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
+export const getFilterOption = (state: RootState) => state.option;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+export const loadMessage = () => (async (dispatch: Dispatch<any>) => {
+  dispatch(startLoading());
 
-    try {
-      const message = await fetchMessage();
+  try {
+    const users = await fetchData<User>(URLUsers);
+    const posts = await fetchData<PostFromServer >(URLPosts);
+    const comments = await fetchData<Comment>(URLComments);
 
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
+    const preparedPosts: Post[] = posts.map((post) => {
+      const [author, email, address] = findAuthor(post.userId, users);
 
-    dispatch(finishLoading());
-  };
-};
+      return {
+        ...post,
+        author,
+        email,
+        address,
+        comments: findComments(post.id, comments),
+      };
+    });
+
+    dispatch(setPostsList(preparedPosts));
+  } catch (error) {
+    dispatch(setMessage('Error occurred when loading data'));
+  }
+
+  dispatch(finishLoading());
+});
 
 const store = createStore(
   rootReducer,

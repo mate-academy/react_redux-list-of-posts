@@ -3,19 +3,29 @@ import { useSelector } from 'react-redux';
 
 import './App.scss';
 import { Start } from './components/Start';
+import { PostsList } from './components/PostsList';
+import { SearchField } from './components/SearchField';
 
-import { isLoading, getMessage } from './store';
+import { isLoading, getPosts } from './store';
 
 const App = () => {
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const posts = useSelector(getPosts);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
 
-      <Start />
+      {
+        !posts.length
+          ? <Start />
+          : (
+            <>
+              <SearchField />
+              <PostsList />
+            </>
+          )
+      }
+      <h2>{loading && 'Loading...'}</h2>
     </div>
   );
 };
