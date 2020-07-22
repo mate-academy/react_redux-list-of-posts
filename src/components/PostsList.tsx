@@ -12,9 +12,7 @@ export const PostsList = () => {
 
   return (
     <ul className="posts">
-      {
-        visiblePosts.map(post => <PostItem key={post.id} post={post} />)
-      }
+      {visiblePosts.map(post => <PostItem key={post.id} post={post} />)}
     </ul>
   );
 };

@@ -4,7 +4,7 @@ const SET_MESSAGE = 'SET_MESSAGE';
 
 export const setMessage = (message: string) => ({ type: SET_MESSAGE, message });
 
-const reducer = (message = 'mklkml', action: AnyAction) => {
+const reducer = (message = '', action: AnyAction) => {
   switch (action.type) {
     case SET_MESSAGE:
       return action.message;

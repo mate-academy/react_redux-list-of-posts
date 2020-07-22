@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { Post } from '../interfaces/interfaces';
 import { CommentItem } from './CommentItem';
@@ -33,9 +32,7 @@ export const PostItem: React.FC<Props> = ({ post }) => (
       </div>
     </div>
     <ul>
-      {
-        post.comments.map(comment => <CommentItem key={comment.id} comment={comment} />)
-      }
+      {post.comments.map(comment => <CommentItem key={comment.id} comment={comment} />)}
     </ul>
   </li>
 );
