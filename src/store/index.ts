@@ -1,57 +1,94 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, AnyAction } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+// import thunk from 'redux-thunk';
+// import { Dispatch } from 'react';
+import { PreparedPosts } from '../helpers/types';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+const START_LOADING = 'START_LOADING';
+const FINISH_LOADING = 'FINISH_LOADING';
+const SET_SEARCH = 'SET_SEARCH';
+const DELETE_COMMENT = 'DELETE_COMMENT';
+const DELETE_POST = 'DELETE_POST';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
+// Action creators
+export const startLoading = () => ({ type: START_LOADING });
+export const finishLoading = (value: PreparedPosts[]) => ({ type: FINISH_LOADING, value });
+export const setSearch = (query: string) => ({ type: SET_SEARCH, query });
+export const deleteComment = (id: number, commentId: number) => (
+  { type: DELETE_COMMENT, id, commentId }
+);
+export const deletePost = (postId: number) => ({ type: DELETE_POST, postId });
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
+// Selectors
 export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const isLoaded = (state: RootState): boolean => state.loaded;
+export const getPosts = (state: RootState) => state.posts;
+export const getFilteredPosts = (state: RootState) => (
+  [...state.posts].filter(post => (
+    post.title.toLowerCase().includes(state.query.toLowerCase())
+      || post.body.toLowerCase().includes(state.query.toLowerCase()))));
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+const initialState = {
+  loading: false,
+  posts: [],
+  loaded: false,
+  query: '',
+};
 
-    try {
-      const message = await fetchMessage();
+// Initial state
+export type RootState = {
+  loading: boolean;
+  posts: PreparedPosts[];
+  loaded: boolean;
+  query: string;
+};
 
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
+const reducer = (state = initialState, action: AnyAction) => {
+  switch (action.type) {
+    case START_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
 
-    dispatch(finishLoading());
-  };
+    case FINISH_LOADING:
+      return {
+        ...state,
+        posts: action.value,
+        loaded: true,
+        loading: false,
+      };
+
+    case SET_SEARCH:
+      return {
+        ...state,
+        query: action.query,
+      };
+
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        posts: state.posts.map((post: PreparedPosts) => ((post.id === action.id)
+          ? {
+            ...post,
+            commentList: post.commentList.filter(comment => comment.id !== action.commentId),
+          } : post)),
+      };
+
+    case DELETE_POST:
+      return {
+        ...state,
+        posts: state.posts.filter((post: PreparedPosts) => post.id !== action.postId),
+      };
+
+    default:
+      return state;
+  }
 };
 
 const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
+  reducer,
+  composeWithDevTools(),
 );
 
 export default store;
