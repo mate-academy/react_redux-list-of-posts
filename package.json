@@ -19,19 +19,23 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "redux-devtools-extension": "^2.13.8",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "express": "^4.17.1",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@mate-academy/eslint-config-react-typescript": "*",
     "@mate-academy/stylelint-config": "*",
     "eslint": "^6.8.0",
+    "express": "^4.17.1",
     "gh-pages": "^2.2.0",
     "husky": "^4.0.10",
     "lint-staged": "^9.5.0",
+    "path": "^0.12.7",
     "stylelint": "^13.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
