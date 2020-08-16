@@ -1,21 +1,82 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import './App.css';
+import { PostList } from './components/PostList/PostList';
+import { getPreparedPosts } from './api/api';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setPosts,
+  setLoadingStatus,
+  setFilteredPosts,
+  setSearchValue,
+  getPosts,
+  getLoadingStatus,
+  getSearchValue,
+  getFilteredPosts
+} from './store';
 
-import './App.scss';
-import { Start } from './components/Start';
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const posts = useSelector(getPosts);
+  const isLoaded = useSelector(getLoadingStatus);
+  const searchValue = useSelector(getSearchValue);
+  const filteredPosts = useSelector(getFilteredPosts);
 
-import { isLoading, getMessage } from './store';
+  const handleStart = async () => {
+    dispatch(setLoadingStatus());
 
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+    const data = await getPreparedPosts();
+    
+    dispatch(setPosts(data));
+    dispatch(setFilteredPosts(data));
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    dispatch(setSearchValue(value));
+  };
+
+  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      const filter = posts.filter(post => (
+        post.title.includes(searchValue) || post.body.includes(searchValue)));
+
+      dispatch(setFilteredPosts(filter));
+      dispatch(setSearchValue(''));
+    }
+  };
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <h1>Static list of posts</h1>
 
-      <Start />
+      <p>
+        <span>posts: </span>
+        {filteredPosts.length}
+      </p>
+
+      { posts.length === 0
+        ? (
+          <button
+            disabled={isLoaded}
+            type="button"
+            onClick={handleStart}
+          >
+            {!isLoaded ? 'Load' : 'Loading...'}
+          </button>
+        )
+        : (
+          <>
+            <input
+              type="text"
+              onChange={handleChange}
+              value={searchValue}
+              onKeyUp={handleEnter}
+              placeholder="Type word(s) and press Enter"
+            />
+            <PostList posts={filteredPosts} />
+          </>
+        )}
     </div>
   );
 };

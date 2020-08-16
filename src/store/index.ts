@@ -1,57 +1,61 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import { createStore, AnyAction} from 'redux';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+interface RootState {
+  posts: Post[];
+  isLoaded: boolean;
+  searchValue: string;
+  filteredPosts: Post[];
+}
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+const initialState: RootState = {
+  posts: [],
+  isLoaded: false,
+  searchValue: '',
+  filteredPosts: [],
 };
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
-);
+const SET_POSTS = 'SET_POSTS';
+const SET_LOADING_STATUS = 'SET_LOAD_STATUS';
+const SET_FILTERED_POSTS = 'SET_FILTERED_POSTS';
+const SET_SEARCH_VALUE = 'SET_SEARCH_VALUE';
+
+export const setPosts = (posts: Post[]) => ({type: SET_POSTS, payload: posts});
+export const setLoadingStatus = () => ({type: SET_LOADING_STATUS});
+export const setFilteredPosts = (filteredPosts: Post[]) => ({type: SET_FILTERED_POSTS, payload: filteredPosts});
+export const setSearchValue = (value: string) => ({type: SET_SEARCH_VALUE, payload: value});
+
+export const getPosts = (state: RootState) => state.posts;
+export const getLoadingStatus = (state: RootState) => state.isLoaded;
+export const getSearchValue = (state: RootState) => state.searchValue;
+export const getFilteredPosts = (state: RootState) => state.filteredPosts; 
+
+const rootReducer = (state = initialState, action: AnyAction) => {
+  switch (action.type) {
+    case SET_POSTS:
+      return {
+        ...state,
+        posts: action.payload,
+      };
+    case SET_LOADING_STATUS:
+      return {
+        ...state,
+        isLoaded: true,
+      };
+    case SET_FILTERED_POSTS:
+      return {
+        ...state,
+        filteredPosts: action.payload,
+      };
+    case SET_SEARCH_VALUE:
+      return {
+        ...state,
+        searchValue: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+const store = createStore(rootReducer);
 
 export default store;
