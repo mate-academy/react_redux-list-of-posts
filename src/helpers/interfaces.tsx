@@ -1,4 +1,4 @@
-export interface Posts {
+export interface Post {
   userId: number;
   id: number;
   title: string;
@@ -7,7 +7,7 @@ export interface Posts {
   updatedAt: any,
 }
 
-export interface Comments {
+export interface Comment {
   id: number;
   name: string;
   body: string;

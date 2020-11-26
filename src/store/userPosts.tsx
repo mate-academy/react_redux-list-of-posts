@@ -1,10 +1,10 @@
 import { AnyAction } from 'redux';
-import { Posts } from '../helpers/interfaces';
+import { Post } from '../helpers/interfaces';
 
 const USER_POSTS = 'USER_POSTS';
 const REMOVE_POST = 'REMOVE_POST';
 
-export const setUserPosts = (userPosts: Posts[]) => ({ type: USER_POSTS, userPosts });
+export const setUserPosts = (userPosts: Post[]) => ({ type: USER_POSTS, userPosts });
 export const removePost = (postId: number) => ({ type: REMOVE_POST, postId});
 
 const reducer = (userPosts = [], action: AnyAction) => {

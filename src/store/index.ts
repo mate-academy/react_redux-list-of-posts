@@ -11,10 +11,8 @@ import postIdCheckReducer from './postIdCheck';
 import visibleCommentsReducer from './visibleComments';
 import newPostReducer, { addPost } from './addPost';
 import newCommentReducer, { addComment } from './addComment';
-import commentNameReducer from './nameOfComment';
-import commentEmailReducer from './emailOfComment';
-import commentBodyReducer from './bodyOfComment';
 import inputChangeReducer from './inputChange';
+import commentFieldsReducer from './resetComment';
 import { addPostComment, getPostComments, removePostComment } from '../helpers/comments';
 
 const rootReducer = combineReducers({
@@ -26,26 +24,11 @@ const rootReducer = combineReducers({
   visibleComments: visibleCommentsReducer,
   newPost: newPostReducer,
   newComment: newCommentReducer,
-  commentName: commentNameReducer,
-  commentEmail: commentEmailReducer,
-  commentBody: commentBodyReducer,
   inputChange: inputChangeReducer,
+  commentFields: commentFieldsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
-
-export const isLoading = (state: RootState) => state.loading;
-export const getUserPosts = (state: RootState) => state.userPosts;
-export const getUserId = (state: RootState) => state.userId;
-export const getPostId = (state: RootState) => state.postId;
-export const getpostIdCheck = (state: RootState) => state.postIdCheck;
-export const getvisibleComments = (state: RootState) => state.visibleComments;
-export const getNewPost = (state: RootState) => state.newPost;
-export const getNewComment = (state: RootState) => state.newComment;
-export const getNameOfComment = (state: RootState) => state.commentName;
-export const getEmailOfComment = (state: RootState) => state.commentEmail;
-export const getBodyOfComment = (state: RootState) => state.commentBody;
-export const getInputChange = (state: RootState) => state.inputChange;
 
 export const getPosts = (state: RootState) => {
   if (!state.userId) {
@@ -65,7 +48,6 @@ export const fetchPosts = (paramsOfData: number) => {
     dispatch(setUserPosts(posts));
     dispatch(chooseUserId(paramsOfData));
     dispatch(finishLoading());
-
   }
 }
 
@@ -77,7 +59,6 @@ export const fetchDetailsOfPost = (paramsOfData: number) => {
     dispatch(addComment(comment));
   }
 }
-
 
 export const removeComment = (commentId: number, postId: number) => {
   return async (dispatch: Dispatch<any>) => {

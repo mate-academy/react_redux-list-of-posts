@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch } from 'react-redux';
-import { Posts } from '../helpers/interfaces';
+import { Post } from '../helpers/interfaces';
 import { sortByInput } from '../store/inputChange';
 import { removePost } from '../store/userPosts';
 
@@ -11,23 +11,26 @@ type PostsListProps = {
   handleClick: Function;
   postIsOpened: boolean;
   activePostId: number
-  posts: Posts[];
+  posts: Post[];
 };
 
-export const PostsList: React.FC<PostsListProps> = ({posts, handleClick, postIsOpened, activePostId}) => {
+export const PostsList: React.FC<PostsListProps> = ({
+  posts,
+  handleClick,
+  postIsOpened,
+  activePostId,
+}) => {
   const dispatch = useDispatch();
 
-  function debounce(f: any, delay: any) {
-    let timer: any;
+  function debounce(f: Function, delay: number) {
+    let timer: number;
 
-    return (event: any) => {
-      event.persist();
-      console.log(event);
-      console.log(event.target.value);
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      const currentTarget = event.currentTarget;
 
-      const action = sortByInput(event.target.value);
+      const action = sortByInput(currentTarget.value);
       clearTimeout(timer); 
-      timer = setTimeout( () => {
+      timer = window.setTimeout( () => {
         f(action);
       }, delay)
     }

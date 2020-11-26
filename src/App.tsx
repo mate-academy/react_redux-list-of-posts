@@ -3,18 +3,13 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Start } from './components/Start';
 import { PostsList } from './components/PostsList';
-import {
-  isLoading,
-  getPostId,
-  getpostIdCheck,
-  fetchDetailsOfPost,
-  getPosts,
-} from './store';
 import { choosePostId } from './store/postId';
 import { setPostIdCheck} from './store/postIdCheck';
 import { PostDetails } from './components/PostDetails';
 import { chooseUserId } from './store/userId';
 import { arrayOfSelectUsers } from './helpers/users';
+import { getPosts, fetchDetailsOfPost } from './store';
+import { isLoading, getPostId, getpostIdCheck } from './store/selectors';
 
 import './App.scss';
 
@@ -58,7 +53,7 @@ const App = () => {
                 >
                   {arrayOfSelectUsers.map((user, index) => (
                     <option
-                      key={index}
+                      key={user}
                       value={index}
                     >
                       {user}

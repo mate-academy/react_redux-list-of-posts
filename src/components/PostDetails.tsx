@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { Comments } from '../helpers/interfaces';
-import { getNewComment, getNewPost, getvisibleComments, removeComment } from '../store';
+import { Comment } from '../helpers/interfaces';
+import { removeComment } from '../store';
+import { getvisibleComments, getNewPost, getNewComment } from '../store/selectors';
 import { changeVisibleOfComments } from '../store/visibleComments';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -38,7 +39,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
 
         {visibleComments && (
           <ul className="PostDetails__list">
-            {comments.length > 0 && comments.map((comment: Comments) => (
+            {comments.length > 0 && comments.map((comment: Comment) => (
               <li
                 className="PostDetails__list-item"
                 key={comment.id}

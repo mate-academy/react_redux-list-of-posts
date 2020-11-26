@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { isLoading, fetchPosts, getUserId } from '../store';
+import { fetchPosts } from '../store';
+import { isLoading, getUserId } from '../store/selectors';
 
 export const Start = () => {
   const dispatch = useDispatch();

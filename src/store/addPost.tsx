@@ -1,9 +1,9 @@
 import { AnyAction } from 'redux';
-import { Posts } from '../helpers/interfaces';
+import { Post } from '../helpers/interfaces';
 
 const ADD_POST = 'ADD_POST';
 
-export const addPost = (newPost: Posts) => ({ type: ADD_POST, newPost});
+export const addPost = (newPost: Post) => ({ type: ADD_POST, newPost});
 
 const reducer = (newPost = null, action: AnyAction) => {
   switch (action.type) {
