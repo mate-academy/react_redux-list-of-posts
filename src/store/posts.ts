@@ -9,8 +9,14 @@ const UPDATE_ACTIVE_USER_ID = "UPDATE_ACTIVE_USER_ID";
 // Action creators
 export const getPosts = (posts: any[]) => ({ type: GET_TODOS, posts });
 
-export const fetchPosts = () => (dispatch: Dispatch) => {
-  request("posts").then((res) => dispatch(getPosts(res.data)));
+export const fetchPosts = (
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+) => (dispatch: Dispatch) => {
+  setIsLoading(true);
+  request("posts").then((res) => {
+    dispatch(getPosts(res.data));
+    setIsLoading(false);
+  });
 };
 
 export const updatePostId = (id: number) => ({
