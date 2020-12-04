@@ -27,8 +27,26 @@
     background-color: #fafafd;
     line-height: 1.5;
   }
-
+  
   &__button {
     margin-left: 10px;
+    max-width: 44px auto 0;
+    border: 2px solid #4d457b;
+    color: #4d457b;
+    box-sizing: border-box;
+    border-radius: 8px;
+    position: relative;
+
+
+    &:hover {
+      background-color: rgb(219, 17, 111);
+      color: white;
+    }
+  }
+
+  &__filterByTitle {
+    border-radius: 8px;
+    border: 2px solid #4d457b;
+    font-size: 16px;
   }
 }

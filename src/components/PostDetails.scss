@@ -28,21 +28,19 @@
     );
   }
 
-  &__remove-button {
-    min-width: 20px;
-    color: inherit;
-    background-color: transparent;
-    transition: color 0.12s;
-    margin-right: 10px;
+  &__button {
+    margin-left: 10px;
+    max-width: 44px auto 0;
+    border: 2px solid #4d457b;
+    color: #4d457b;
+    box-sizing: border-box;
+    border-radius: 8px;
+    position: relative;
+
 
     &:hover {
-      color: #e9e6f2;
-      background-color: transparent;
-    }
-
-    &:hover + p {
-      transition: color 0.12s;
-      color: #e9e6f2;
+      background-color: rgb(219, 17, 111);
+      color: white;
     }
   }
 

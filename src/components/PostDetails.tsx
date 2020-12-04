@@ -8,6 +8,7 @@ import { changeVisibleOfComments } from '../store/visibleComments';
 import { NewCommentForm } from './NewCommentForm';
 
 import './PostDetails.scss';
+import { Start } from './Start';
 
 type PostDetailsProps = {
   postId: number
@@ -27,36 +28,40 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
       <section className="PostDetails__post">
         <p>{post !== null && post.title}</p>
       </section>
-      <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => dispatch(changeVisibleOfComments(!visibleComments))}
-        >
-          {visibleComments ? `Hide` : 'Show'}
-          {` ${comments.length} comments`}
-        </button>
+      {comments.length === undefined
+        ? <Start />
+        : (
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="PostDetails__button"
+              onClick={() => dispatch(changeVisibleOfComments(!visibleComments))}
+            >
+              {visibleComments ? `Hide` : 'Show'}
+              {` ${comments.length} comments`}
+            </button>
 
-        {visibleComments && (
-          <ul className="PostDetails__list">
-            {comments.length > 0 && comments.map((comment: Comment) => (
-              <li
-                className="PostDetails__list-item"
-                key={comment.id}
-              >
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => dispatch(removeComment(comment.id, postId))}
-                >
-                  X
+            {visibleComments && (
+              <ul className="PostDetails__list">
+                {comments.length > 0 && comments.map((comment: Comment) => (
+                  <li
+                    className="PostDetails__list-item"
+                    key={comment.id}
+                  >
+                    <button
+                      type="button"
+                      className="PostDetails__button"
+                      onClick={() => dispatch(removeComment(comment.id, postId))}
+                    >
+                      X
                 </button>
-                <p>{comment.name}</p>
-              </li>
-            ))}
-          </ul>
+                    <p>{comment.name}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         )}
-      </section>
 
       <section>
         <div className="PostDetails__form-wrapper">

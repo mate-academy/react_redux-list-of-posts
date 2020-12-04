@@ -9,13 +9,12 @@ import { PostDetails } from './components/PostDetails';
 import { chooseUserId } from './store/userId';
 import { arrayOfSelectUsers } from './helpers/users';
 import { getPosts, fetchDetailsOfPost } from './store';
-import { isLoading, getPostId, getpostIdCheck } from './store/selectors';
+import { getPostId, getpostIdCheck } from './store/selectors';
 
 import './App.scss';
 
 const App = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(isLoading);
   const posts = useSelector(getPosts);
   const selectedPostId = useSelector(getPostId);
   const postIdCheck = useSelector(getpostIdCheck);
@@ -39,8 +38,10 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      {!loading
+      <h1 className="App__headline">
+        Redux list of posts
+      </h1>
+      {posts.length === 0
         ? <Start />
         : (
           <div className="App__loadPosts">
@@ -73,11 +74,11 @@ const App = () => {
                 />
               </div>
               <div className="App__content">
-                {postIdCheck && (
+                {postIdCheck ? (
                   <PostDetails
                     postId={selectedPostId}
                   />
-                )}
+                ) : 'No post details selected'}
               </div>
             </main>
           </div>

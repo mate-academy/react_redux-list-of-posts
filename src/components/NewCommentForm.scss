@@ -5,15 +5,89 @@
   padding: 20px;
 
   &__input {
+    font-size: 16px;
+    padding: 10px;
+    display: block;
+    width: 300px;
     border: none;
-    border-bottom: 1px solid #4d457b;
-    font-family: inherit;
-    font-size: 0.9rem;
-    padding: 10px 5px;
-    color: #4d457b;
+    border-bottom: 1px solid #ccc;
+  }
+
+  &__input:focus {
+    outline: none;
   }
 
   &__submit-button {
     margin-top: 10px;
+  }
+
+  &__button {
+    margin-left: 10px;
+    max-width: 44px auto 0;
+    border: 2px solid #4d457b;
+    color: #4d457b;
+    box-sizing: border-box;
+    border-radius: 8px;
+    position: relative;
+
+
+    &:hover {
+      background-color: rgb(219, 17, 111);
+      color: white;
+    }
+  }
+
+  &__form-field {
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  &__label {
+    color: #999;
+    font-size: 18px;
+    position: absolute;
+    pointer-events: none;
+    left: 10px;
+    top: 15px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+  }
+  
+  &__input:focus ~ &__label, &__input:valid ~ &__label {
+    top: -15px;
+    font-size: 14px;
+    color: #5264AE;
+  }
+  
+  &__bar {
+    position: relative;
+    display: block;
+    width: 320px;
+  }
+
+  &__bar:before, &__bar:after {
+    content: "";
+    height: 2px;
+    width: 0;
+    bottom: 0;
+    position: absolute;
+    background: #5264AE;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+  }
+
+  &__bar:before {
+    left: 50%;
+  }
+
+  &__bar:after {
+    right: 50%;
+  }
+  
+  &__input:focus ~ &__bar:before,
+  &__input:focus ~ &__bar:after {
+    width: 50%;
   }
 }

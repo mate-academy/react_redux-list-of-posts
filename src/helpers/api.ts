@@ -17,13 +17,21 @@ export const fetchUserPosts = async (userId: number) => {
   return posts;
 };
 
-export const fetchPostDetails = (postId: number) => {
+export const fetchPostDetails = async (postId: number) => {
   const posts = fetch(`${POSTS_URL}/${postId}`)
     .then(promise => promise.json())
     .then(result => result.data);
 
   return posts;
 };
+
+// export const fetchPostDetails = async(postId: number) => {
+//   const postDetails = await fetch(`${POSTS_URL}/${postId}`);
+//   const response = await postDetails.json();
+//   const result = response.data;
+
+//   return result;
+// };
 
 export const deletePost = (postId: number) => {
   const posts = fetch(`${POSTS_URL}`)

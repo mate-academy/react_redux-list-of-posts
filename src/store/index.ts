@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, Dispatch } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
+import loadingReducer, { loading } from './loading';
 import { fetchPostDetails, fetchUserPosts } from '../helpers/api';
 import userPostsReducer, { setUserPosts } from './userPosts';
 import userIdReducer, { chooseUserId } from './userId';
@@ -42,17 +42,15 @@ export const getPosts = (state: RootState) => {
 
 export const fetchPosts = (paramsOfData: number) => {
   return async(dispatch: Dispatch<any>) => { 
-    dispatch(startLoading());
-
+    dispatch(loading());
     const posts = await fetchUserPosts(paramsOfData);
     dispatch(setUserPosts(posts));
     dispatch(chooseUserId(paramsOfData));
-    dispatch(finishLoading());
   }
 }
 
 export const fetchDetailsOfPost = (paramsOfData: number) => {
-  return async(dispatch: Dispatch<any>) => { 
+  return async(dispatch: Dispatch<any>) => {
     const posts = await fetchPostDetails(paramsOfData);
     dispatch(addPost(posts));
     const comment = await getPostComments(paramsOfData);

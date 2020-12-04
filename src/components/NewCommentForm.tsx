@@ -35,41 +35,48 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
       className="NewCommentForm"
       onSubmit={handleSubmit}
     >
-      <div className="form-field">
+      <div className="NewCommentForm__form-field">
         <input
           type="text"
+          required
           name="name"
-          placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
           onChange={event => dispatch(setCommentName(event.target.value))}
         />
+        <span className="NewCommentForm__bar"></span>
+        <label className="NewCommentForm__label">Name</label>
       </div>
 
-      <div className="form-field">
+      <div className="NewCommentForm__form-field">
         <input
           type="text"
+          required
           name="email"
-          placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
           onChange={event => dispatch(setCommentEmail(event.target.value))}
         />
+        <span className="NewCommentForm__bar"></span>
+        <label className="NewCommentForm__label">Email</label>
       </div>
 
-      <div className="form-field">
-        <textarea
+      <div className="NewCommentForm__form-field">
+        <input
+          type="text"
+          required
           name="body"
-          placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
           onChange={event => dispatch(setCommentBody(event.target.value))}
         />
+        <span className="NewCommentForm__bar"></span>
+        <label className="NewCommentForm__label">Text</label>
       </div>
 
       <button
         type="submit"
-        className="NewCommentForm__submit-button button"
+        className="NewCommentForm__button"
       >
         Add a comment
       </button>
