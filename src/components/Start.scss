@@ -1,0 +1,42 @@
+.Start {
+  &__header_button {
+    background-color: transparent;
+    color: #4d457b;
+    font-size: 16px;
+    border: 1px solid;
+    padding: 16px;
+    border-radius: 4px;
+    position: relative;
+    margin: 40px auto;
+    display: block;
+    overflow: hidden;
+
+    &:hover::after {
+      transform: scaleX(1);
+      transform-origin: left top;
+    }
+  }
+  
+  &__header_button::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: -1;
+    transform: scaleX(0) skewX(-90deg);
+    transition: transform 0.3s;
+    transform-origin: right bottom;
+  }
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
