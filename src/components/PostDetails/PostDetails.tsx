@@ -60,6 +60,7 @@ export const PostDetails = () => {
                               type="button"
                               className="PostDetails__remove-button button"
                               onClick={() => onClick(item.id!, activePostId)}
+                              disabled={isLoading}
                             >
                               X
                             </button>
