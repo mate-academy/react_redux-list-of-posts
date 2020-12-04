@@ -2,19 +2,19 @@ import { Dispatch, AnyAction } from "redux";
 import { request } from "../helpers/api";
 
 // Action types
-const GET_TODOS = "GET_TODOS";
+const SET_POSTS = "SET_POSTS";
 const UPDATE_ACTIVE_POST_ID = "UPDATE_ACTIVE_POST_ID";
 const UPDATE_ACTIVE_USER_ID = "UPDATE_ACTIVE_USER_ID";
 
 // Action creators
-export const getPosts = (posts: any[]) => ({ type: GET_TODOS, posts });
+export const setPosts = (posts: any[]) => ({ type: SET_POSTS, posts });
 
 export const fetchPosts = (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => (dispatch: Dispatch) => {
   setIsLoading(true);
   request("posts").then((res) => {
-    dispatch(getPosts(res.data));
+    dispatch(setPosts(res.data));
     setIsLoading(false);
   });
 };
@@ -43,7 +43,7 @@ const initialState: RootState = {
 
 const reducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-    case GET_TODOS:
+    case SET_POSTS:
       return { ...state, posts: action.posts };
 
     case UPDATE_ACTIVE_POST_ID:

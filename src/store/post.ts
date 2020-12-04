@@ -7,9 +7,9 @@ const SET_POST = "SET_POST";
 const SET_COMMENTS = "SET_COMMENTS";
 
 // Action creators
-export const getPost = (post: IPost) => ({ type: SET_POST, post });
+export const setPost = (post: IPost) => ({ type: SET_POST, post });
 
-export const getComments = (comments: IComment[]) => ({
+export const setComments = (comments: IComment[]) => ({
   type: SET_COMMENTS,
   comments,
 });
@@ -29,12 +29,10 @@ export const fetchPostInfo = (
   id: number,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => (dispatch: Dispatch) => {
-  setIsLoading(true);
-
   Promise.all([request(`posts/${id}`), request(`comments/?postId=${id}`)]).then(
     ([post, comments]) => {
-      dispatch(getPost(post.data));
-      dispatch(getComments(comments.data));
+      dispatch(setPost(post.data));
+      dispatch(setComments(comments.data));
       setIsLoading(false);
     }
   );

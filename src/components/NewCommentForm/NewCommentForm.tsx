@@ -9,19 +9,22 @@ export const NewCommentForm: React.FC<{
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setIsLoading }) => {
   const activePostId = useSelector(getActivePostId);
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [body, setBody] = useState("");
+  const [comment, setComment] = useState({
+    userName: "",
+    email: "",
+    body: "",
+  });
+  const { userName, email, body } = comment;
+
   const dispatch = useDispatch();
 
   const reset = () => {
-    setUserName("");
-    setEmail("");
-    setBody("");
+    setComment({ userName: "", email: "", body: "" });
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (userName && email && body) {
       const comment = { name: userName, email, body, postId: activePostId };
@@ -40,7 +43,7 @@ export const NewCommentForm: React.FC<{
           placeholder="Your name"
           value={userName}
           className="NewCommentForm__input"
-          onChange={(e) => setUserName(e.target.value)}
+          onChange={(e) => setComment({ ...comment, userName: e.target.value })}
         />
       </div>
 
@@ -50,7 +53,7 @@ export const NewCommentForm: React.FC<{
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setComment({ ...comment, email: e.target.value })}
           value={email}
         />
       </div>
@@ -60,7 +63,7 @@ export const NewCommentForm: React.FC<{
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={(e) => setBody(e.target.value)}
+          onChange={(e) => setComment({ ...comment, body: e.target.value })}
           value={body}
         />
       </div>

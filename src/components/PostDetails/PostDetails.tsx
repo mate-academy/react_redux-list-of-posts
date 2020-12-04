@@ -14,7 +14,7 @@ export const PostDetails = () => {
   const activePostId = useSelector(getActivePostId);
   const comments = useSelector(getComments);
   const dispatch = useDispatch();
-  const [isShownComments, setIsShownComments] = useState(true);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -24,6 +24,7 @@ export const PostDetails = () => {
   }, [activePostId, dispatch]);
 
   const onClick = async (commentId: number, postId: number) => {
+    setIsLoading(true);
     await removeComment(commentId);
     dispatch(fetchPostInfo(postId, setIsLoading));
   };
@@ -46,11 +47,11 @@ export const PostDetails = () => {
                 <button
                   type="button"
                   className="button"
-                  onClick={() => setIsShownComments((current) => !current)}
+                  onClick={() => setIsCommentsVisible((current) => !current)}
                 >
-                  {isShownComments ? "Hide comments" : "Show comments"}
+                  {isCommentsVisible ? "Hide comments" : "Show comments"}
                 </button>
-                {isShownComments && (
+                {isCommentsVisible && (
                   <ul className="PostDetails__list">
                     {comments.length > 0
                       ? comments.map((item: IComment) => (
