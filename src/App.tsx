@@ -1,21 +1,58 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { PostsList } from "./components/PostsList/PostsList";
+import { useSelector, useDispatch } from "react-redux";
+import { getActiveUserId } from "./store";
+import { updateUsertId } from "./store/postsReducer";
+import { PostDetails } from "./components/PostDetails/PostDetails";
 
-import './App.scss';
-import { Start } from './components/Start';
+import "./App.scss";
 
-import { isLoading, getMessage } from './store';
+const options = [
+  { value: 0, name: "All users" },
+  { value: 1, name: "Leanne Graham" },
+  { value: 2, name: "Ervin Howell" },
+  { value: 3, name: "Clementine Bauch" },
+  { value: 4, name: "Patricia Lebsack" },
+  { value: 5, name: "Chelsey Dietrich" },
+  { value: 6, name: "Mrs. Dennis Schulist" },
+  { value: 7, name: "Kurtis Weissnat" },
+  { value: 8, name: "Nicholas Runolfsdottir V" },
+  { value: 9, name: "Glenna Reichert" },
+  { value: 10, name: "Leanne Graham" },
+];
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const activeUserId = useSelector(getActiveUserId);
+  const dispatch = useDispatch();
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+          <select
+            className="App__user-selector"
+            value={activeUserId}
+            onChange={(e) => dispatch(updateUsertId(+e.target.value))}
+          >
+            {options.map(({ value, name }) => (
+              <option value={value} key={value}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
 
-      <Start />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };

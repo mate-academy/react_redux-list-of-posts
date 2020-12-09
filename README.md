@@ -1,6 +1,6 @@
 # React + Redux list of posts
 - Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://<your_account>.github.io/react_redux-list-of-posts/)
+  [DEMO LINK](https://DmytroArkhypenko.github.io/react_redux-list-of-posts/)
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Description
