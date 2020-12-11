@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, Dispatch } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import loadingReducer, { loading } from './loading';
+import loadingReducer, { finishLoading, startLoading } from './loading';
 import { fetchPostDetails, fetchUserPosts } from '../helpers/api';
 import userPostsReducer, { setUserPosts } from './userPosts';
 import userIdReducer, { chooseUserId } from './userId';
@@ -14,6 +14,8 @@ import newCommentReducer, { addComment } from './addComment';
 import inputChangeReducer from './inputChange';
 import commentFieldsReducer from './resetComment';
 import { addPostComment, getPostComments, removePostComment } from '../helpers/comments';
+import isButtonDisabledReducer, { activeButton, disabledButton } from './disabledButton';
+
 
 const rootReducer = combineReducers({
   loading: loadingReducer,
@@ -26,11 +28,13 @@ const rootReducer = combineReducers({
   newComment: newCommentReducer,
   inputChange: inputChangeReducer,
   commentFields: commentFieldsReducer,
+  isButtonDisabled: isButtonDisabledReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
 
 export const getPosts = (state: RootState) => {
+
   if (!state.userId) {
     return [...state.userPosts].filter(post => post.title !== null && post.title.toLowerCase()
     .includes(state.inputChange.toLowerCase()))
@@ -41,11 +45,12 @@ export const getPosts = (state: RootState) => {
 };
 
 export const fetchPosts = (paramsOfData: number) => {
-  return async(dispatch: Dispatch<any>) => { 
-    dispatch(loading());
+  return async(dispatch: Dispatch<any>) => {
+    dispatch(startLoading());
     const posts = await fetchUserPosts(paramsOfData);
     dispatch(setUserPosts(posts));
     dispatch(chooseUserId(paramsOfData));
+    dispatch(finishLoading());
   }
 }
 
@@ -55,14 +60,19 @@ export const fetchDetailsOfPost = (paramsOfData: number) => {
     dispatch(addPost(posts));
     const comment = await getPostComments(paramsOfData);
     dispatch(addComment(comment));
+
   }
 }
 
 export const removeComment = (commentId: number, postId: number) => {
   return async (dispatch: Dispatch<any>) => {
+    dispatch(disabledButton());
     removePostComment(commentId)
     .then(() => getPostComments(postId))
     .then(result => dispatch(addComment(result)));
+    dispatch(activeButton());
+
+
   }
 }
 
@@ -71,6 +81,7 @@ export const commentsUpdate = (newComment: {}, postId: number) => {
     addPostComment(newComment)
     .then(() => getPostComments(postId))
     .then(result => dispatch(addComment(result)));
+
   }
 }
 

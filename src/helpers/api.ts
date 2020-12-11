@@ -25,14 +25,6 @@ export const fetchPostDetails = async (postId: number) => {
   return posts;
 };
 
-// export const fetchPostDetails = async(postId: number) => {
-//   const postDetails = await fetch(`${POSTS_URL}/${postId}`);
-//   const response = await postDetails.json();
-//   const result = response.data;
-
-//   return result;
-// };
-
 export const deletePost = (postId: number) => {
   const posts = fetch(`${POSTS_URL}`)
     .then(promise => promise.json())

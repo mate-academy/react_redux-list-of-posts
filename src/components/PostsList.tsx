@@ -42,62 +42,65 @@ export const PostsList: React.FC<PostsListProps> = ({
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
-      <div className="App__input">
-        <label className="PostsList__filterByTitle">
-          <input
-            className="filterByTitle"
-            type="text"
-            name="filterTitle"
-            placeholder="Put the name of post"
-            onChange={wrapper}
-          />
-          <span className="bar" />
-        </label>
+      <div className="PostsList__input">
+        <input
+          type="text"
+          required
+          name="filterTitle"
+          className="PostsList__input-filter"
+          onChange={wrapper}
+        />
+        <span className="PostsList__bar"></span>
+        <label className="PostsList__label">Put the name of post</label>
       </div>
       <div className="App__PostList">
-        <ul className="PostsList__list">
-          {posts.map(post => (
-            <li
-              key={post.id}
-              className="PostsList__item"
-            >
-              <div>
-                <b>{arrayOfSelectUsers[post.userId]}</b>
-                <p className="PostsLists__item_title">
-                  {post.title}
-                </p>
-              </div>
-              <div className="PostsList__list_button">
-                <button
-                  className="PostsList__button"
-                  type="button"
-                  onClick={() => dispatch(removePost(post.id))}
-                >
-                  Remove
+        {posts.length !== 0 ? (
+          <ul className="PostsList__list">
+            {posts.map(post => (
+              <li
+                key={post.id}
+                className="PostsList__item"
+              >
+                <div>
+                  <b>{arrayOfSelectUsers[post.userId]}</b>
+                  <p className="PostsLists__item_title">
+                    {post.title}
+                  </p>
+                </div>
+                <div className="PostsList__list_button">
+                  <button
+                    className="PostsList__button"
+                    type="button"
+                    onClick={() => dispatch(removePost(post.id))}
+                  >
+                    Remove
               </button>
-                {postIsOpened && post.id === activePostId
-                  ? (
-                    <button
-                      type="button"
-                      className="PostsList__button"
-                      onClick={() => handleClick(post.id, 'Close')}
-                    >
-                      Close
-                    </button>
-                  )
-                  : (
-                    <button
-                      type="button"
-                      className="PostsList__button"
-                      onClick={() => handleClick(post.id, 'Open')}
-                    >
-                      Open
-                    </button>
-                  )}
-              </div>
-            </li>
-          ))}
-        </ul>
+                  {postIsOpened && post.id === activePostId
+                    ? (
+                      <button
+                        type="button"
+                        className="PostsList__button"
+                        onClick={() => handleClick(post.id, 'Close')}
+                      >
+                        Close
+                      </button>
+                    )
+                    : (
+                      <button
+                        type="button"
+                        className="PostsList__button"
+                        onClick={() => handleClick(post.id, 'Open')}
+                      >
+                        Open
+                      </button>
+                    )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+            <div className="PostsList__emptyList">No posts found, please change the search word</div>
+          )}
       </div>
     </div>
   )

@@ -14,17 +14,16 @@ export const Start = () => {
 
   return (
     <div className="Start">
-      {!loading ?
-        (
-          <button
-            type="button"
-            className="Start__header_button"
-            onClick={() => dispatch(fetchPosts(selectedUserId))}
-            disabled={loading}
-          >
-            {!loading && 'Click here to download posts!'}
-          </button>
-        ) : (
+      {loading !== "Start Loading" ? (
+        <button
+          type="button"
+          className="Start__header_button"
+          onClick={() => dispatch(fetchPosts(selectedUserId))}
+          disabled={!!loading}
+        >
+          {!loading && 'Click here to download posts!'}
+        </button>
+      ) : (
           <Loader />
         )
       }

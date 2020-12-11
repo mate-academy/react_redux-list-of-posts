@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { chooseUserId } from './store/userId';
 import { arrayOfSelectUsers } from './helpers/users';
 import { getPosts, fetchDetailsOfPost } from './store';
-import { getPostId, getpostIdCheck } from './store/selectors';
+import { getPostId, getpostIdCheck, isLoading } from './store/selectors';
 
 import './App.scss';
 
@@ -18,6 +18,8 @@ const App = () => {
   const posts = useSelector(getPosts);
   const selectedPostId = useSelector(getPostId);
   const postIdCheck = useSelector(getpostIdCheck);
+  const loading = useSelector(isLoading);
+
 
   const handleClick = (postId: number, action: any) => {
     dispatch(fetchDetailsOfPost(postId));
@@ -41,9 +43,9 @@ const App = () => {
       <h1 className="App__headline">
         Redux list of posts
       </h1>
-      {posts.length === 0
-        ? <Start />
-        : (
+      {loading !== "Finish Loading" ? (
+        <Start />
+      ) : (
           <div className="App__loadPosts">
             <header className="App__header">
               <label>
@@ -82,8 +84,7 @@ const App = () => {
               </div>
             </main>
           </div>
-        )
-      }
+        )}
     </div>
   );
 };

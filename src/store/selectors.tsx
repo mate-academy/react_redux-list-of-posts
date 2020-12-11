@@ -1,6 +1,7 @@
 import { RootState } from ".";
 
 export const isLoading = (state: RootState) => state.loading;
+export const isDisabled = (state: RootState) => state.isButtonDisabled;
 export const getUserId = (state: RootState) => state.userId;
 export const getPostId = (state: RootState) => state.postId;
 export const getpostIdCheck = (state: RootState) => state.postIdCheck;

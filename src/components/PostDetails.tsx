@@ -3,12 +3,12 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Comment } from '../helpers/interfaces';
 import { removeComment } from '../store';
-import { getvisibleComments, getNewPost, getNewComment } from '../store/selectors';
+import { getvisibleComments, getNewPost, getNewComment, isDisabled } from '../store/selectors';
 import { changeVisibleOfComments } from '../store/visibleComments';
+import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import './PostDetails.scss';
-import { Start } from './Start';
 
 type PostDetailsProps = {
   postId: number
@@ -20,6 +20,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
   const visibleComments = useSelector(getvisibleComments);
   const post = useSelector(getNewPost);
   const comments = useSelector(getNewComment);
+  const isButtonDisabled = useSelector(isDisabled);
 
   return (
     <div className="PostDetails">
@@ -29,8 +30,9 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
         <p>{post !== null && post.title}</p>
       </section>
       {comments.length === undefined
-        ? <Start />
+        ? <Loader />
         : (
+          comments.length > 0 &&
           <section className="PostDetails__comments">
             <button
               type="button"
@@ -52,6 +54,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
                       type="button"
                       className="PostDetails__button"
                       onClick={() => dispatch(removeComment(comment.id, postId))}
+                      disabled={isButtonDisabled}
                     >
                       X
                 </button>
