@@ -1,21 +1,90 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { Start } from './components/Start';
+import { PostsList } from './components/PostsList';
+import { choosePostId } from './store/postId';
+import { setPostIdCheck} from './store/postIdCheck';
+import { PostDetails } from './components/PostDetails';
+import { chooseUserId } from './store/userId';
+import { arrayOfSelectUsers } from './helpers/users';
+import { getPosts, fetchDetailsOfPost } from './store';
+import { getPostId, getpostIdCheck, isLoading } from './store/selectors';
 
 import './App.scss';
-import { Start } from './components/Start';
-
-import { isLoading, getMessage } from './store';
 
 const App = () => {
+  const dispatch = useDispatch();
+  const posts = useSelector(getPosts);
+  const selectedPostId = useSelector(getPostId);
+  const postIdCheck = useSelector(getpostIdCheck);
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+
+
+  const handleClick = (postId: number, action: any) => {
+    dispatch(fetchDetailsOfPost(postId));
+
+    switch (action) {
+      case 'Open':
+        dispatch(choosePostId(postId));
+        dispatch(setPostIdCheck(true));
+        break;
+      case 'Close':
+        dispatch(choosePostId(0));
+        dispatch(setPostIdCheck(false));
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <h1 className="App__headline">
+        Redux list of posts
+      </h1>
+      {loading !== "Finish Loading" ? (
+        <Start />
+      ) : (
+          <div className="App__loadPosts">
+            <header className="App__header">
+              <label>
+                Select a user: &nbsp;
+                <select
+                  className="App__user-selector"
+                  onChange={event => dispatch(chooseUserId(+event.target.value))}
+                >
+                  {arrayOfSelectUsers.map((user, index) => (
+                    <option
+                      key={user}
+                      value={index}
+                    >
+                      {user}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </header>
 
-      <Start />
+            <main className="App__main">
+              <div className="App__sidebar">
+                <PostsList
+                  handleClick={handleClick}
+                  postIsOpened={postIdCheck}
+                  activePostId={selectedPostId}
+                  posts={posts}
+                />
+              </div>
+              <div className="App__content">
+                {postIdCheck ? (
+                  <PostDetails
+                    postId={selectedPostId}
+                  />
+                ) : 'No post details selected'}
+              </div>
+            </main>
+          </div>
+        )}
     </div>
   );
 };

@@ -13,6 +13,8 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
+    "classnames": "^2.2.6",
+    "lodash.debounce": "^4.0.8",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -27,6 +29,8 @@
   "devDependencies": {
     "@mate-academy/eslint-config-react-typescript": "*",
     "@mate-academy/stylelint-config": "*",
+    "@types/classnames": "^2.2.11",
+    "@types/lodash": "^4.14.165",
     "eslint": "^6.8.0",
     "gh-pages": "^2.2.0",
     "husky": "^4.0.10",
