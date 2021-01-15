@@ -4,7 +4,7 @@ import { getUserPosts } from '../helpers/api';
 // Action types
 const SET_POSTS = 'SET_POSTS';
 const UPDATE_ACTIVE_POST = 'UPDATE_ACTIVE_POST';
-const UPDATE_USER_ID = 'UPDATE_ACTIVE_POST';
+const UPDATE_USER_ID = 'UPDATE_USER_ID';
 
 // Action creators
 export const setPosts = (posts: any[]) => ({ type: SET_POSTS, posts });
@@ -12,9 +12,11 @@ export const updateActivePost = (activePostId: number) => ({ type: UPDATE_ACTIVE
 export const updateUserId = (userId: number) => ({ type: UPDATE_USER_ID, userId });
 
 // Record posts in state
-export const setPostsState = (id: number) => async (dispatch: Dispatch) => {
-  await getUserPosts(id)
+export const setPostsState = (setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => async (dispatch: Dispatch) => {
+  setIsLoading(true);
+  await getUserPosts()
   .then(posts => dispatch(setPosts(posts)))
+  setIsLoading(false);
 }
 
 export const setPostId = (activePostId: number) => (dispatch: Dispatch) => {
@@ -57,5 +59,6 @@ const reducer = (state = initialState, action: AnyAction) => {
       return state;
   }
 };
+
 
 export default reducer;

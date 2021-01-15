@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
-import { getPostDetails } from '../../helpers/api';
-import { getPostComments, deleteComment, addComment } from '../../helpers/api';
+import { getPostComments, getPostDetails, deleteComment, addComment } from '../../helpers/api';
 import './PostDetails.scss';
-// import { useSelector } from "react-redux";
-// import { getActivePostId } from '../../store/postsReducer';
+import { Loader } from "../Loader/Loader";
+
 
 export const PostDetails = ({selectedPostId}) => {
   const [visibilityComments, setVisibilityComments] = useState(false);
   const [detailsForPost, setPostDetails] = useState();
-  const [listComments, setListComments] = useState();
+  const [listComments, setListComments] = useState([]);
 
   useEffect(() => {
     getPostDetails(selectedPostId)
@@ -37,7 +36,6 @@ export const PostDetails = ({selectedPostId}) => {
       <section className="PostDetails__post">
         <p>{detailsForPost.body}</p>
       </section>
-
       {listComments && listComments.length > 0 && (
 
         <section className="PostDetails__comments">
@@ -106,7 +104,7 @@ export const PostDetails = ({selectedPostId}) => {
       </section>
 
     </div>
-  ) : null;
+  ) : <Loader/>;
 };
 
 // PostDetails.propTypes = {

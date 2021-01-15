@@ -67,6 +67,6 @@ export const NewCommentForm = ({
 
 NewCommentForm.propTypes = {
   addComment: PropTypes.func.isRequired,
-  selectedPostId: PropTypes.string.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
   updateCommentsForPost: PropTypes.func.isRequired,
 };

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import './App.scss';
 import { useDispatch, useSelector } from "react-redux";
-import { setPostsState, getActivePostId } from './store/postsReducer';
+import { setUserId, getActivePostId } from './store/postsReducer';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -11,9 +11,6 @@ const App = () => {
   const dispatch = useDispatch();
   const selectedPostId = useSelector(getActivePostId);
 
-  useEffect(() => {
-    dispatch(setPostsState(0))
-  }, [dispatch])
 
   return (
     <div className="App">
@@ -24,13 +21,7 @@ const App = () => {
 
     <select
             className="App__user-selector"
-          onChange={(event) => {
-            if (+event.target.value === 0) {
-              dispatch(setPostsState(0));
-            } else {
-              dispatch(setPostsState(+event.target.value));
-            }
-          }}
+          onChange={(event) => dispatch(setUserId(+event.target.value))}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
