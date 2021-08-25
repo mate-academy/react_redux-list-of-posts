@@ -1,21 +1,42 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
-import './App.scss';
-import { Start } from './components/Start';
-
-import { isLoading, getMessage } from './store';
+import React from "react";
+import { PostsList } from "./components/PostList/PostsList";
+import { options } from "./helpers/options";
+import { useSelector, useDispatch } from "react-redux";
+import { getActiveUserId } from "./store";
+import { updateUsertId } from "./store/posts";
+import { PostDetails } from "./components/PostDetails/PostDetails";
+import "./App.scss";
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const activeUserId = useSelector(getActiveUserId);
+  const dispatch = useDispatch();
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+          <select
+            className="App__user-selector"
+            value={activeUserId}
+            onChange={(event) => dispatch(updateUsertId(+event.target.value))}
+          >
+            {options.map(({ value, name }) => (
+              <option value={value} key={value}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };
