@@ -1,0 +1,40 @@
+.NewCommentForm {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 20px;
+}
+
+.NewCommentForm__input {
+  border: none;
+  border-bottom: 1px solid #4d457b;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 5px;
+  color: #4d457b;
+  width: 100%;
+  resize: vertical;
+}
+
+.NewCommentForm__input:focus-visible {
+  outline: none;
+}
+
+.NewCommentForm__error {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+  color: brown;
+}
+
+.NewCommentForm__submit-button {
+  margin-top: 10px;
+}
+/*# sourceMappingURL=NewCommentForm.css.map */
