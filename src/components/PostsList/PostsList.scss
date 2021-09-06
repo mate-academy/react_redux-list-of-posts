@@ -1,3 +1,5 @@
+@import '../../mixins';
+
 .PostsList {
   width: 100%;
 
@@ -22,13 +24,31 @@
     justify-content: space-between;
     align-items: center;
     border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
     background-color: #fafafd;
     line-height: 1.5;
+    &-content {
+      margin-right: 10px;
+    }
   }
 
   &__button {
     margin-left: 10px;
+  }
+
+  @include md {
+    &__item-content {
+      margin-right: 15px;
+    }
+  }
+
+  @include xl {
+    &__item {
+      padding: 18px;
+      &-content {
+        margin-right: 20px;
+      }
+    }
   }
 }

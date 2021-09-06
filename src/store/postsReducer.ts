@@ -28,15 +28,13 @@ const SET_POSTID = 'SET_POSTID';
 // Action creators
 export const setSelectedUserId = (userId: number) => ({ type: SET_USERID, value: userId });
 export const setUsersList = (users: User[]) => ({ type: SET_USERS, value: users });
-export const setPostsList = (posts: Post[]) => ({ type: SET_POSTS, value: posts });
+export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
 export const setPost = (post: PostMain) => ({ type: SET_POST, post });
 export const setPostId = (selectedPostId: number) => ({ type: SET_POSTID, value: selectedPostId });
 
 // Selectors
 export const getSelectedUserId = (state: RootState) => state.userId;
 export const getPostId = (state: RootState) => state.selectedPostId;
-
-export const setPosts = (posts: any[]) => ({ type: SET_POSTS, posts });
 
 export const fetchPosts = (
   // setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,

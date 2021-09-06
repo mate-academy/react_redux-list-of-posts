@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import deleteIcon from '../../images/delete.svg';
+import editIcon from '../../images/edit.svg';
 // import { getPostDetails } from '../../helpers/posts';
 // import { getPostComments, removePostComment, addPostComment } from '../../api/comments';
 
 import {
   getPostComments,
+  getPostCommentsEdit,
   areCommentsUpdated
 } from '../../store'; // isLoading
 import {
@@ -14,16 +16,17 @@ import {
   removePostComment
 } from '../../store/commentsReducer'
 
-import { Comment } from '../../types';
+import { Comment, CommentsEdit } from '../../types';
 
-export type PropState = {
+type Props = {
   postId: number,
 };
 
-export const Comments: React.FC<PropState> = React.memo(({ postId }) => {
+export const Comments: React.FC<Props> = React.memo(({ postId }) => {
   // const [commentHidden, setCommentHidden] = useState(false);
   const comments: Comment[] | null = useSelector(getPostComments);
   const commentsUpdated: boolean = useSelector(areCommentsUpdated);
+  const commentsEdit: CommentsEdit = useSelector(getPostCommentsEdit);
 
   const dispatch = useDispatch();
   // const loading = useSelector(isLoading);
@@ -56,24 +59,41 @@ export const Comments: React.FC<PropState> = React.memo(({ postId }) => {
     
   //   dispatch(removePostComment(commentId));
   // }
-  if (comments && comments.length) {
-    console.log(comments);
+  if (comments) {
+    console.log(comments, 'commentsEdit', commentsEdit);
     return (
       <ul className="PostDetails__list">
         {comments.map(comment => (
           <li className="PostDetails__list-item" key={comment.id}>
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-              onClick={() => {
-                if (comment.id) {
-                  removeCommentHandler(comment.id);
-                }
-              }}
-            >
-              <img src={deleteIcon} alt="delete icon"></img>
-            </button>
-            <p>{comment.body} <sub>{comment.id} post {postId}</sub></p>
+            <span>{comment.body} <sub>{comment.id} post {postId}</sub></span>
+            <div>
+              {commentsEdit.includes(comment.id) && (
+                <button
+                  type="button"
+                  className="button button--icon"
+                  onClick={(ev) => {
+                    ev.preventDefault();
+
+                    console.log('edit');
+                  }}
+                >
+                  <img src={editIcon} alt="edit icon"></img>
+                </button>
+              )}
+              <button
+                type="button"
+                className="button button--icon"
+                onClick={(ev) => {
+                  ev.preventDefault();
+
+                  if (comment.id) {
+                    removeCommentHandler(comment.id);
+                  }
+                }}
+              >
+                <img src={deleteIcon} alt="delete icon"></img>
+              </button>
+            </div>
           </li>
         ))}
       </ul>

@@ -15,18 +15,19 @@ export type Posts = {
 };
 
 export interface Comment {
-  id?: number;
+  id: number;
   postId: number;
   body: string;
 }
 
 export interface NewComment {
-  id?: number;
   name: string;
   email?: string;
   body: string;
   postId: number;
 }
+
+export type CommentsEdit = number[];
 
 export interface User {
   id: number,

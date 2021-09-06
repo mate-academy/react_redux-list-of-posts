@@ -13,21 +13,14 @@ import { fetchPosts, setPostId } from '../../store/postsReducer';
 import { Post } from '../../types';
 import { setPostComments } from '../../store/commentsReducer';
 
-// interface PostsListProps {
-//   userid: number;
-// }
-
-// export const PostsList: React.FC<PostsListProps> = ({
-//   userid
-// }) => {
-export const PostsList = () => {
-  // const [isLoading, setIsLoading] = useState(false);
+export const PostsList: React.FC = () => {
   const posts: Post[] = useSelector(getPostsList);
   const postId = useSelector(getSelectedPostId);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedUserId = Number(searchParams.get('userId')) || 0;
+  const queryTitle = searchParams.get('query') || null;
 
   const dispatch = useDispatch();
 
@@ -41,13 +34,7 @@ export const PostsList = () => {
     }
   }, [selectedUserId, dispatch]);
 
-  // useEffect(() => {
-  //   if (postId > 0) {
-  //     fetchPost(postId);
-  //   }
-  // }, [postId]);
-
-  // console.log(posts, typeof posts != "undefined" && posts != null && posts.length != null);
+  const filteredPosts = (queryTitle ? posts.filter(post => post.title.includes(queryTitle.toLowerCase())) : posts);
   const isPostListEmpty = posts ? (posts.length ? false : true) : true;
 
   return (
@@ -58,18 +45,13 @@ export const PostsList = () => {
         <>
           <h2>Posts:</h2>
           <ul className="PostsList__list">
-            {posts.map((post: any) => (
+            {filteredPosts.map((post: any) => (
               <li className="PostsList__item" key={post.id}>
-                <div>
-                  <b>
-                    [User
-                    {post.title}
-                    ]:
-                    {' '}
-                  </b>
-                  {post.body}
+                <div className="PostsList__item-content">
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
                 </div>
-                  {postId !== post.id ? (
+                {postId !== post.id ? (
                   <button
                     type="button"
                     className="PostsList__button button"

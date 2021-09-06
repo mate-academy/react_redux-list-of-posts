@@ -3,7 +3,8 @@
     padding: 20px 0;
   }
 
-  &__comments {
+  &__post-comments {
+    margin-top: 25px;
     text-align: right;
   }
 
@@ -39,11 +40,6 @@
     &:hover {
       opacity: 0.8;
     }
-
-    // &:hover + p {
-    //   transition: color 0.12s;
-    //   color: #e9e6f2;
-    // }
   }
 
   &__form-wrapper {

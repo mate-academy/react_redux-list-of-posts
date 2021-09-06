@@ -1,0 +1,30 @@
+// Breakpoints
+// Medium devices
+@mixin md {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+// Tablets and desktops
+@mixin xl {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+
+// Placeholders
+@mixin placeholder {
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &::-moz-input-placeholder {
+    @content;
+  }
+  &::-ms-input-placeholder {
+    @content;
+  }
+  &::placeholder {
+    @content;
+  }
+}

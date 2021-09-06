@@ -3,32 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Comments } from '../Comments';
 import { NewCommentForm } from '../NewCommentForm';
-// import { getPostDetails } from '../../helpers/posts';
-// import { getPostComments, removePostComment, addPostComment } from '../../api/comments';
 import './PostDetails.scss';
 
-import {
-  getSelectedPostId,
-  getPost,
-  getPostComments
-} from '../../store'; // isLoading
-import {
-  fetchPost,
-} from '../../store/postsReducer'
+import { getSelectedPostId, getPost, getPostComments } from '../../store'; // isLoading
+import { fetchPost } from '../../store/postsReducer';
 
-import { Post, Comment } from '../../types';
+import { Post } from '../../types';
 
-export const PostDetails = () => {
-  // const [post, setPost] = useState([]);
-  // const [comments, setComments] = useState(null);
+export const PostDetails: React.FC = () => {
   const [commentHidden, setCommentHidden] = useState(false);
-  // const [isCommentsUpdated, setCommentsUpdated] = useState(false);
   const postId = useSelector(getSelectedPostId);
-  const post: Post = useSelector(getPost);
-  const comments: Comment[] | null = useSelector(getPostComments);
+  const post: Post | null = useSelector(getPost);
+  const comments = useSelector(getPostComments);
 
   const dispatch = useDispatch();
-  // const loading = useSelector(isLoading);
 
   useEffect(() => {
     if (postId > 0) {
@@ -36,49 +24,45 @@ export const PostDetails = () => {
     }
   }, [postId, dispatch]);
 
-  const toggleDisplayComment = () => {
+  const toggleDisplayComment = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.preventDefault();
+
     setCommentHidden(!commentHidden);
   };
 
-  const postInfo:any = post || {};
-  const commentsLength = comments && comments.length;
-
   return (
-    <section className="PostDetails">
+    <div className="PostDetails">
       
-      {postId ? (
-        <>
-        <h2>{postInfo.title}</h2>
+      {postId > 0 && post ? (
+        <article className="PostDetails__post">
+          <h2>{post.title}</h2>
+          <p>{post.body}</p>
 
-        <div className="PostDetails__post">
-          <p>{postInfo.body}</p>
-        </div>
+          <div className="PostDetails__post-comments">
+            {comments && (
+              <button
+                type="button"
+                className="button"
+                onClick={toggleDisplayComment}
+              >
+                {commentHidden ? 'Show ' : 'Hide '}
+                comments
+              </button>
+            )}
 
-        <div className="PostDetails__comments">
-          {!!commentsLength && (
-            <button
-              type="button"
-              className="button"
-              onClick={toggleDisplayComment}
-            >
-              {commentHidden ? 'Show ' : 'Hide '}
-              comments
-            </button>
-          )}
-
-          {!commentHidden && (
-            <Comments postId={postId} />
-          )}
-          <div className="PostDetails__form-wrapper">
-            <NewCommentForm
-              postId={postId}
-            />
+            {!commentHidden && (
+              <Comments postId={postId} />
+            )}
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                postId={postId}
+              />
+            </div>
           </div>
-        </div>
-        </>
+        </article>
         ) : (
         <p className="info">No post details</p>
       )}
-    </section>
+    </div>
   );
 };

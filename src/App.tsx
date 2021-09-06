@@ -13,7 +13,7 @@ import { Filters } from "./components/Filters";
 import { PostsList } from './components/PostsList';
 import { PostDetails } from "./components/PostDetails";
 
-const App = () => {
+const App: React.FC = () => {
   const loading = useSelector(isLoading);
   const message = useSelector(getMessage) || 'Ready!';
 

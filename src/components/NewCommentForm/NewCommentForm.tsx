@@ -5,6 +5,7 @@ import { NewComment } from '../../types';
 
 import {
   addPostComment,
+  setCommentsEdit,
   setCommentsUpdated
 } from '../../store/commentsReducer';
 
@@ -23,7 +24,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
     postId: postId,
   };
 
-  const [newComment, setNewComment] = useState(initialValues);
+  const [newComment, setNewComment] = useState<NewComment>(initialValues);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -57,7 +58,9 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
     }));
   };
 
-  const submitForm = () => {
+  const handleSubmitForm = (ev: React.FormEvent) => {
+    ev.preventDefault();
+
     if (validateForm(newComment) === true) {
       addCommentHandler(newComment);
       setNewComment(initialValues);
@@ -69,24 +72,23 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
 
   const addCommentHandler = async (comment: NewComment) => {
     const date = Date.now().toString();
+    const newId = Number(date.substr(date.length - 6));
     const newComment = {
       ...comment,
-      id: Number(date.substr(date.length - 6)),
+      id: newId,
     };
 
     console.log('new comment is ', newComment);
 
     await addPostComment(newComment);
     dispatch(setCommentsUpdated(true));
+    dispatch(setCommentsEdit(newId));
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(e) => {
-        e.preventDefault();
-        submitForm();
-      }}
+      onSubmit={handleSubmitForm}
       method="POST"
     >
       <div className="form-field">
