@@ -23,7 +23,7 @@ export const Filters: React.FC = () => {
 
   const applyQuery = useCallback(
     debounce((newQuery: string | null) => {
-      if (newQuery) {
+      if (newQuery && newQuery.length > 0) {
         searchParams.set('query', newQuery);
       } else {
         searchParams.delete('query');
@@ -42,11 +42,12 @@ export const Filters: React.FC = () => {
   var handleSelect = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.currentTarget.value;
 
-    if (Number(value) > 0) {
+    if (Number(value) > 0 && value.length > 0) {
       searchParams.set('userId', value);
       dispatch(setSelectedUserId(Number(value)));
     } else {
       searchParams.delete('userId');
+      dispatch(setSelectedUserId(0));
     }
     history.push({ search: searchParams.toString() });
   }, [userId, dispatch]);

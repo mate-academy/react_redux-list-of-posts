@@ -28,25 +28,19 @@ export const PostsList: React.FC = () => {
 
   useEffect(() => {
     if (selectedUserId > 0) {
-      console.log('userId and selectedUserId in useEffect 1', selectedUserId);
       dispatch(fetchPosts(selectedUserId));
     } else {
-      console.log('userId and selectedUserId in useEffect 2', selectedUserId);
       dispatch(fetchPosts());
     }
   }, [selectedUserId, dispatch]);
 
-  const filteredPosts = (queryTitle ? posts.filter(post => post.title.includes(queryTitle.toLowerCase())) : posts);
+  let filteredPosts;
+  if (queryTitle) {
+    filteredPosts = posts.filter(post => post.title.includes(queryTitle.toLowerCase()));
+  } else {
+    filteredPosts = posts;
+  }
 
-  // const filteredPosts = useMemo(() => {
-  //   if (queryTitle) {
-  //     return posts.filter(post => post.title.includes(queryTitle.toLowerCase()));
-  //   }
-
-  //   return posts;
-  // }, [posts, queryTitle]);
-
-  console.log('posts.length', posts.length);
   return (
     <div className="PostsList">
       {loading ? (

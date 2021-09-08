@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import deleteIcon from '../../images/delete.svg';
 import editIcon from '../../images/edit.svg';
-// import { getPostDetails } from '../../helpers/posts';
-// import { getPostComments, removeComment, addPostComment } from '../../api/comments';
 
 import { getComment } from '../../api/comments';
 
@@ -11,7 +9,7 @@ import {
   getPostComments,
   getPostCommentsEdit,
   arePostCommentsUpdated
-} from '../../store'; // isLoading
+} from '../../store';
 import {
   fetchPostComments,
   setCommentEdit,
@@ -26,31 +24,28 @@ type Props = {
 };
 
 export const Comments: React.FC<Props> = React.memo(({ postId }) => {
-  // const [commentHidden, setCommentHidden] = useState(false);
   const comments: Comment[] | null = useSelector(getPostComments);
   const areCommentsUpdated: boolean = useSelector(arePostCommentsUpdated);
   const commentsEdit: CommentsEdit = useSelector(getPostCommentsEdit);
 
   const dispatch = useDispatch();
-  // const loading = useSelector(isLoading);
 
   useEffect(() => {
     if (postId > 0) {
       dispatch(fetchPostComments(postId));
-      console.log('Comments useeffect postId', postId, areCommentsUpdated);
+    }
+
+    if (commentsEdit) {
       dispatch(setCommentEdit(null));
     }
 
     if (areCommentsUpdated) {
-      console.log('Comments commentsUpdated is true in useeffect', postId, areCommentsUpdated);
       dispatch(setCommentsUpdated(false));
     }
   }, [postId, areCommentsUpdated, dispatch]);
 
   const removeCommentHandler = async (commentId: number) => {
-    // setIsLoading(true);
     await removeComment(commentId);
-    // dispatch(fetchPost(postId));
     dispatch(setCommentsUpdated(true));
   };
 
@@ -61,14 +56,6 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
       });
   };
 
-  // console.log(comments, 333);
-  // console.log('Comments commentsUpdated is ', commentsUpdated, postId);
-  // console.log(comments, (comments && comments.length));
-
-  // const removeCommentHandler = (commentId: number) => {
-    
-  //   dispatch(removeComment(commentId));
-  // }
   if (comments) {
     return (
       <ul className="PostDetails__list">

@@ -46,17 +46,14 @@ export const fetchPostComments = (postId: number) => (dispatch: Dispatch) => {
 };
 
 export const addComment = (comment: Comment) => {
-  console.log('POST');
   addPostComment(comment);
 };
 
 export const editComment = (commentId: number, comment: Comment) => {
-  console.log('PATCH');
   editPostComment(commentId, comment);
 };
 
 export const removeComment = (commentId: number) => {
-  console.log('DELETE', commentId);
   removePostComment(commentId);
 }
 
@@ -76,22 +73,6 @@ const updatePostComments= (comments: Comment[] | null, newComment: Comment) => {
   })
 }
 
-// const updatePostCommentsEdit= (commentsIds: CommentsEdit, newCommentId: number) => {
-//   if (!commentsIds.length) {
-//     return [];
-//   }
-
-//   return commentsIds.map(commentId => {
-//     if (commentId !== newCommentId) {
-//       return newCommentId;
-//     }
-
-//     return [
-//       ...commentsIds
-//     ]
-//   })
-// }
-
 export const commentsReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_POST_COMMENTS:
@@ -101,7 +82,6 @@ export const commentsReducer = (state = initialState, action: AnyAction) => {
       };
 
     case SET_COMMENTS_EDIT:
-      console.log('11 action.commentId', action.commentId)
       return {
         ...state,
         commentsEdit: [
@@ -111,7 +91,6 @@ export const commentsReducer = (state = initialState, action: AnyAction) => {
       }
 
     case SET_COMMENT_EDIT:
-      console.log('commentEdit', action.commentEdit)
       return {
         ...state,
         commentEdit: action.commentEdit
@@ -124,7 +103,6 @@ export const commentsReducer = (state = initialState, action: AnyAction) => {
       };
 
     case SET_COMMENTS_HIDDEN:
-      console.log(action.commentsHidden, 'action.commentsHidden');
       return {
         ...state,
         commentsHidden: action.commentsHidden

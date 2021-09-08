@@ -48,7 +48,6 @@ export const fetchPost = (
   postId: number,
 ) => (dispatch: Dispatch) => {
   dispatch(startLoading());
-  // console.log(typeof request2, typeof dispatch, id);
   Promise.all([getPostDetails(postId), getPostComments(postId)]).then(res => {
     dispatch(finishLoading());
     dispatch(setPost({
@@ -59,12 +58,6 @@ export const fetchPost = (
     // We can also set message action for that (messageReducer)
     console.error(`Failed to fetch details of post ${postId}.`, reason);
   });
-  // getPostDetails(postId).then((res: any) => {
-  //   postDetails = res;
-  //   getPostComments(postId)
-  // });
-
-  //dispatch(setPost(res));
 };
 
 export const postsReducer = (state = initialState, action: AnyAction) => {

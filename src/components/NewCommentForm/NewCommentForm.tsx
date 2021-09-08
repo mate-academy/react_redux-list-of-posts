@@ -18,6 +18,16 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
   const commentEdit = useSelector(getPostCommentEdit);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (commentEdit) {
+      formData.name = commentEdit.name;
+      formData.email = commentEdit.email;
+      formData.body = commentEdit.body;
+    } else {
+      resetForm();
+    }
+  }, [postId, commentEdit]);
+
   const {
     handleSubmit,
     handleChange,
@@ -59,21 +69,10 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
       } else {
         addCommentHandler(newCommentFields);
       }
-      console.log(typeof editCommentHandler, typeof addCommentHandler, newCommentFields);
 
       resetForm();
     },
   });
-
-  useEffect(() => {
-    if (commentEdit) {
-      formData.name = commentEdit.name;
-      formData.email = commentEdit.email;
-      formData.body = commentEdit.body;
-    } else {
-      resetForm();
-    }
-  }, [postId, commentEdit]);
 
   const initialValues: NewComment = {
     name: '',
@@ -94,8 +93,6 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
       id: commentEdit.id,
     };
 
-    console.log('Comment that has edited is ', newComment, commentEdit.id);
-
     await editComment(commentEdit.id, newComment);
     dispatch(setCommentsUpdated(true));
   };
@@ -107,8 +104,6 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
       ...comment,
       id: newId,
     };
-
-    console.log('new comment is ', newComment);
 
     await addComment(newComment);
     dispatch(setCommentsUpdated(true));
