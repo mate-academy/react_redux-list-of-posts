@@ -28,6 +28,12 @@ export interface NewComment {
   postId: number;
 }
 
+export interface CommentFields {
+  name: string;
+  email: string;
+  body: string;
+}
+
 export type CommentsEdit = number[];
 
 export interface User {

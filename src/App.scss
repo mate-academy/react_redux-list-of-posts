@@ -13,7 +13,6 @@
     position: sticky;
     padding: 10px;
     input {
-      margin-right: 20px;
       padding: 8px 10px;
       border-radius: 10px;
     }
@@ -29,14 +28,12 @@
     @extend %stretch-panel;
 
     flex-basis: 60%;
-    border-color: blue;
   }
 
   &__content {
     @extend %stretch-panel;
 
     flex-basis: 30%;
-    border-color: green;
   }
 
   &__loading-message {

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import './PostsList.scss';
 
 import {
+  isLoading,
   getPostsList,
   getSelectedPostId,
 } from '../../store';
@@ -15,7 +16,8 @@ import { setPostComments } from '../../store/commentsReducer';
 
 export const PostsList: React.FC = () => {
   const posts: Post[] = useSelector(getPostsList);
-  const postId = useSelector(getSelectedPostId);
+  const postId: number = useSelector(getSelectedPostId);
+  const loading: boolean = useSelector(isLoading);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -35,48 +37,57 @@ export const PostsList: React.FC = () => {
   }, [selectedUserId, dispatch]);
 
   const filteredPosts = (queryTitle ? posts.filter(post => post.title.includes(queryTitle.toLowerCase())) : posts);
-  const isPostListEmpty = posts ? (posts.length ? false : true) : true;
 
-  console.log('filteredPosts.length', filteredPosts.length);
+  // const filteredPosts = useMemo(() => {
+  //   if (queryTitle) {
+  //     return posts.filter(post => post.title.includes(queryTitle.toLowerCase()));
+  //   }
 
+  //   return posts;
+  // }, [posts, queryTitle]);
+
+  console.log('posts.length', posts.length);
   return (
     <div className="PostsList">
-      {isPostListEmpty ? (
-        <p className="info">Posts list is empty.</p>
+      {loading ? (
+        <div className="loading"></div>
       ) : (
         <>
           <h2>Posts:</h2>
           <ul className="PostsList__list">
-            {filteredPosts.map((post: any) => (
-              <li className="PostsList__item" key={post.id}>
-                <div className="PostsList__item-content">
-                  <h3>{post.title}</h3>
-                  <p>{post.body}</p>
-                </div>
-                {postId !== post.id ? (
-                  <button
-                    type="button"
-                    className="PostsList__button button"
-                    onClick={() => {
-                      dispatch(setPostId(post.id))
-                    }}
-                  >
-                    Open
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="PostsList__button button button--active"
-                    onClick={() => {
-                      dispatch(setPostId(0));
-                      dispatch(setPostComments(null));
-                    }}
-                  >
-                    Close
-                  </button>
-                )}
-              </li>
-            ))}
+            {filteredPosts.length > 0
+              ? filteredPosts.map((post: any) => (
+                <li className="PostsList__item" key={post.id}>
+                  <div className="PostsList__item-content">
+                    <h3>{post.title}</h3>
+                    <p>{post.body}</p>
+                  </div>
+                  {postId !== post.id ? (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        dispatch(setPostId(post.id))
+                      }}
+                    >
+                      Open
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="PostsList__button button button--active"
+                      onClick={() => {
+                        dispatch(setPostId(0));
+                        dispatch(setPostComments(null));
+                      }}
+                    >
+                      Close
+                    </button>
+                  )}
+                </li>
+              )) : (
+                <p className="info">Posts list is empty.</p>
+              )}
           </ul>
         </>
       )}

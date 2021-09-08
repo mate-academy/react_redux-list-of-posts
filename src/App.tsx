@@ -3,10 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import './App.scss';
 
-import { getUsers } from './helpers/users';
+import { getUsers } from './api/users';
 
 import { User } from './types';
 import { isLoading, getMessage } from './store';
+import { startLoading, finishLoading } from './store/loading';
 import { setUsersList } from './store/postsReducer';
 
 import { Filters } from "./components/Filters";
@@ -20,8 +21,12 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(startLoading());
     getUsers()
-      .then((result: User[]|any) => dispatch(setUsersList(result)));
+      .then((result: User[]|any) => {
+        dispatch(setUsersList(result));
+        dispatch(finishLoading());
+      });
   }, [dispatch]);
 
   return (

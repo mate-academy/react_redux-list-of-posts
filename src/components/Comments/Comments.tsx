@@ -5,7 +5,7 @@ import editIcon from '../../images/edit.svg';
 // import { getPostDetails } from '../../helpers/posts';
 // import { getPostComments, removeComment, addPostComment } from '../../api/comments';
 
-import { getComment } from '../../helpers/comments';
+import { getComment } from '../../api/comments';
 
 import {
   getPostComments,
@@ -54,9 +54,11 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
     dispatch(setCommentsUpdated(true));
   };
 
-  const editCommentHandler = async (commentId: number) => {
-    const comment = await getComment(commentId);
-    dispatch(setCommentEdit(comment));
+  const editCommentHandler = (commentId: number) => {
+    getComment(commentId)
+      .then(res => {
+        dispatch(setCommentEdit(res));
+      });
   };
 
   // console.log(comments, 333);
@@ -68,7 +70,6 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
   //   dispatch(removeComment(commentId));
   // }
   if (comments) {
-    console.log(comments, 'commentsEdit', commentsEdit);
     return (
       <ul className="PostDetails__list">
         {comments.map(comment => (
@@ -81,8 +82,6 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
                   className="button button--icon"
                   onClick={(ev) => {
                     ev.preventDefault();
-
-                    console.log('edit');
                     editCommentHandler(comment.id);
                   }}
                 >

@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from 'redux';
 
 import { Comment, CommentsEdit } from '../types';
-import { getPostComments, addPostComment, removePostComment, editPostComment } from '../helpers/comments';
+import { getPostComments, addPostComment, removePostComment, editPostComment } from '../api/comments';
 
 export interface RootStateComments {
   comments: Comment[] | null;

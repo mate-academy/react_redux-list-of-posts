@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './NewCommentForm.scss';
-import { NewComment } from '../../types';
+import { NewComment, CommentFields } from '../../types';
+
+import { useForm } from '../../helpers/useForm';
 
 import { getPostCommentEdit } from '../../store/index';
 import { addComment, setCommentsEdit, editComment, setCommentsUpdated } from '../../store/commentsReducer';
@@ -10,9 +12,69 @@ interface NewCommentFormProps {
   postId: number;
 }
 
-export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
+export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = React.memo(({
   postId,
 }) => {
+  const commentEdit = useSelector(getPostCommentEdit);
+  const dispatch = useDispatch();
+
+  const {
+    handleSubmit,
+    handleChange,
+    handleTextareaChange,
+    data: formData,
+    errors
+  } = useForm<CommentFields>({
+    validations: {
+      name: {
+        pattern: {
+          value: '^[A-Za-z]*$',
+          message:
+            'You\'re not allowed to use special characters or numbers in your name.',
+        },
+      },
+      email: {
+        pattern: {
+          value: '^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$',
+          message: 'Your email is not valid.',
+        },
+      },
+      body: {
+        custom: {
+          isValid: (value: string) => value.length < 151 && value.length > 3,
+          message: 'The comment should have from 4 to 150 characters.',
+        }
+      },
+    },
+    onSubmit: () => {
+      const newCommentFields = {
+        ...initialValues,
+        name: formData.name,
+        email: formData.email,
+        body: formData.body.replace(/^\s+|\s+$/g, ''),
+      }
+
+      if (commentEdit) {
+        editCommentHandler(newCommentFields);
+      } else {
+        addCommentHandler(newCommentFields);
+      }
+      console.log(typeof editCommentHandler, typeof addCommentHandler, newCommentFields);
+
+      resetForm();
+    },
+  });
+
+  useEffect(() => {
+    if (commentEdit) {
+      formData.name = commentEdit.name;
+      formData.email = commentEdit.email;
+      formData.body = commentEdit.body;
+    } else {
+      resetForm();
+    }
+  }, [postId, commentEdit]);
+
   const initialValues: NewComment = {
     name: '',
     email: '',
@@ -20,68 +82,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
     postId: postId,
   };
 
-  const [newComment, setNewComment] = useState<NewComment>(initialValues);
-  const commentEdit = useSelector(getPostCommentEdit);
-  
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (commentEdit) {
-      console.log(111);
-      setNewComment({
-        ...initialValues,
-        name: commentEdit.name,
-        email: commentEdit.email,
-        body: commentEdit.body,
-      });
-    } else {
-      console.log(222);
-      setNewComment(initialValues);
-    }
-  }, [postId, commentEdit]);
-
   const resetForm = () => {
-    setNewComment({
-      name: '',
-      email: '',
-      body: '',
-      postId: postId,
-    });
-  };
-
-  // ' ... ... ...   '.replace(/^\s+|\s+$/g, '')
-  const validateForm = (newComment: NewComment) => {
-    let isFormValid = true;
-    if (!newComment.name.length) {
-      isFormValid = false;
-    }
-
-    return isFormValid;
-  };
-
-  const handleChangeInput = (e: any) => {
-    const { name, value } = e.target;
-
-    setNewComment(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitForm = (ev: React.FormEvent) => {
-    ev.preventDefault();
-
-    if (validateForm(newComment) === true) {
-      if (commentEdit) {
-        editCommentHandler(newComment);
-      } else {
-        addCommentHandler(newComment);
-      }
-      setNewComment(initialValues);
-      resetForm();
-    } else {
-      console.log('Write message');
-    }
+    formData.name = '';
+    formData.email = '';
+    formData.body = '';
   };
 
   const editCommentHandler = async (comment: NewComment) => {
@@ -114,7 +118,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
   return (
     <form
       className="NewCommentForm"
-      onSubmit={handleSubmitForm}
+      onSubmit={(ev) => {
+        ev.preventDefault();
+        handleSubmit(ev);
+      }}
       method="POST"
     >
       <div className="form-field">
@@ -123,23 +130,23 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={newComment.name}
-          onChange={handleChangeInput}
+          value={formData.name || ''}
+          onChange={handleChange('name')}
+          required
         />
-        {/* {errors.name
-          && <p className="NewCommentForm__error">{errors.name.message}</p>
-        } */}
+        {errors.name && <p className="NewCommentForm__error">{errors.name}</p>}
       </div>
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={newComment.email}
-          onChange={handleChangeInput}
+          value={formData.email || ''}
+          onChange={handleChange('email')}
         />
+        {errors.email && <p className="NewCommentForm__error">{errors.email}</p>}
       </div>
 
       <div className="form-field">
@@ -147,20 +154,13 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
           name="body"
           placeholder="Type comments here"
           className="NewCommentForm__input"
-          value={newComment.body}
-          // {...register('body', {
-          //   required: 'Message text is required.',
-          //   minLength: {
-          //     value: 5,
-          //     message: 'Minimal length of message text is 5.',
-          //   },
-          //   pattern: {
-          //     value: /^$|.*\S+.*/,
-          //     message: 'Message should\'t be made up of whitespaces.',
-          //   },
-          // })}
-          onChange={handleChangeInput}
+          value={formData.body || ''}
+          required
+          onChange={(ev) => {
+            handleTextareaChange('body', ev.target.value);
+          }}
         />
+        {errors.body && <p className="NewCommentForm__error">{errors.body}</p>}
       </div>
 
       <button

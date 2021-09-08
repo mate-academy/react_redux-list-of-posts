@@ -86,6 +86,13 @@ select {
   }
 }
 
+.group {
+  display: inline-block;
+  &--left {
+    margin-right: 20px;
+  }
+}
+
 .alert {
   position: fixed;
   bottom: 0;
@@ -96,9 +103,36 @@ select {
   background-color: #4d457b;
   color: #fff;
 }
+
 .info {
   margin-bottom: 15px;
   font-style: italic;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  margin-left: calc(50% - 30px);
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+}
+.loading:after {
+  content: " ";
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 6px solid #4d457b;
+  border-color: #4d457b transparent transparent transparent;
+  animation: loading 1.2s linear infinite;
 }
 
 @include md {

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSelectedUserId, setSelectedUserId } from '../../store/postsReducer';
-import { getUsersList } from '../../store'
+
+import { isLoading, getSelectedUserId, getUsersList } from '../../store';
+import { setSelectedUserId } from '../../store/postsReducer';
 
 import debounce from 'lodash/debounce.js';
 
@@ -16,6 +17,7 @@ export const Filters: React.FC = () => {
 
   const userId = useSelector(getSelectedUserId);
   const users: User[] = useSelector(getUsersList);
+  const loading: boolean = useSelector(isLoading);
 
   const dispatch = useDispatch();
 
@@ -52,37 +54,42 @@ export const Filters: React.FC = () => {
   if (users) {
     return (
       <>
-        <label>
-          Title: &nbsp;
+        <div className="group group--left">
+          <label htmlFor="title">
+            Title: &nbsp;
+          </label>
           <input
             type="text"
             name="title"
             value={queryTitle}
             placeholder="Filter by title"
-            className="App__header-filter"
             onChange={handleChange}
           />
-        </label>
+        </div>
 
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            name="user"
-            className="App__user-selector"
-            value={userId}
-            onChange={handleSelect}
-          >
-            <option value="">
-              Choose a user
-            </option>
-            {users.map((user: any) => (
-              <option value={user.id} key={user.id}>
-                {user.name}
+        {loading ? (
+          <div className="info">Loading users...</div>
+        ) : (
+          <div className="group group--left">
+            <label htmlFor="user">
+              Select a user: &nbsp;
+            </label>
+            <select
+              name="user"
+              value={userId}
+              onChange={handleSelect}
+            >
+              <option value="">
+                Choose a user
               </option>
-            ))}
-          </select>
-        </label>
+              {users.map((user: any) => (
+                <option value={user.id} key={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </>
     )
   } else {

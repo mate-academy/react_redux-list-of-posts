@@ -7,7 +7,7 @@ import { commentsReducer } from './commentsReducer';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import { fetchMessage } from '../api/api';
 
 // Action types
 const SET_LOADING = 'SET_LOADING';
@@ -28,6 +28,8 @@ export const setLoading = (loading: boolean) => ({ type: SET_LOADING, value: loa
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
 export const getUsersList = (state: RootState) => state.postsState.users;
+export const getSelectedUserId = (state: RootState) => state.postsState.userId;
+export const getPostId = (state: RootState) => state.postsState.selectedPostId;
 export const getPostsList = (state: RootState) => state.postsState.posts;
 export const getSelectedPostId = (state: RootState) => state.postsState.selectedPostId;
 export const getPost = (state: RootState) => state.postsState.post;

@@ -5,7 +5,7 @@ import { Comments } from '../Comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-import { getSelectedPostId, getPost, arePostCommentsHidden } from '../../store'; // isLoading
+import { isLoading, getSelectedPostId, getPost, arePostCommentsHidden } from '../../store';
 import { fetchPost } from '../../store/postsReducer';
 import { setCommentsHidden } from '../../store/commentsReducer';
 
@@ -15,6 +15,7 @@ export const PostDetails: React.FC = () => {
   const postId = useSelector(getSelectedPostId);
   const post: Post | null = useSelector(getPost);
   const areCommentsHidden: boolean = useSelector(arePostCommentsHidden);
+  const loading = useSelector(isLoading);
 
   const dispatch = useDispatch();
 
@@ -30,15 +31,16 @@ export const PostDetails: React.FC = () => {
     dispatch(setCommentsHidden(!areCommentsHidden));
   };
 
-  console.log('ccc', areCommentsHidden, post);
-
   return (
     <div className="PostDetails">
-      {postId > 0 && post ? (
+      {loading ? (
+        <div className="loading"></div>
+      ) :
+      postId > 0 && post ? (
         <article className="PostDetails__post">
           <h2>{post.title}</h2>
           <p>{post.body}</p>
-
+  
           <div className="PostDetails__post-comments">
             {post.commentsCount > 0 &&
               <button
@@ -50,7 +52,7 @@ export const PostDetails: React.FC = () => {
                 comments
               </button>
             }
-
+  
             {!areCommentsHidden && (
               <Comments postId={postId} />
             )}
@@ -62,8 +64,9 @@ export const PostDetails: React.FC = () => {
           </div>
         </article>
         ) : (
-        <p className="info">No post details</p>
-      )}
+          <p className="info">No post details</p>
+        )
+      }
     </div>
   );
 };
