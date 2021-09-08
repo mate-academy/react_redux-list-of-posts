@@ -3,6 +3,7 @@ export interface PostMain {
   userId: number;
   title: string;
   body: string;
+  commentsCount: number;
 }
 
 export interface Post extends PostMain {

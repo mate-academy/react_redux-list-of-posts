@@ -1,54 +1,63 @@
 import { AnyAction, Dispatch } from 'redux';
 
 import { Comment, CommentsEdit } from '../types';
-import { request, add, remove } from '../helpers/api';
+import { getPostComments, addPostComment, removePostComment, editPostComment } from '../helpers/comments';
 
 export interface RootStateComments {
   comments: Comment[] | null;
   commentsEdit: CommentsEdit;
+  commentEdit: Comment | null;
+  commentsHidden: boolean;
   commentsUpdated: boolean;
-  commentsCount: number;
 };
 
 const initialState: RootStateComments = {
   comments: null,
   commentsEdit: [],
+  commentEdit: null,
+  commentsHidden: false,
   commentsUpdated: false,
-  commentsCount: 0,
 };
 
 const SET_POST_COMMENTS = 'SET_POST_COMMENTS';
 const SET_NEW_COMMENT = 'SET_NEW_COMMENT';
+const SET_COMMENTS_HIDDEN = 'SET_COMMENTS_HIDDEN';
 const SET_COMMENTS_UPDATED = 'SET_COMMENTS_UPDATED';
 const SET_COMMENTS_EDIT = 'SET_COMMENTS_EDIT';
-const SET_COMMENTS_COUNT = 'SET_COMMENTS_COUNT';
+const SET_COMMENT_EDIT = 'SET_COMMENT_EDIT';
 
 // Action creators
 export const setPostComments = (comments: Comment[] | null) => ({ type: SET_POST_COMMENTS, comments });
 export const setNewComment = (comment: Comment) => ({ type: SET_NEW_COMMENT, comment });
 export const setCommentsEdit = (commentId: number) => ({ type: SET_COMMENTS_EDIT, commentId });
+export const setCommentEdit = (commentEdit: Comment | null) => ({ type: SET_COMMENT_EDIT, commentEdit });
+export const setCommentsHidden = (commentsHidden: boolean) => ({ type: SET_COMMENTS_HIDDEN, commentsHidden });
 export const setCommentsUpdated = (commentsUpdated: boolean) => ({ type: SET_COMMENTS_UPDATED, commentsUpdated });
-export const setPostCommentsCount = (commentsCount: number) => ({ type: SET_COMMENTS_COUNT, commentsCount });
 
 export const fetchPostComments = (postId: number) => (dispatch: Dispatch) => {
-  request(`comments?postId=${postId}`)
-    .then((res: {data: Comment[] | null}) => {
-      if (res && res.data) {
-        dispatch(setPostComments(res.data));
+  getPostComments(postId)
+    .then((res: Comment[] | null) => {
+      if (res) {
+        dispatch(setPostComments(res));
       } else {
         dispatch(setPostComments(null));
       }
     });
 };
 
-export const addPostComment = (comment: Comment) => {
+export const addComment = (comment: Comment) => {
   console.log('POST');
-  add('comments', comment);
+  addPostComment(comment);
 };
 
-export const removePostComment = (commentId: number) => {
+export const editComment = (commentId: number, comment: Comment) => {
+  console.log('PATCH');
+  editPostComment(commentId, comment);
+};
+
+export const removeComment = (commentId: number) => {
   console.log('DELETE', commentId);
-  remove(`comments/${commentId}`);
+  removePostComment(commentId);
 }
 
 const updatePostComments= (comments: Comment[] | null, newComment: Comment) => {
@@ -99,19 +108,26 @@ export const commentsReducer = (state = initialState, action: AnyAction) => {
           ...state.commentsEdit,
           action.commentId
         ]
-        // updatePostCommentsEdit(state.commentsEdit, action.commentId)
       }
 
-    case SET_COMMENTS_COUNT:
+    case SET_COMMENT_EDIT:
+      console.log('commentEdit', action.commentEdit)
       return {
         ...state,
-        commentsCount: action.commentsCount
-      }
+        commentEdit: action.commentEdit
+      };
 
     case SET_NEW_COMMENT:
       return {
         ...state,
         comments: updatePostComments(state.comments, action.comment),
+      };
+
+    case SET_COMMENTS_HIDDEN:
+      console.log(action.commentsHidden, 'action.commentsHidden');
+      return {
+        ...state,
+        commentsHidden: action.commentsHidden
       };
 
     case SET_COMMENTS_UPDATED:

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './NewCommentForm.scss';
 import { NewComment } from '../../types';
 
-import {
-  addPostComment,
-  setCommentsEdit,
-  setCommentsUpdated
-} from '../../store/commentsReducer';
-
+import { getPostCommentEdit } from '../../store/index';
+import { addComment, setCommentsEdit, editComment, setCommentsUpdated } from '../../store/commentsReducer';
 
 interface NewCommentFormProps {
   postId: number;
@@ -25,11 +21,24 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
   };
 
   const [newComment, setNewComment] = useState<NewComment>(initialValues);
+  const commentEdit = useSelector(getPostCommentEdit);
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setNewComment(initialValues);
-  }, [postId]);
+    if (commentEdit) {
+      console.log(111);
+      setNewComment({
+        ...initialValues,
+        name: commentEdit.name,
+        email: commentEdit.email,
+        body: commentEdit.body,
+      });
+    } else {
+      console.log(222);
+      setNewComment(initialValues);
+    }
+  }, [postId, commentEdit]);
 
   const resetForm = () => {
     setNewComment({
@@ -40,6 +49,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
     });
   };
 
+  // ' ... ... ...   '.replace(/^\s+|\s+$/g, '')
   const validateForm = (newComment: NewComment) => {
     let isFormValid = true;
     if (!newComment.name.length) {
@@ -62,12 +72,28 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
     ev.preventDefault();
 
     if (validateForm(newComment) === true) {
-      addCommentHandler(newComment);
+      if (commentEdit) {
+        editCommentHandler(newComment);
+      } else {
+        addCommentHandler(newComment);
+      }
       setNewComment(initialValues);
       resetForm();
     } else {
       console.log('Write message');
     }
+  };
+
+  const editCommentHandler = async (comment: NewComment) => {
+    const newComment = {
+      ...comment,
+      id: commentEdit.id,
+    };
+
+    console.log('Comment that has edited is ', newComment, commentEdit.id);
+
+    await editComment(commentEdit.id, newComment);
+    dispatch(setCommentsUpdated(true));
   };
 
   const addCommentHandler = async (comment: NewComment) => {
@@ -80,7 +106,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = React.memo(({
 
     console.log('new comment is ', newComment);
 
-    await addPostComment(newComment);
+    await addComment(newComment);
     dispatch(setCommentsUpdated(true));
     dispatch(setCommentsEdit(newId));
   };

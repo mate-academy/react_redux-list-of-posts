@@ -21,7 +21,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     getUsers()
-      .then((result: User[]|any) => dispatch(setUsersList(result.data)));
+      .then((result: User[]|any) => dispatch(setUsersList(result)));
   }, [dispatch]);
 
   return (

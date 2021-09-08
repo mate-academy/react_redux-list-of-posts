@@ -33,7 +33,9 @@ export const getSelectedPostId = (state: RootState) => state.postsState.selected
 export const getPost = (state: RootState) => state.postsState.post;
 export const getPostComments = (state: RootState) => state.commentsState.comments;
 export const getPostCommentsEdit = (state: RootState) => state.commentsState.commentsEdit;
-export const areCommentsUpdated = (state: RootState) => state.commentsState.commentsUpdated;
+export const getPostCommentEdit = (state: RootState) => state.commentsState.commentEdit;
+export const arePostCommentsHidden = (state: RootState) => state.commentsState.commentsHidden;
+export const arePostCommentsUpdated = (state: RootState) => state.commentsState.commentsUpdated;
 
 /**
  * Thunk

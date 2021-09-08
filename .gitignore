@@ -12,3 +12,6 @@ yarn-error.log*
 
 # TXT files
 **/*.txt
+
+# Backups for emergancy
+srv_backup

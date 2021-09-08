@@ -3,17 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import deleteIcon from '../../images/delete.svg';
 import editIcon from '../../images/edit.svg';
 // import { getPostDetails } from '../../helpers/posts';
-// import { getPostComments, removePostComment, addPostComment } from '../../api/comments';
+// import { getPostComments, removeComment, addPostComment } from '../../api/comments';
+
+import { getComment } from '../../helpers/comments';
 
 import {
   getPostComments,
   getPostCommentsEdit,
-  areCommentsUpdated
+  arePostCommentsUpdated
 } from '../../store'; // isLoading
 import {
   fetchPostComments,
+  setCommentEdit,
   setCommentsUpdated,
-  removePostComment
+  removeComment
 } from '../../store/commentsReducer'
 
 import { Comment, CommentsEdit } from '../../types';
@@ -25,7 +28,7 @@ type Props = {
 export const Comments: React.FC<Props> = React.memo(({ postId }) => {
   // const [commentHidden, setCommentHidden] = useState(false);
   const comments: Comment[] | null = useSelector(getPostComments);
-  const commentsUpdated: boolean = useSelector(areCommentsUpdated);
+  const areCommentsUpdated: boolean = useSelector(arePostCommentsUpdated);
   const commentsEdit: CommentsEdit = useSelector(getPostCommentsEdit);
 
   const dispatch = useDispatch();
@@ -34,21 +37,26 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
   useEffect(() => {
     if (postId > 0) {
       dispatch(fetchPostComments(postId));
-      console.log('Comments useeffect postId', postId, commentsUpdated);
-      // dispatch(setCommentsUpdated(false));
+      console.log('Comments useeffect postId', postId, areCommentsUpdated);
+      dispatch(setCommentEdit(null));
     }
 
-    if (commentsUpdated) {
-      console.log('Comments commentsUpdated is true in useeffect', postId, commentsUpdated);
+    if (areCommentsUpdated) {
+      console.log('Comments commentsUpdated is true in useeffect', postId, areCommentsUpdated);
       dispatch(setCommentsUpdated(false));
     }
-  }, [postId, commentsUpdated, dispatch]);
+  }, [postId, areCommentsUpdated, dispatch]);
 
   const removeCommentHandler = async (commentId: number) => {
     // setIsLoading(true);
-    await removePostComment(commentId);
+    await removeComment(commentId);
     // dispatch(fetchPost(postId));
     dispatch(setCommentsUpdated(true));
+  };
+
+  const editCommentHandler = async (commentId: number) => {
+    const comment = await getComment(commentId);
+    dispatch(setCommentEdit(comment));
   };
 
   // console.log(comments, 333);
@@ -57,7 +65,7 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
 
   // const removeCommentHandler = (commentId: number) => {
     
-  //   dispatch(removePostComment(commentId));
+  //   dispatch(removeComment(commentId));
   // }
   if (comments) {
     console.log(comments, 'commentsEdit', commentsEdit);
@@ -75,6 +83,7 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
                     ev.preventDefault();
 
                     console.log('edit');
+                    editCommentHandler(comment.id);
                   }}
                 >
                   <img src={editIcon} alt="edit icon"></img>

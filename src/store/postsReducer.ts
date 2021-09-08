@@ -1,7 +1,8 @@
 import { AnyAction, Dispatch } from 'redux';
 
 import { Post, PostMain, User } from '../types';
-import { request } from "../helpers/api";
+import { getPosts, getPostDetails } from '../helpers/posts';
+import { getPostComments } from '../helpers/comments';
 
 export type RootState = {
   posts: any,
@@ -41,31 +42,36 @@ export const fetchPosts = (
   userId?: number
 ) => (dispatch: Dispatch) => {
   // setIsLoading(true);
-  
-  if (userId) {
-    request(`posts?userId=${userId}`).then((res: any) => {
-      dispatch(setPosts(res.data));
-      // setIsLoading(false);
-    });
-  } else {
-    request('posts?id=87&id=88&id=89&id=90&id=91&id=92&id=93').then((res: any) => {
-      dispatch(setPosts(res.data));
-      // setIsLoading(false);
-    });
-  }
+  getPosts(userId).then((res: any) => {
+    dispatch(setPosts(res)); // res.data
+    // setIsLoading(false);
+  });
 };
 
 export const fetchPost = (
-  id: number,
+  postId: number,
   // setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => (dispatch: Dispatch) => {
   // setLoading(true);
   // console.log(typeof request2, typeof dispatch, id);
-  request(`posts/${id}`).then((res: any) => {
-    // console.log(res.data);
-    dispatch(setPost(res.data));
-    // setLoading(false);
+  Promise.all([getPostDetails(postId), getPostComments(postId)]).then(res => {
+    // const postDetails = {
+    //   ...res,
+    //   commentsCount: 22
+    // };
+    dispatch(setPost({
+      ...res[0],
+      commentsCount: res[1].length
+    }));
+  }, reason => {
+    console.error(`Failed to fetch details of post ${postId}.`, reason);
   });
+  // getPostDetails(postId).then((res: any) => {
+  //   postDetails = res;
+  //   getPostComments(postId)
+  // });
+
+  //dispatch(setPost(res));
 };
 
 export const postsReducer = (state = initialState, action: AnyAction) => {

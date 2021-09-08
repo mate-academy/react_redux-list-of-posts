@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://mate-api.herokuapp.com/';
+export const BASE_URL = 'https://mate.academy/students-api/';
 
 export const request = (url: string = '', options?: object) => {
   return fetch(BASE_URL + url, options).then((res) => {
@@ -8,20 +8,6 @@ export const request = (url: string = '', options?: object) => {
 
     return res.json();
   });
-};
-
-export const add = (url: string = '', bodyObj: object) => {
-  request(url, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify(bodyObj),
-  });
-};
-
-export const remove = (url: string = '') => {
-  request(url, { method: 'DELETE' });
 };
 
 export function fetchMessage(): Promise<string> {

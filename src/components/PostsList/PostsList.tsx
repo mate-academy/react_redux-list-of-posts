@@ -37,6 +37,8 @@ export const PostsList: React.FC = () => {
   const filteredPosts = (queryTitle ? posts.filter(post => post.title.includes(queryTitle.toLowerCase())) : posts);
   const isPostListEmpty = posts ? (posts.length ? false : true) : true;
 
+  console.log('filteredPosts.length', filteredPosts.length);
+
   return (
     <div className="PostsList">
       {isPostListEmpty ? (
