@@ -22,6 +22,7 @@ type Validations<T extends {}> = Partial<Record<keyof T, Validation>>;
 export const useForm = <T extends Record<keyof T, any> = {}>(options?: {
   validations?: Validations<T>;
   initialValues?: Partial<T>;
+  editing: boolean;
   onSubmit?: () => void;
 }) => {
   const [data, setData] = useState<T>((options?.initialValues || {}) as T);
@@ -83,12 +84,31 @@ export const useForm = <T extends Record<keyof T, any> = {}>(options?: {
     }
   };
 
+  const isEditing = (): boolean => {
+    return options?.editing || false;
+  }
+
+  const resetData = () => {
+    if (!data) {
+      return;
+    }
+  
+    Object.keys(data).forEach(function(key) {
+      setData({
+        ...data,
+        [key]: '',
+      });
+    });
+  };
+
   return {
     valid,
     data,
     handleChange,
     handleTextareaChange,
     handleSubmit,
+    resetData,
+    isEditing,
     errors,
   };
 };

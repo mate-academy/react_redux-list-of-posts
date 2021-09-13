@@ -49,6 +49,7 @@ input {
 }
 
 button, select {
+  cursor: pointer;
   &:focus-visible {
     outline: none;
   }
@@ -102,6 +103,9 @@ select {
   border-top-right-radius: 10px;
   background-color: #4d457b;
   color: #fff;
+  &--error {
+    background-color: #ce1126;
+  }
 }
 
 .info {

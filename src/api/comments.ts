@@ -15,7 +15,7 @@ export function removePostComment(commentId: number) {
   });
 }
 
-export function editPostComment(commentId: number, comment: Comment) {
+export function updatePostComment(commentId: number, comment: Comment) {
   return request(`comments/${commentId}`, {
     method: 'PATCH',
     headers: {

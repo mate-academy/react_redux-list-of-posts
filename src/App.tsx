@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 import './App.scss';
 
@@ -7,7 +8,6 @@ import { getUsers } from './api/users';
 
 import { User } from './types';
 import { isLoading, getMessage } from './store';
-import { startLoading, finishLoading } from './store/loading';
 import { setUsersList } from './store/postsReducer';
 
 import { Filters } from "./components/Filters";
@@ -16,28 +16,32 @@ import { PostDetails } from "./components/PostDetails";
 
 const App: React.FC = () => {
   const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const message = useSelector(getMessage);
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const selectedUserId = Number(searchParams.get('userId')) || 0;
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(startLoading());
     getUsers()
       .then((result: User[]|any) => {
         dispatch(setUsersList(result));
-        dispatch(finishLoading());
       });
   }, [dispatch]);
 
   return (
     <div className="App">
       <header className="App__header">
-        <Filters />
+        {!message && (
+          <Filters />
+        )}
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList />
+          <PostsList loading={loading} selectedUserId={selectedUserId} />
         </div>
         <div className="App__content">
           <PostDetails />
@@ -46,9 +50,11 @@ const App: React.FC = () => {
 
       
       {loading ?
-        <div className="alert">'Loading...'</div>
+        <div className="alert">Loading data...</div>
       :
-        <div className="alert alert--fade-out">{message}</div>}
+        <div className={message ? 'alert alert--error' : 'alert'}>
+          {message ? message : 'Ready'}
+        </div>}
     </div>
   );
 };

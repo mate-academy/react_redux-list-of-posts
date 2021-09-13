@@ -1,27 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import './PostsList.scss';
 
-import {
-  isLoading,
-  getPostsList,
-  getSelectedPostId,
-} from '../../store';
-import { fetchPosts, setPostId } from '../../store/postsReducer';
+import { getPostsList, getMessage } from '../../store';
+import { fetchPosts } from '../../store/postsReducer';
 
 import { Post } from '../../types';
-import { setPostComments } from '../../store/commentsReducer';
 
-export const PostsList: React.FC = () => {
+import { PostItem } from "../PostItem";
+
+type Props = {
+  loading: boolean,
+  selectedUserId: number,
+};
+
+export const PostsList: React.FC<Props> = React.memo(({ loading, selectedUserId }) => {
   const posts: Post[] = useSelector(getPostsList);
-  const postId: number = useSelector(getSelectedPostId);
-  const loading: boolean = useSelector(isLoading);
+  const message = useSelector(getMessage);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const selectedUserId = Number(searchParams.get('userId')) || 0;
+  
   const queryTitle = searchParams.get('query') || null;
 
   const dispatch = useDispatch();
@@ -34,52 +35,30 @@ export const PostsList: React.FC = () => {
     }
   }, [selectedUserId, dispatch]);
 
-  let filteredPosts;
-  if (queryTitle) {
-    filteredPosts = posts.filter(post => post.title.includes(queryTitle.toLowerCase()));
-  } else {
-    filteredPosts = posts;
-  }
+  const filteredPosts = useMemo(() => {
+    if (queryTitle) {
+      return posts.filter(post => post.title.includes(queryTitle.toLowerCase()));
+    } else {
+      return posts;
+    }
+  }, [posts, queryTitle]);
 
   return (
     <div className="PostsList">
-      {loading ? (
+      {loading && !message ? (
         <div className="loading"></div>
       ) : (
         <>
           <h2>Posts:</h2>
           <ul className="PostsList__list">
             {filteredPosts.length > 0
-              ? filteredPosts.map((post: any) => (
-                <li className="PostsList__item" key={post.id}>
-                  <div className="PostsList__item-content">
-                    <h3>{post.title}</h3>
-                    <p>{post.body}</p>
-                  </div>
-                  {postId !== post.id ? (
-                    <button
-                      type="button"
-                      className="PostsList__button button"
-                      onClick={() => {
-                        dispatch(setPostId(post.id))
-                      }}
-                    >
-                      Open
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="PostsList__button button button--active"
-                      onClick={() => {
-                        dispatch(setPostId(0));
-                        dispatch(setPostComments(null));
-                      }}
-                    >
-                      Close
-                    </button>
-                  )}
-                </li>
-              )) : (
+              ? filteredPosts.map((post: any) => {
+                return (
+                  <li className="PostsList__item" key={post.id}>
+                    <PostItem {...post} />
+                  </li>
+                )
+              }) : (
                 <p className="info">Posts list is empty.</p>
               )}
           </ul>
@@ -87,4 +66,4 @@ export const PostsList: React.FC = () => {
       )}
     </div>
   );
-};
+});

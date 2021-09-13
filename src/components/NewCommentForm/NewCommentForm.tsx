@@ -6,7 +6,7 @@ import { NewComment, CommentFields } from '../../types';
 import { useForm } from '../../helpers/useForm';
 
 import { getPostCommentEdit } from '../../store/index';
-import { addComment, setCommentsEdit, editComment, setCommentsUpdated } from '../../store/commentsReducer';
+import { addComment, setCommentsEdit, updateComment, setCommentsUpdated } from '../../store/commentsReducer';
 
 interface NewCommentFormProps {
   postId: number;
@@ -18,6 +18,13 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
   const commentEdit = useSelector(getPostCommentEdit);
   const dispatch = useDispatch();
 
+  const initialValues: NewComment = {
+    name: (commentEdit && commentEdit.name ? commentEdit.name : ''),
+    email: (commentEdit && commentEdit.email ? commentEdit.email : ''),
+    body: (commentEdit && commentEdit.body ? commentEdit.body : ''),
+    postId: postId,
+  };
+
   useEffect(() => {
     if (commentEdit) {
       formData.name = commentEdit.name;
@@ -25,6 +32,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
       formData.body = commentEdit.body;
     } else {
       resetForm();
+      resetData();
     }
   }, [postId, commentEdit]);
 
@@ -32,9 +40,12 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
     handleSubmit,
     handleChange,
     handleTextareaChange,
+    resetData,
+    isEditing,
     data: formData,
     errors
   } = useForm<CommentFields>({
+    editing: !!commentEdit,
     validations: {
       name: {
         pattern: {
@@ -65,7 +76,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
       }
 
       if (commentEdit) {
-        editCommentHandler(newCommentFields);
+        updateCommentHandler(newCommentFields);
       } else {
         addCommentHandler(newCommentFields);
       }
@@ -74,26 +85,22 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
     },
   });
 
-  const initialValues: NewComment = {
-    name: '',
-    email: '',
-    body: '',
-    postId: postId,
-  };
-
   const resetForm = () => {
     formData.name = '';
     formData.email = '';
     formData.body = '';
+    initialValues.name = '';
+    initialValues.email = '';
+    initialValues.body = '';
   };
 
-  const editCommentHandler = async (comment: NewComment) => {
+  const updateCommentHandler = async (comment: NewComment) => {
     const newComment = {
       ...comment,
       id: commentEdit.id,
     };
 
-    await editComment(commentEdit.id, newComment);
+    await updateComment(commentEdit.id, newComment);
     dispatch(setCommentsUpdated(true));
   };
 
@@ -125,7 +132,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={formData.name || ''}
+          value={formData.name || initialValues.name}
           onChange={handleChange('name')}
           required
         />
@@ -138,7 +145,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={formData.email || ''}
+          value={formData.email || initialValues.email}
           onChange={handleChange('email')}
         />
         {errors.email && <p className="NewCommentForm__error">{errors.email}</p>}
@@ -149,7 +156,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
           name="body"
           placeholder="Type comments here"
           className="NewCommentForm__input"
-          value={formData.body || ''}
+          value={formData.body || initialValues.body}
           required
           onChange={(ev) => {
             handleTextareaChange('body', ev.target.value);
@@ -162,7 +169,7 @@ export const NewCommentForm: React.FC<Pick<NewCommentFormProps, 'postId'>> = Rea
         type="submit"
         className="NewCommentForm__submit-button button"
       >
-        Add a comment
+        {isEditing() ? 'Update a comment' : 'Add a comment'}
       </button>
     </form>
   );

@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from 'redux';
 
 import { Comment, CommentsEdit } from '../types';
-import { getPostComments, addPostComment, removePostComment, editPostComment } from '../api/comments';
+import { getPostComments, addPostComment, removePostComment, updatePostComment } from '../api/comments';
 
 export interface RootStateComments {
   comments: Comment[] | null;
@@ -49,8 +49,8 @@ export const addComment = (comment: Comment) => {
   addPostComment(comment);
 };
 
-export const editComment = (commentId: number, comment: Comment) => {
-  editPostComment(commentId, comment);
+export const updateComment = (commentId: number, comment: Comment) => {
+  updatePostComment(commentId, comment);
 };
 
 export const removeComment = (commentId: number) => {

@@ -4,6 +4,7 @@ import { Post, PostMain, User } from '../types';
 import { getPosts, getPostDetails } from '../api/posts';
 import { getPostComments } from '../api/comments';
 import { finishLoading, startLoading } from './loading';
+import { setMessage } from './message';
 
 export type RootState = {
   posts: any,
@@ -40,6 +41,11 @@ export const fetchPosts = (
   dispatch(startLoading());
   getPosts(userId).then((res: any) => {
     dispatch(setPosts(res));
+  })
+  .catch(err => {
+    dispatch(setMessage(err));
+  })
+  .finally(() => {
     dispatch(finishLoading());
   });
 };
@@ -47,9 +53,7 @@ export const fetchPosts = (
 export const fetchPost = (
   postId: number,
 ) => (dispatch: Dispatch) => {
-  dispatch(startLoading());
   Promise.all([getPostDetails(postId), getPostComments(postId)]).then(res => {
-    dispatch(finishLoading());
     dispatch(setPost({
       ...res[0],
       commentsCount: res[1].length

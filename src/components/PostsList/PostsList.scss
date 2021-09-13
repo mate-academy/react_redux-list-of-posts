@@ -1,5 +1,14 @@
 @import '../../mixins';
 
+@keyframes anim {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .PostsList {
   width: 100%;
 
@@ -20,6 +29,7 @@
   }
 
   &__item {
+    animation: anim 1s, linear;
     display: flex;
     justify-content: space-between;
     align-items: center;

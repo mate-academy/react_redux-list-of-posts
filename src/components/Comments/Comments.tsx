@@ -56,12 +56,13 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
       });
   };
 
+  // <sub>{comment.id} post {postId}</sub>
   if (comments) {
     return (
       <ul className="PostDetails__list">
         {comments.map(comment => (
           <li className="PostDetails__list-item" key={comment.id}>
-            <span>{comment.body} <sub>{comment.id} post {postId}</sub></span>
+            <span>{comment.body}</span>
             <div>
               {commentsEdit.includes(comment.id) && (
                 <button

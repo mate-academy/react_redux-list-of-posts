@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { postsReducer } from './postsReducer';
 import { commentsReducer } from './commentsReducer';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
+import loadingReducer from './loading';
 import messageReducer, { setMessage } from './message';
 import { fetchMessage } from '../api/api';
 
@@ -47,7 +47,7 @@ export const arePostCommentsUpdated = (state: RootState) => state.commentsState.
 export const loadMessage = () => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+    // dispatch(startLoading());
 
     try {
       const message = await fetchMessage();
@@ -57,7 +57,7 @@ export const loadMessage = () => {
       dispatch(setMessage('Error occurred when loading data'));
     }
 
-    dispatch(finishLoading());
+    // dispatch(finishLoading());
   };
 };
 
