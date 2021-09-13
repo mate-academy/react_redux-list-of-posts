@@ -52,15 +52,14 @@ export const PostsList: React.FC<Props> = React.memo(({ loading, selectedUserId 
           <h2>Posts:</h2>
           <ul className="PostsList__list">
             {filteredPosts.length > 0
-              ? filteredPosts.map((post: any) => {
-                return (
-                  <li className="PostsList__item" key={post.id}>
-                    <PostItem {...post} />
-                  </li>
-                )
-              }) : (
+              ? filteredPosts.map((post: any) => (
+                <li className="PostsList__item" key={post.id}>
+                  <PostItem {...post} />
+                </li>
+              )) : (
                 <p className="info">Posts list is empty.</p>
-              )}
+              )
+            }
           </ul>
         </>
       )}
