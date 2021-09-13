@@ -10,6 +10,9 @@ export const setMessage = (message: string) => ({ type: SET_MESSAGE, message });
 const reducer = (message = '', action: AnyAction) => {
   switch (action.type) {
     case SET_MESSAGE:
+      if (typeof action.message === 'object') {
+        return action.message.message;
+      }
       return action.message;
 
     default:

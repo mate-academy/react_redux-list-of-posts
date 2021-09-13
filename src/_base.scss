@@ -1,0 +1,151 @@
+@import 'mixins';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #e9e6f2;
+  padding: 20px;
+  color: #4d457b;
+  font-family: "Roboto", sans-serif;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  &::first-letter {
+    text-transform: capitalize;
+  }
+}
+
+label,
+p {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+}
+
+input {
+  border: none;
+  color: #4d457b;
+  font-size: 16px;
+  &:focus, &:focus-within {
+    outline: none;
+  }
+}
+
+input, textarea {
+  @include placeholder() {
+    color: #575757;
+  }
+}
+
+button, select {
+  cursor: pointer;
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+select {
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #4d457b;
+  border: 1px solid #4d457b;
+  border-radius: 10px;
+}
+
+.button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 10px;
+  border: 1px solid #4d457b;
+  background-color: #4d457b;
+  color: #fff;
+  cursor: pointer;
+  transition: color 350ms, background-color 350ms, opacity 350ms;
+  &:hover {
+    opacity: 0.8;
+  }
+  &--icon {
+    padding: 2px 6px;
+    border: none;
+    background-color: transparent;
+  }
+  &--active {
+    background-color: transparent;
+    color: #4d457b;
+  }
+}
+
+.group {
+  display: inline-block;
+  &--left {
+    margin-right: 20px;
+  }
+}
+
+.alert {
+  position: fixed;
+  bottom: 0;
+  right: 38px;
+  padding: 12px 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #4d457b;
+  color: #fff;
+  &--error {
+    background-color: #ce1126;
+  }
+}
+
+.info {
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  margin-left: calc(50% - 30px);
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+}
+.loading:after {
+  content: " ";
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 6px solid #4d457b;
+  border-color: #4d457b transparent transparent transparent;
+  animation: loading 1.2s linear infinite;
+}
+
+@include md {
+  input {
+    margin-right: 20px;
+  }
+  h2 {
+    font-size: 1.75rem;
+  }
+}

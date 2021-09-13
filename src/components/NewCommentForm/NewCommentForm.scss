@@ -1,0 +1,32 @@
+.NewCommentForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  padding: 20px;
+
+  &__input {
+    border: none;
+    border-bottom: 1px solid #4d457b;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 10px 5px;
+    color: #4d457b;
+    width: 100%;
+    resize: vertical;
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__error {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    color: brown;
+  }
+
+  &__submit-button {
+    margin-top: 10px;
+  }
+}

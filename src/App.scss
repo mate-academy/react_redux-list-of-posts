@@ -1,0 +1,38 @@
+@import 'base';
+
+%stretch-panel {
+  flex-grow: 1;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.App {
+  &__header {
+    position: sticky;
+    padding: 10px;
+    input {
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+  }
+
+  &__main {
+    display: flex;
+    justify-content: stretch;
+    align-content: stretch;
+  }
+
+  &__sidebar {
+    @extend %stretch-panel;
+
+    flex-basis: 60%;
+  }
+
+  &__content {
+    @extend %stretch-panel;
+
+    flex-basis: 30%;
+  }
+}

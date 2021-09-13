@@ -1,41 +1,53 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, Dispatch, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
+import { postsReducer } from './postsReducer';
+import { commentsReducer } from './commentsReducer';
+
+import loadingReducer from './loading';
 import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import { fetchMessage } from '../api/api';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
+// Action types
+const SET_LOADING = 'SET_LOADING';
+
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  postsState: postsReducer,
+  commentsState: commentsReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
+// Action creators
+export const setLoading = (loading: boolean) => ({ type: SET_LOADING, value: loading });
+
+// Selectors
 export const isLoading = (state: RootState) => state.loading;
 export const getMessage = (state: RootState) => state.message;
+export const getUsersList = (state: RootState) => state.postsState.users;
+export const getSelectedUserId = (state: RootState) => state.postsState.userId;
+export const getPostId = (state: RootState) => state.postsState.selectedPostId;
+export const getPostsList = (state: RootState) => state.postsState.posts;
+export const getSelectedPostId = (state: RootState) => state.postsState.selectedPostId;
+export const getPost = (state: RootState) => state.postsState.post;
+export const getPostComments = (state: RootState) => state.commentsState.comments;
+export const getPostCommentsEdit = (state: RootState) => state.commentsState.commentsEdit;
+export const getPostCommentEdit = (state: RootState) => state.commentsState.commentEdit;
+export const arePostCommentsHidden = (state: RootState) => state.commentsState.commentsHidden;
+export const arePostCommentsUpdated = (state: RootState) => state.commentsState.commentsUpdated;
 
 /**
- * Thunk - is a function that should be used as a normal action creator
+ * Thunk
  *
  * dispatch(loadMessage())
  */
 export const loadMessage = () => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+    // dispatch(startLoading());
 
     try {
       const message = await fetchMessage();
@@ -45,7 +57,7 @@ export const loadMessage = () => {
       dispatch(setMessage('Error occurred when loading data'));
     }
 
-    dispatch(finishLoading());
+    // dispatch(finishLoading());
   };
 };
 
