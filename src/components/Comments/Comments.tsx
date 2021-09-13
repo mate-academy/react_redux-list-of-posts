@@ -56,7 +56,6 @@ export const Comments: React.FC<Props> = React.memo(({ postId }) => {
       });
   };
 
-  // <sub>{comment.id} post {postId}</sub>
   if (comments) {
     return (
       <ul className="PostDetails__list">

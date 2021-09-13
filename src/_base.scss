@@ -42,9 +42,11 @@ input {
   &:focus, &:focus-within {
     outline: none;
   }
+}
 
+input, textarea {
   @include placeholder() {
-    color: #4d457b;
+    color: #575757;
   }
 }
 
