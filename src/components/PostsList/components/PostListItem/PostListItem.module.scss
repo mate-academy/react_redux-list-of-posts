@@ -1,0 +1,28 @@
+.post {
+  list-style-type: none;
+  padding: 6px  24px;
+  border: 1px solid #e8eaf6;
+  border-radius: 20px;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  column-gap: 10px;
+  align-items: center;
+
+  // &__left {}
+
+  // &__right {}
+}
+
+.postTitle {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.postBody {
+  font-size: 14px;
+}

@@ -1,0 +1,105 @@
+@import "~bootstrap/scss/bootstrap";
+
+$navbarWidth: 120px;
+
+// colors
+$blueLight: #e8eaf6;
+$blue: #3f51b5;
+
+body {
+  font-family: "Josefin Sans", sans-serif;
+  color: #000;
+}
+
+a {
+  font-style: inherit;
+  text-decoration: none;
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  padding-left: 0 ;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &__content {
+    margin-left: $navbarWidth;
+    flex: 1;
+    padding: 20px;
+
+    background-color: $blueLight;
+  }
+
+  &__navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    width: $navbarWidth;
+    background-color: $blue;
+    padding: 20px 0;
+  }
+}
+
+.logo {
+  display: block;
+  font-size: 42px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.navbar-list {
+  list-style: none;
+  padding-left: 0;
+
+  &__link {
+    padding: 5px 20px;
+    display: block;
+    cursor: pointer;
+
+    &--active {
+      background-color: $blueLight;
+      color: #000;
+
+      transition: 0.2s ease all;
+
+      &:hover {
+        color: #000;
+      }
+    }
+  }
+}
+
+.wrapper {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+.FormLoginWrapper {
+  padding: 40px;
+  height: 100vh;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+
+  form {
+    width: 100%;
+  }
+
+  label {
+    display: block;
+  }
+}
