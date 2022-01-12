@@ -1,4 +1,4 @@
-import { PostView } from '../views/postView1/PostView';
+import { PostView } from '../views/postView/PostView';
 
 export const PostsPage = () => (
   <>
