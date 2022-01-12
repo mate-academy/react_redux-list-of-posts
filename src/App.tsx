@@ -29,8 +29,8 @@ const App = () => {
         {
           isAuth ? (
             <Route path="/" element={<LayoutMain />}>
-              <Route index element={<HomePage />} />
               <Route path="posts" element={<PostsPage />} />
+              <Route index element={<HomePage />} />
               <Route path="login" element={<Navigate to="/" />} />
             </Route>
           ) : (
