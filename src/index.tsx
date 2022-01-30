@@ -1,16 +1,22 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { rootReducer } from './redux/rootReducer';
 
 import App from './App';
-import store from './store';
+
+const store = createStore(rootReducer, composeWithDevTools(
+  applyMiddleware(thunk),
+));
 
 const Root = () => (
   <Provider store={store}>
-    <BrowserRouter>
+    <Router>
       <App />
-    </BrowserRouter>
+    </Router>
   </Provider>
 );
 

@@ -1,0 +1,42 @@
+.selector {
+  width: 200px;
+  position: relative;
+
+  &__button {
+    display: flex;
+    padding: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  &__dropdown {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+
+  &__option {
+    text-align: left;
+    background-color: #fff;
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.1s;
+  }
+
+  &__button:hover,
+  &__option:hover {
+    background-color: #b8b3d2;
+    color: #fff;
+  }
+}
