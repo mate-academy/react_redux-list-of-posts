@@ -36,7 +36,9 @@ export const CommentComponent: React.FC<Props> = ({ comment, id }) => {
   };
 
   useEffect(() => {
-    setCommentText(comment.body);
+    if (comment.body) {
+      setCommentText(comment.body);
+    }
   }, [comment]);
 
   return (

@@ -4,25 +4,33 @@ import { commentCreate } from '../../redux/actions';
 import './NewComment.scss';
 
 type Props = {
-  postQuery: string
+  postQuery: string,
 };
 
 export const NewComment: React.FC<Props> = ({ postQuery }) => {
   const [error, setError] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [newComment, setNewComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+    postId: +postQuery,
+  });
+
+  const reset = () => {
+    setNewComment({
+      name: '',
+      email: '',
+      body: '',
+      postId: +postQuery,
+    });
+  };
+
+  const { name, email, body } = newComment;
+
   const dispatch = useDispatch();
 
   const handleFormSubmit = (e: any) => {
     e.preventDefault();
-
-    const newComment = {
-      postId: +postQuery,
-      name,
-      email,
-      body,
-    };
 
     if (name.trim() && email.trim() && body.trim()) {
       dispatch(commentCreate(newComment));
@@ -30,9 +38,7 @@ export const NewComment: React.FC<Props> = ({ postQuery }) => {
       setError(true);
     }
 
-    setName('');
-    setEmail('');
-    setBody('');
+    reset();
   };
 
   return (
@@ -51,7 +57,10 @@ export const NewComment: React.FC<Props> = ({ postQuery }) => {
           value={name}
           placeholder="Your name"
           required
-          onChange={({ target }) => setName(target.value)}
+          onChange={({ target }) => setNewComment({
+            ...newComment,
+            name: target.value,
+          })}
         />
       </label>
       <label
@@ -65,7 +74,10 @@ export const NewComment: React.FC<Props> = ({ postQuery }) => {
           value={email}
           placeholder="Your email"
           required
-          onChange={({ target }) => setEmail(target.value)}
+          onChange={({ target }) => setNewComment({
+            ...newComment,
+            email: target.value,
+          })}
         />
       </label>
       <label
@@ -78,7 +90,10 @@ export const NewComment: React.FC<Props> = ({ postQuery }) => {
           value={body}
           required
           placeholder="Type your comment"
-          onChange={({ target }) => setBody(target.value)}
+          onChange={({ target }) => setNewComment({
+            ...newComment,
+            body: target.value,
+          })}
         />
       </label>
       <button

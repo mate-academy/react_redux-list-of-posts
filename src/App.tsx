@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { postsLoad } from './redux/actions';
@@ -11,10 +11,9 @@ import './App.scss';
 
 
 const App = () => {
-  const [inputValue, setInputValue] = useState('');
   const [searchParams] = useSearchParams() || '';
   const filterQuery = searchParams.get('filterBy') || '';
-  const userQuery = searchParams.get('userId') || '';
+  const userQuery = searchParams.get('userId');
   const postQuery = searchParams.get('postId') || '';
   const navigate = useNavigate();
 
@@ -25,23 +24,26 @@ const App = () => {
   });
 
   const dispatch = useDispatch();
+  const selectedPost = posts.find(post => post.id === +postQuery);
 
   useEffect(() => {
-    dispatch(postsLoad());
-  }, []);
+    if (userQuery) {
+      dispatch(postsLoad(+userQuery));
+    } else {
+      dispatch(postsLoad());
+    }
+  }, [userQuery, dispatch]);
 
-  const filterUserCallback = (post: Post) => {
-    if (+userQuery) {
-      return post.userId === +userQuery;
+  const getFilteredPosts = useMemo(() => {
+    if (filterQuery) {
+      return posts.filter(post => post.title.toLowerCase().includes(filterQuery.toLowerCase()));
     }
 
-    return true;
-  };
+    return posts;
+  }, [posts, filterQuery]);
 
   const handleInputFilterChange = (e: any) => {
-    setInputValue(e.target.value);
-
-    if (e.target.value.trim()) {
+    if (e.target.value.trim().length > 0) {
       searchParams.set('filterBy', e.target.value);
     } else {
       searchParams.delete('filterBy');
@@ -58,7 +60,7 @@ const App = () => {
           className="App__header-filter"
           type="text"
           placeholder="enter a search term"
-          value={inputValue}
+          value={filterQuery}
           onChange={handleInputFilterChange}
         />
         <UserSelector
@@ -71,25 +73,24 @@ const App = () => {
           <div className="PostList">
             <h2>Posts:</h2>
             <ul className="PostList__list">
-              {posts?.filter(post => (
-                filterUserCallback(post)
-                && post.title.toLowerCase().includes(filterQuery.toLowerCase())
-              )).map(post => (
-                <PostList
-                  key={post.id}
-                  post={post}
-                  searchParams={searchParams}
-                  postQuery={postQuery}
-                />
-              ))}
+              {getFilteredPosts.length > 0
+                && getFilteredPosts.map(post => (
+                  <PostList
+                    key={post.id}
+                    post={post}
+                    searchParams={searchParams}
+                    postQuery={postQuery}
+                  />
+                ))}
             </ul>
           </div>
         </div>
 
-        {postQuery && (
+        {}
+        {selectedPost && (
           <PostInfo
             postQuery={postQuery}
-            posts={posts}
+            post={selectedPost}
           />
         )}
       </section>

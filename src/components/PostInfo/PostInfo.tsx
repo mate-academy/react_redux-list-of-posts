@@ -5,16 +5,16 @@ import './PostInfo.scss';
 
 type Props = {
   postQuery: string,
-  posts: Post[],
+  post: Post,
 };
 
-export const PostInfo: React.FC<Props> = ({ postQuery, posts }) => {
+export const PostInfo: React.FC<Props> = ({ postQuery, post }) => {
   return (
     <div className="App__content">
       <div className="PostDetails">
         <h2>Post details:</h2>
-        <div className="PostDetails__post">{(posts.find(a => a.id === +postQuery))?.body}</div>
-        {postQuery && <CommentsList id={(posts.find(a => a.id === +postQuery))?.id} />}
+        <div className="PostDetails__post">{post.body}</div>
+        <CommentsList id={post.id} />
         <div className="PostDetails__form-wrapper">
           <NewComment postQuery={postQuery} />
         </div>

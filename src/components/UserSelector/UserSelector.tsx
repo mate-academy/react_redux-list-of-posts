@@ -45,12 +45,21 @@ export const UserSelector: React.FC<Props> = ({ searchParams }) => {
       <button
         type="button"
         className="selector__button"
-        onClick={() => handleSelectChange('')}
+        onClick={() => setIsActive(!isActive)}
       >
-        Select all users
+        Choose user
         <p>&#9660;</p>
       </button>
       <div className="selector__dropdown">
+        {(isActive && users) && (
+          <button
+            className="selector__option"
+            type="button"
+            onClick={() => handleSelectChange('')}
+          >
+            Select all users
+          </button>
+        )}
         {(isActive && users) && users.map(user => (
           <button
             className="selector__option"

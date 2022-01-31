@@ -8,9 +8,17 @@ import {
 } from './types';
 import { Comment } from '../Types/Comment';
 
-export function postsLoad(): (dispatch: any) => Promise<void> {
+const getPosts = (id?: number) => {
+  if (id) {
+    return fetch(`https://mate.academy/students-api/posts?userId=${id}`);
+  }
+
+  return fetch('https://mate.academy/students-api/posts');
+};
+
+export function postsLoad(id?: number): (dispatch: any) => Promise<void> {
   return async dispatch => {
-    const response = await fetch('https://mate.academy/students-api/posts');
+    const response = await getPosts(id);
     const jsonData = await response.json();
 
     dispatch({
