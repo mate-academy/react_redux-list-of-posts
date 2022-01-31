@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #eee;
+}
+
+.App {
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.rightSideBar {
+  background-color: #fff;
+  height: max-content;
+  border-radius: 6px;
+  position: sticky;
+  top: 40px;
+}

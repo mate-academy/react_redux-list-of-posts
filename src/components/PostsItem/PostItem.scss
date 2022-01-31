@@ -1,0 +1,11 @@
+.card {
+  width: 800px;
+  position: relative;
+}
+
+.open-post-info {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 25px;
+}
