@@ -1,57 +1,70 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+const LOAD_POSTS = 'LOAD_POSTS';
+const LOAD_USERS = 'LOAD_USERS';
+const SET_USER_ID = 'SET_USER_ID';
+const SET_POST_ID = 'SET_POST_ID';
+const LOAD_SELECTED_POST = 'LOAD_SELECTED_POST';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+export type State = {
+  posts: Post[],
+  users: User[],
+  selectedUserId: 0,
+  selectedPostId: 0,
+  selectedPost: Post,
 };
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
-);
+const defaultState: State = {
+  posts: [],
+  users: [],
+  selectedUserId: 0,
+  selectedPostId: 0,
+  selectedPost: {
+    id: 0,
+    userId: 0,
+    title: '',
+    body: '',
+  },
+};
+
+const reducer = (state = defaultState, action: any): State => {
+  switch (action.type) {
+    case LOAD_POSTS:
+      return {
+        ...state,
+        posts: [...action.payLoad],
+      };
+
+    case LOAD_SELECTED_POST:
+      return { ...state, selectedPost: { ...action.payLoad } };
+
+    case LOAD_USERS:
+      return {
+        ...state,
+        users: [...action.payLoad],
+      };
+
+    case SET_POST_ID:
+      return { ...state, selectedPostId: action.payLoad };
+
+    case SET_USER_ID:
+      return { ...state, selectedUserId: action.payLoad };
+
+    default:
+      return { ...state };
+  }
+};
+
+export const addPostsAction = (payLoad: Post[]) => ({ type: LOAD_POSTS, payLoad });
+export const addUsersAction = (payLoad: User[]) => ({ type: LOAD_USERS, payLoad });
+export const loadSelectedPostAction = (payLoad: Post) => ({ type: LOAD_SELECTED_POST, payLoad });
+export const selectUserIdAction = (payLoad: number) => ({ type: SET_USER_ID, payLoad });
+export const selectPostIdAction = (payLoad: number) => ({ type: SET_POST_ID, payLoad });
+
+const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 export default store;
