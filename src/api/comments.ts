@@ -1,26 +1,16 @@
 /* eslint-disable @typescript-eslint/quotes */
 import { Comment } from '../types/Comment';
 
-export function getCommentsOfPost(id: number): Promise<Comment[]> {
-  return fetch(`https://mate.academy/students-api/comments?postId=${id}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('error');
-      }
+export async function getCommentsOfPost(id: number): Promise<Comment[]> {
+  const response = await fetch(`https://mate.academy/students-api/comments?postId=${id}`);
 
-      return response.json();
-    });
+  return response.json();
 }
 
-export function deleteComment(id: number): Promise<Comment> {
-  return fetch(`https://mate.academy/students-api/comments/${id}`, { method: 'DELETE' })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('error');
-      }
+export async function deleteComment(id: number): Promise<Comment> {
+  const response = await fetch(`https://mate.academy/students-api/comments/${id}`, { method: 'DELETE' });
 
-      return response.json();
-    });
+  return response.json();
 }
 
 export async function createComment(

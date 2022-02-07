@@ -7,13 +7,13 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { State } from '../../store';
 
-type Props = {
-  selectedPostId: number,
-};
-
-export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
-  const selectedPost = useSelector((state: State) => state.selectedPost);
+export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
+
+  const selectedPost = useSelector((state: State) => state.selectedPost);
+
+  const selectedPostId = useSelector((state: State) => state.selectedPostId);
+
   const [commentsOfPost, setComments] = useState<Comment[]>([{
     id: 0,
     postId: 0,
@@ -85,7 +85,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             getPostComments={getPostComments}
-            postId={selectedPostId}
           />
         </div>
       </section>

@@ -1,16 +1,12 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { selectPostIdAction } from '../../store';
-import { Post } from '../../types/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectPostIdAction, State } from '../../store';
 import './PostsList.scss';
 
-type Props = {
-  posts: Post[],
-  selectedPostId: number,
-};
-
-export const PostsList: React.FC<Props> = ({ posts, selectedPostId }) => {
+export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
+  const posts = useSelector((state: State) => state.posts);
+  const selectedPostId = useSelector((state: State) => state.selectedPostId);
 
   return (
     <div className="PostsList">

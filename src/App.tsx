@@ -1,26 +1,36 @@
 import './App.scss';
 import './styles/general.scss';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { selectUserIdAction, State } from './store';
 import { getPosts, getUsers } from './api/posts';
 import { PostDetails } from './components/PostDetails';
-// import { PostDetails } from './components/PostDetails';
-// import { getPosts, getUsers } from './api/posts';
-// import { User } from './types/User';
-// import { Post } from './types/Post';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  const posts = useSelector((state: State) => state.posts);
+
   const users = useSelector((state: State) => state.users);
+
   const selectedUserId = useSelector((state: State) => state.selectedUserId);
+
   const selectedPostId = useSelector((state: State) => state.selectedPostId);
+
   const [isStart, setIsStart] = useState(false);
 
-  // eslint-disable-next-line no-console
-  console.log(posts, users);
+  const selectUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(selectUserIdAction(+event.target.value));
+  };
+
+  const startApp = () => {
+    setIsStart(true);
+    dispatch(getPosts(0));
+    dispatch(getUsers());
+  };
+
+  useEffect(() => {
+    dispatch(getPosts(selectedUserId));
+  }, [selectedUserId]);
 
   return (isStart ? (
     <div className="App">
@@ -31,10 +41,7 @@ const App: React.FC = () => {
           <select
             id="select"
             className="App__user-selector"
-            onChange={(event) => {
-              dispatch(selectUserIdAction(+event.target.value));
-              dispatch(getPosts(selectedUserId));
-            }}
+            onChange={selectUser}
           >
             <option value={0}>All users</option>
             {users.map(user => (
@@ -46,15 +53,12 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            posts={posts}
-            selectedPostId={selectedPostId}
-          />
+          <PostsList />
         </div>
 
         <div className="App__content">
           {selectedPostId !== 0 && (
-            <PostDetails selectedPostId={selectedPostId} />
+            <PostDetails />
           )}
         </div>
       </main>
@@ -63,11 +67,7 @@ const App: React.FC = () => {
     <button
       className="start__button"
       type="button"
-      onClick={() => {
-        setIsStart(true);
-        dispatch(getPosts(selectedUserId));
-        dispatch(getUsers());
-      }}
+      onClick={startApp}
     >
       Start
     </button>

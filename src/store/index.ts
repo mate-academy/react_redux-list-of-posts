@@ -34,36 +34,30 @@ const defaultState: State = {
 const reducer = (state = defaultState, action: any): State => {
   switch (action.type) {
     case LOAD_POSTS:
-      return {
-        ...state,
-        posts: [...action.payLoad],
-      };
+      return { ...state, posts: [...action.value] };
 
     case LOAD_SELECTED_POST:
-      return { ...state, selectedPost: { ...action.payLoad } };
+      return { ...state, selectedPost: { ...action.value } };
 
     case LOAD_USERS:
-      return {
-        ...state,
-        users: [...action.payLoad],
-      };
+      return { ...state, users: [...action.value] };
 
     case SET_POST_ID:
-      return { ...state, selectedPostId: action.payLoad };
+      return { ...state, selectedPostId: action.value };
 
     case SET_USER_ID:
-      return { ...state, selectedUserId: action.payLoad };
+      return { ...state, selectedUserId: action.value };
 
     default:
       return { ...state };
   }
 };
 
-export const addPostsAction = (payLoad: Post[]) => ({ type: LOAD_POSTS, payLoad });
-export const addUsersAction = (payLoad: User[]) => ({ type: LOAD_USERS, payLoad });
-export const loadSelectedPostAction = (payLoad: Post) => ({ type: LOAD_SELECTED_POST, payLoad });
-export const selectUserIdAction = (payLoad: number) => ({ type: SET_USER_ID, payLoad });
-export const selectPostIdAction = (payLoad: number) => ({ type: SET_POST_ID, payLoad });
+export const addPostsAction = (value: Post[]) => ({ type: LOAD_POSTS, value });
+export const addUsersAction = (value: User[]) => ({ type: LOAD_USERS, value });
+export const loadSelectedPostAction = (value: Post) => ({ type: LOAD_SELECTED_POST, value });
+export const selectUserIdAction = (value: number) => ({ type: SET_USER_ID, value });
+export const selectPostIdAction = (value: number) => ({ type: SET_POST_ID, value });
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 

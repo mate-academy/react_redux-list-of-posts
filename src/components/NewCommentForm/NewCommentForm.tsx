@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { createComment } from '../../api/comments';
+import { State } from '../../store';
 import './NewCommentForm.scss';
 
 type Props = {
   getPostComments: () => void;
-  postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ getPostComments, postId }) => {
+export const NewCommentForm: React.FC<Props> = ({ getPostComments }) => {
   const [body, setBody] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const selectedPostId = useSelector((state: State) => state.selectedPostId);
+
   const createCommentForPost = async (event: React.FormEvent) => {
     event.preventDefault();
-    await createComment(postId, name, email, body);
+    await createComment(selectedPostId, name, email, body);
     getPostComments();
     setBody('');
     setEmail('');
