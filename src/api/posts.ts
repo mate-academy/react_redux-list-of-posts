@@ -24,6 +24,12 @@ export function getPosts(userId: number) {
   };
 }
 
+export function deleteTodo(postId: number) {
+  return fetch(`https://mate.academy/students-api/posts/${postId}`, {
+    method: 'DELETE',
+  });
+}
+
 export function getSelectedPost(id: number) {
   return function (dispatch: any) {
     fetch(`https://mate.academy/students-api/posts/${id}`)

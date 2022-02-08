@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { deleteTodo, getPosts } from '../../api/posts';
 import { selectPostIdAction, State } from '../../store';
 import './PostsList.scss';
 
@@ -8,6 +9,11 @@ export const PostsList: React.FC = () => {
   const posts = useSelector((state: State) => state.posts);
   const selectedPostId = useSelector((state: State) => state.selectedPostId);
 
+  const removePost = async (id: number) => {
+    await deleteTodo(id);
+    dispatch(getPosts(0));
+  };
+
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -15,6 +21,13 @@ export const PostsList: React.FC = () => {
       <ul className="PostsList__list">
         {posts.map(post => (
           <li key={post.id} className="PostsList__item">
+            <button
+              onClick={() => removePost(post.id)}
+              type="button"
+              className="PostsList__button button"
+            >
+              Remove
+            </button>
             <div>
               <b>{`User #${post.userId}:`}</b>
               {post.title}
