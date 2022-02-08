@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTodo, getPosts } from '../../api/posts';
+import { deletePost, getPosts } from '../../api/posts';
 import { selectPostIdAction, State } from '../../store';
 import './PostsList.scss';
 
@@ -10,7 +10,7 @@ export const PostsList: React.FC = () => {
   const selectedPostId = useSelector((state: State) => state.selectedPostId);
 
   const removePost = async (id: number) => {
-    await deleteTodo(id);
+    await deletePost(id);
     dispatch(getPosts(0));
   };
 
