@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
+import { deletePost } from '../../store/reducers/postReducer';
 import { PostActionTypes } from '../../store/types/post';
 import { Loader } from '../Loader';
 import './PostsList.scss';
@@ -17,6 +18,10 @@ export const PostsList: React.FC = () => {
     }
   };
 
+  const handleDeletePost = (postId: number) => {
+    dispatch(deletePost(postId));
+  };
+
   if (isLoadingPosts) {
     return (
       <Loader />
@@ -31,6 +36,12 @@ export const PostsList: React.FC = () => {
         {
           posts.map(post => (
             <li className="PostsList__item" key={post.id}>
+              <button
+                type="button"
+                onClick={() => handleDeletePost(post.id)}
+              >
+                X
+              </button>
               <div>
                 <b>{`[User #${post.userId}]: `}</b>
                 {post.title}

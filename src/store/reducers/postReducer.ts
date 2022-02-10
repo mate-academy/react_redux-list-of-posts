@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import { PostAction, PostActionTypes, PostState } from '../types/post';
-import { getPostDetails, getPosts } from '../../api/posts';
+import { deleteOnePost, getPostDetails, getPosts } from '../../api/posts';
 
 const initialState: PostState = {
   posts: [],
@@ -22,6 +22,8 @@ export const postReducer = (state = initialState, action: PostAction): PostState
       return { ...state, isLoadingPost: true };
     case PostActionTypes.LOADING_POST_SUCCESS:
       return { ...state, selectedPost: action.payload, isLoadingPost: false };
+    case PostActionTypes.DELETE_POST:
+      return { ...state, posts: [...state.posts.filter(post => post.id !== action.payload)] };
     default:
       return state;
   }
@@ -47,5 +49,13 @@ export const loadPost = (postId: number) => {
     const post = await getPostDetails(postId);
 
     dispatch({ type: PostActionTypes.LOADING_POST_SUCCESS, payload: post });
+  };
+};
+
+export const deletePost = (postId: number) => {
+  return async (dispatch: Dispatch<PostAction>) => {
+    await deleteOnePost(postId);
+
+    dispatch({ type: PostActionTypes.DELETE_POST, payload: postId });
   };
 };

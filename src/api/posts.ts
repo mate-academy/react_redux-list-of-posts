@@ -13,3 +13,9 @@ export const getPosts = (userId: number) => {
 export const getPostDetails = (postId: number) => {
   return request<Post>(`posts/${postId}`);
 };
+
+export const deleteOnePost = (postId: number) => {
+  return request<Post>(`posts/${postId}`, {
+    method: 'DELETE',
+  });
+};

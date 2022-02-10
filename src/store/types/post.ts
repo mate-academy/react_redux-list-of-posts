@@ -12,6 +12,7 @@ export enum PostActionTypes {
   CHANGE_POSTID = 'CHANGE_POSTID',
   LOADING_POST = 'LOADING_POST',
   LOADING_POST_SUCCESS = 'LOADING_POST_SUCCESS',
+  DELETE_POST = 'DELETE_POST',
 }
 
 export interface LoadingPostsAction {
@@ -32,10 +33,15 @@ export interface LoadingPostSuccessAction {
   type: PostActionTypes.LOADING_POST_SUCCESS,
   payload: Post,
 }
+export interface DeletePostAction {
+  type: PostActionTypes.DELETE_POST,
+  payload: number,
+}
 
 export type PostAction =
   LoadingPostsSuccessAction
   | LoadingPostsAction
   | ChangePostIdAction
   | LoadingPostAction
-  | LoadingPostSuccessAction;
+  | LoadingPostSuccessAction
+  | DeletePostAction;
