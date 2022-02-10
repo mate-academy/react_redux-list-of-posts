@@ -1,21 +1,30 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-
 import './App.scss';
-import { Start } from './components/Start';
+import { PostDetails } from './components/PostDetails';
+import { PostsList } from './components/PostsList';
+import { UserSelect } from './components/UserSelect';
+import { useTypedSelector } from './hooks/useTypedSelector';
 
-import { isLoading, getMessage } from './store';
-
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+const App: React.FC = () => {
+  const { selectedPostId } = useTypedSelector(state => state.post);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <UserSelect />
+      </header>
 
-      <Start />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId
+            ? <PostDetails />
+            : <p>Select a post</p>}
+        </div>
+      </main>
     </div>
   );
 };
