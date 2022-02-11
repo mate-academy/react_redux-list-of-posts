@@ -7,23 +7,26 @@ import { setSelectedPostId } from '../../store/postsListSlice';
 import './PostsList.scss';
 
 export const PostsList = () => {
-  const postsListSlice = useSelector((state: PostsState) => state.postsListSlice);
+  const {
+    selectedUserId,
+    selectedPostId,
+    posts,
+  } = useSelector((state: PostsState) => state.postsListSlice);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPostsFromServer());
+    dispatch(getPostsFromServer(selectedUserId));
   }, []);
 
   const handleOpenPost = (event: React.MouseEvent<HTMLButtonElement>) => {
     dispatch(setSelectedPostId(+event.currentTarget.name));
   };
 
-  return (
-    <div className="PostsList">
-      <h2>Posts:</h2>
-
-      <ul className="PostsList__list">
-        {postsListSlice.posts.map(post => (
+  const getVisiblePosts = () => {
+    if (posts.length !== 0) {
+      return (
+        posts.map(post => (
           <li className="PostsList__item" key={post.id}>
             <div>
               <b>{`[User #${post.userId}]: `}</b>
@@ -34,7 +37,7 @@ export const PostsList = () => {
               className={classNames(
                 'PostsList__button',
                 'button',
-                // { 'PostsList__button--opened': selectedPostId === post.id },
+                { 'PostsList__button--opened': selectedPostId === post.id },
               )}
               name={String(post.id)}
               onClick={handleOpenPost}
@@ -42,7 +45,19 @@ export const PostsList = () => {
               Open
             </button>
           </li>
-        ))}
+        ))
+      );
+    }
+
+    return (<span>This user does not have posts yet</span>);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {getVisiblePosts()}
       </ul>
     </div>
   );

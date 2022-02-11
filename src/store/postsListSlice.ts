@@ -2,10 +2,12 @@ import { AnyAction } from 'redux';
 // Action types
 const SET_POSTS = 'SET_POSTS';
 const SET_SELECTED_POST_ID = 'SET_SELECTED_POST_ID';
+const SET_SELECTED_USER_ID = 'SET_SELECTED_USER_ID';
 
 // Action creators
 export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, payload: posts });
 export const setSelectedPostId = (id: number) => ({ type: SET_SELECTED_POST_ID, payload: id });
+export const setSelectedUserId = (id: number) => ({ type: SET_SELECTED_USER_ID, payload: id });
 
 const initialState: PostsListSlice = {
   posts: [{
@@ -17,6 +19,7 @@ const initialState: PostsListSlice = {
     updatedAt: '',
   }],
   selectedPostId: 0,
+  selectedUserId: 0,
 };
 
 const postsReducer = (state = initialState, action: AnyAction) => {
@@ -31,6 +34,12 @@ const postsReducer = (state = initialState, action: AnyAction) => {
       return {
         ...state,
         selectedPostId: action.payload,
+      };
+
+    case SET_SELECTED_USER_ID:
+      return {
+        ...state,
+        selectedUserId: action.payload,
       };
 
     default:

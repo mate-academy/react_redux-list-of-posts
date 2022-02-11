@@ -1,11 +1,33 @@
-export const Header = () => {
-  // const handleUserSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   if (+event.target.value !== selectedUserId) {
-  //     setSelectedUserId(+event.target.value);
-  //   }
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getPostsFromServer } from '../../store/index';
+import { setSelectedUserId, setSelectedPostId } from '../../store/postsListSlice';
+import { getUsersList } from '../../api/users';
 
-  //   setSelectedPostId(0);
-  // };
+export const Header = () => {
+  const dispatch = useDispatch();
+  const selectedUserId = useSelector((state: PostsState) => state.postsListSlice.selectedUserId);
+
+  const handleUserSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (+event.target.value !== selectedUserId) {
+      dispatch(setSelectedUserId(+event.target.value));
+      dispatch(getPostsFromServer(+event.target.value));
+    }
+
+    dispatch(setSelectedPostId(0));
+  };
+
+  const [users, setUsers] = useState([]);
+
+  const getUsersFromServer = async () => {
+    const usersFromServer = await getUsersList();
+
+    setUsers(usersFromServer);
+  };
+
+  useEffect(() => {
+    getUsersFromServer();
+  }, [users]);
 
   return (
     <header className="App__header">
@@ -14,20 +36,16 @@ export const Header = () => {
         <select
           className="App__user-selector"
           id="select"
-          // value={selectedUserId}
-          // onChange={handleUserSelect}
+          value={selectedUserId}
+          onChange={handleUserSelect}
         >
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
+          {users.map(
+            (user) => {
+              const { id, name } = user;
+
+              return (<option value={id}>{name}</option>);
+            },
+          )}
         </select>
       </label>
     </header>

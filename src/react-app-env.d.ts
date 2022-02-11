@@ -13,6 +13,7 @@ interface Post {
 interface PostsListSlice {
   posts: Post[];
   selectedPostId: number;
+  selectedUserId: number;
 }
 
 interface PostsState {
