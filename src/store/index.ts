@@ -3,9 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+// import loadingReducer, { finishLoading, startLoading } from './loading';
+// import messageReducer, { setMessage } from './message';
+// import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './postsListSlice';
+
+import { getUserPosts } from '../api/posts';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -16,36 +19,37 @@ import { fetchMessage } from '../helpers/api';
  * })
  */
 const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
+  postsListSlice: postsReducer,
 });
 
 // We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+// export type RootState = ReturnType<typeof rootReducer>;
 
 // Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+// export const isLoading = (state: RootState) => state.loading;
+// export const getMessage = (state: RootState) => state.message;
 
 /**
  * Thunk - is a function that should be used as a normal action creator
  *
  * dispatch(loadMessage())
  */
-export const loadMessage = () => {
+export const getPostsFromServer = () => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
     try {
-      const message = await fetchMessage();
+      // eslint-disable-next-line no-console
+      console.log('loading posts');
+      const posts = await getUserPosts();
 
-      dispatch(setMessage(message));
+      // eslint-disable-next-line no-console
+      console.log('loadED posts');
+
+      dispatch(setPosts(posts));
     } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
+      // eslint-disable-next-line no-console
+      console.log('error loading posts');
     }
-
-    dispatch(finishLoading());
   };
 };
 
