@@ -1,75 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-// import { NewCommentForm } from '../NewCommentForm';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getPostDetailsFromServer, getCommentsFromServer } from '../../store/index';
+import { NewCommentForm } from '../NewCommentForm';
+// import { Loader } from '../Loader';
 import './PostDetails.scss';
-// import { getPostDetails } from '../../api/posts';
-// import { getPostComments, deleteComment } from '../../api/comments';
 
-// type Props = {
-//   selectedPostId: number;
-// };
+import { deleteComment } from '../../api/comments';
 
 export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch();
   const selectedPostId = useSelector((state: PostsState) => state.postsListSlice.selectedPostId);
-  // const { selectedPostId } = props;
-  // const [post, setPost] = useState<Post>();
-  // const [comments, setComments] = useState<Comment[]>();
-  // const [commentsVisible, setCommentsVisible] = useState(false);
+  const selectedPostDetails = useSelector((state: PostsState) => state.postDetailsSlice);
+  const comments = useSelector((state: PostsState) => state.commentsSlice.comments);
 
-  // const getPostDetailsFromServer = async () => {
-  //   const postDetailsFromServer = await getPostDetails(selectedPostId);
-
-  //   setPost(postDetailsFromServer);
-  // };
-
-  // const getCommentsFromServer = async () => {
-  //   const commentsFromServer = await getPostComments(selectedPostId);
-
-  //   setComments(commentsFromServer);
-  // };
+  const [commentsVisible, setCommentsVisible] = useState(false);
 
   useEffect(() => {
-    // getPostDetailsFromServer();
-    // getCommentsFromServer();
-    console.log(selectedPostId)
+    dispatch(getPostDetailsFromServer(selectedPostId));
+    dispatch(getCommentsFromServer(selectedPostId));
   }, [selectedPostId]);
 
-  // const toggleComments = () => {
-  //   setCommentsVisible(!commentsVisible);
-  // };
+  const toggleComments = () => {
+    setCommentsVisible(!commentsVisible);
+  };
 
-  // const getCommentsButton = () => {
-  //   if (comments && comments.length > 0) {
-  //     return (
-  //       <button
-  //         type="button"
-  //         className="button"
-  //         onClick={toggleComments}
-  //       >
-  //         {!commentsVisible
-  //           ? `Show ${comments.length} comments`
-  //           : `Hide ${comments.length} comments`}
-  //       </button>
-  //     );
-  //   }
+  const getCommentsButton = () => {
+    if (comments && comments.length > 0) {
+      return (
+        <button
+          type="button"
+          className="button"
+          onClick={toggleComments}
+        >
+          {!commentsVisible
+            ? `Show ${comments.length} comments`
+            : `Hide ${comments.length} comments`}
+        </button>
+      );
+    }
 
-  //   return (
-  //     <span>No comments found</span>
-  //   );
-  // };
+    return (
+      <span>No comments found</span>
+    );
+  };
 
-  // const deleteHandler = async (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   await deleteComment(event.currentTarget.name);
-  //   await getCommentsFromServer();
-  // };
+  const deleteHandler = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    await deleteComment(event.currentTarget.name);
+    dispatch(getCommentsFromServer(selectedPostId));
+  };
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-      {/* {selectedPostId !== 0 ? (
+      {selectedPostId !== 0 ? (
         <>
           <section className="PostDetails__post">
-            <p>{post && post.title}</p>
+            <p>{selectedPostDetails && selectedPostDetails.title}</p>
           </section>
 
           <section className="PostDetails__comments">
@@ -94,15 +80,10 @@ export const PostDetails: React.FC = () => {
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm postId={selectedPostId} updateComments={getCommentsFromServer} />
+              <NewCommentForm />
             </div>
           </section>
         </>
-      ) : (
-        <span>Please select a post to see details</span>
-      )} */}
-      {selectedPostId !== 0 ? (
-        <span>123</span>
       ) : (
         <span>Please select a post to see details</span>
       )}
