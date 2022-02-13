@@ -1,52 +1,42 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, AnyAction } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import {
+  POST_ID,
+  USER_ID,
+  LOAD_POSTS,
+  LOAD_COMMENTS,
+  LOAD_POST_DETAIL,
+} from './actions';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+const initialState: RootState = {
+  posts: [],
+  userId: 0,
+  comments: [],
+  postDetails: null,
+  selectedPostId: 0,
+};
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
+const rootReducer = (state = initialState, action: AnyAction) => {
+  switch (action.type) {
+    case LOAD_POSTS:
+      return { ...state, posts: action.payload };
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+    case USER_ID:
+      return { ...state, userId: action.payload };
 
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+    case LOAD_COMMENTS:
+      return { ...state, comments: action.payload };
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+    case LOAD_POST_DETAIL:
+      return { ...state, postDetails: action.payload };
 
-    try {
-      const message = await fetchMessage();
+    case POST_ID:
+      return { ...state, selectedPostId: action.payload };
 
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+    default:
+      return state;
+  }
 };
 
 const store = createStore(
