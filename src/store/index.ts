@@ -1,57 +1,99 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import { createStore } from 'redux';
+import {
+  CHANGE_COMMENTS_VISIBILITY,
+  CHANGE_COMMENT_BODY,
+  CHANGE_EMAIL,
+  CHANGE_NAME,
+  CHANGE_POST,
+  CHANGE_USER,
+  LOAD_COMMENTS,
+  LOAD_POSTS,
+  LOAD_USERS,
+} from './actions';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
-
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+const initialState: State = {
+  posts: [],
+  userId: 0,
+  users: [],
+  postId: 0,
+  comments: [],
+  newComment: {
+    postId: 0,
+    name: '',
+    email: '',
+    body: '',
+  },
+  isCommentsHidden: false,
 };
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
-);
+const reducer = (state = initialState, action: Action) => {
+  switch (action.type) {
+    case LOAD_POSTS:
+      return {
+        ...state,
+        posts: [...action.payload],
+      };
 
-export default store;
+    case CHANGE_USER:
+      return {
+        ...state,
+        userId: action.payload,
+      };
+
+    case LOAD_USERS:
+      return {
+        ...state,
+        users: [...action.payload],
+      };
+
+    case CHANGE_POST:
+      return {
+        ...state,
+        postId: action.payload,
+      };
+
+    case LOAD_COMMENTS:
+      return {
+        ...state,
+        comments: [...action.payload],
+      };
+
+    case CHANGE_NAME:
+      return {
+        ...state,
+        newComment: {
+          ...state.newComment,
+          name: action.payload,
+        },
+      };
+
+    case CHANGE_EMAIL:
+      return {
+        ...state,
+        newComment: {
+          ...state.newComment,
+          email: action.payload,
+        },
+      };
+
+    case CHANGE_COMMENT_BODY:
+      return {
+        ...state,
+        newComment: {
+          ...state.newComment,
+          body: action.payload,
+        },
+      };
+
+    case CHANGE_COMMENTS_VISIBILITY:
+      return {
+        ...state,
+        isCommentsHidden: !action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const store = createStore(reducer);
