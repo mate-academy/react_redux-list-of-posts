@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  background-color: rgb(245, 241, 241);
+}
+.App {
+  margin: 0;
+  padding: 16px;
+
+  &__top-bar {
+    display: flex;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  &__content {
+    display: flex;
+    gap: 16px;
+  }
+}
