@@ -10,3 +10,9 @@ interface User {
   name: string,
   email: string,
 }
+
+interface PostComment {
+  id: number,
+  postId: number,
+  body: string,
+}

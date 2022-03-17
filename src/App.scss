@@ -11,4 +11,9 @@ body {
     justify-content: flex-start;
     gap: 4px;
   }
+
+  &__content {
+    display: flex;
+    gap: 16px;
+  }
 }

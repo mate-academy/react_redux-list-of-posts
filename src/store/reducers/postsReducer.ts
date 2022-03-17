@@ -5,6 +5,7 @@ const initialState: PostsState = {
   loading: false,
   error: null,
   searchQuery: '',
+  selectedPostId: null,
 };
 
 export const postsReducer = (state = initialState, action: PostsAction) => {
@@ -33,6 +34,12 @@ export const postsReducer = (state = initialState, action: PostsAction) => {
       return {
         ...state,
         searchQuery: action.payload,
+      };
+
+    case PostsActionTypes.SET_SELECTED_POST_ID:
+      return {
+        ...state,
+        selectedPostId: action.payload,
       };
 
     default:

@@ -32,3 +32,7 @@ export const fetchPosts = (selectedUserId: number | null) => {
 export const setSearchQuery = (query: string): PostsAction => {
   return ({ type: PostsActionTypes.SET_SEARCH_QUERY, payload: query });
 };
+
+export const setSelectedPostId = (postId: number | null): PostsAction => {
+  return ({ type: PostsActionTypes.SET_SELECTED_POST_ID, payload: postId });
+};

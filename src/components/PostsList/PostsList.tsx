@@ -9,9 +9,9 @@ import { useActions } from '../../hooks/useActions';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 
 export const PostsList: React.FC = () => {
-  const { posts, searchQuery } = useTypedSelector(state => state.posts);
+  const { posts, searchQuery, selectedPostId } = useTypedSelector(state => state.posts);
   const { selectedUserId } = useTypedSelector(state => state.users);
-  const { fetchPosts } = useActions();
+  const { fetchPosts, setSelectedPostId } = useActions();
 
   useEffect(() => {
     fetchPosts(selectedUserId);
@@ -25,16 +25,22 @@ export const PostsList: React.FC = () => {
     paddingRight: 2,
     marginBottom: 1,
   };
+
   const cardContentStyle = {
     display: 'flex',
     gap: 4,
   };
+
   const userIdStyle = {
     fontSize: 14,
     fontWeight: 'bold',
     color: 'black',
   };
-  const buttonStyle = { height: 36 };
+
+  const buttonStyle = {
+    height: 36,
+    width: 120,
+  };
 
   let visiblePosts: Post[];
 
@@ -56,12 +62,29 @@ export const PostsList: React.FC = () => {
               {post.title}
             </Typography>
           </CardContent>
-          <Button
-            variant="contained"
-            sx={buttonStyle}
-          >
-            View more
-          </Button>
+          {post.id === selectedPostId
+            ? (
+              <Button
+                sx={buttonStyle}
+                variant="outlined"
+                onClick={() => {
+                  setSelectedPostId(null);
+                }}
+              >
+                Close
+              </Button>
+            )
+            : (
+              <Button
+                sx={buttonStyle}
+                variant="contained"
+                onClick={() => {
+                  setSelectedPostId(post.id);
+                }}
+              >
+                View more
+              </Button>
+            )}
         </Card>
       ))}
     </div>

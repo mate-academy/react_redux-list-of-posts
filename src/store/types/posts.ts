@@ -3,6 +3,7 @@ export interface PostsState {
   loading: boolean;
   error: string | null;
   searchQuery: string;
+  selectedPostId: number | null;
 }
 
 export enum PostsActionTypes {
@@ -10,6 +11,7 @@ export enum PostsActionTypes {
   FETCH_POSTS_SUCCESS = 'FETCH_POSTS_SUCCESS',
   FETCH_POSTS_ERROR = 'FETCH_POSTS_ERROR',
   SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
+  SET_SELECTED_POST_ID = 'SET_SELECTED_POST_ID',
 }
 
 export interface FetchPostsAction {
@@ -31,8 +33,14 @@ export interface SetSearchQueryAction {
   payload: string,
 }
 
+export interface SetSelectedPostId {
+  type: PostsActionTypes.SET_SELECTED_POST_ID,
+  payload: number | null,
+}
+
 export type PostsAction =
 FetchPostsAction
 | FetchPostsSuccessAction
 | FetchPostsErrorAction
-| SetSearchQueryAction;
+| SetSearchQueryAction
+| SetSelectedPostId;
