@@ -35,7 +35,7 @@ export const PostList: React.FC = () => {
               className="PostsList__button button"
               // onClick={() => handlePostId(post.id)}
             >
-              Open
+              open
               {/* {post.id === selectedPostId ? 'Close' : 'Open'} */}
             </button>
           </li>

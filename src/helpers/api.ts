@@ -6,8 +6,14 @@ export async function fetchPosts() {
   return response.json();
 }
 
+export async function fetchUsers() {
+  const response = await fetch(`${BASE_URL}/users`);
+
+  return response.json();
+}
+
 export async function getUserPosts(userId: number) {
-  const response = await fetch(`${BASE_URL}/posts/${userId}`);
+  const response = await fetch(`${BASE_URL}/posts?userId=${userId}`);
 
   return response.json();
 }

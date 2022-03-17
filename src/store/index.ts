@@ -1,8 +1,9 @@
 import { createStore } from 'redux';
-import { LOAD_POSTS } from './actions';
+import { LOAD_POSTS, LOAD_USERS } from './actions';
 
 const initialState: State = {
   posts: [],
+  users: [],
 };
 
 const reducer = (state = initialState, action: Action) => {
@@ -12,6 +13,13 @@ const reducer = (state = initialState, action: Action) => {
         ...state,
         posts: [...action.payload],
       };
+
+    case LOAD_USERS:
+      return {
+        ...state,
+        users: [...action.payload],
+      };
+
     default:
       return state;
   }

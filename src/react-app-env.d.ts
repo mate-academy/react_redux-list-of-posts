@@ -10,11 +10,20 @@ type Post = {
   updatedAt: string,
 };
 
+type User = {
+  id: number,
+  name: string,
+  username: string,
+  email: string,
+};
+
 type State = {
   posts: Post[],
+  users: User[],
 };
 
 type Action = {
   type: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any,
 };
