@@ -1,21 +1,19 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
 import './App.scss';
-import { Start } from './components/Start';
-
-import { isLoading, getMessage } from './store';
+import { PostDetails } from './components/PosrDetails/PostDetails';
+import { PostsList } from './components/PostsList/PostsList';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
-
   return (
     <div className="App">
       <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
-
-      <Start />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };
