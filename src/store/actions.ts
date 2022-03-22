@@ -13,7 +13,7 @@ export const LoadUsersAction = (payload: User[]) => ({
   payload,
 });
 
-export const LoadPostDetailsAction = (payload: Post) => ({
+export const LoadPostDetailsAction = (payload: Post | null) => ({
   type: LOAD_POST_DETAILS,
   payload,
 });

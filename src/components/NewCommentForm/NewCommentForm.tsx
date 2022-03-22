@@ -41,6 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -52,6 +53,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -62,6 +64,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
           value={body}
           onChange={(event) => setBody(event.target.value)}
         />
