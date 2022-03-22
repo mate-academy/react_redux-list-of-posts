@@ -1,9 +1,16 @@
 import { createStore } from 'redux';
-import { LOAD_POSTS, LOAD_USERS } from './actions';
+import {
+  LOAD_POSTS,
+  LOAD_POST_COMMENTS,
+  LOAD_POST_DETAILS,
+  LOAD_USERS,
+} from './actions';
 
 const initialState: State = {
   posts: [],
   users: [],
+  postDetails: null,
+  postComments: [],
 };
 
 const reducer = (state = initialState, action: Action) => {
@@ -18,6 +25,18 @@ const reducer = (state = initialState, action: Action) => {
       return {
         ...state,
         users: [...action.payload],
+      };
+
+    case LOAD_POST_DETAILS:
+      return {
+        ...state,
+        postDetails: { ...action.payload },
+      };
+
+    case LOAD_POST_COMMENTS:
+      return {
+        ...state,
+        postComments: [...action.payload],
       };
 
     default:

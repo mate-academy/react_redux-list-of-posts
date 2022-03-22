@@ -3,6 +3,7 @@ import { PostList } from './components/PostList';
 import './styles/general.scss';
 import './App.scss';
 import { UserSelector } from './components/UserSelector';
+import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {/* <PostDetails /> */}
+          <PostDetails />
         </div>
       </main>
     </div>

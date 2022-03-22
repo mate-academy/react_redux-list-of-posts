@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPosts } from '../../helpers/api';
-import { LoadPostsAction } from '../../store/actions';
+import { fetchPosts, getPostComments, getPostDetails } from '../../helpers/api';
+import { LoadPostCommentsAction, LoadPostDetailsAction, LoadPostsAction } from '../../store/actions';
 import { getPostsSelector } from '../../store/selectors';
 import './PostList.scss';
 
@@ -20,6 +20,14 @@ export const PostList: React.FC = () => {
     loadPostsFromServer();
   }, []);
 
+  const handlePostDetails = async (postId: number) => {
+    const postDetails = await getPostDetails(postId);
+    const postComments = await getPostComments(postId);
+
+    dispatch(LoadPostDetailsAction(postDetails));
+    dispatch(LoadPostCommentsAction(postComments));
+  };
+
   return (
     <section className="PostsList">
       <h2>Posts:</h2>
@@ -33,7 +41,7 @@ export const PostList: React.FC = () => {
             <button
               type="button"
               className="PostsList__button button"
-              // onClick={() => handlePostId(post.id)}
+              onClick={() => handlePostDetails(post.id)}
             >
               open
               {/* {post.id === selectedPostId ? 'Close' : 'Open'} */}

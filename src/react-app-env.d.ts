@@ -17,9 +17,21 @@ type User = {
   email: string,
 };
 
+type PostComment = {
+  id: number,
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
 type State = {
   posts: Post[],
   users: User[],
+  postDetails: Post | null,
+  postComments: PostComment[],
 };
 
 type Action = {
