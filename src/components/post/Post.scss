@@ -1,0 +1,67 @@
+.post {
+  width: 30%;
+  height: 750px;
+  overflow-x: scroll;
+  padding: 10px;
+  &__title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  &__name {
+    text-align: center;
+    font-size: 18px;
+  }
+  &__add-comment {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+  }
+  &__form {
+    width: 80%;
+    background-color: #cecece;
+    border: 3px solid #484848;
+    margin: 10px auto 0;
+    padding: 5px;
+    &__input {
+      display: block;
+      margin: 0 auto;
+    }
+    &__label {
+      display: block;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 17px;
+    }
+    &__button {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+  &__comment {
+    background-color: #e5e5e5;
+    margin-top: 10px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+    &__name {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    &__content {
+      display: flex;
+      justify-content: space-between;
+    }
+    &__button {
+      width: 25px;
+      height: 25px;
+    }
+  }
+  &__not-found {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}

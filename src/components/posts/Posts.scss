@@ -1,0 +1,23 @@
+.posts {
+  width: 70%;
+  height: 750px;
+  overflow-x: scroll;
+  &__list {
+    list-style: none;
+  }
+  &__item {
+    background-color: #b9d6ff;
+    border: 1px solid black;
+    padding: 5px;
+  }
+  &__title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  &__button {
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+  }
+}
