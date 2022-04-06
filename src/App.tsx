@@ -1,21 +1,59 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
+import { useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from './hooks/hooks';
+import { userSlice } from './store/reducers/UserSlice';
+import { fetchUsers } from './store/reducers/ActionCreators';
+import { Loader } from './components/Loader';
+import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
 import './App.scss';
-import { Start } from './components/Start';
+import './styles/general.scss';
 
-import { isLoading, getMessage } from './store';
+const App: React.FC = () => {
+  const { users, areUsersLoading, selectedUserId } = useAppSelector(state => state.userReducer);
+  const dispatch = useAppDispatch();
+  const { setSelectedUserId } = userSlice.actions;
 
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        {areUsersLoading
+          ? (<Loader />)
+          : (
+            <label htmlFor="select-user">
+              Select a user: &nbsp;
+              <select
+                value={selectedUserId?.toString()}
+                onChange={event => dispatch(setSelectedUserId(Number(event.target.value)))}
+                className="App__user-selector"
+                id="select-user"
+              >
+                <option value={undefined}>All users</option>
+                {users.map(user => (
+                  <option
+                    key={user.id}
+                    value={user.id}
+                  >
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+      </header>
 
-      <Start />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };

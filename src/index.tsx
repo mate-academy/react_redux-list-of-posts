@@ -1,16 +1,15 @@
-import React from 'react';
+// import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 
+import { setupStore } from './store';
 import App from './App';
-import store from './store';
+
+const store = setupStore();
 
 const Root = () => (
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <App />
   </Provider>
 );
 
