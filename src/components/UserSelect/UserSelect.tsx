@@ -3,8 +3,6 @@ import { changePostId } from '../../features/post/postSlice';
 import { changeUserId, getUsers } from '../../features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
-import './UserSelect.scss';
-
 export const UserSelect: React.FC = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.userReducer);
