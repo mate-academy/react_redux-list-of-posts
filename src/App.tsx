@@ -1,22 +1,44 @@
-import { useSelector } from 'react-redux';
-
+/* eslint-disable no-console */
+import React from 'react';
 import './App.scss';
-import { Start } from './components/Start';
+import { useGetUsersQuery } from './service/usersApi';
 
-import { isLoading, getMessage } from './store';
+export const App: React.FC = React.memo(() => {
+  const { data, error, isLoading } = useGetUsersQuery();
+  const preperedArray = data?.slice(0, 8);
 
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  console.log(error);
+  console.log(isLoading);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
 
-      <Start />
+          <select className="App__user-selector">
+            <option defaultValue="0">All users</option>
+            {preperedArray?.map(user => (
+              <option key={user.id} value={user.id}>{user.name}</option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          {/* <PostsList
+            posts={posts}
+            selectedPost={selectedPostId}
+            selectPost={setSelectedPostId}
+          /> */}
+        </div>
+
+        <div className="App__content">
+          {/* {!!selectedPostId
+        && <PostDetails selectedPost={selectedPostId} />} */}
+        </div>
+      </main>
     </div>
   );
-};
-
-export default App;
+});
