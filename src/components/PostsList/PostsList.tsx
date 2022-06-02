@@ -8,6 +8,7 @@ import {
   selectors,
   setSelectedPostId,
   setFilterByUserId,
+  deleteUserPostById,
 } from '../../store/listOfPostsSlice';
 import {
   useAppDispatch,
@@ -68,9 +69,9 @@ export const PostsList: React.FC<{}> = React.memo(() => {
         </label>
       </header>
 
-      {!posts ? (
+      {isPostListLoading ? (
         <h2>
-          No one posts is avalible
+          Loading
         </h2>
       )
         : (
@@ -91,17 +92,28 @@ export const PostsList: React.FC<{}> = React.memo(() => {
                     </b>
                     {post.title}
                   </div>
-                  <button
-                    type="button"
-                    className="PostsList__button button"
-                    onClick={() => {
-                      selectCommentBtnClickHandler(post.id);
-                    }}
-                  >
-                    {selectedPostId === post.id
-                      ? 'Close'
-                      : 'Open'}
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        selectCommentBtnClickHandler(post.id);
+                      }}
+                    >
+                      {selectedPostId === post.id
+                        ? 'Close'
+                        : 'Open'}
+                    </button>
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        dispatch(deleteUserPostById(post.id));
+                      }}
+                    >
+                      X
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

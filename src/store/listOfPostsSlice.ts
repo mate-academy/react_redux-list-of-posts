@@ -15,22 +15,38 @@
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '.';
-import { getUsersPosts, getUserPostsById } from '../api/posts';
+import { getUsersPosts, getUserPostsById, deletePostById } from '../api/posts';
 import { Post } from '../types/Post';
 
 interface ListOfPostsState {
   selectedPostId: number;
-  posts: Array<Post> | null;
+  posts: Array<Post>;
   isPostListLoading: boolean;
   filterByUserId: number;
 }
 
 const initialState: ListOfPostsState = {
   selectedPostId: 0,
-  posts: null,
+  posts: [],
   isPostListLoading: false,
   filterByUserId: 0,
 };
+
+export const deleteUserPostById = createAsyncThunk(
+  'listOfPosts/deleteUserPostById',
+  async (postId: number, thunkAPI) => {
+    const { dispatch } = thunkAPI;
+    const prevState = thunkAPI.getState() as RootState;
+
+    const filteredPosts = prevState.listOfPosts.posts
+      .filter(post => post.id !== postId);
+
+    dispatch(setIsPostListLoading(true));
+    await deletePostById(postId);
+    dispatch(setPosts(filteredPosts));
+    dispatch(setIsPostListLoading(false));
+  },
+);
 
 export const fetchUserPostsById = createAsyncThunk(
   'listOfPosts/fetchUserPostsById',
@@ -56,6 +72,9 @@ export const listOfPosts = createSlice({
   name: 'listOfPosts',
   initialState,
   reducers: {
+    setPosts: (state, action: PayloadAction<Array<Post>>) => {
+      state.posts = action.payload;
+    },
     setSelectedPostId: (state, action: PayloadAction<number>) => {
       state.selectedPostId = action.payload;
     },
@@ -77,6 +96,7 @@ export const {
   setSelectedPostId,
   setFilterByUserId,
   setIsPostListLoading,
+  setPosts,
 } = listOfPosts.actions;
 
 export const selectors = {
