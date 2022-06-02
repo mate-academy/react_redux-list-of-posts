@@ -112,7 +112,7 @@ export const NewCommentForm: FC = memo(() => {
         className="NewCommentForm__submit-button button"
         disabled={isAddCommentLoading}
       >
-        {isAddCommentLoading ? (<Loader />) : 'Add a comment'}
+        {isAddCommentLoading ? (<Loader size="small" />) : 'Add a comment'}
       </button>
     </form>
   );

@@ -1,0 +1,29 @@
+.control-panel {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 30px;
+
+  &__label {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  &__select {
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #4d457b;
+    border: 1px solid #4d457b;
+    border-radius: 5px;
+  }
+
+  &__input {
+    padding: 5px;
+    font-size: 1rem;
+    color: #4d457b;
+    border: 1px solid #4d457b;
+    border-radius: 5px;
+  }
+}

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
 import {
   useDispatch,
@@ -10,19 +11,27 @@ import { Loader } from '../Loader';
 
 import {
   getIsPostListLoadingSelector,
-  getPostsSelector,
+  getIsPostLoadingSelector,
+  getPostsDeleteTargets,
   getSelectedPostIdSelector,
+  getVisiblePostsSelector,
 } from '../../store/PostsReducer/selectors';
 import {
+  deletePostAction,
   loadPostFromServerByIDAction,
   loadPostsFromServerAction,
 } from '../../store/PostsReducer/actions';
+import { getUserSelector } from '../../store/UserReducer/selectors';
 
 export const PostsList: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const posts = useSelector(getPostsSelector);
+
+  const user = useSelector(getUserSelector);
+  const visiblePosts = useSelector(getVisiblePostsSelector);
   const isPostListLoading = useSelector(getIsPostListLoadingSelector);
   const selectedPostId = useSelector(getSelectedPostIdSelector);
+  const isPostLoading = useSelector(getIsPostLoadingSelector);
+  const deleteTargets = useSelector(getPostsDeleteTargets);
 
   useEffect(() => {
     dispatch(loadPostsFromServerAction());
@@ -36,7 +45,7 @@ export const PostsList: React.FC = React.memo(() => {
         className="PostsList__list"
         data-cy="postDetails"
       >
-        {posts.map(post => (
+        {visiblePosts.map(post => (
           <li
             key={post.id}
             className="PostsList__item"
@@ -48,26 +57,49 @@ export const PostsList: React.FC = React.memo(() => {
               {post.title}
             </div>
 
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => {
-                dispatch(loadPostFromServerByIDAction(
-                  post.id,
-                  selectedPostId,
-                ));
-              }}
-            >
-              {selectedPostId === post.id ? 'Close' : 'Open'}
-            </button>
+            <div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  dispatch(loadPostFromServerByIDAction(
+                    post.id,
+                    selectedPostId,
+                  ));
+                }}
+                disabled={isPostLoading && selectedPostId === post.id}
+              >
+                {isPostLoading && selectedPostId === post.id
+                  ? <Loader size="small" />
+                  : selectedPostId === post.id
+                    ? 'Close' : 'Open'}
+              </button>
+
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  dispatch(
+                    deletePostAction(
+                      post.id,
+                      user,
+                    ),
+                  );
+                }}
+                disabled={deleteTargets.includes(post.id)}
+              >
+                {deleteTargets.includes(post.id)
+                  ? <Loader size="small" />
+                  : 'X'}
+              </button>
+            </div>
           </li>
         ))}
 
         {isPostListLoading && (
-          <Loader />
+          <Loader size="big" />
         )}
       </ul>
-
     </div>
   );
 });

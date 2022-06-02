@@ -1,7 +1,11 @@
 import { Dispatch } from 'react';
+
+import { AllActions, Thunk } from '..';
+
 import { getPostComments } from '../../api/comments';
 
 import {
+  deletePostByID,
   getPostDetails,
   getUserPostsByID,
   getUsersPosts,
@@ -12,13 +16,16 @@ import { User } from '../../types/User';
 
 import { setSelectedPostCommentsAction } from '../CommentsReducer/actions';
 import {
+  PostsDeleteTargets,
   IsPostListLoading,
   IsPostLoading,
   Posts,
   PostsActionTypes,
+  PostTitleQuery,
   SelectedPost,
   SelectedPostId,
   SelectValue,
+  VisiblePosts,
 } from './actionTypes';
 
 export const setSelectedPostIdAction = (id: number | null): SelectedPostId => {
@@ -65,31 +72,63 @@ export const setIsPostListLoadingAction = (
   });
 };
 
+export const setPostTitleQueryAction = (titleQuery: string): PostTitleQuery => {
+  return ({
+    type: PostsActionTypes.setPostTitleQuery,
+    titleQuery,
+  });
+};
+
+export const setVisiblePostsAction = (posts: Post[]): VisiblePosts => {
+  return ({
+    type: PostsActionTypes.setVisiblePosts,
+    visiblePosts: posts,
+  });
+};
+
+export const setPostsDeleteTargetsAction = (
+  id: number,
+  push: boolean,
+): PostsDeleteTargets => {
+  return ({
+    type: PostsActionTypes.setPostsDeleteTargets,
+    id,
+    push,
+  });
+};
+
 export const loadPostsFromServerAction = (
   user: User | null = null,
+  id: number | undefined = undefined,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
-    if (user) {
-      try {
-        if (user !== null) {
-          const userPosts = await getUserPostsByID(user.id);
+  return async (dispatch: Dispatch<AllActions>) => {
+    try {
+      if (user) {
+        const userPosts = await getUserPostsByID(user.id);
 
-          dispatch(setPostsAction(userPosts));
-          dispatch(setIsPostListLoadingAction(false));
+        dispatch(setVisiblePostsAction(userPosts));
+        dispatch(setPostsAction(userPosts));
+        dispatch(setIsPostListLoadingAction(false));
+
+        if (id) {
+          dispatch(setPostsDeleteTargetsAction(id, false));
         }
-      } catch (error) {
-        dispatch(setPostsAction([]));
-        dispatch(setIsPostListLoadingAction(false));
-      }
-    } else {
-      try {
-        const allPosts = await getUsersPosts();
 
-        dispatch(setIsPostListLoadingAction(false));
-        dispatch(setPostsAction(allPosts));
-      } catch (error) {
-        dispatch(setPostsAction([]));
+        return;
       }
+
+      const allPosts = await getUsersPosts();
+
+      dispatch(setVisiblePostsAction(allPosts));
+      dispatch(setPostsAction(allPosts));
+      dispatch(setIsPostListLoadingAction(false));
+
+      if (id) {
+        dispatch(setPostsDeleteTargetsAction(id, false));
+      }
+    } catch (error) {
+      dispatch(setPostsAction([]));
+      dispatch(setIsPostListLoadingAction(false));
     }
   };
 };
@@ -98,7 +137,7 @@ export const loadPostFromServerByIDAction = (
   id: number,
   selectedPostId: number | null,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<AllActions>) => {
     if (selectedPostId === id) {
       dispatch(setIsPostLoadingAction(false));
       dispatch(setSelectedPostIdAction(null));
@@ -116,13 +155,44 @@ export const loadPostFromServerByIDAction = (
       const currentPost = await getPostDetails(id);
       const currentPostComments = await commentsPromise;
 
-      dispatch(setIsPostLoadingAction(false));
       dispatch(setSelectedPostAction(currentPost));
       dispatch(setSelectedPostCommentsAction(currentPostComments));
+      dispatch(setIsPostLoadingAction(false));
     } catch (error) {
       dispatch(setIsPostLoadingAction(false));
       dispatch(setSelectedPostAction(null));
       dispatch(setSelectedPostCommentsAction([]));
     }
+  };
+};
+
+export const filterVisiblePostsAction = (
+  query: string,
+  posts: Post[],
+) => {
+  return (dispatch: Dispatch<AllActions>) => {
+    dispatch(setPostTitleQueryAction(query));
+
+    const lowerQuery = query.toLowerCase();
+    const result = [...posts].filter(post => {
+      const lowerTitle = post.title.toLowerCase();
+
+      return lowerTitle.includes(lowerQuery);
+    });
+
+    dispatch(setVisiblePostsAction(result));
+  };
+};
+
+export const deletePostAction = (
+  id: number,
+  user: User | null,
+) => {
+  return async (dispatch: Dispatch<AllActions | Thunk>) => {
+    dispatch(setPostsDeleteTargetsAction(id, true));
+
+    await deletePostByID(id);
+
+    dispatch(loadPostsFromServerAction(user, id));
   };
 };

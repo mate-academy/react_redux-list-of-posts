@@ -1,11 +1,7 @@
 import { State } from '..';
 
-export const getIsDeleteCommentLoadingSelector = (state: State) => {
-  return state.CommentsReducer.isDeleteCommentLoading;
-};
-
-export const getDeleteTargets = (state: State) => {
-  return state.CommentsReducer.deleteTargets;
+export const getCommentsDeleteTargets = (state: State) => {
+  return state.CommentsReducer.commentsDeleteTargets;
 };
 
 export const getIsCommentsVisibleSelector = (state: State) => {

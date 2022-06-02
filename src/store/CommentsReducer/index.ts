@@ -9,8 +9,7 @@ import {
 export type CommentsState = {
   selectedPostComments: Comment[],
   isCommentsVisible: boolean,
-  isDeleteCommentLoading: boolean,
-  deleteTargets: number[],
+  commentsDeleteTargets: number[],
   inputName: string,
   inputEmail: string,
   inputComment: string,
@@ -22,8 +21,7 @@ export type CommentsState = {
 const defaultState: CommentsState = {
   selectedPostComments: [],
   isCommentsVisible: true,
-  isDeleteCommentLoading: false,
-  deleteTargets: [],
+  commentsDeleteTargets: [],
   inputName: '',
   inputEmail: '',
   inputComment: '',
@@ -49,21 +47,15 @@ export const CommentsReducer: Reducer<CommentsState, CommentsActions> = (
         isCommentsVisible: action.isCommentsVisible,
       });
 
-    case CommentsActionTypes.setIsDeleteCommentLoading:
+    case CommentsActionTypes.setCommentsDeleteTargets:
       return ({
         ...state,
-        isDeleteCommentLoading: action.isDeleteCommentLoading,
-      });
-
-    case CommentsActionTypes.setDeleteTargets:
-      return ({
-        ...state,
-        deleteTargets: action.push
+        commentsDeleteTargets: action.push
           ? [
-            ...state.deleteTargets,
+            ...state.commentsDeleteTargets,
             action.id,
           ]
-          : [...state.deleteTargets].filter(targetID => {
+          : [...state.commentsDeleteTargets].filter(targetID => {
             return targetID !== action.id;
           }),
       });

@@ -1,5 +1,6 @@
 /* eslint-disable no-debugger */
 import { Dispatch } from 'react';
+import { AllActions, Thunk } from '..';
 import {
   addComment,
   deleteCommentFromServer,
@@ -9,13 +10,12 @@ import { emailValidator } from '../../functions/emailValidator';
 import { Comment } from '../../types/Comment';
 import {
   CommentsActionTypes,
-  DeleteTargets,
+  CommentsDeleteTargets,
   InputComment,
   InputEmail,
   InputName,
   IsAddCommentLoading,
   IsCommentsVisible,
-  IsDeleteCommentLoading,
   IsEmailValid,
   IsSubmitted,
   SelectedPostComments,
@@ -39,23 +39,14 @@ export const setIsCommentsVisibleAction = (
   });
 };
 
-export const setIsDeleteCommentLoadingAction = (
-  boolean: boolean,
-): IsDeleteCommentLoading => {
-  return ({
-    type: CommentsActionTypes.setIsDeleteCommentLoading,
-    isDeleteCommentLoading: boolean,
-  });
-};
-
-export const setDeleteTargetsAction = (
+export const setCommentsDeleteTargetsAction = (
   id: number,
-  boolean: boolean,
-): DeleteTargets => {
+  push: boolean,
+): CommentsDeleteTargets => {
   return ({
-    type: CommentsActionTypes.setDeleteTargets,
+    type: CommentsActionTypes.setCommentsDeleteTargets,
     id,
-    push: boolean,
+    push,
   });
 };
 
@@ -115,13 +106,18 @@ export const setIsAddCommentLoadingAction = (
 
 export const loadCommentsFromServerAction = (
   selectedPostId: number | null,
+  CommentId: number | undefined = undefined,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<AllActions>) => {
     try {
       if (selectedPostId) {
         const currentPostComments = await getPostComments(selectedPostId);
 
         dispatch(setSelectedPostCommentsAction(currentPostComments));
+
+        if (CommentId) {
+          dispatch(setCommentsDeleteTargetsAction(CommentId, false));
+        }
       }
     } catch (error) {
       dispatch(setSelectedPostCommentsAction([]));
@@ -133,14 +129,11 @@ export const deleteCommentAction = (
   CommentId: number,
   selectedPostId: number | null,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(setIsDeleteCommentLoadingAction(true));
+  return async (dispatch: Dispatch<AllActions | Thunk>) => {
+    dispatch(setCommentsDeleteTargetsAction(CommentId, true));
 
     await deleteCommentFromServer(CommentId);
-    dispatch(loadCommentsFromServerAction(selectedPostId));
-
-    dispatch(setIsDeleteCommentLoadingAction(false));
-    dispatch(setDeleteTargetsAction(CommentId, false));
+    dispatch(loadCommentsFromServerAction(selectedPostId, CommentId));
   };
 };
 
@@ -151,7 +144,7 @@ export const addCommentAction = (
   inputComment: string,
   selectedPostId: number | null,
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<AllActions | Thunk>) => {
     event.preventDefault();
     dispatch(setIsAddCommentLoadingAction(true));
     dispatch(setIsSubmittedAction(true));

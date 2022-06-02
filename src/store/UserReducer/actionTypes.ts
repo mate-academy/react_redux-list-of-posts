@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { User } from '../../types/User';
 
 export enum UserActionTypes {

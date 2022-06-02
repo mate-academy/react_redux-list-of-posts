@@ -11,13 +11,12 @@ import {
   getSelectedPostSelector,
 } from '../../store/PostsReducer/selectors';
 import {
-  getDeleteTargets,
+  getCommentsDeleteTargets,
   getIsCommentsVisibleSelector,
-  getIsDeleteCommentLoadingSelector, getSelectedPostCommentsSelector,
+  getSelectedPostCommentsSelector,
 } from '../../store/CommentsReducer/selectors';
 import {
   deleteCommentAction,
-  setDeleteTargetsAction,
   setIsCommentsVisibleAction,
 } from '../../store/CommentsReducer/actions';
 
@@ -27,8 +26,7 @@ export const PostDetails: FC = memo(() => {
   const selectedPost = useSelector(getSelectedPostSelector);
   const selectedPostComments = useSelector(getSelectedPostCommentsSelector);
   const isCommentsVisible = useSelector(getIsCommentsVisibleSelector);
-  const isDeleteCommentLoading = useSelector(getIsDeleteCommentLoadingSelector);
-  const deleteTargets = useSelector(getDeleteTargets);
+  const deleteTargets = useSelector(getCommentsDeleteTargets);
   const selectedPostId = useSelector(getSelectedPostIdSelector);
 
   return (
@@ -69,24 +67,16 @@ export const PostDetails: FC = memo(() => {
                   className="PostDetails__remove-button button"
                   onClick={() => {
                     dispatch(
-                      setDeleteTargetsAction(
-                        comment.id,
-                        true,
-                      ),
-                    );
-
-                    dispatch(
                       deleteCommentAction(
                         comment.id,
                         selectedPostId,
                       ),
                     );
                   }}
-                  disabled={isDeleteCommentLoading
-                    && deleteTargets.includes(comment.id)}
+                  disabled={deleteTargets.includes(comment.id)}
                 >
-                  {isDeleteCommentLoading && deleteTargets.includes(comment.id)
-                    ? (<Loader />)
+                  {deleteTargets.includes(comment.id)
+                    ? (<Loader size="small" />)
                     : 'X'}
                 </button>
                 <p>

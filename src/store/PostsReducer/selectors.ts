@@ -23,3 +23,15 @@ export const getPostsSelector = (state: State) => {
 export const getIsPostListLoadingSelector = (state: State) => {
   return state.PostsReducer.isPostListLoading;
 };
+
+export const getPostsTitleQuerySelector = (state: State) => {
+  return state.PostsReducer.titleQuery;
+};
+
+export const getVisiblePostsSelector = (state: State) => {
+  return state.PostsReducer.visiblePosts;
+};
+
+export const getPostsDeleteTargets = (state: State) => {
+  return state.PostsReducer.postsDeleteTargets;
+};

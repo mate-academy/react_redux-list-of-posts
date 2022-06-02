@@ -1,6 +1,5 @@
 import { Reducer } from 'react';
 import { Post } from '../../types/Post';
-import { User } from '../../types/User';
 
 import {
   PostsActions,
@@ -8,23 +7,27 @@ import {
 } from './actionTypes';
 
 export type PostsState = {
-  user: User | null,
-  selectedPostId: number | null,
+  posts: Post[],
+  visiblePosts: Post[],
   selectValue: string,
+  titleQuery: string,
+  selectedPostId: number | null,
   selectedPost: Post | null,
   isPostLoading: boolean,
-  posts: Post[],
   isPostListLoading: boolean,
+  postsDeleteTargets: number[],
 };
 
 const defaultState: PostsState = {
-  user: null,
-  selectedPostId: null,
+  posts: [],
+  visiblePosts: [],
   selectValue: 'All users',
+  titleQuery: '',
+  selectedPostId: null,
   selectedPost: null,
   isPostLoading: false,
-  posts: [],
-  isPostListLoading: false,
+  isPostListLoading: true,
+  postsDeleteTargets: [],
 };
 
 export const PostsReducer: Reducer<PostsState, PostsActions> = (
@@ -66,6 +69,31 @@ export const PostsReducer: Reducer<PostsState, PostsActions> = (
       return ({
         ...state,
         isPostListLoading: action.isPostListLoading,
+      });
+
+    case PostsActionTypes.setPostTitleQuery:
+      return ({
+        ...state,
+        titleQuery: action.titleQuery,
+      });
+
+    case PostsActionTypes.setVisiblePosts:
+      return ({
+        ...state,
+        visiblePosts: action.visiblePosts,
+      });
+
+    case PostsActionTypes.setPostsDeleteTargets:
+      return ({
+        ...state,
+        postsDeleteTargets: action.push
+          ? [
+            ...state.postsDeleteTargets,
+            action.id,
+          ]
+          : [...state.postsDeleteTargets].filter(targetID => {
+            return targetID !== action.id;
+          }),
       });
 
     default:

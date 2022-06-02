@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+import { AllActions, Thunk } from '..';
 
 import { getUserByName } from '../../api/users';
 
@@ -9,6 +10,7 @@ import {
   setIsPostListLoadingAction,
   setSelectedPostIdAction,
   setSelectValueAction,
+  setVisiblePostsAction,
 } from '../PostsReducer/actions';
 import { SetUserAction, UserActionTypes } from './actionTypes';
 
@@ -20,18 +22,16 @@ export const setUserAction = (user: User | null): SetUserAction => {
 };
 
 export const loadUserAction = (name: string) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<AllActions | Thunk>) => {
     dispatch(setSelectValueAction(name));
-    dispatch(setUserAction(null));
+    dispatch(setIsPostListLoadingAction(true));
+    dispatch(setVisiblePostsAction([]));
 
     try {
       const userArr = await getUserByName(name);
 
       dispatch(setUserAction(userArr[0]));
       dispatch(setSelectedPostIdAction(null));
-      dispatch(
-        setIsPostListLoadingAction(true),
-      );
 
       if (name === 'All users') {
         dispatch(loadPostsFromServerAction());
@@ -40,7 +40,6 @@ export const loadUserAction = (name: string) => {
       }
 
       dispatch(loadPostsFromServerAction(userArr[0]));
-      dispatch(setIsPostListLoadingAction(false));
     } catch (error) {
       dispatch(setUserAction(null));
     }

@@ -1,8 +1,21 @@
 import React from 'react';
+import classNames from 'classnames';
+
 import './Loader.scss';
 
-export const Loader: React.FC = () => (
+type Props = {
+  size: 'small' | 'big';
+};
+
+export const Loader: React.FC<Props> = ({
+  size,
+}) => (
   <div className="Loader">
-    <div className="Loader__content" />
+    <div className={classNames(
+      'Loader__content',
+      { 'Loader__content--small': size === 'small' },
+      { 'Loader__content--big': size === 'big' },
+    )}
+    />
   </div>
 );

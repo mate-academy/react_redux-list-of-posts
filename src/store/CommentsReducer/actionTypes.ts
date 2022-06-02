@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/indent */
 import { Comment } from '../../types/Comment';
 
 export enum CommentsActionTypes {
   setIsCommentsVisible = 'SET_IS_COMMENTS_VISIBLE',
-  setIsDeleteCommentLoading = 'SET_IS_DELETE_COMMENT_LOADING',
-  setDeleteTargets = 'SET_IS_DELETE_TARGETS',
+  setCommentsDeleteTargets = 'SET_IS_DELETE_TARGETS',
   setSelectedPostComments = 'SET_SELECTED_POST_COMMENTS',
   setInputName = 'SET_INPUT_NAME',
   setInputEmail = 'SET_INPUT_EMAIL',
@@ -23,13 +23,8 @@ export interface IsCommentsVisible {
   isCommentsVisible: boolean;
 }
 
-export interface IsDeleteCommentLoading {
-  type: CommentsActionTypes.setIsDeleteCommentLoading;
-  isDeleteCommentLoading: boolean;
-}
-
-export interface DeleteTargets {
-  type: CommentsActionTypes.setDeleteTargets;
+export interface CommentsDeleteTargets {
+  type: CommentsActionTypes.setCommentsDeleteTargets;
   id: number;
   push: boolean;
 }
@@ -65,12 +60,11 @@ export interface IsAddCommentLoading {
 }
 
 export type CommentsActions = SelectedPostComments
-| IsCommentsVisible
-| IsDeleteCommentLoading
-| DeleteTargets
-| InputName
-| InputEmail
-| InputComment
-| IsEmailValid
-| IsSubmitted
-| IsAddCommentLoading;
+  | IsCommentsVisible
+  | CommentsDeleteTargets
+  | InputName
+  | InputEmail
+  | InputComment
+  | IsEmailValid
+  | IsSubmitted
+  | IsAddCommentLoading;
