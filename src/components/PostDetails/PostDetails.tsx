@@ -3,7 +3,7 @@ import {
   memo,
   useEffect,
 } from 'react';
-// import { NewCommentForm } from '../NewCommentForm';
+import { NewCommentForm } from '../NewCommentForm';
 import {
   selectors,
   fetchPostDetails,
@@ -95,10 +95,9 @@ export const PostDetails: React.FC<Props> = memo(({
 
           <section>
             <div className="PostDetails__form-wrapper">
-              {/* <NewCommentForm
+              <NewCommentForm
                 selectedPostId={selectedPostId}
-                addSelectedPostComment={addSelectedPostComment}
-              /> */}
+              />
             </div>
           </section>
         </div>

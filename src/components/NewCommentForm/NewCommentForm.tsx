@@ -1,20 +1,31 @@
-import React, {
-  ChangeEvent, FormEvent, useCallback, useState,
+import {
+  FC,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useState,
 } from 'react';
-import { addPostCommentById } from '../../api/comments';
 import { Loader } from '../Loader';
-import { Comment } from '../../types/Comment';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../typedHooks/hooks';
+import {
+  selectors,
+  addCommentInSelectedPost,
+} from '../../store/postDetailsSlice';
+
 import './NewCommentForm.scss';
 
 type Props = {
   selectedPostId: number;
-  addSelectedPostComment: (comment: Omit<Comment, 'id'>) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm: FC<Props> = ({
   selectedPostId,
-  addSelectedPostComment,
 }) => {
+  const dispatch = useAppDispatch();
+  const isUploadComment = useAppSelector(selectors.getSomeCommentIsDeleting);
   const initialState = {
     postId: selectedPostId,
     name: '',
@@ -30,8 +41,6 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const [newComment, setNewComment] = useState(initialState);
   const [newCommentError, setNewCommentError] = useState(initialError);
-
-  const [isUploadComment, setIsUploadComment] = useState(false);
 
   const catchInpChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -62,14 +71,10 @@ export const NewCommentForm: React.FC<Props> = ({
     const validErrors = Object.values(newCommentError).some(item => item);
 
     if (validComment && !validErrors) {
-      setIsUploadComment(true);
-      await addPostCommentById(newComment);
-      addSelectedPostComment(newComment);
-
-      setIsUploadComment(false);
+      dispatch(addCommentInSelectedPost(newComment));
       setNewComment(initialState);
     }
-  }, [newComment, newCommentError, addSelectedPostComment]);
+  }, [newComment, newCommentError]);
 
   return (
     <>
