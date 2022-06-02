@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   memo,
   useEffect,
@@ -33,20 +32,6 @@ export const PostDetails: React.FC<Props> = memo(({
   const commentsIsShowing = useAppSelector(selectors.getCommentsIsShowing);
   const someCommentIsDeleting
     = useAppSelector(selectors.getSomeCommentIsDeleting);
-
-  // const addSelectedPostComment
-  // = useCallback((comment: Omit<Comment, 'id'>) => {
-  //   setCommentsForSelectedPost(prevValue => [
-  //     ...prevValue,
-  //     { ...comment, id: prevValue.length + 1 },
-  //   ]);
-  // }, [commentsForSelectedPost]);
-  // const removeSelectedPostComment
-  // = useCallback((id: number) => {
-  //   setCommentsForSelectedPost(
-  //     prevValue => prevValue.filter(comment => comment.id !== id),
-  //   );
-  // }, [commentsForSelectedPost]);
 
   useEffect(() => {
     dispatch(fetchPostDetails(selectedPostId));
