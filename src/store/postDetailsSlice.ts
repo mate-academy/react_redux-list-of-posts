@@ -66,6 +66,7 @@ export const removeCommentInSelectedPostById = createAsyncThunk(
     dispatch(setSomeCommentIsDeleting(true));
     await removePostCommetById(commentId);
     dispatch(setCommentsForSelectedPost(filteredComments));
+    dispatch(setSomeCommentIsDeleting(false));
   },
 );
 
