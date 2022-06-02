@@ -2,19 +2,20 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import { PostsReducer } from './PostsReducer';
-import { CommentsReducer } from './CommentsReducer';
-import { CommentsState } from '../types/CommentsState';
-import { PostsState } from '../types/PostsState';
+import { PostsReducer, PostsState } from './PostsReducer';
+import { CommentsReducer, CommentsState } from './CommentsReducer';
+import { UserReducer, UserState } from './UserReducer';
 
 const rootReducer = combineReducers({
   PostsReducer,
   CommentsReducer,
+  UserReducer,
 });
 
 export type State = {
-  PostsReducer: PostsState,
-  CommentsReducer: CommentsState,
+  PostsReducer: PostsState;
+  CommentsReducer: CommentsState;
+  UserReducer: UserState;
 };
 
 const store = createStore(

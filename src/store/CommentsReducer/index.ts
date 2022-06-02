@@ -1,12 +1,23 @@
-import { AnyAction } from 'redux';
-import { CommentsState } from '../../types/CommentsState';
+import { Reducer } from 'react';
+import { Comment } from '../../types/Comment';
 
 import {
-  SET_SELECTED_POST_COMMENTS,
-  SET_IS_COMMENTS_VISIBLE,
-  SET_IS_DELETE_COMMENTS_LOADING,
-  SET_DELETE_TARGETS,
-} from './actions';
+  CommentsActionTypes,
+  CommentsActions,
+} from './actionTypes';
+
+export type CommentsState = {
+  selectedPostComments: Comment[],
+  isCommentsVisible: boolean,
+  isDeleteCommentLoading: boolean,
+  deleteTargets: number[],
+  inputName: string,
+  inputEmail: string,
+  inputComment: string,
+  isEmailValid: boolean,
+  isSubmitted: boolean,
+  isAddCommentLoading: boolean,
+};
 
 const defaultState: CommentsState = {
   selectedPostComments: [],
@@ -21,34 +32,76 @@ const defaultState: CommentsState = {
   isAddCommentLoading: false,
 };
 
-export const CommentsReducer = (state = defaultState, action: AnyAction) => {
+export const CommentsReducer: Reducer<CommentsState, CommentsActions> = (
+  state = defaultState,
+  action: CommentsActions,
+) => {
   switch (action.type) {
-    case (SET_SELECTED_POST_COMMENTS):
+    case CommentsActionTypes.setSelectedPostComments:
       return ({
         ...state,
         selectedPostComments: [...action.selectedPostComments],
       });
 
-    case (SET_IS_COMMENTS_VISIBLE):
+    case CommentsActionTypes.setIsCommentsVisible:
       return ({
         ...state,
         isCommentsVisible: action.isCommentsVisible,
       });
 
-    case (SET_IS_DELETE_COMMENTS_LOADING):
+    case CommentsActionTypes.setIsDeleteCommentLoading:
       return ({
         ...state,
         isDeleteCommentLoading: action.isDeleteCommentLoading,
       });
 
-    case (SET_DELETE_TARGETS):
+    case CommentsActionTypes.setDeleteTargets:
       return ({
         ...state,
         deleteTargets: action.push
-          ? [...state.deleteTargets].push(action.deleteTargets)
+          ? [
+            ...state.deleteTargets,
+            action.id,
+          ]
           : [...state.deleteTargets].filter(targetID => {
-            return targetID !== action.deleteTargets;
+            return targetID !== action.id;
           }),
+      });
+
+    case CommentsActionTypes.setInputName:
+      return ({
+        ...state,
+        inputName: action.inputName,
+      });
+
+    case CommentsActionTypes.setInputEmail:
+      return ({
+        ...state,
+        inputEmail: action.inputEmail,
+      });
+
+    case CommentsActionTypes.setInputComment:
+      return ({
+        ...state,
+        inputComment: action.inputComment,
+      });
+
+    case CommentsActionTypes.setIsEmailValid:
+      return ({
+        ...state,
+        isEmailValid: action.isEmailValid,
+      });
+
+    case CommentsActionTypes.setIsSubmitted:
+      return ({
+        ...state,
+        isSubmitted: action.isSubmitted,
+      });
+
+    case CommentsActionTypes.setIsAddCommentLoading:
+      return ({
+        ...state,
+        isAddCommentLoading: action.isAddCommentLoading,
       });
 
     default:

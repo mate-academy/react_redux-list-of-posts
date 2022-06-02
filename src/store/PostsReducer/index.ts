@@ -1,13 +1,21 @@
-import { AnyAction } from 'redux';
-import { PostsState } from '../../types/PostsState';
+import { Reducer } from 'react';
+import { Post } from '../../types/Post';
+import { User } from '../../types/User';
 
 import {
-  SET_USER,
-  SET_SELECTED_POST_ID,
-  SET_POST_SELECT_VALUE,
-  SET_SELECTED_POST,
-  SET_IS_POST_LOADING,
-} from './actions';
+  PostsActions,
+  PostsActionTypes,
+} from './actionTypes';
+
+export type PostsState = {
+  user: User | null,
+  selectedPostId: number | null,
+  selectValue: string,
+  selectedPost: Post | null,
+  isPostLoading: boolean,
+  posts: Post[],
+  isPostListLoading: boolean,
+};
 
 const defaultState: PostsState = {
   user: null,
@@ -15,38 +23,49 @@ const defaultState: PostsState = {
   selectValue: 'All users',
   selectedPost: null,
   isPostLoading: false,
+  posts: [],
+  isPostListLoading: false,
 };
 
-export const PostsReducer = (state = defaultState, action: AnyAction) => {
+export const PostsReducer: Reducer<PostsState, PostsActions> = (
+  state = defaultState,
+  action: PostsActions,
+) => {
   switch (action.type) {
-    case (SET_USER):
-      return ({
-        ...state,
-        user: action.user,
-      });
-
-    case (SET_SELECTED_POST_ID):
+    case PostsActionTypes.setSelectedPostId:
       return ({
         ...state,
         selectedPostId: action.selectedPostId,
       });
 
-    case (SET_POST_SELECT_VALUE):
+    case PostsActionTypes.setPostSelectValue:
       return ({
         ...state,
         selectValue: action.selectValue,
       });
 
-    case (SET_SELECTED_POST):
+    case PostsActionTypes.setSelectPost:
       return ({
         ...state,
         selectedPost: action.selectedPost,
       });
 
-    case (SET_IS_POST_LOADING):
+    case PostsActionTypes.setIsPostLoading:
       return ({
         ...state,
         isPostLoading: action.isPostLoading,
+      });
+
+    case PostsActionTypes.setPosts:
+      return ({
+        ...state,
+        posts: [...action.posts],
+      });
+
+    case PostsActionTypes.setIsPostListLoading:
+      return ({
+        ...state,
+        isPostListLoading: action.isPostListLoading,
       });
 
     default:

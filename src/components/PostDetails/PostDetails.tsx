@@ -1,32 +1,27 @@
-import React, { useCallback } from 'react';
+import { FC, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './PostDetails.scss';
 
-import { deleteCommentFromServer } from '../../api/comments';
-
 import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader';
 
-import { getSelectedPostSelector } from '../../store/PostsReducer/selectors';
+import {
+  getSelectedPostIdSelector,
+  getSelectedPostSelector,
+} from '../../store/PostsReducer/selectors';
 import {
   getDeleteTargets,
   getIsCommentsVisibleSelector,
   getIsDeleteCommentLoadingSelector, getSelectedPostCommentsSelector,
 } from '../../store/CommentsReducer/selectors';
 import {
+  deleteCommentAction,
   setDeleteTargetsAction,
   setIsCommentsVisibleAction,
-  setIsDeleteCommentLoadingAction,
 } from '../../store/CommentsReducer/actions';
 
-type Props = {
-  getComments: () => Promise<void>;
-};
-
-export const PostDetails: React.FC<Props> = React.memo(({
-  getComments,
-}) => {
+export const PostDetails: FC = memo(() => {
   const dispatch = useDispatch();
 
   const selectedPost = useSelector(getSelectedPostSelector);
@@ -34,16 +29,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
   const isCommentsVisible = useSelector(getIsCommentsVisibleSelector);
   const isDeleteCommentLoading = useSelector(getIsDeleteCommentLoadingSelector);
   const deleteTargets = useSelector(getDeleteTargets);
-
-  const deleteComment = useCallback(async (id: number) => {
-    dispatch(setIsDeleteCommentLoadingAction(true));
-
-    await deleteCommentFromServer(id);
-    await getComments();
-
-    dispatch(setIsDeleteCommentLoadingAction(false));
-    dispatch(setDeleteTargetsAction(id, false));
-  }, [getComments]);
+  const selectedPostId = useSelector(getSelectedPostIdSelector);
 
   return (
     <div
@@ -63,7 +49,9 @@ export const PostDetails: React.FC<Props> = React.memo(({
           type="button"
           className="button"
           onClick={() => {
-            dispatch(setIsCommentsVisibleAction(!isCommentsVisible));
+            dispatch(
+              setIsCommentsVisibleAction(!isCommentsVisible),
+            );
           }}
         >
           {`${isCommentsVisible ? ('Hide') : ('Show')} ${selectedPostComments.length} comments`}
@@ -80,8 +68,19 @@ export const PostDetails: React.FC<Props> = React.memo(({
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    deleteComment(comment.id);
-                    dispatch(setDeleteTargetsAction(comment.id, true));
+                    dispatch(
+                      setDeleteTargetsAction(
+                        comment.id,
+                        true,
+                      ),
+                    );
+
+                    dispatch(
+                      deleteCommentAction(
+                        comment.id,
+                        selectedPostId,
+                      ),
+                    );
                   }}
                   disabled={isDeleteCommentLoading
                     && deleteTargets.includes(comment.id)}
@@ -102,9 +101,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            getComments={getComments}
-          />
+          <NewCommentForm />
         </div>
       </section>
     </div>

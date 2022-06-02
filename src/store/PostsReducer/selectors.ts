@@ -1,9 +1,5 @@
 import { State } from '..';
 
-export const getUserSelector = (state: State) => {
-  return state.PostsReducer.user;
-};
-
 export const getSelectedPostIdSelector = (state: State) => {
   return state.PostsReducer.selectedPostId;
 };
@@ -18,4 +14,12 @@ export const getSelectedPostSelector = (state: State) => {
 
 export const getIsPostLoadingSelector = (state: State) => {
   return state.PostsReducer.isPostLoading;
+};
+
+export const getPostsSelector = (state: State) => {
+  return state.PostsReducer.posts;
+};
+
+export const getIsPostListLoadingSelector = (state: State) => {
+  return state.PostsReducer.isPostListLoading;
 };

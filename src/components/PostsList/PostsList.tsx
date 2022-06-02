@@ -1,69 +1,32 @@
-/* eslint-disable max-len */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+
 import './PostsList.scss';
-import { Post } from '../../types/Post';
+
 import { Loader } from '../Loader';
-import { User } from '../../types/User';
-import { getUserPostsByID, getUsersPosts } from '../../api/posts';
 
-type Props = {
-  selectedPostId: number | null;
-  user: User | null;
-  selectValue: string;
-  handleOpenPostDetails: (id: number) => void;
-  getPostFromServerByID: () => Promise<void>;
-};
+import {
+  getIsPostListLoadingSelector,
+  getPostsSelector,
+  getSelectedPostIdSelector,
+} from '../../store/PostsReducer/selectors';
+import {
+  loadPostFromServerByIDAction,
+  loadPostsFromServerAction,
+} from '../../store/PostsReducer/actions';
 
-export const PostsList: React.FC<Props> = React.memo(({
-  user,
-  selectedPostId,
-  selectValue,
-  handleOpenPostDetails,
-  getPostFromServerByID,
-}) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isPostListLoading, setPostListLoading] = useState(false);
+export const PostsList: React.FC = React.memo(() => {
+  const dispatch = useDispatch();
+  const posts = useSelector(getPostsSelector);
+  const isPostListLoading = useSelector(getIsPostListLoadingSelector);
+  const selectedPostId = useSelector(getSelectedPostIdSelector);
 
-  const getPostsFromServer = useCallback(async () => {
-    try {
-      const allPosts = await getUsersPosts();
-
-      setPostListLoading(false);
-      setPosts(allPosts);
-    } catch (error) {
-      setPosts([]);
-    }
+  useEffect(() => {
+    dispatch(loadPostsFromServerAction());
   }, []);
-
-  const getPostsFromServerByID = useCallback(async () => {
-    try {
-      if (user !== null) {
-        const userPosts = await getUserPostsByID(user.id);
-
-        setPosts(userPosts);
-        setPostListLoading(false);
-      }
-    } catch (error) {
-      setPosts([]);
-      setPostListLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    setPostListLoading(true);
-    if (selectValue === 'All users') {
-      getPostsFromServer();
-
-      return;
-    }
-
-    getPostsFromServerByID();
-    setPostListLoading(false);
-  }, [user]);
-
-  useEffect(() => {
-    getPostFromServerByID();
-  }, [selectedPostId]);
 
   return (
     <div className="PostsList">
@@ -88,7 +51,12 @@ export const PostsList: React.FC<Props> = React.memo(({
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => handleOpenPostDetails(post.id)}
+              onClick={() => {
+                dispatch(loadPostFromServerByIDAction(
+                  post.id,
+                  selectedPostId,
+                ));
+              }}
             >
               {selectedPostId === post.id ? 'Close' : 'Open'}
             </button>

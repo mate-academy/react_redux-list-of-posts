@@ -1,81 +1,188 @@
-export const SET_IS_COMMENTS_VISIBLE = 'SET_IS_COMMENTS_VISIBLE';
-export const SET_IS_DELETE_COMMENTS_LOADING = 'SET_IS_DELETE_COMMENTS_LOADING';
-export const SET_DELETE_TARGETS = 'SET_DELETE_TARGETS';
-export const SET_SELECTED_POST_COMMENTS = 'SET_SELECTED_POST_COMMENTS';
-export const SET_INPUT_NAME = 'SET_INPUT_NAME';
-export const SET_INPUT_EMAIL = 'SET_INPUT_EMAIL';
-export const SET_INPUT_COMMENT = 'SET_INPUT_COMMENT';
-export const SET_IS_EMAIL_VALID = 'SET_IS_EMAIL_VALID';
-export const SET_IS_SUBMITTED = 'SET_IS_SUBMITTED';
-export const SET_IS_ADD_COMMENT_LOADING = 'SET_IS_ADD_COMMENT_LOADING';
+/* eslint-disable no-debugger */
+import { Dispatch } from 'react';
+import {
+  addComment,
+  deleteCommentFromServer,
+  getPostComments,
+} from '../../api/comments';
+import { emailValidator } from '../../functions/emailValidator';
+import { Comment } from '../../types/Comment';
+import {
+  CommentsActionTypes,
+  DeleteTargets,
+  InputComment,
+  InputEmail,
+  InputName,
+  IsAddCommentLoading,
+  IsCommentsVisible,
+  IsDeleteCommentLoading,
+  IsEmailValid,
+  IsSubmitted,
+  SelectedPostComments,
+} from './actionTypes';
 
-export const setSelectedPostCommentsAction = (comments: Comment[]) => {
+export const setSelectedPostCommentsAction = (
+  comments: Comment[],
+): SelectedPostComments => {
   return ({
-    type: SET_SELECTED_POST_COMMENTS,
+    type: CommentsActionTypes.setSelectedPostComments,
     selectedPostComments: comments,
   });
 };
 
-export const setIsCommentsVisibleAction = (boolean: boolean) => {
+export const setIsCommentsVisibleAction = (
+  boolean: boolean,
+): IsCommentsVisible => {
   return ({
-    type: SET_IS_COMMENTS_VISIBLE,
+    type: CommentsActionTypes.setIsCommentsVisible,
     isCommentsVisible: boolean,
   });
 };
 
-export const setIsDeleteCommentLoadingAction = (boolean: boolean) => {
+export const setIsDeleteCommentLoadingAction = (
+  boolean: boolean,
+): IsDeleteCommentLoading => {
   return ({
-    type: SET_IS_DELETE_COMMENTS_LOADING,
+    type: CommentsActionTypes.setIsDeleteCommentLoading,
     isDeleteCommentLoading: boolean,
   });
 };
 
-export const setDeleteTargetsAction = (id: number, boolean: boolean) => {
+export const setDeleteTargetsAction = (
+  id: number,
+  boolean: boolean,
+): DeleteTargets => {
   return ({
-    type: SET_DELETE_TARGETS,
-    deleteTargets: id,
+    type: CommentsActionTypes.setDeleteTargets,
+    id,
     push: boolean,
   });
 };
 
-export const setInputNameAction = (value: string) => {
+export const setInputNameAction = (
+  value: string,
+): InputName => {
   return ({
-    type: SET_INPUT_NAME,
+    type: CommentsActionTypes.setInputName,
     inputName: value,
   });
 };
 
-export const setInputEmailAction = (value: string) => {
+export const setInputEmailAction = (
+  value: string,
+): InputEmail => {
   return ({
-    type: SET_INPUT_EMAIL,
+    type: CommentsActionTypes.setInputEmail,
     inputEmail: value,
   });
 };
 
-export const setInputCommentAction = (value: string) => {
+export const setInputCommentAction = (
+  value: string,
+): InputComment => {
   return ({
-    type: SET_INPUT_COMMENT,
+    type: CommentsActionTypes.setInputComment,
     inputComment: value,
   });
 };
 
-export const setIsEmailValidAction = (value: boolean) => {
+export const setIsEmailValidAction = (
+  value: boolean,
+): IsEmailValid => {
   return ({
-    type: SET_IS_EMAIL_VALID,
+    type: CommentsActionTypes.setIsEmailValid,
     isEmailValid: value,
   });
 };
 
-export const setIsSubmittedAction = (value: boolean) => {
+export const setIsSubmittedAction = (
+  value: boolean,
+): IsSubmitted => {
   return ({
-    type: SET_IS_SUBMITTED,
+    type: CommentsActionTypes.setIsSubmitted,
     isSubmitted: value,
   });
 };
 
-export const setIsAddCommentLoadingAction = (value: boolean) => {
+export const setIsAddCommentLoadingAction = (
+  value: boolean,
+): IsAddCommentLoading => {
   return ({
-    type: SET_IS_ADD_COMMENT_LOADING,
+    type: CommentsActionTypes.setIsAddCommentLoading,
     isAddCommentLoading: value,
   });
+};
+
+export const loadCommentsFromServerAction = (
+  selectedPostId: number | null,
+) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      if (selectedPostId) {
+        const currentPostComments = await getPostComments(selectedPostId);
+
+        dispatch(setSelectedPostCommentsAction(currentPostComments));
+      }
+    } catch (error) {
+      dispatch(setSelectedPostCommentsAction([]));
+    }
+  };
+};
+
+export const deleteCommentAction = (
+  CommentId: number,
+  selectedPostId: number | null,
+) => {
+  return async (dispatch: Dispatch<any>) => {
+    dispatch(setIsDeleteCommentLoadingAction(true));
+
+    await deleteCommentFromServer(CommentId);
+    dispatch(loadCommentsFromServerAction(selectedPostId));
+
+    dispatch(setIsDeleteCommentLoadingAction(false));
+    dispatch(setDeleteTargetsAction(CommentId, false));
+  };
+};
+
+export const addCommentAction = (
+  event: React.FormEvent<HTMLFormElement>,
+  inputName: string,
+  inputEmail: string,
+  inputComment: string,
+  selectedPostId: number | null,
+) => {
+  return async (dispatch: Dispatch<any>) => {
+    event.preventDefault();
+    dispatch(setIsAddCommentLoadingAction(true));
+    dispatch(setIsSubmittedAction(true));
+
+    if (!inputName || !inputEmail || !inputComment) {
+      dispatch(setIsAddCommentLoadingAction(false));
+
+      return;
+    }
+
+    if (!emailValidator(inputEmail)) {
+      dispatch(setIsEmailValidAction(false));
+      dispatch(setIsAddCommentLoadingAction(false));
+
+      return;
+    }
+
+    const newComment: Omit<Comment, 'id'> = {
+      postId: selectedPostId || 0,
+      name: inputName,
+      email: inputEmail,
+      body: inputComment,
+    };
+
+    await addComment(newComment);
+    dispatch(loadCommentsFromServerAction(selectedPostId));
+
+    dispatch(setIsSubmittedAction(false));
+    dispatch(setIsAddCommentLoadingAction(false));
+    dispatch(setInputNameAction(''));
+    dispatch(setInputEmailAction(''));
+    dispatch(setInputCommentAction(''));
+  };
 };

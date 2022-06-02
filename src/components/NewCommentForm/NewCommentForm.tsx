@@ -1,11 +1,7 @@
-/* eslint-disable no-console */
-import React, { useCallback } from 'react';
+import { FC, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
-import { Comment } from '../../types/Comment';
-
-import { addComment } from '../../api/comments';
 import { emailValidator } from '../../functions/emailValidator';
 
 import './NewCommentForm.scss';
@@ -22,22 +18,17 @@ import {
   getIsSubmittedSelector,
 } from '../../store/CommentsReducer/selectors';
 import {
+  addCommentAction,
   setInputCommentAction,
   setInputEmailAction,
   setInputNameAction,
-  setIsAddCommentLoadingAction, setIsEmailValidAction, setIsSubmittedAction,
+  setIsEmailValidAction,
 } from '../../store/CommentsReducer/actions';
 
-type Props = {
-  getComments: () => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = React.memo(({
-  getComments,
-}) => {
+export const NewCommentForm: FC = memo(() => {
   const dispatch = useDispatch();
 
-  const postId = useSelector(getSelectedPostIdSelector);
+  const selectedPostId = useSelector(getSelectedPostIdSelector);
   const inputName = useSelector(getInputNameSelector);
   const inputEmail = useSelector(getInputEmailSelector);
   const inputComment = useSelector(getInputCommentSelector);
@@ -45,48 +36,18 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   const isSubmitted = useSelector(getIsSubmittedSelector);
   const isAddCommentLoading = useSelector(getIsAddCommentsLoadingSelector);
 
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      dispatch(setIsAddCommentLoadingAction(true));
-      dispatch(setIsSubmittedAction(true));
-
-      if (!inputName || !inputEmail || !inputComment) {
-        dispatch(setIsAddCommentLoadingAction(false));
-
-        return;
-      }
-
-      if (!emailValidator(inputEmail)) {
-        dispatch(setIsEmailValidAction(false));
-        dispatch(setIsAddCommentLoadingAction(false));
-
-        return;
-      }
-
-      const newComment: Omit<Comment, 'id'> = {
-        postId: postId || 0,
-        name: inputName,
-        email: inputEmail,
-        body: inputComment,
-      };
-
-      await addComment(newComment);
-      await getComments();
-
-      dispatch(setIsSubmittedAction(false));
-      dispatch(setIsAddCommentLoadingAction(false));
-      dispatch(setInputNameAction(''));
-      dispatch(setInputEmailAction(''));
-      dispatch(setInputCommentAction(''));
-    },
-    [inputName, inputEmail, inputComment, postId],
-  );
-
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(event) => handleSubmit(event)}
+      onSubmit={(event) => {
+        dispatch(addCommentAction(
+          event,
+          inputName,
+          inputEmail,
+          inputComment,
+          selectedPostId,
+        ));
+      }}
     >
       <div className="form-field">
         <input
