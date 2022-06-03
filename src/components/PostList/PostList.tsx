@@ -4,7 +4,7 @@ import { deletePost } from '../../api/posts';
 import { actions, selectors } from '../../store/main';
 import './PostList.scss';
 
-export const PostsList: React.FC = () => {
+export const PostsList: React.FC = React.memo(() => {
   const posts = useSelector(selectors.getPostsSelector);
   const selectedPostId = useSelector(selectors.getPostIdSelector);
 
@@ -18,11 +18,11 @@ export const PostsList: React.FC = () => {
     }
   }, [selectedPostId]);
 
-  const handleRemovePost = async (postId: number) => {
+  const handleRemovePost = useCallback(async (postId: number) => {
     await deletePost(postId);
 
     dispatch(actions.deletePost(postId));
-  };
+  }, []);
 
   return (
     <div className="PostsList">
@@ -56,4 +56,4 @@ export const PostsList: React.FC = () => {
       </ul>
     </div>
   );
-};
+});
