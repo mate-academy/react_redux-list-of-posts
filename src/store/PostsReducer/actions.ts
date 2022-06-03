@@ -174,7 +174,7 @@ export const filterVisiblePostsAction = (
     dispatch(setPostTitleQueryAction(query));
 
     const lowerQuery = query.toLowerCase();
-    const result = [...posts].filter(post => {
+    const result = posts.filter(post => {
       const lowerTitle = post.title.toLowerCase();
 
       return lowerTitle.includes(lowerQuery);

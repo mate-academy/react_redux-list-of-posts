@@ -2,6 +2,7 @@ import {
   FC,
   memo,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,27 +21,32 @@ import { loadUserAction } from '../../store/UserReducer/actions';
 
 import './PostListControlPanel.scss';
 import { addComments, addPosts, addUsers } from '../../api/fixApi';
+import { Post } from '../../types/Post';
 
 export const PostListControlPanel: FC = memo(() => {
   const dispatch = useDispatch();
 
   const selectValue = useSelector(getSelectValueSelector);
   const titleQuery = useSelector(getPostsTitleQuerySelector);
-  const posts = useSelector(getPostsSelector);
+  const AllPosts = useSelector(getPostsSelector);
 
   const [currentFilterInput, setCurrentInputFilter] = useState(titleQuery);
 
   const applyQuery = useCallback(
-    debounce((query) => {
+    debounce((query, posts) => {
       dispatch(filterVisiblePostsAction(query, posts));
-    }, 1000),
+    }, 500),
     [titleQuery],
   );
 
-  const handleQueryChange = useCallback((value: string) => {
+  const handleQueryChange = useCallback((value: string, posts: Post[]) => {
     setCurrentInputFilter(value);
-    applyQuery(value);
+    applyQuery(value, posts);
   }, [titleQuery]);
+
+  useEffect(() => {
+    handleQueryChange(titleQuery, AllPosts);
+  }, [AllPosts]);
 
   return (
     <div className="control-panel">
@@ -104,7 +110,7 @@ export const PostListControlPanel: FC = memo(() => {
           className="control-panel__input"
           value={currentFilterInput}
           onChange={({ target }) => {
-            handleQueryChange(target.value);
+            handleQueryChange(target.value, AllPosts);
           }}
         />
       </label>
