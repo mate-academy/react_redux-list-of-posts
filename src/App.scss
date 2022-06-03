@@ -1,1 +1,99 @@
 // not empty
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #e9e6f2;
+  margin: 0;
+  padding: 20px 10px 0;
+  color: #4d457b;
+  font-family: "Roboto", sans-serif;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #fafafd;
+    border-radius: 20px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #4d457b;
+    border-radius: 20px;
+    border: 1px solid lightblue;
+  }
+}
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+h3 {
+  text-align: center;
+}
+
+label,
+p {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+}
+
+%stretch-panel {
+  flex-grow: 1;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.App {
+  &__header {
+    position: sticky;
+    padding: 10px;
+  }
+
+  &__main {
+    display: flex;
+    justify-content: stretch;
+    align-content: stretch;
+  }
+
+  &__sidebar {
+    @extend %stretch-panel;
+
+    flex-basis: 60%;
+    border-color: blue;
+  }
+
+  &__content {
+    @extend %stretch-panel;
+
+    flex-basis: 30%;
+    border-color: green;
+  }
+}
+
+.button {
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #b8b3d2;
+  border: 0;
+  color: white;
+  transition: background-color 0.12s;
+  font-size: inherit;
+  min-width: 100px;
+
+  &:hover {
+    background-color: #4d457b;
+  }
+}
