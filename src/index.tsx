@@ -1,15 +1,15 @@
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
+// eslint-disable-next-line import/no-named-as-default
 import store from './store';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Root = () => (
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <App />
   </Provider>
 );
 
