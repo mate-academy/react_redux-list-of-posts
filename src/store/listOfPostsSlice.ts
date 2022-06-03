@@ -23,6 +23,7 @@ interface ListOfPostsState {
   posts: Array<Post>;
   isPostListLoading: boolean;
   filterByUserId: number;
+  currentQuery: string;
 }
 
 const initialState: ListOfPostsState = {
@@ -30,6 +31,7 @@ const initialState: ListOfPostsState = {
   posts: [],
   isPostListLoading: false,
   filterByUserId: 0,
+  currentQuery: '',
 };
 
 export const deleteUserPostById = createAsyncThunk(
@@ -84,6 +86,9 @@ export const listOfPosts = createSlice({
     setIsPostListLoading: (state, action: PayloadAction<boolean>) => {
       state.isPostListLoading = action.payload;
     },
+    setCurrentQuery: (state, action: PayloadAction<string>) => {
+      state.currentQuery = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserPostsById.fulfilled, (state, action) => {
@@ -97,15 +102,27 @@ export const {
   setFilterByUserId,
   setIsPostListLoading,
   setPosts,
+  setCurrentQuery,
 } = listOfPosts.actions;
 
 export const selectors = {
-  getPosts: (state: RootState) => state.listOfPosts.posts,
+  getPosts: (state: RootState) => {
+    const lowerQuery = state.listOfPosts.currentQuery.toLowerCase();
+    const { posts } = state.listOfPosts;
+
+    if (lowerQuery) {
+      // eslint-disable-next-line max-len
+      return posts.filter(post => post.title.toLowerCase().includes(lowerQuery));
+    }
+
+    return posts;
+  },
   getSelectedPostId: (state: RootState) => state.listOfPosts.selectedPostId,
   getIsPostListLoading: (state: RootState) => {
     return state.listOfPosts.isPostListLoading;
   },
   getFilterByUserId: (state: RootState) => state.listOfPosts.filterByUserId,
+  getCurrentQuery: (state: RootState) => state.listOfPosts.currentQuery,
 };
 
 export default listOfPosts.reducer;

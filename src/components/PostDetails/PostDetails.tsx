@@ -50,7 +50,7 @@ export const PostDetails: React.FC<Props> = memo(({
           <section className="PostDetails__comments">
             <button
               type="button"
-              className="button"
+              className="button PostDetails__show-hide-button"
               onClick={() => {
                 dispatch(setCommentsIsShowing(!commentsIsShowing));
               }}
@@ -64,13 +64,13 @@ export const PostDetails: React.FC<Props> = memo(({
                   <li className="PostDetails__list-item" key={comment.id}>
                     <button
                       type="button"
-                      className="PostDetails__remove-button button"
+                      className="btn-close PostDetails__remove-button"
                       onClick={() => {
                         dispatch(removeCommentInSelectedPostById(comment.id));
                       }}
-                    >
-                      {someCommentIsDeleting ? <Loader /> : 'X'}
-                    </button>
+                      aria-label="Close"
+                      disabled={someCommentIsDeleting}
+                    />
                     <p>{comment.body}</p>
                   </li>
                 ))}

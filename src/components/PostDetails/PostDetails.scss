@@ -9,13 +9,15 @@
 
   &__list {
     list-style: none;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    height: 100px;
   }
 
   &__list-item {
-    margin: 5px 0;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 5px;
     padding: 10px;
     border-radius: 10px;
     font-style: italic;
@@ -28,22 +30,12 @@
     );
   }
 
+  &__show-hide-button {
+    margin-bottom: 10px;
+  }
+
   &__remove-button {
-    min-width: 20px;
-    color: inherit;
-    background-color: transparent;
-    transition: color 0.12s;
-    margin-right: 10px;
-
-    &:hover {
-      color: #e9e6f2;
-      background-color: transparent;
-    }
-
-    &:hover + p {
-      transition: color 0.12s;
-      color: #e9e6f2;
-    }
+    width: 30px !important;
   }
 
   &__form-wrapper {

@@ -1,13 +1,17 @@
 import React, {
   useCallback,
   useEffect,
+  useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 
+import debounce from 'lodash/debounce';
 import {
   fetchUserPostsById,
   selectors,
   setSelectedPostId,
   setFilterByUserId,
+  setCurrentQuery,
   deleteUserPostById,
 } from '../../store/listOfPostsSlice';
 import {
@@ -24,6 +28,14 @@ export const PostsList: React.FC<{}> = React.memo(() => {
   useEffect(() => {
     dispatch(fetchUserPostsById(0));
   }, []);
+
+  const currentQuery = useSelector(selectors.getCurrentQuery);
+  const [query, setQuery] = useState(currentQuery);
+  const applyQuery = useCallback(
+    debounce((newQuery: string) => {
+      dispatch(setCurrentQuery(newQuery));
+    }, 500), [],
+  );
 
   const posts = useAppSelector(selectors.getPosts);
   const isPostListLoading = useAppSelector(selectors.getIsPostListLoading);
@@ -47,7 +59,7 @@ export const PostsList: React.FC<{}> = React.memo(() => {
           Select a user: &nbsp;
 
           <select
-            className="App__user-selector"
+            className="PostsList__user-selector"
             value={filterByUserId}
             onChange={({ target }) => {
               dispatch(fetchUserPostsById(+target.value));
@@ -66,6 +78,20 @@ export const PostsList: React.FC<{}> = React.memo(() => {
             <option value="9">Glenna Reichert</option>
             <option value="10">Leanne Graham</option>
           </select>
+        </label>
+        <label>
+          Filter:
+          <input
+            className="PostsList__content-filter"
+            type="text"
+            value={query}
+            onChange={({ target }) => {
+              const { value } = target;
+
+              setQuery(value);
+              applyQuery(value);
+            }}
+          />
         </label>
       </header>
 
@@ -92,7 +118,7 @@ export const PostsList: React.FC<{}> = React.memo(() => {
                     </b>
                     {post.title}
                   </div>
-                  <div>
+                  <div className="PostsList__btns-container">
                     <button
                       type="button"
                       className="PostsList__button button"
@@ -106,13 +132,12 @@ export const PostsList: React.FC<{}> = React.memo(() => {
                     </button>
                     <button
                       type="button"
-                      className="PostsList__button button"
+                      className="btn-close"
                       onClick={() => {
                         dispatch(deleteUserPostById(post.id));
                       }}
-                    >
-                      X
-                    </button>
+                      aria-label="Close"
+                    />
                   </div>
                 </li>
               ))}
