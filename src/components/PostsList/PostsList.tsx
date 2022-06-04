@@ -1,21 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../../types/Post';
 import './PostsList.scss';
 import { fetchPosts } from '../../api/posts';
 import { Loader } from '../Loader';
+import { getPostId, getUserId } from '../../store/selectors';
+import { setPostId } from '../../store/posts';
 
-type Props = {
-  selectedUser: string;
-  handleSelectedPost: (id: number) => void;
-  selectedPostId: number | null;
-};
-
-export const PostsList: React.FC<Props> = ({
-  selectedUser,
-  handleSelectedPost,
-  selectedPostId,
-}) => {
+export const PostsList: React.FC = () => {
+  const dispatch = useDispatch();
+  const selectedUser = useSelector(getUserId);
+  const selectedPostId = useSelector(getPostId);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPostsLoaded, setIsPostsLoaded] = useState(false);
 
@@ -56,7 +52,7 @@ export const PostsList: React.FC<Props> = ({
                     'PostsList__user-button': isOpen,
                   },
                 )}
-                onClick={() => handleSelectedPost(post.id)}
+                onClick={() => dispatch(setPostId(post.id))}
               >
                 {isOpen ? 'Close' : 'Open'}
               </button>

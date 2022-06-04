@@ -6,6 +6,7 @@ import { Dispatch } from 'react';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import userReducer from './user';
+import postsReducer from './posts';
 import { fetchMessage } from '../helpers/api';
 // import { useSelector } from 'react-redux';
 // import { fetchPosts } from '../api/posts';
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
   userId: userReducer,
+  postId: postsReducer,
 });
 
 // We automatically get types returned by concrete reducers

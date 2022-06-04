@@ -4,20 +4,19 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
 import { addComment, getPostComments, removeComment } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
-import './PostDetails.scss';
 import { Loader } from '../Loader';
 import { NewComment } from '../../types/NewComment';
+import { getPostId } from '../../store/selectors';
+import './PostDetails.scss';
 
-type Props = {
-  selectedPostId: number | null;
-};
-
-export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
+export const PostDetails: React.FC = () => {
+  const selectedPostId = useSelector(getPostId);
   const [details, setDetails] = useState<Post | null>(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [comments, setComments] = useState<Comment[] | null>(null);
