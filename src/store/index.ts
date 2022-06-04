@@ -5,7 +5,9 @@ import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
+import userReducer from './user';
 import { fetchMessage } from '../helpers/api';
+// import { useSelector } from 'react-redux';
 // import { fetchPosts } from '../api/posts';
 // import { useSelector } from 'react-redux';
 
@@ -20,14 +22,11 @@ import { fetchMessage } from '../helpers/api';
 const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
+  userId: userReducer,
 });
 
 // We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
 
 /**
  * Thunk - is a function that should be used as a normal action creator
@@ -43,8 +42,10 @@ export const loadMessage = () => {
       const message = await fetchMessage();
 
       dispatch(setMessage(message));
+      // dispatch(setUserId(user));
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
+      // dispatch(setUserId('0'));
     }
 
     dispatch(finishLoading());

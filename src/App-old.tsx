@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import './App.scss';
 import { Start } from './components/Start';
 
-import { isLoading, getMessage } from './store';
+import { isLoading, getMessage } from './store/selectors';
 
 const App = () => {
   const loading = useSelector(isLoading);

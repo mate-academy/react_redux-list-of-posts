@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isLoading, loadMessage } from '../store';
+import { loadMessage } from '../store';
+import { isLoading } from '../store/selectors';
 
 export const Start = () => {
   const dispatch = useDispatch();

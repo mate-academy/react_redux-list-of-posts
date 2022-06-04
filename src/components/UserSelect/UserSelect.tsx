@@ -1,21 +1,19 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserId } from '../../store/selectors';
+import { setUserId } from '../../store/user';
 
-type Props = {
-  selectedUser: string;
-  handleSelectedUser: (id: string) => void;
-};
+export const UserSelect: React.FC = () => {
+  const user: string = useSelector(getUserId);
+  const dispatch = useDispatch();
 
-export const UserSelect: React.FC<Props> = ({
-  selectedUser,
-  handleSelectedUser,
-}) => {
   return (
     <label>
       Select a user: &nbsp;
       <select
-        value={selectedUser}
+        value={user}
         className="App__user-selector"
-        onChange={({ target }) => handleSelectedUser(target.value)}
+        onChange={({ target }) => dispatch(setUserId(target.value))}
       >
         <option value="0">All users</option>
         <option value="1">Leanne Graham</option>

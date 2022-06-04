@@ -1,11 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import './App.scss';
+import { useSelector } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect';
+import { getUserId } from './store/selectors';
 
 const App: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState('0');
+  // const [selectedUser] = useState('0');
+  const selectedUser: string = useSelector(getUserId);
+
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   const handleSelectedPost = useCallback((id: number) => {
@@ -16,17 +20,15 @@ const App: React.FC = () => {
     }
   }, [selectedPostId]);
 
-  const handleSelectedUser = useCallback((id: string) => {
-    setSelectedUser(id);
-  }, []);
+  // const handleSelectedUser = useCallback((id: string) => {
+  //   setSelectedUser(id);
+  // dispatch(setUserId);
+  // }, []);
 
   return (
     <div className="App">
       <header className="App__header">
-        <UserSelect
-          selectedUser={selectedUser}
-          handleSelectedUser={handleSelectedUser}
-        />
+        <UserSelect />
       </header>
 
       <main className="App__main">
