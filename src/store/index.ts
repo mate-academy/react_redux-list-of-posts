@@ -6,6 +6,8 @@ import { Dispatch } from 'react';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import { fetchMessage } from '../helpers/api';
+// import { fetchPosts } from '../api/posts';
+// import { useSelector } from 'react-redux';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -44,6 +46,25 @@ export const loadMessage = () => {
     } catch (error) {
       dispatch(setMessage('Error occurred when loading data'));
     }
+
+    dispatch(finishLoading());
+  };
+};
+
+export const loadPosts = () => {
+  // inner function is an action handled by Redux Thunk
+  return async (dispatch: Dispatch<any>) => {
+    dispatch(startLoading());
+
+    // const userId = useSelector(getUserId);
+
+    // try {
+    //   const posts = await fetchPosts(userId);
+
+    //   dispatch(setPosts(posts));
+    // } catch (error) {
+    //   dispatch(setPosts([]));
+    // }
 
     dispatch(finishLoading());
   };
