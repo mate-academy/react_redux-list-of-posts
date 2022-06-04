@@ -1,29 +1,27 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../../types/Post';
 import './PostsList.scss';
-import { fetchPosts } from '../../api/posts';
 import { Loader } from '../Loader';
-import { getPostId, getUserId } from '../../store/selectors';
-import { setPostId } from '../../store/posts';
+import {
+  getPostId,
+  getPosts,
+  getUserId,
+  isLoading,
+} from '../../store/selectors';
+import { setPostId } from '../../store/post';
+import { loadPosts } from '../../store';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
   const selectedUser = useSelector(getUserId);
   const selectedPostId = useSelector(getPostId);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
-
-  const getPosts = useCallback(async () => {
-    const userPosts = await fetchPosts(+selectedUser);
-
-    setPosts(userPosts);
-    setIsPostsLoaded(true);
-  }, [selectedUser]);
+  const isPostLoading = useSelector(isLoading);
+  const posts: Post[] = useSelector(getPosts);
 
   useEffect(() => {
-    getPosts();
+    dispatch(loadPosts(+selectedUser));
   }, [selectedUser]);
 
   return (
@@ -31,8 +29,8 @@ export const PostsList: React.FC = () => {
       <h2>Posts:</h2>
 
       <ul className="PostsList__list" data-cy="postDetails">
-        {!isPostsLoaded && <Loader />}
-        {isPostsLoaded && posts.map((post) => {
+        {isPostLoading && <Loader />}
+        {!isPostLoading && posts.map((post) => {
           const isOpen = selectedPostId === post.id;
 
           return (
