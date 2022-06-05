@@ -5,6 +5,11 @@ import { Post } from '../types/Post';
 const SET_POST_DETAILS = 'SET_POST_DETAILS';
 
 // Action creators
+export type SetPostsAction = {
+  type: string,
+  posts: Post[],
+};
+
 export const setPost
   = (post: Post | null) => ({ type: SET_POST_DETAILS, post });
 
