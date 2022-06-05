@@ -2,7 +2,7 @@ import { BASE_URL } from './api';
 import { Comment } from '../types/Comment';
 import { NewComment } from '../types/NewComment';
 
-export const getPostComments = async (postId: number): Promise<Comment[]> => {
+export const fetchComments = async (postId: number): Promise<Comment[]> => {
   const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
 
   return response.json();

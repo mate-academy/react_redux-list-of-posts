@@ -5,64 +5,66 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NewCommentForm } from '../NewCommentForm';
-import { addComment, getPostComments, removeComment } from '../../api/comments';
+// import { NewCommentForm } from '../NewCommentForm';
+// import { addComment, removeComment } from '../../api/comments';
 import { Comment } from '../../types/Comment';
 import { Loader } from '../Loader';
-import { NewComment } from '../../types/NewComment';
+// import { NewComment } from '../../types/NewComment';
 import {
+  getComments,
   getMessage,
   getPost,
   getPostId,
   isLoading,
 } from '../../store/selectors';
 import './PostDetails.scss';
-import { loadPost } from '../../store';
+import { loadPostDetails } from '../../store';
 import { Post } from '../../types/Post';
 import { setPost } from '../../store/post';
+import { setComments } from '../../store/comments';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
   const selectedPostId: number | null = useSelector(getPostId);
   const details: Post = useSelector(getPost);
+  const comments: Comment[] = useSelector(getComments);
   const isDetailsLoading: boolean = useSelector(isLoading);
   const message: string = useSelector(getMessage);
 
-  const [comments, setComments] = useState<Comment[] | null>(null);
-  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  // const [comments, setComments] = useState<Comment[] | null>(null);
   const [isVisibleComments, setIsVisibleComments] = useState(true);
 
   const handleVisibilityComments = useCallback(() => {
     setIsVisibleComments(!isVisibleComments);
   }, [isVisibleComments]);
 
-  const updateComments = useCallback(async () => {
-    if (selectedPostId) {
-      const userPostComments = await getPostComments(selectedPostId);
+  // const updateComments = useCallback(async () => {
+    // if (selectedPostId) {
+    //   const userPostComments = await getPostComments(selectedPostId);
 
-      setComments(userPostComments);
-    }
-  }, [selectedPostId]);
+    //   setComments(userPostComments);
+    // }
+  // }, [selectedPostId]);
 
-  const handleRemoveComment = useCallback(async (commentId: number) => {
-    try {
-      setIsCommentsLoading(true);
-      await removeComment(commentId);
-    } finally {
-      setIsCommentsLoading(false);
-      updateComments();
-    }
-  }, [selectedPostId, comments]);
+  // const handleRemoveComment = useCallback(async (commentId: number) => {
+    // try {
+    //   setIsCommentsLoading(true);
+    //   await removeComment(commentId);
+    // } finally {
+    //   setIsCommentsLoading(false);
+    //   updateComments();
+    // }
+  // }, [selectedPostId, comments]);
 
-  const handleAddComment = useCallback(async (newComment: NewComment) => {
-    try {
-      setIsCommentsLoading(true);
-      await addComment(newComment);
-    } finally {
-      setIsCommentsLoading(false);
-      updateComments();
-    }
-  }, [selectedPostId, comments]);
+  // const handleAddComment = useCallback(async (newComment: NewComment) => {
+    // try {
+    //   setIsCommentsLoading(true);
+    //   await addComment(newComment);
+    // } finally {
+    //   setIsCommentsLoading(false);
+    //   updateComments();
+    // }
+  // }, [selectedPostId, comments]);
 
   const isComments = useMemo(() => {
     return comments && comments.length > 0;
@@ -70,9 +72,10 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     if (selectedPostId) {
-      dispatch(loadPost(selectedPostId));
+      dispatch(loadPostDetails(selectedPostId));
     } else {
       dispatch(setPost(null));
+      dispatch(setComments(null));
     }
   }, [selectedPostId]);
 
@@ -110,8 +113,8 @@ export const PostDetails: React.FC = () => {
                 </button>
               )}
 
-              {isCommentsLoading && <Loader />}
-              {!isCommentsLoading && (
+              {(isDetailsLoading && !comments) && <Loader />}
+              {(!isDetailsLoading || comments) && (
                 <ul className="PostDetails__list" data-cy="postDetails">
                   {isVisibleComments && comments?.map((comment) => (
                     <li
@@ -121,7 +124,7 @@ export const PostDetails: React.FC = () => {
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
-                        onClick={() => handleRemoveComment(comment.id)}
+                        // onClick={() => handleRemoveComment(comment.id)}
                       >
                         X
                       </button>
@@ -134,10 +137,10 @@ export const PostDetails: React.FC = () => {
             {details?.body && (
               <section>
                 <div className="PostDetails__form-wrapper">
-                  <NewCommentForm
+                  {/* <NewCommentForm
                     handleAddComment={handleAddComment}
                     selectedPostId={selectedPostId}
-                  />
+                  /> */}
                 </div>
               </section>
             )}

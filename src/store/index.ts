@@ -8,9 +8,11 @@ import messageReducer, { setMessage } from './message';
 import userReducer from './user';
 import posIdtReducer from './postId';
 import postsReducer, { setPosts } from './posts';
+import commentsReducer, { setComments } from './comments';
 import postReducer, { setPost } from './post';
 import { fetchMessage } from '../helpers/api';
 import { fetchPost, fetchPosts } from '../api/posts';
+import { fetchComments } from '../api/comments';
 // import { setPost } from './post';
 
 /**
@@ -27,6 +29,7 @@ const rootReducer = combineReducers({
   userId: userReducer,
   postId: posIdtReducer,
   posts: postsReducer,
+  comments: commentsReducer,
   post: postReducer,
 });
 
@@ -58,6 +61,7 @@ export const loadMessage = () => {
 export const loadPosts = (userId: number) => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
+    dispatch(setPosts(null));
     dispatch(startLoading());
 
     try {
@@ -73,15 +77,22 @@ export const loadPosts = (userId: number) => {
   };
 };
 
-export const loadPost = (postId: number) => {
+export const loadPostDetails = (postId: number) => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<any>) => {
     if (postId) {
+      dispatch(setPost(null));
+      dispatch(setComments(null));
+
       try {
         dispatch(startLoading());
-        const post = await fetchPost(postId);
+        const [post, comments] = await Promise.all([
+          fetchPost(postId),
+          fetchComments(postId),
+        ]);
 
         dispatch(setPost(post));
+        dispatch(setComments(comments));
       } catch (error) {
         dispatch(setMessage('Error occurred when loading post'));
       } finally {

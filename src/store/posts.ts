@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 const SET_POSTS = 'SET_POSTS';
 
 // Action creators
-export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
+export const setPosts = (posts: Post[] | null) => ({ type: SET_POSTS, posts });
 
 const reducer = (posts = [], action: AnyAction) => {
   switch (action.type) {

@@ -6,4 +6,5 @@ export const getMessage = (state: RootState) => state.message;
 export const getUserId = (state: RootState) => state.userId;
 export const getPostId = (state: RootState) => state.postId;
 export const getPosts = (state: RootState) => state.posts;
+export const getComments = (state: RootState) => state.comments;
 export const getPost = (state: RootState) => state.post;

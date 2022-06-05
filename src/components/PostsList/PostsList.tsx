@@ -18,7 +18,7 @@ export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
   const selectedUser = useSelector(getUserId);
   const selectedPostId = useSelector(getPostId);
-  const isPostLoading = useSelector(isLoading);
+  const isPostsLoading = useSelector(isLoading);
   const posts: Post[] = useSelector(getPosts);
   const message = useSelector(getMessage);
 
@@ -31,9 +31,9 @@ export const PostsList: React.FC = () => {
       <h2>Posts:</h2>
 
       <ul className="PostsList__list" data-cy="postDetails">
-        {(isPostLoading && !posts.length) && <Loader />}
+        {(isPostsLoading && !posts) && <Loader />}
         {message}
-        {(!isPostLoading || posts) && posts.map((post) => {
+        {(!isPostsLoading || posts) && posts.map((post) => {
           const isOpen = selectedPostId === post.id;
 
           return (
