@@ -9,7 +9,7 @@ export const fetchPosts = async (userId: number): Promise<Post[]> => {
   return response.json();
 };
 
-export const getPostDetails = async (postId: number): Promise<Post> => {
+export const fetchPost = async (postId: number): Promise<Post> => {
   const response = await fetch(`${BASE_URL}/posts/${postId}`);
 
   return response.json();

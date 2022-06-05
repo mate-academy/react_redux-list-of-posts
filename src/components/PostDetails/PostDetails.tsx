@@ -4,21 +4,30 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
 import { addComment, getPostComments, removeComment } from '../../api/comments';
-import { getPostDetails } from '../../api/posts';
 import { Comment } from '../../types/Comment';
-import { Post } from '../../types/Post';
 import { Loader } from '../Loader';
 import { NewComment } from '../../types/NewComment';
-import { getPostId } from '../../store/selectors';
+import {
+  getMessage,
+  getPost,
+  getPostId,
+  isLoading,
+} from '../../store/selectors';
 import './PostDetails.scss';
+import { loadPost } from '../../store';
+import { Post } from '../../types/Post';
+import { setPost } from '../../store/post';
 
 export const PostDetails: React.FC = () => {
-  const selectedPostId = useSelector(getPostId);
-  const [details, setDetails] = useState<Post | null>(null);
-  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const selectedPostId: number | null = useSelector(getPostId);
+  const details: Post = useSelector(getPost);
+  const isDetailsLoading: boolean = useSelector(isLoading);
+  const message: string = useSelector(getMessage);
+
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isVisibleComments, setIsVisibleComments] = useState(true);
@@ -26,26 +35,6 @@ export const PostDetails: React.FC = () => {
   const handleVisibilityComments = useCallback(() => {
     setIsVisibleComments(!isVisibleComments);
   }, [isVisibleComments]);
-
-  const postDetails = useCallback(async () => {
-    if (selectedPostId) {
-      try {
-        setIsDetailsLoading(true);
-        const [userPostDetails, userPostComments] = await Promise.all([
-          getPostDetails(selectedPostId),
-          getPostComments(selectedPostId),
-        ]);
-
-        setDetails(userPostDetails);
-        setComments(userPostComments);
-      } finally {
-        setIsDetailsLoading(false);
-      }
-    } else {
-      setDetails(null);
-      setComments(null);
-    }
-  }, [selectedPostId]);
 
   const updateComments = useCallback(async () => {
     if (selectedPostId) {
@@ -80,15 +69,20 @@ export const PostDetails: React.FC = () => {
   }, [comments]);
 
   useEffect(() => {
-    postDetails();
+    if (selectedPostId) {
+      dispatch(loadPost(selectedPostId));
+    } else {
+      dispatch(setPost(null));
+    }
   }, [selectedPostId]);
 
   return (
     <>
       <div className="PostDetails">
         <h2>Post details:</h2>
-        {isDetailsLoading && <Loader />}
-        {!isDetailsLoading && (
+        {(isDetailsLoading && !details) && <Loader />}
+        {message}
+        {(!isDetailsLoading || details) && (
           <>
             <section className="PostDetails__post">
               <p>{details?.body}</p>

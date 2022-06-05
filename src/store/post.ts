@@ -1,23 +1,20 @@
 import { AnyAction } from 'redux';
+import { Post } from '../types/Post';
 
 // Action types
-const SET_POST_ID = 'SET_POST_ID';
+const SET_POST_DETAILS = 'SET_POST_DETAILS';
 
 // Action creators
-export const setPostId = (postId: number) => ({ type: SET_POST_ID, postId });
+export const setPost
+  = (post: Post | null) => ({ type: SET_POST_DETAILS, post });
 
-const reducer = (postId = null, action: AnyAction) => {
+const reducer = (post = null, action: AnyAction) => {
   switch (action.type) {
-    case SET_POST_ID: {
-      if (postId === action.postId) {
-        return null;
-      }
-
-      return action.postId;
-    }
+    case SET_POST_DETAILS:
+      return action.post;
 
     default:
-      return postId;
+      return post;
   }
 };
 

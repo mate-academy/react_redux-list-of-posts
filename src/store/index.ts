@@ -6,10 +6,12 @@ import { Dispatch } from 'react';
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import userReducer from './user';
-import postReducer from './post';
+import posIdtReducer from './postId';
 import postsReducer, { setPosts } from './posts';
+import postReducer, { setPost } from './post';
 import { fetchMessage } from '../helpers/api';
-import { fetchPosts } from '../api/posts';
+import { fetchPost, fetchPosts } from '../api/posts';
+// import { setPost } from './post';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -23,8 +25,9 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   message: messageReducer,
   userId: userReducer,
-  postId: postReducer,
+  postId: posIdtReducer,
   posts: postsReducer,
+  post: postReducer,
 });
 
 // We automatically get types returned by concrete reducers
@@ -67,6 +70,24 @@ export const loadPosts = (userId: number) => {
     }
 
     dispatch(finishLoading());
+  };
+};
+
+export const loadPost = (postId: number) => {
+  // inner function is an action handled by Redux Thunk
+  return async (dispatch: Dispatch<any>) => {
+    if (postId) {
+      try {
+        dispatch(startLoading());
+        const post = await fetchPost(postId);
+
+        dispatch(setPost(post));
+      } catch (error) {
+        dispatch(setMessage('Error occurred when loading post'));
+      } finally {
+        dispatch(finishLoading());
+      }
+    }
   };
 };
 

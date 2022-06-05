@@ -5,12 +5,13 @@ import { Post } from '../../types/Post';
 import './PostsList.scss';
 import { Loader } from '../Loader';
 import {
+  getMessage,
   getPostId,
   getPosts,
   getUserId,
   isLoading,
 } from '../../store/selectors';
-import { setPostId } from '../../store/post';
+import { setPostId } from '../../store/postId';
 import { loadPosts } from '../../store';
 
 export const PostsList: React.FC = () => {
@@ -19,6 +20,7 @@ export const PostsList: React.FC = () => {
   const selectedPostId = useSelector(getPostId);
   const isPostLoading = useSelector(isLoading);
   const posts: Post[] = useSelector(getPosts);
+  const message = useSelector(getMessage);
 
   useEffect(() => {
     dispatch(loadPosts(+selectedUser));
@@ -29,8 +31,9 @@ export const PostsList: React.FC = () => {
       <h2>Posts:</h2>
 
       <ul className="PostsList__list" data-cy="postDetails">
-        {isPostLoading && <Loader />}
-        {!isPostLoading && posts.map((post) => {
+        {(isPostLoading && !posts.length) && <Loader />}
+        {message}
+        {(!isPostLoading || posts) && posts.map((post) => {
           const isOpen = selectedPostId === post.id;
 
           return (
