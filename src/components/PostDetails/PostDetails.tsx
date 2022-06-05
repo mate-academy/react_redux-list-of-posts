@@ -3,11 +3,9 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { NewCommentForm } from '../NewCommentForm';
-// import { addComment, removeComment } from '../../api/comments';
+import { NewCommentForm } from '../NewCommentForm';
 import { Comment } from '../../types/Comment';
 import { Loader } from '../Loader';
-// import { NewComment } from '../../types/NewComment';
 import {
   getComments,
   getCommentsVisibility,
@@ -17,7 +15,7 @@ import {
   isLoading,
 } from '../../store/selectors';
 import './PostDetails.scss';
-import { loadPostDetails } from '../../store';
+import { loadPostDetails, handleComment } from '../../store';
 import { Post } from '../../types/Post';
 import { setPost } from '../../store/post';
 import { setComments } from '../../store/comments';
@@ -28,44 +26,9 @@ export const PostDetails: React.FC = () => {
   const selectedPostId: number | null = useSelector(getPostId);
   const details: Post = useSelector(getPost);
   const comments: Comment[] = useSelector(getComments);
-  const isDetailsLoading: boolean = useSelector(isLoading);
+  const isDataLoading: boolean = useSelector(isLoading);
   const message: string = useSelector(getMessage);
   const isCommentsVisible: boolean = useSelector(getCommentsVisibility);
-
-  // const [comments, setComments] = useState<Comment[] | null>(null);
-  // const [isVisibleComments, setIsVisibleComments] = useState(true);
-
-  // const handleVisibilityComments = useCallback(() => {
-  //   setIsVisibleComments(!isVisibleComments);
-  // }, [isVisibleComments]);
-
-  // const updateComments = useCallback(async () => {
-  // if (selectedPostId) {
-  //   const userPostComments = await getPostComments(selectedPostId);
-
-  //   setComments(userPostComments);
-  // }
-  // }, [selectedPostId]);
-
-  // const handleRemoveComment = useCallback(async (commentId: number) => {
-  // try {
-  //   setIsCommentsLoading(true);
-  //   await removeComment(commentId);
-  // } finally {
-  //   setIsCommentsLoading(false);
-  //   updateComments();
-  // }
-  // }, [selectedPostId, comments]);
-
-  // const handleAddComment = useCallback(async (newComment: NewComment) => {
-  // try {
-  //   setIsCommentsLoading(true);
-  //   await addComment(newComment);
-  // } finally {
-  //   setIsCommentsLoading(false);
-  //   updateComments();
-  // }
-  // }, [selectedPostId, comments]);
 
   const isComments = useMemo(() => {
     return comments && comments.length > 0;
@@ -84,64 +47,67 @@ export const PostDetails: React.FC = () => {
     <>
       <div className="PostDetails">
         <h2>Post details:</h2>
-        {(isDetailsLoading && !details) && <Loader />}
+        {(isDataLoading && !details) && <Loader />}
         {message}
-        {(!isDetailsLoading || details) && (
+        {(!isDataLoading || details) && (
           <>
             <section className="PostDetails__post">
               <p>{details?.body}</p>
             </section>
 
             <section className="PostDetails__comments">
-              {details?.body && !isComments && (
-                <button
-                  type="button"
-                  className="PostDetails__nocomments
-                  button"
-                >
-                  No comments
-                </button>
-              )}
-
-              {details?.body && isComments && (
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => dispatch(toggleVisibility())}
-                >
-                  {isCommentsVisible && `Hide ${comments?.length} comments`}
-                  {!isCommentsVisible && `Show ${comments?.length} comments`}
-                </button>
-              )}
-
-              {(isDetailsLoading && !comments) && <Loader />}
-              {(!isDetailsLoading || comments) && (
-                <ul className="PostDetails__list" data-cy="postDetails">
-                  {isCommentsVisible && comments?.map((comment) => (
-                    <li
-                      className="PostDetails__list-item"
-                      key={comment.id}
+              {(isDataLoading && !comments) && <Loader />}
+              {(!isDataLoading || comments) && (
+                <>
+                  {details?.body && !isComments && (
+                    <button
+                      type="button"
+                      className="PostDetails__nocomments
+                      button"
                     >
-                      <button
-                        type="button"
-                        className="PostDetails__remove-button button"
-                        // onClick={() => handleRemoveComment(comment.id)}
+                      No comments
+                    </button>
+                  )}
+
+                  {details?.body && isComments && (
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => dispatch(toggleVisibility())}
+                    >
+                      {isCommentsVisible && `Hide ${comments?.length} comments`}
+                      {!isCommentsVisible && `Show ${comments?.length} comments`}
+                    </button>
+                  )}
+
+                  <ul className="PostDetails__list" data-cy="postDetails">
+                    {isCommentsVisible && comments?.map((comment) => (
+                      <li
+                        className="PostDetails__list-item"
+                        key={comment.id}
                       >
-                        X
-                      </button>
-                      <p>{comment.body}</p>
-                    </li>
-                  ))}
-                </ul>
+                        <button
+                          type="button"
+                          className="PostDetails__remove-button button"
+                          onClick={
+                            () => dispatch(
+                              handleComment(comment.id, selectedPostId),
+                            )
+                          }
+                        >
+                          X
+                        </button>
+                        <p>{comment.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </section>
             {details?.body && (
               <section>
                 <div className="PostDetails__form-wrapper">
-                  {/* <NewCommentForm
-                    handleAddComment={handleAddComment}
-                    selectedPostId={selectedPostId}
-                  /> */}
+                  <NewCommentForm />
                 </div>
               </section>
             )}

@@ -3,17 +3,22 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import userReducer from './user';
-import posIdtReducer from './postId';
+import loadingReducer, {
+  finishLoading,
+  LoadingAction,
+  startLoading,
+} from './loading';
+import messageReducer, { setMessage, SetMessageAction } from './message';
+import userReducer, { SetUserIdAction } from './user';
+import posIdtReducer, { SetPostIdAction } from './postId';
 import commentsVisibilityReducer from './commentsVisibility';
-import postsReducer, { setPosts } from './posts';
-import commentsReducer, { setComments } from './comments';
+import postsReducer, { setPosts, SetPostsAction } from './posts';
+import commentsReducer, { setComments, SetCommentsAction } from './comments';
 import postReducer, { setPost } from './post';
 import { fetchMessage } from '../helpers/api';
 import { fetchPost, fetchPosts } from '../api/posts';
-import { fetchComments } from '../api/comments';
+import { deleteComment, fetchComments, postComment } from '../api/comments';
+import { NewComment } from '../types/NewComment';
 // import { setPost } from './post';
 
 /**
@@ -37,7 +42,8 @@ const rootReducer = combineReducers({
 
 // We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
-
+export type Action = SetUserIdAction | SetPostsAction | SetPostIdAction
+| SetMessageAction | LoadingAction | SetCommentsAction;
 /**
  * Thunk - is a function that should be used as a normal action creator
  *
@@ -45,7 +51,7 @@ export type RootState = ReturnType<typeof rootReducer>;
  */
 export const loadMessage = () => {
   // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<Action>) => {
     dispatch(startLoading());
 
     try {
@@ -62,7 +68,7 @@ export const loadMessage = () => {
 
 export const loadPosts = (userId: number) => {
   // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<Action>) => {
     dispatch(setPosts(null));
     dispatch(startLoading());
 
@@ -81,13 +87,13 @@ export const loadPosts = (userId: number) => {
 
 export const loadPostDetails = (postId: number) => {
   // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+  return async (dispatch: Dispatch<Action>) => {
     if (postId) {
+      dispatch(startLoading());
       dispatch(setPost(null));
       dispatch(setComments(null));
 
       try {
-        dispatch(startLoading());
         const [post, comments] = await Promise.all([
           fetchPost(postId),
           fetchComments(postId),
@@ -97,12 +103,39 @@ export const loadPostDetails = (postId: number) => {
         dispatch(setComments(comments));
       } catch (error) {
         dispatch(setMessage('Error occurred when loading post'));
-      } finally {
         dispatch(finishLoading());
       }
+
+      dispatch(finishLoading());
     }
   };
 };
+
+export const handleComment
+  = (comment: NewComment | number, selectedPostId: number | null) => {
+    return async (dispatch: Dispatch<Action>) => {
+      dispatch(startLoading());
+      dispatch(setComments(null));
+
+      try {
+        if (typeof comment === 'number') {
+          await deleteComment(comment);
+        } else {
+          await postComment(comment);
+        }
+
+        if (selectedPostId) {
+          const updatedComments = await fetchComments(selectedPostId);
+
+          dispatch(setComments(updatedComments));
+        }
+      } catch (error) {
+        dispatch(setMessage('Error occurred when removing comment'));
+      }
+
+      dispatch(finishLoading());
+    };
+  };
 
 const store = createStore(
   rootReducer,

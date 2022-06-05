@@ -8,7 +8,7 @@ export const fetchComments = async (postId: number): Promise<Comment[]> => {
   return response.json();
 };
 
-export const removeComment = async (commentId: number): Promise<Comment> => {
+export const deleteComment = async (commentId: number): Promise<Comment> => {
   const response = await fetch(
     `${BASE_URL}/comments/${commentId}`,
     { method: 'DELETE' },
@@ -17,7 +17,7 @@ export const removeComment = async (commentId: number): Promise<Comment> => {
   return response.json();
 };
 
-export const addComment = async (newComment: NewComment): Promise<Comment> => {
+export const postComment = async (newComment: NewComment): Promise<Comment> => {
   const response = await fetch(
     `${BASE_URL}/comments/`,
     {

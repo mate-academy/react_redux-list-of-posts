@@ -1,16 +1,14 @@
 import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleComment } from '../../store';
+import { getPostId } from '../../store/selectors';
 import { NewComment } from '../../types/NewComment';
 import './NewCommentForm.scss';
 
-type Props = {
-  handleAddComment: (newComment: NewComment) => void;
-  selectedPostId: number | null;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useDispatch();
+  const selectedPostId = useSelector(getPostId);
 
-export const NewCommentForm: React.FC<Props> = ({
-  handleAddComment,
-  selectedPostId,
-}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -70,7 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({
           body,
         };
 
-        handleAddComment(newComment);
+        dispatch(handleComment(newComment, selectedPostId));
         setName('');
         setEmail('');
         setBody('');
