@@ -8,3 +8,5 @@ export const getPostId = (state: RootState) => state.postId;
 export const getPosts = (state: RootState) => state.posts;
 export const getComments = (state: RootState) => state.comments;
 export const getPost = (state: RootState) => state.post;
+export const getCommentsVisibility
+  = (state: RootState) => state.commentsVisibility;

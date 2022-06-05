@@ -1,8 +1,6 @@
 import React, {
-  useCallback,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // import { NewCommentForm } from '../NewCommentForm';
@@ -12,6 +10,7 @@ import { Loader } from '../Loader';
 // import { NewComment } from '../../types/NewComment';
 import {
   getComments,
+  getCommentsVisibility,
   getMessage,
   getPost,
   getPostId,
@@ -22,6 +21,7 @@ import { loadPostDetails } from '../../store';
 import { Post } from '../../types/Post';
 import { setPost } from '../../store/post';
 import { setComments } from '../../store/comments';
+import { toggleVisibility } from '../../store/commentsVisibility';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
@@ -30,40 +30,41 @@ export const PostDetails: React.FC = () => {
   const comments: Comment[] = useSelector(getComments);
   const isDetailsLoading: boolean = useSelector(isLoading);
   const message: string = useSelector(getMessage);
+  const isCommentsVisible: boolean = useSelector(getCommentsVisibility);
 
   // const [comments, setComments] = useState<Comment[] | null>(null);
-  const [isVisibleComments, setIsVisibleComments] = useState(true);
+  // const [isVisibleComments, setIsVisibleComments] = useState(true);
 
-  const handleVisibilityComments = useCallback(() => {
-    setIsVisibleComments(!isVisibleComments);
-  }, [isVisibleComments]);
+  // const handleVisibilityComments = useCallback(() => {
+  //   setIsVisibleComments(!isVisibleComments);
+  // }, [isVisibleComments]);
 
   // const updateComments = useCallback(async () => {
-    // if (selectedPostId) {
-    //   const userPostComments = await getPostComments(selectedPostId);
+  // if (selectedPostId) {
+  //   const userPostComments = await getPostComments(selectedPostId);
 
-    //   setComments(userPostComments);
-    // }
+  //   setComments(userPostComments);
+  // }
   // }, [selectedPostId]);
 
   // const handleRemoveComment = useCallback(async (commentId: number) => {
-    // try {
-    //   setIsCommentsLoading(true);
-    //   await removeComment(commentId);
-    // } finally {
-    //   setIsCommentsLoading(false);
-    //   updateComments();
-    // }
+  // try {
+  //   setIsCommentsLoading(true);
+  //   await removeComment(commentId);
+  // } finally {
+  //   setIsCommentsLoading(false);
+  //   updateComments();
+  // }
   // }, [selectedPostId, comments]);
 
   // const handleAddComment = useCallback(async (newComment: NewComment) => {
-    // try {
-    //   setIsCommentsLoading(true);
-    //   await addComment(newComment);
-    // } finally {
-    //   setIsCommentsLoading(false);
-    //   updateComments();
-    // }
+  // try {
+  //   setIsCommentsLoading(true);
+  //   await addComment(newComment);
+  // } finally {
+  //   setIsCommentsLoading(false);
+  //   updateComments();
+  // }
   // }, [selectedPostId, comments]);
 
   const isComments = useMemo(() => {
@@ -106,17 +107,17 @@ export const PostDetails: React.FC = () => {
                 <button
                   type="button"
                   className="button"
-                  onClick={handleVisibilityComments}
+                  onClick={() => dispatch(toggleVisibility())}
                 >
-                  {isVisibleComments && `Hide ${comments?.length} comments`}
-                  {!isVisibleComments && `Show ${comments?.length} comments`}
+                  {isCommentsVisible && `Hide ${comments?.length} comments`}
+                  {!isCommentsVisible && `Show ${comments?.length} comments`}
                 </button>
               )}
 
               {(isDetailsLoading && !comments) && <Loader />}
               {(!isDetailsLoading || comments) && (
                 <ul className="PostDetails__list" data-cy="postDetails">
-                  {isVisibleComments && comments?.map((comment) => (
+                  {isCommentsVisible && comments?.map((comment) => (
                     <li
                       className="PostDetails__list-item"
                       key={comment.id}

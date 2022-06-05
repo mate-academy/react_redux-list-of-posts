@@ -7,6 +7,7 @@ import loadingReducer, { finishLoading, startLoading } from './loading';
 import messageReducer, { setMessage } from './message';
 import userReducer from './user';
 import posIdtReducer from './postId';
+import commentsVisibilityReducer from './commentsVisibility';
 import postsReducer, { setPosts } from './posts';
 import commentsReducer, { setComments } from './comments';
 import postReducer, { setPost } from './post';
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   posts: postsReducer,
   comments: commentsReducer,
   post: postReducer,
+  commentsVisibility: commentsVisibilityReducer,
 });
 
 // We automatically get types returned by concrete reducers
