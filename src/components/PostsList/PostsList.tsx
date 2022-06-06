@@ -16,6 +16,7 @@ import { setPostId } from '../../store/postId';
 import { loadPosts } from '../../store';
 import { setPosts } from '../../store/posts';
 import { setPost } from '../../store/post';
+import { setComments } from '../../store/comments';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export const PostsList: React.FC = () => {
 
     if (openedPost.id === postId) {
       dispatch(setPost(null));
+      dispatch(setComments(null));
     }
   };
 
