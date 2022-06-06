@@ -13,14 +13,16 @@ import userReducer, { SetUserIdAction } from './user';
 import posIdtReducer, { SetPostIdAction } from './postId';
 import commentsVisibilityReducer from './commentsVisibility';
 import postsReducer, { setPosts, SetPostsAction } from './posts';
-import displayedPostsReducer, { setDisplayedPosts } from './displayedPosts';
 import commentsReducer, { setComments, SetCommentsAction } from './comments';
 import postReducer, { setPost } from './post';
+import queryReducer, { SetQueryAction } from './query';
+
 import { fetchMessage } from '../helpers/api';
 import { fetchPost, fetchPosts } from '../api/posts';
 import { deleteComment, fetchComments, postComment } from '../api/comments';
 import { NewComment } from '../types/NewComment';
-// import { setPost } from './post';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
 /**
  * Each concrete reducer will receive all the actions but only its part of the state
@@ -36,16 +38,26 @@ const rootReducer = combineReducers({
   userId: userReducer,
   postId: posIdtReducer,
   posts: postsReducer,
-  displayedPosts: displayedPostsReducer,
   comments: commentsReducer,
   post: postReducer,
   commentsVisibility: commentsVisibilityReducer,
+  query: queryReducer,
 });
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = {
+  loading: boolean,
+  message: string,
+  userId: string,
+  postId: number,
+  posts: Post[],
+  displayedPosts: Post[],
+  comments: Comment[],
+  post: Post,
+  commentsVisibility: boolean,
+  query: string,
+};
 export type Action = SetUserIdAction | SetPostsAction | SetPostIdAction
-| SetMessageAction | LoadingAction | SetCommentsAction;
+| SetMessageAction | LoadingAction | SetCommentsAction | SetQueryAction;
 /**
  * Thunk - is a function that should be used as a normal action creator
  *
@@ -71,15 +83,13 @@ export const loadMessage = () => {
 export const loadPosts = (userId: number) => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<Action>) => {
-    dispatch(setPosts(null));
-    dispatch(setDisplayedPosts(null));
+    dispatch(setPosts([]));
     dispatch(startLoading());
 
     try {
       const posts = await fetchPosts(userId);
 
       dispatch(setPosts(posts));
-      dispatch(setDisplayedPosts(posts));
     } catch (error) {
       dispatch(setPosts([]));
       dispatch(setMessage('Error occurred when loading data'));
@@ -115,6 +125,7 @@ export const loadPostDetails = (postId: number) => {
   };
 };
 
+// delete comments not used so as not to torment the training server
 export const handleComment
   = (comment: NewComment | number, selectedPostId: number | null) => {
     return async (dispatch: Dispatch<Action>) => {

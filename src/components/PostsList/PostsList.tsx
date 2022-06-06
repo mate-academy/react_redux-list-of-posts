@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { Post } from '../../types/Post';
 import './PostsList.scss';
 import { Loader } from '../Loader';
 import {
@@ -15,15 +14,14 @@ import {
 import { setPostId } from '../../store/postId';
 import { loadPosts } from '../../store';
 import { setPosts } from '../../store/posts';
-import { setDisplayedPosts } from '../../store/displayedPosts';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
   const selectedUser = useSelector(getUserId);
   const selectedPostId = useSelector(getPostId);
   const isPostsLoading = useSelector(isLoading);
-  const posts: Post[] = useSelector(getDisplayedPosts);
-  const postsFromServer: Post[] = useSelector(getPosts);
+  const postsFromServer = useSelector(getPosts);
+  const posts = useSelector(getDisplayedPosts);
   const message = useSelector(getMessage);
 
   const handleRemovePost = (postId: number) => {
@@ -38,21 +36,12 @@ export const PostsList: React.FC = () => {
     dispatch(loadPosts(+selectedUser));
   }, []);
 
-  useEffect(() => {
-    if (postsFromServer) {
-      const updatedPosts = postsFromServer
-        .filter((post) => post.userId === +selectedUser || +selectedUser === 0);
-
-      dispatch(setDisplayedPosts(updatedPosts));
-    }
-  }, [selectedUser, postsFromServer]);
-
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
 
       <ul className="PostsList__list" data-cy="postDetails">
-        {(isPostsLoading && !posts) && <Loader />}
+        {(isPostsLoading && !posts.length) && <Loader />}
         {message}
         {(!isPostsLoading || posts) && posts.map((post) => {
           const isOpen = selectedPostId === post.id;

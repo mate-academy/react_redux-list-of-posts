@@ -8,6 +8,7 @@ export const fetchComments = async (postId: number): Promise<Comment[]> => {
   return response.json();
 };
 
+// not used so as not to torment the training server
 export const deleteComment = async (commentId: number): Promise<Comment> => {
   const response = await fetch(
     `${BASE_URL}/comments/${commentId}`,

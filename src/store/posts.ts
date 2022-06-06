@@ -9,7 +9,7 @@ export type SetPostsAction = {
   posts: Post[],
 };
 
-export const setPosts = (posts: Post[] | null) => ({ type: SET_POSTS, posts });
+export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
 
 const reducer = (posts = [], action: SetPostsAction) => {
   switch (action.type) {
