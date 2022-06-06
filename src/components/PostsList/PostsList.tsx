@@ -6,6 +6,7 @@ import { Loader } from '../Loader';
 import {
   getDisplayedPosts,
   getMessage,
+  getPost,
   getPostId,
   getPosts,
   getUserId,
@@ -14,6 +15,7 @@ import {
 import { setPostId } from '../../store/postId';
 import { loadPosts } from '../../store';
 import { setPosts } from '../../store/posts';
+import { setPost } from '../../store/post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,6 +24,7 @@ export const PostsList: React.FC = () => {
   const isPostsLoading = useSelector(isLoading);
   const postsFromServer = useSelector(getPosts);
   const posts = useSelector(getDisplayedPosts);
+  const openedPost = useSelector(getPost);
   const message = useSelector(getMessage);
 
   const handleRemovePost = (postId: number) => {
@@ -30,6 +33,10 @@ export const PostsList: React.FC = () => {
     ));
 
     dispatch(setPosts(updatedPosts));
+
+    if (openedPost.id === postId) {
+      dispatch(setPost(null));
+    }
   };
 
   useEffect(() => {
