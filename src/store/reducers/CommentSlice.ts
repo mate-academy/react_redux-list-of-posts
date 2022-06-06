@@ -75,6 +75,9 @@ export const commentSlice = createSlice({
       state.hasEmailError = false;
       state.hasNameError = false;
       state.errorMessage = '';
+      state.commentBody = '';
+      state.commentUserEmail = '';
+      state.commentUserName = '';
     },
     setErrorMessage(state, action: PayloadAction<string>) {
       state.errorMessage = action.payload;
