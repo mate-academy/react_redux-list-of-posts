@@ -35,7 +35,7 @@ export const Search: React.FC = () => {
 
   return (
     <label>
-      Search:
+      Search: &nbsp;
       <input
         className="App__user-selector"
         type="text"

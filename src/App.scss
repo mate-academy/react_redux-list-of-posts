@@ -40,7 +40,7 @@ ul {
 .App {
   &__header {
     display: flex;
-    gap: 14px;
+    gap: 25px;
     position: sticky;
     padding: 10px;
   }
@@ -86,6 +86,10 @@ ul {
   transition: background-color 0.12s;
   font-size: inherit;
   min-width: 100px;
+
+  &--remove {
+    min-width: 40px;
+  }
 
   &:hover {
     background-color: #4d457b;
