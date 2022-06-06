@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
-import { Comment } from '../../types/Comment';
 import { Loader } from '../Loader';
 import {
   getComments,
@@ -16,19 +15,18 @@ import {
 } from '../../store/selectors';
 import './PostDetails.scss';
 import { loadPostDetails } from '../../store';
-import { Post } from '../../types/Post';
 import { setPost } from '../../store/post';
 import { setComments } from '../../store/comments';
 import { toggleVisibility } from '../../store/commentsVisibility';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
-  const selectedPostId: number | null = useSelector(getPostId);
-  const details: Post = useSelector(getPost);
-  const comments: Comment[] = useSelector(getComments);
-  const isDataLoading: boolean = useSelector(isLoading);
-  const message: string = useSelector(getMessage);
-  const isCommentsVisible: boolean = useSelector(getCommentsVisibility);
+  const selectedPostId = useSelector(getPostId);
+  const details = useSelector(getPost);
+  const comments = useSelector(getComments);
+  const isDataLoading = useSelector(isLoading);
+  const message = useSelector(getMessage);
+  const isCommentsVisible = useSelector(getCommentsVisibility);
 
   const isComments = useMemo(() => {
     return comments && comments.length > 0;
