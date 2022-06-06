@@ -6,12 +6,12 @@ const SET_POSTS = 'SET_POSTS';
 // Action creators
 export type SetPostsAction = {
   type: string,
-  posts: Post[],
+  posts: Post[] | null,
 };
 
-export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
+export const setPosts = (posts: Post[] | null) => ({ type: SET_POSTS, posts });
 
-const reducer = (posts = [], action: SetPostsAction) => {
+const reducer = (posts = null, action: SetPostsAction) => {
   switch (action.type) {
     case SET_POSTS:
       return action.posts;

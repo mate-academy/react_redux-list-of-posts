@@ -43,7 +43,7 @@ export const PostsList: React.FC = () => {
       <ul className="PostsList__list" data-cy="postDetails">
         {(isPostsLoading && !posts.length) && <Loader />}
         {message}
-        {(!isPostsLoading || posts) && posts.map((post) => {
+        {(!isPostsLoading || posts) && posts?.map((post) => {
           const isOpen = selectedPostId === post.id;
 
           return (

@@ -7,7 +7,7 @@ export const getUserId = (state: RootState) => state.userId;
 export const getPostId = (state: RootState) => state.postId;
 export const getPosts = (state: RootState) => state.posts;
 export const getDisplayedPosts = (state: RootState) => {
-  return state.posts
+  return state.posts && state.posts
     .filter((post) => {
       const allUser = +state.userId === 0;
       const currentUser = post.userId === +state.userId;

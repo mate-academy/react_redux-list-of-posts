@@ -7,7 +7,7 @@ const SET_POST_DETAILS = 'SET_POST_DETAILS';
 // Action creators
 export type SetPostsAction = {
   type: string,
-  posts: Post[],
+  post: Post | null,
 };
 
 export const setPost
