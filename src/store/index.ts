@@ -13,6 +13,7 @@ import userReducer, { SetUserIdAction } from './user';
 import posIdtReducer, { SetPostIdAction } from './postId';
 import commentsVisibilityReducer from './commentsVisibility';
 import postsReducer, { setPosts, SetPostsAction } from './posts';
+import displayedPostsReducer, { setDisplayedPosts } from './displayedPosts';
 import commentsReducer, { setComments, SetCommentsAction } from './comments';
 import postReducer, { setPost } from './post';
 import { fetchMessage } from '../helpers/api';
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   userId: userReducer,
   postId: posIdtReducer,
   posts: postsReducer,
+  displayedPosts: displayedPostsReducer,
   comments: commentsReducer,
   post: postReducer,
   commentsVisibility: commentsVisibilityReducer,
@@ -70,12 +72,14 @@ export const loadPosts = (userId: number) => {
   // inner function is an action handled by Redux Thunk
   return async (dispatch: Dispatch<Action>) => {
     dispatch(setPosts(null));
+    dispatch(setDisplayedPosts(null));
     dispatch(startLoading());
 
     try {
       const posts = await fetchPosts(userId);
 
       dispatch(setPosts(posts));
+      dispatch(setDisplayedPosts(posts));
     } catch (error) {
       dispatch(setPosts([]));
       dispatch(setMessage('Error occurred when loading data'));

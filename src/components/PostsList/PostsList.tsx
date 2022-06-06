@@ -5,9 +5,9 @@ import { Post } from '../../types/Post';
 import './PostsList.scss';
 import { Loader } from '../Loader';
 import {
+  getDisplayedPosts,
   getMessage,
   getPostId,
-  getPosts,
   getUserId,
   isLoading,
 } from '../../store/selectors';
@@ -19,7 +19,7 @@ export const PostsList: React.FC = () => {
   const selectedUser = useSelector(getUserId);
   const selectedPostId = useSelector(getPostId);
   const isPostsLoading = useSelector(isLoading);
-  const posts: Post[] = useSelector(getPosts);
+  const posts: Post[] = useSelector(getDisplayedPosts);
   const message = useSelector(getMessage);
 
   useEffect(() => {

@@ -3,11 +3,13 @@ import './App.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect';
+import { Search } from './components/Search';
 
 const App: React.FC = () => (
   <div className="App">
     <header className="App__header">
       <UserSelect />
+      <Search />
     </header>
 
     <main className="App__main">

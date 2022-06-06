@@ -39,6 +39,8 @@ ul {
 
 .App {
   &__header {
+    display: flex;
+    gap: 14px;
     position: sticky;
     padding: 10px;
   }
