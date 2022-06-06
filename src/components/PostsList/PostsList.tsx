@@ -8,11 +8,14 @@ import {
   getDisplayedPosts,
   getMessage,
   getPostId,
+  getPosts,
   getUserId,
   isLoading,
 } from '../../store/selectors';
 import { setPostId } from '../../store/postId';
 import { loadPosts } from '../../store';
+import { setPosts } from '../../store/posts';
+import { setDisplayedPosts } from '../../store/displayedPosts';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,11 +23,29 @@ export const PostsList: React.FC = () => {
   const selectedPostId = useSelector(getPostId);
   const isPostsLoading = useSelector(isLoading);
   const posts: Post[] = useSelector(getDisplayedPosts);
+  const postsFromServer: Post[] = useSelector(getPosts);
   const message = useSelector(getMessage);
+
+  const handleRemovePost = (postId: number) => {
+    const updatedPosts = postsFromServer.filter((post) => (
+      post.id !== postId
+    ));
+
+    dispatch(setPosts(updatedPosts));
+  };
 
   useEffect(() => {
     dispatch(loadPosts(+selectedUser));
-  }, [selectedUser]);
+  }, []);
+
+  useEffect(() => {
+    if (postsFromServer) {
+      const updatedPosts = postsFromServer
+        .filter((post) => post.userId === +selectedUser || +selectedUser === 0);
+
+      dispatch(setDisplayedPosts(updatedPosts));
+    }
+  }, [selectedUser, postsFromServer]);
 
   return (
     <div className="PostsList">
@@ -45,18 +66,27 @@ export const PostsList: React.FC = () => {
                 <b>{`[User #${post.userId}]: `}</b>
                 {post.title}
               </div>
-              <button
-                type="button"
-                className={classNames(
-                  'PostsList__button', 'button',
-                  {
-                    'PostsList__user-button': isOpen,
-                  },
-                )}
-                onClick={() => dispatch(setPostId(post.id))}
-              >
-                {isOpen ? 'Close' : 'Open'}
-              </button>
+              <div className="PostsList__buttons">
+                <button
+                  type="button"
+                  className={classNames(
+                    'PostsList__button', 'button',
+                    {
+                      'PostsList__user-button': isOpen,
+                    },
+                  )}
+                  onClick={() => dispatch(setPostId(post.id))}
+                >
+                  {isOpen ? 'Close' : 'Open'}
+                </button>
+                <button
+                  type="button"
+                  className="PostsList__button button button--remove"
+                  onClick={() => handleRemovePost(post.id)}
+                >
+                  ❌
+                </button>
+              </div>
             </li>
           );
         })}

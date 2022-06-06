@@ -18,6 +18,11 @@
     padding-left: 5px;
   }
 
+  &__buttons {
+    display: flex;
+    gap: 5px;
+  }
+
   &__item {
     display: flex;
     justify-content: space-between;
