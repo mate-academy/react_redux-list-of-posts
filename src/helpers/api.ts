@@ -1,8 +1,25 @@
-export function fetchMessage(): Promise<string> {
-  // this is just a fake promise resolved in 2 seconds
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('Message from server');
-    }, 2000);
+export const BASE_URL = 'https://mate.academy/students-api';
+
+export const request = async (url: string) => {
+  const response = await fetch(`${BASE_URL}${url}`);
+
+  return response.json();
+};
+
+export const remove = async (url: string) => {
+  const response = await fetch(`${BASE_URL}${url}`, { method: 'DELETE' });
+
+  return response.json();
+};
+
+export const post = async (url: string, data: unknown) => {
+  const response = await fetch(`${BASE_URL}${url}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify(data),
   });
-}
+
+  return response.json();
+};
