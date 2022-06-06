@@ -15,7 +15,7 @@ import {
   isLoading,
 } from '../../store/selectors';
 import './PostDetails.scss';
-import { loadPostDetails, handleComment } from '../../store';
+import { loadPostDetails } from '../../store';
 import { Post } from '../../types/Post';
 import { setPost } from '../../store/post';
 import { setComments } from '../../store/comments';
@@ -33,6 +33,14 @@ export const PostDetails: React.FC = () => {
   const isComments = useMemo(() => {
     return comments && comments.length > 0;
   }, [comments]);
+
+  const handleRemoveComment = (commentId: number) => {
+    const updatedComments = comments.filter((comment) => (
+      comment.id !== commentId
+    ));
+
+    dispatch(setComments(updatedComments));
+  };
 
   useEffect(() => {
     if (selectedPostId) {
@@ -89,11 +97,7 @@ export const PostDetails: React.FC = () => {
                         <button
                           type="button"
                           className="PostDetails__remove-button button"
-                          onClick={
-                            () => dispatch(
-                              handleComment(comment.id, selectedPostId),
-                            )
-                          }
+                          onClick={() => handleRemoveComment(comment.id)}
                         >
                           X
                         </button>
