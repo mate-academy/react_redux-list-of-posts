@@ -1,0 +1,48 @@
+.PostsList {
+  width: 100%;
+
+  &__post {
+    max-width: 500px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user-button {
+    margin: 0;
+
+    &--selected {
+      background-color: #4d457b;
+      color: white;
+
+      &:hover {
+        background-color: #b8b3d2;
+        color: #4d457b;
+      }
+    }
+
+    &--delete {
+      margin-top: 10px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    padding-left: 5px;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fafafd;
+    line-height: 1.5;
+    word-break: break-word;
+    max-width: 100%;
+  }
+}

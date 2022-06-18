@@ -1,8 +1,14 @@
-export function fetchMessage(): Promise<string> {
-  // this is just a fake promise resolved in 2 seconds
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('Message from server');
-    }, 2000);
-  });
-}
+export const BASE_URL = 'https://mate.academy/students-api';
+
+export const request = (url: string, method?: RequestInit | undefined) => {
+  return fetch(`${BASE_URL}${url}`, method)
+    .then(response => {
+      if (!response.ok) {
+        return Promise.reject(
+          new Error(`${response.status} - ${response.statusText}`),
+        );
+      }
+
+      return response.json();
+    });
+};

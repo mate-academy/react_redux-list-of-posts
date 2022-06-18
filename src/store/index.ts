@@ -4,48 +4,156 @@ import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import postsReducer, { setPosts } from './posts';
+import postIdReducer from './postId';
+import postReducer, { setPost } from './post';
+import usersReducer, { setUsers } from './users';
+import userIdReducer from './userId';
+import commentsReducer, { setComments } from './comments';
+import hidingReducer from './hideComments';
+import { getUserPosts, deletePost, getPostDetails } from '../helpers/posts';
+import { getAllUsers } from '../helpers/users';
+import {
+  deleteComment,
+  getPostComments,
+  postNewComment,
+} from '../helpers/comments';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
 const rootReducer = combineReducers({
   loading: loadingReducer,
-  message: messageReducer,
+  posts: postsReducer,
+  postId: postIdReducer,
+  post: postReducer,
+  users: usersReducer,
+  userId: userIdReducer,
+  comments: commentsReducer,
+  hiding: hidingReducer,
 });
 
-// We automatically get types returned by concrete reducers
 export type RootState = ReturnType<typeof rootReducer>;
 
-// Selectors - a function receiving Redux state and returning some data from it
 export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const getPosts = (state: RootState) => state.posts;
+export const getPostId = (state: RootState) => state.postId;
+export const getPost = (state: RootState) => state.post;
+export const getUsers = (state: RootState) => state.users;
+export const getUserId = (state: RootState) => state.userId;
+export const getComments = (state: RootState) => state.comments;
+export const isHiding = (state: RootState) => state.hiding;
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
+export const loadPosts = (userId?: number) => {
+  return async (dispatch: Dispatch<unknown>) => {
     dispatch(startLoading());
 
     try {
-      const message = await fetchMessage();
+      const posts = await getUserPosts(userId);
 
-      dispatch(setMessage(message));
+      dispatch(setPosts(posts));
     } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
+      dispatch(setPosts([]));
     }
 
     dispatch(finishLoading());
+  };
+};
+
+export const loadPost = (postId: number) => {
+  return async (dispatch: Dispatch<unknown>) => {
+    dispatch(startLoading());
+
+    try {
+      const post = await getPostDetails(postId);
+
+      dispatch(setPost(post));
+    } catch (error) {
+      dispatch(setPost({
+        id: 0,
+        userId: 0,
+        title: '',
+        body: '',
+      }));
+    }
+
+    dispatch(finishLoading());
+  };
+};
+
+export const loadUsers = () => {
+  return async (dispatch: Dispatch<unknown>) => {
+    dispatch(startLoading());
+
+    try {
+      const users = await getAllUsers();
+
+      dispatch(setUsers(users));
+    } catch (error) {
+      dispatch(setUsers([]));
+    }
+
+    dispatch(finishLoading());
+  };
+};
+
+export const loadComments = (postId: number) => {
+  return async (dispatch: Dispatch<unknown>) => {
+    dispatch(startLoading());
+
+    try {
+      const comments = await getPostComments(postId);
+
+      dispatch(setComments(comments));
+    } catch (error) {
+      dispatch(setComments([]));
+    }
+
+    dispatch(finishLoading());
+  };
+};
+
+export const removePost = (postId: number) => {
+  return async (dispatch: Dispatch<unknown>) => {
+    try {
+      await deletePost(postId);
+
+      const allPosts = await getUserPosts();
+
+      dispatch(setPosts(allPosts));
+    } catch {
+      dispatch(setPosts([]));
+    }
+  };
+};
+
+export const removeComment = (commentId: number, postId: number) => {
+  return async (dispatch: Dispatch<unknown>) => {
+    try {
+      await deleteComment(commentId);
+
+      const allComments = await getPostComments(postId);
+
+      dispatch(setComments(allComments));
+    } catch {
+      dispatch(setComments([]));
+    }
+  };
+};
+
+export const createComment = (
+  postId: number,
+  body: string,
+  email: string,
+  name: string,
+) => {
+  return async (dispatch: Dispatch<unknown>) => {
+    try {
+      await postNewComment(postId, body, email, name);
+
+      const allComments = await getPostComments(postId);
+
+      dispatch(setComments(allComments));
+    } catch {
+      dispatch(setComments([]));
+    }
   };
 };
 
