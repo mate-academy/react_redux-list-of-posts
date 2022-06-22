@@ -18,8 +18,11 @@ export const PostsList: React.FC = () => {
 
   const handleClick = (id: number) => {
     dispatch(setPostId(postId === id ? 0 : id));
-    dispatch(loadComments(id));
-    dispatch(loadPost(id));
+
+    if (postId !== id) {
+      dispatch(loadComments(id));
+      dispatch(loadPost(id));
+    }
   };
 
   const handleDeleteClick = (id: number) => {

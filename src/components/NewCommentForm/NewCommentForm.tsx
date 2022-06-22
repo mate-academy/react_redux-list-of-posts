@@ -7,9 +7,11 @@ import './NewCommentForm.scss';
 export const NewCommentForm: React.FC = () => {
   const dispatch = useDispatch();
   const postId = useSelector(getPostId);
-  const [body, setBody] = useState('');
-  const [email, setEmail] = useState('');
-  const [userName, setName] = useState('');
+  const [form, setForm] = useState({
+    body: '',
+    email: '',
+    name: '',
+  });
   const [isValidForm, setIsValidForm] = useState(true);
 
   // eslint-disable-next-line no-useless-escape
@@ -23,15 +25,24 @@ export const NewCommentForm: React.FC = () => {
 
     switch (name) {
       case 'body':
-        setBody(value);
+        setForm({
+          ...form,
+          body: value,
+        });
         break;
 
       case 'email':
-        setEmail(value);
+        setForm({
+          ...form,
+          email: value,
+        });
         break;
 
       case 'name':
-        setName(value);
+        setForm({
+          ...form,
+          name: value,
+        });
         break;
 
       default:
@@ -40,24 +51,33 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const resetForm = () => {
-    setBody('');
-    setEmail('');
-    setName('');
+    setForm({
+      body: '',
+      email: '',
+      name: '',
+    });
     setIsValidForm(true);
   };
 
   const validation = useMemo(() => {
-    return (userName.length > 0
-      && body.length > 0
-      && validator.test(email)
+    return (form.name.length > 0
+      && form.body.length > 0
+      && validator.test(form.email)
     );
-  }, [email, body, userName]);
+  }, [form]);
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (validation) {
-      dispatch(createComment(postId, body, email, userName));
+      const newComment = {
+        postId,
+        body: form.body,
+        email: form.email,
+        name: form.name,
+      };
+
+      dispatch(createComment(newComment));
       resetForm();
     } else {
       setIsValidForm(false);
@@ -82,12 +102,12 @@ export const NewCommentForm: React.FC = () => {
           type="text"
           name="name"
           placeholder="Your name"
-          value={userName}
+          value={form.name}
           className={classNames(
             'NewCommentForm__input',
             {
               'NewCommentForm__input--error':
-                (!isValidForm && userName.length === 0),
+                (!isValidForm && form.name.length === 0),
             },
           )}
           onChange={changeInput}
@@ -99,12 +119,12 @@ export const NewCommentForm: React.FC = () => {
           type="text"
           name="email"
           placeholder="Your email"
-          value={email}
+          value={form.email}
           className={classNames(
             'NewCommentForm__input',
             {
               'NewCommentForm__input--error':
-                (!isValidForm && !validator.test(email)),
+                (!isValidForm && !validator.test(form.email)),
             },
           )}
           onChange={changeInput}
@@ -115,12 +135,12 @@ export const NewCommentForm: React.FC = () => {
         <textarea
           name="body"
           placeholder="Type comment here"
-          value={body}
+          value={form.body}
           className={classNames(
             'NewCommentForm__input',
             {
               'NewCommentForm__input--error':
-                (!isValidForm && body.length === 0),
+                (!isValidForm && form.body.length === 0),
             },
           )}
           onChange={changeInput}

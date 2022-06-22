@@ -12,6 +12,7 @@ import {
   loadPosts,
   getPostId,
   getUserId,
+  resetPostDetail,
 } from './store';
 import { setUserId } from './store/userId';
 
@@ -26,6 +27,7 @@ const App: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setUserId(+event.target.value));
     dispatch(loadPosts(+event.target.value));
+    dispatch(resetPostDetail());
   };
 
   return (
@@ -59,14 +61,15 @@ const App: React.FC = () => {
 
             <main className="App__main">
               <div className="App__sidebar">
-                {loading && <Loader />}
+                {((loading && userId !== 0)
+                  || (loading && postId === 0 && userId === 0)) && <Loader />}
                 <PostsList />
               </div>
 
               <div className="App__content">
                 <h2>Post details:</h2>
 
-                {loading && <Loader />}
+                {(loading && postId !== 0) && <Loader />}
 
                 {postId !== 0
                   ? (

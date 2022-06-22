@@ -4,20 +4,10 @@ export const getPostComments = (postId: number) => {
   return request(`/comments?postId=${postId}`);
 };
 
-export const postNewComment = (
-  postId: number,
-  body: string,
-  email: string,
-  name: string,
-) => {
+export const postNewComment = (form: NewComment) => {
   return request('/comments', {
     method: 'POST',
-    body: JSON.stringify({
-      postId,
-      body,
-      email,
-      name,
-    }),
+    body: JSON.stringify(form),
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
     },

@@ -5,7 +5,7 @@ import { Dispatch } from 'react';
 
 import loadingReducer, { finishLoading, startLoading } from './loading';
 import postsReducer, { setPosts } from './posts';
-import postIdReducer from './postId';
+import postIdReducer, { setPostId } from './postId';
 import postReducer, { setPost } from './post';
 import usersReducer, { setUsers } from './users';
 import userIdReducer from './userId';
@@ -138,22 +138,30 @@ export const removeComment = (commentId: number, postId: number) => {
   };
 };
 
-export const createComment = (
-  postId: number,
-  body: string,
-  email: string,
-  name: string,
-) => {
+export const createComment = (form: NewComment) => {
   return async (dispatch: Dispatch<unknown>) => {
     try {
-      await postNewComment(postId, body, email, name);
+      await postNewComment(form);
 
-      const allComments = await getPostComments(postId);
+      const allComments = await getPostComments(form.postId);
 
       dispatch(setComments(allComments));
     } catch {
       dispatch(setComments([]));
     }
+  };
+};
+
+export const resetPostDetail = () => {
+  return (dispatch: Dispatch<unknown>) => {
+    dispatch(setPost({
+      id: 0,
+      userId: 0,
+      title: '',
+      body: '',
+    }));
+    dispatch(setPostId(0));
+    dispatch(setComments([]));
   };
 };
 
