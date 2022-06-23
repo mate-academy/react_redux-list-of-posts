@@ -1,18 +1,17 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setActivePost } from '../../redux/actions/posts';
-import { RootState } from '../../redux/store';
+import { PostsActionCreators }
+  from '../../redux/reducers/posts/action-creators';
+import { Posts, SelectedPost } from '../../redux/reducers/posts/selectors';
 import './PostsList.scss';
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
-  const posts = useSelector((state: RootState) => state.posts.postsList);
-  const activePostId = useSelector((state: RootState) => (
-    state.posts.activePost
-  ));
+  const posts = useSelector(Posts);
+  const activePostId = useSelector(SelectedPost);
 
   const openPost = (postId: number | null) => {
-    dispatch(setActivePost(postId));
+    dispatch(PostsActionCreators.setActivePost(postId));
   };
 
   return (

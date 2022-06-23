@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './redux/store';
-import { setPosts } from './redux/actions/posts';
+import { SelectedPost } from './redux/reducers/posts/selectors';
+import { PostsActionCreators } from './redux/reducers/posts/action-creators';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUserPosts } from './helpers/api';
+
 import './App.scss';
 import './styles/general.scss';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  const selectedPostId = useSelector(({ posts }: RootState) => (
-    posts.activePost
-  ));
+  const selectedPostId = useSelector(SelectedPost);
   const [selectedUser, setSelectedUser] = useState(0);
 
   useEffect(() => {
     getUserPosts(selectedUser)
-      .then(data => dispatch(setPosts(data)));
+      .then(data => dispatch(PostsActionCreators.setPosts(data)));
   }, [selectedUser]);
 
   return (

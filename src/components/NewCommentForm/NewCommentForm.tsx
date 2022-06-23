@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewComment } from '../../redux/actions/posts';
-// import { addComment } from '../../helpers/api';
-import { RootState } from '../../redux/store';
+import { PostsActionCreators }
+  from '../../redux/reducers/posts/action-creators';
+import { SelectedPost } from '../../redux/reducers/posts/selectors';
 import './NewCommentForm.scss';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useDispatch();
-  const selectedPostId = useSelector(({ posts }: RootState) => (
-    posts.activePost
-  ));
+  const selectedPostId = useSelector(SelectedPost);
 
   const [nameValue, setNameValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
@@ -27,7 +25,7 @@ export const NewCommentForm: React.FC = () => {
         postId: selectedPostId,
       };
 
-      dispatch(addNewComment(comment));
+      dispatch(PostsActionCreators.addNewComment(comment));
       setNameValue('');
       setEmailValue('');
       setBodyValue('');

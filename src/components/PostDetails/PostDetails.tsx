@@ -1,37 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPostDetails, getPostComments } from '../../helpers/api';
+import { PostsActionCreators }
+  from '../../redux/reducers/posts/action-creators';
 import {
-  deleteCommentAction,
-  setComments,
-  setPostDetails,
-} from '../../redux/actions/posts';
-import { RootState } from '../../redux/store';
+  Comments,
+  SelectedPost,
+  Details,
+} from '../../redux/reducers/posts/selectors';
 import { CommentType } from '../../types/CommentType';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
-  const comments = useSelector(({ posts }: RootState) => posts.comments);
-  const selectedPostId = useSelector(({ posts }: RootState) => (
-    posts.activePost
-  ));
-  const postDetails = useSelector(({ posts }: RootState) => posts.details);
+  const comments = useSelector(Comments);
+  const selectedPostId = useSelector(SelectedPost);
+  const postDetails = useSelector(Details);
 
   const [isCommentShow, setIsCommentShow] = useState<boolean>(true);
 
   useEffect(() => {
     if (selectedPostId) {
       getPostDetails(selectedPostId)
-        .then(data => dispatch(setPostDetails(data)));
+        .then(data => dispatch(PostsActionCreators.setPostDetails(data)));
       getPostComments(selectedPostId)
-        .then(data => dispatch(setComments(data)));
+        .then(data => dispatch(PostsActionCreators.setComments(data)));
     }
   }, [selectedPostId]);
 
   const deleteCommentHandler = (comment: CommentType) => {
-    dispatch(deleteCommentAction(comment.id));
+    dispatch(PostsActionCreators.deleteCommentAction(comment.id));
   };
 
   return (
