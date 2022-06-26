@@ -41,17 +41,13 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {isLoading ? <Loader />
-            : (
-              <PostsList />
-            )}
+          {isLoading
+            ? <Loader />
+            : <PostsList />}
         </div>
 
         <div className="App__content">
-          {selectedPost
-            && (
-              <PostDetails />
-            )}
+          {selectedPost && <PostDetails />}
         </div>
       </main>
     </div>
