@@ -9,26 +9,50 @@ export const NewCommentForm: React.FC = () => {
   const dispatch = useDispatch();
   const selectedPostId = useSelector(SelectedPost);
 
-  const [nameValue, setNameValue] = useState('');
-  const [emailValue, setEmailValue] = useState('');
-  const [bodyValue, setBodyValue] = useState('');
+  const [formValue, setFormValue] = useState({
+    nameValue: '',
+    emailValue: '',
+    bodyValue: '',
+  });
 
-  // eslint-disable-next-line
-  const addNewCommentHandler = (e: any) => {
+  const changeNameHandler = (value: string) => {
+    setFormValue((state) => ({
+      ...state,
+      nameValue: value,
+    }));
+  };
+
+  const changeEmailHandler = (value: string) => {
+    setFormValue((state) => ({
+      ...state,
+      emailValue: value,
+    }));
+  };
+
+  const changeBodyHandler = (value: string) => {
+    setFormValue((state) => ({
+      ...state,
+      bodyValue: value,
+    }));
+  };
+
+  const addNewCommentHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (selectedPostId) {
       const comment = {
-        name: nameValue,
-        email: emailValue,
-        body: bodyValue,
+        name: formValue.nameValue,
+        email: formValue.emailValue,
+        body: formValue.bodyValue,
         postId: selectedPostId,
       };
 
       dispatch(PostsActionCreators.addNewComment(comment));
-      setNameValue('');
-      setEmailValue('');
-      setBodyValue('');
+      setFormValue({
+        nameValue: '',
+        emailValue: '',
+        bodyValue: '',
+      });
     }
   };
 
@@ -43,8 +67,8 @@ export const NewCommentForm: React.FC = () => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={nameValue}
-          onChange={(e) => setNameValue(e.target.value)}
+          value={formValue.nameValue}
+          onChange={(e) => changeNameHandler(e.target.value)}
         />
       </div>
 
@@ -54,8 +78,8 @@ export const NewCommentForm: React.FC = () => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={emailValue}
-          onChange={(e) => setEmailValue(e.target.value)}
+          value={formValue.emailValue}
+          onChange={(e) => changeEmailHandler(e.target.value)}
         />
       </div>
 
@@ -64,8 +88,8 @@ export const NewCommentForm: React.FC = () => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={bodyValue}
-          onChange={(e) => setBodyValue(e.target.value)}
+          value={formValue.bodyValue}
+          onChange={(e) => changeBodyHandler(e.target.value)}
         />
       </div>
 
