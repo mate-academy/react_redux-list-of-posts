@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { NewComment } from '../react-app-env';
 
 export const BASE_URL = 'https://mate.academy/students-api';
@@ -57,6 +58,12 @@ export const addComment = async (obj: NewComment) => {
       'Content-type': 'application/json; charset=UTF-8',
     },
   });
+
+  return response.json();
+};
+
+export const deletePost = async (postId: number) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`, { method: 'DELETE' });
 
   return response.json();
 };

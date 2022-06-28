@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './PostsList.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPosts } from '../../api/api';
+import { deletePost, getPosts } from '../../api/api';
 import {
   getCurrentPostIdSelector,
   getPostsSelector,
@@ -23,6 +23,13 @@ export const PostsList: React.FC = () => {
 
     loadPostsFromServer();
   }, []);
+
+  const handlePostDelete = async (postId: number) => {
+    await deletePost(postId);
+    const postsFromServer = await getPosts();
+
+    dispatch(setPosts(postsFromServer));
+  };
 
   return (
     <div className="PostsList">
@@ -62,6 +69,15 @@ export const PostsList: React.FC = () => {
                   Open
                 </button>
               )}
+            <button
+              type="button"
+              className="PostsList__button button__remove button "
+              onClick={() => {
+                handlePostDelete(post.id);
+              }}
+            >
+              Delete
+            </button>
 
           </li>
         ))}

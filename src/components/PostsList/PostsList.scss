@@ -32,3 +32,13 @@
     margin-left: 10px;
   }
 }
+
+.button {
+  &__remove {
+    background-color: rgb(168, 11, 11);
+  }
+
+  &__remove:hover {
+    background-color: rgb(101, 1, 1);
+  }
+}
