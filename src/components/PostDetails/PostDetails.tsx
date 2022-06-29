@@ -21,12 +21,17 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     const loadPostDetails = async () => {
-      const postDetailsFromServer = await getPostDetails(+currentPostId);
+      try {
+        const postDetailsFromServer = await getPostDetails(+currentPostId);
 
-      const commentsToPost = await getPostComments(+currentPostId);
+        const commentsToPost = await getPostComments(+currentPostId);
 
-      dispatch(setComments(commentsToPost));
-      dispatch(setCurrentPost(postDetailsFromServer));
+        dispatch(setComments(commentsToPost));
+        dispatch(setCurrentPost(postDetailsFromServer));
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     };
 
     loadPostDetails();

@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { NewComment } from '../react-app-env';
 
 export const BASE_URL = 'https://mate.academy/students-api';
@@ -28,14 +27,9 @@ export const getUserPosts = async (userId: string) => {
 };
 
 export const getPostDetails = async (postId: number) => {
-  try {
-    const response = await fetch(`${BASE_URL}/posts/${postId}`);
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
 
-    return await response.json();
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
-  }
+  return response.json();
 };
 
 export const getPostComments = async (postId: number) => {
