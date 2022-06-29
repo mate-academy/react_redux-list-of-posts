@@ -1,57 +1,54 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+/* eslint-disable max-len */
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import {
+  Post, State, User, Comment,
+} from '../react-app-env';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+enum ActionType {
+  SET_USERS = 'SET_USERS',
+  SET_USERID = 'SET_USERID',
+  SET_POSTDETAILS_ID = 'SET_POSTDETAILS_ID',
+  SET_USER_POSTS = 'SET_USER_POSTS',
+  SET_COMMENTS = 'SET_COMMENTS',
+}
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+const InitialState:State = {
+  users: [],
+  userId: 0,
+  postDetailsId: 0,
+  userPosts: [],
+  comments: [],
 };
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk)),
-);
+export const setUsers = createAction<User[]>(ActionType.SET_USERS);
+export const setUserId = createAction<number>(ActionType.SET_USERID);
+export const setPostDetailsId = createAction<number>(ActionType.SET_POSTDETAILS_ID);
+export const setUserPosts = createAction<Post[]>(ActionType.SET_USER_POSTS);
+export const setComments = createAction<Comment[]>(ActionType.SET_COMMENTS);
 
-export default store;
+const reducer = createReducer(InitialState, (builder) => {
+  builder.addCase(setUsers, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.users = action.payload;
+  });
+  builder.addCase(setUserId, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.userId = action.payload;
+  });
+  builder.addCase(setPostDetailsId, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.postDetailsId = action.payload;
+  });
+  builder.addCase(setUserPosts, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.userPosts = action.payload;
+  });
+  builder.addCase(setComments, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.comments = action.payload;
+  });
+});
+
+export const store = configureStore({
+  reducer,
+});
