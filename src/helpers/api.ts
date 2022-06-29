@@ -1,8 +1,11 @@
-export function fetchMessage(): Promise<string> {
-  // this is just a fake promise resolved in 2 seconds
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('Message from server');
-    }, 2000);
-  });
-}
+import { Options } from '../react-app-env';
+
+export const BASE_URL = 'https://mate.academy/students-api';
+
+export const request = async (url: string, options: Options) => {
+  return (await fetch(url, options)).json();
+};
+
+export const getUsers = async () => {
+  return (await fetch(`${BASE_URL}/users`)).json();
+};
