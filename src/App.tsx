@@ -1,20 +1,60 @@
-import { useSelector } from 'react-redux';
-
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { request } from './api/api';
 import './App.scss';
-import { Start } from './components/Start';
-
-import { isLoading, getMessage } from './store';
+import { PostDetails } from './components/PostDetails/PostDetails';
+import { PostList } from './components/PostList/PostList';
+import { setAllUsersAction, setUserIdAction } from './store/actions';
+import { getAllUsersSelector } from './store/selectors';
 
 const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  const dispatch = useDispatch();
+  const users = useSelector(getAllUsersSelector);
+
+  useEffect(() => {
+    const fetcher = async () => {
+      const result = await request('/users');
+
+      dispatch(setAllUsersAction(result));
+    };
+
+    fetcher();
+  }, []);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
 
-      <Start />
+          <select
+            className="App__user-selector"
+            onChange={(event) => {
+              dispatch(setUserIdAction(Number(event.target.value)));
+            }}
+          >
+            <option value="0">All users</option>
+            {users.map(singleUser => (
+              <option
+                key={singleUser.id}
+                value={singleUser.id}
+              >
+                {singleUser.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostList />
+        </div>
+
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };
