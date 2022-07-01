@@ -9,3 +9,4 @@ export const getSelectedPostIdSelector = (
 ) => state.selectedPostId;
 export const getIsLoadingSelector = (state: RootState) => state.isLoading;
 export const getPostTitleSelector = (state: RootState) => state.posttitle;
+export const getAllPostsSelector = (state: RootState) => state.posts;

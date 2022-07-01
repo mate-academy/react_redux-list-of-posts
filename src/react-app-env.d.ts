@@ -46,6 +46,7 @@ export interface Comment {
 }
 
 export interface RootState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   posts: Post[];
   users: User[];
   comments: Comment[];

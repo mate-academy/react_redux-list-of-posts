@@ -23,3 +23,9 @@ export async function getAllPosts() {
 
   return response.json();
 }
+
+export async function deletePost(id : number) {
+  const result = await fetch(`${BASE_URL}/posts/${id}`, { method: 'DELETE' });
+
+  return result;
+}

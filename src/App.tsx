@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  AppDispatch,
+  loadUsers,
+  setCurrentUserAction,
+  setIsLoadingAction,
+} from './store/index';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import {
@@ -10,27 +16,15 @@ import {
   getUsersSelector,
 } from './store/selectors';
 import { Loader } from './components/Loader';
-import { getAllUsers } from './api/api';
-import {
-  setCurrentUserAction,
-  setIsLoadingAction,
-  setUsersAction,
-} from './store';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const users = useSelector(getUsersSelector);
-  const currentUser = useSelector(getCurrentUserSelector);
   const isLoading = useSelector(getIsLoadingSelector);
+  const currentUser = useSelector(getCurrentUserSelector);
 
   useEffect(() => {
-    const loadUsersFromServer = async () => {
-      const usersFromServer = await getAllUsers();
-
-      dispatch(setUsersAction(usersFromServer));
-    };
-
-    loadUsersFromServer();
+    dispatch(loadUsers());
   }, []);
 
   return (

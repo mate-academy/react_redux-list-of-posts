@@ -21,7 +21,6 @@ export const PostDetails: React.FC = () => {
   const dispatch = useDispatch();
   const postTitle = useSelector(getPostTitleSelector);
   const commentsList = useSelector(getCommentsSelector);
-
   const postId = useSelector(getSelectedPostIdSelector);
   const [visiblecomments, setVisiblecomments] = useState(false);
 
@@ -32,12 +31,6 @@ export const PostDetails: React.FC = () => {
       dispatch(setPostTitleAction(result.title));
     }
   };
-
-  useEffect(() => {
-    dispatch(setIsLoadingAction(true));
-    findPost();
-    dispatch(setIsLoadingAction(false));
-  }, []);
 
   const findcomments = async () => {
     if (postId) {
@@ -56,6 +49,9 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     dispatch(setIsLoadingAction(true));
+    findPost();
+    dispatch(setIsLoadingAction(false));
+    dispatch(setIsLoadingAction(true));
     findcomments();
     dispatch(setIsLoadingAction(false));
   }, [postId]);
@@ -63,7 +59,7 @@ export const PostDetails: React.FC = () => {
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-      {postId && (
+      {postId !== 0 && (
         <>
           <section className="PostDetails__post">
             <p>
@@ -104,7 +100,6 @@ export const PostDetails: React.FC = () => {
                   <p>{comm.body}</p>
                 </li>
               ))}
-              {dispatch(setIsLoadingAction(false))}
             </ul>
           </section>
 

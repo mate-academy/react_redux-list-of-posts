@@ -1,10 +1,18 @@
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
 import {
-  RootState, Post, User, Comment,
+  configureStore,
+  createAction,
+  createReducer,
+  createAsyncThunk,
+} from '@reduxjs/toolkit';
+import {
+  RootState, Comment, Post,
 } from '../react-app-env';
+import { getAllUsers } from '../api/api';
+import { getAllPosts } from '../api/posts';
 
 export enum ActionType {
   SET_POSTS = 'SET_POSTS',
+  SET_ALL_POSTS = 'SET_ALL_POSTS',
   SET_USERS = 'SET_USERS',
   SET_COMMENTS = 'SET_COMMENTS',
   SET_CURRENT_USER = 'SET_CURRENT_USER',
@@ -24,7 +32,6 @@ const initialState: RootState = {
   posttitle: '',
 };
 
-export const setUsersAction = createAction<User[]>(ActionType.SET_USERS);
 export const setPostsAction = createAction<Post[]>(ActionType.SET_POSTS);
 // eslint-disable-next-line max-len
 export const setCommentsAction = createAction<Comment[]>(ActionType.SET_COMMENTS);
@@ -37,12 +44,22 @@ export const setIsLoadingAction = createAction<boolean>(ActionType.SET_ISLOADING
 // eslint-disable-next-line max-len
 export const setPostTitleAction = createAction<string>(ActionType.SET_POST_TITLE);
 
+export const loadUsers = createAsyncThunk(ActionType.SET_USERS, async () => {
+  const usersFromServer = await getAllUsers();
+
+  return usersFromServer;
+});
+
+export const loadAllPosts = createAsyncThunk(
+  ActionType.SET_ALL_POSTS, async () => {
+    const postsFromServer = await getAllPosts();
+
+    return postsFromServer;
+  },
+);
+
 // rootReducer - this function is called after dispatching an action
 const reducer = createReducer(initialState, (builder) => {
-  builder.addCase(setUsersAction, (state, action) => {
-    // eslint-disable-next-line no-param-reassign
-    state.users = action.payload;
-  });
   builder.addCase(setPostsAction, (state, action) => {
     // eslint-disable-next-line no-param-reassign
     state.posts = action.payload;
@@ -67,9 +84,34 @@ const reducer = createReducer(initialState, (builder) => {
     // eslint-disable-next-line no-param-reassign
     state.posttitle = action.payload;
   });
+  builder.addCase(loadUsers.pending, (state) => {
+    // eslint-disable-next-line no-param-reassign
+    state.isLoading = true;
+  });
+
+  builder.addCase(loadUsers.fulfilled, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.users = action.payload;
+    // eslint-disable-next-line no-param-reassign
+    state.isLoading = false;
+  });
+
+  builder.addCase(loadAllPosts.pending, (state) => {
+    // eslint-disable-next-line no-param-reassign
+    state.isLoading = true;
+  });
+
+  builder.addCase(loadAllPosts.fulfilled, (state, action) => {
+    // eslint-disable-next-line no-param-reassign
+    state.posts = action.payload;
+    // eslint-disable-next-line no-param-reassign
+    state.isLoading = false;
+  });
 });
 
 // The `store` should be passed to the <Provider store={store}> in `/src/index.tsx`
 export const store = configureStore({
   reducer,
 });
+// type of dispath, dispatch can get async function
+export type AppDispatch = typeof store.dispatch;

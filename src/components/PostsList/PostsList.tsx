@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import './PostsList.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPosts, getPosts } from '../../api/posts';
+import { deletePost, getPosts } from '../../api/posts';
 import {
   getCurrentUserSelector,
   getPostsSelector,
   getSelectedPostIdSelector,
 } from '../../store/selectors';
 import {
+  loadAllPosts,
   setIsLoadingAction,
   setPostsAction,
   setSelectedPostIdAction,
@@ -15,16 +16,9 @@ import {
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch();
-  const currentPostList = useSelector(getPostsSelector);
   const userSelectedId = useSelector(getCurrentUserSelector);
   const postId = useSelector(getSelectedPostIdSelector);
-
-  const allPosts = async () => {
-    const result = await getAllPosts();
-
-    dispatch(setPostsAction(result));
-    dispatch(setIsLoadingAction(false));
-  };
+  const currentPostList = useSelector(getPostsSelector);
 
   const findposts = async () => {
     const result = await getPosts(userSelectedId);
@@ -38,7 +32,7 @@ export const PostsList: React.FC = () => {
   }, [userSelectedId]);
 
   useEffect(() => {
-    allPosts();
+    dispatch(loadAllPosts());
   }, []);
 
   return (
@@ -78,6 +72,16 @@ export const PostsList: React.FC = () => {
                 }}
               >
                 {postId === post.id ? 'Close' : 'Open'}
+              </button>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={async () => {
+                  await deletePost(post.id);
+                  dispatch(loadAllPosts());
+                }}
+              >
+                X
               </button>
             </li>
           ))}
