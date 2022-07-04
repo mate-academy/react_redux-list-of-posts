@@ -18,6 +18,7 @@ interface Comment {
 }
 
 type RootState = {
+  query: string;
   users: User[];
   userId: number;
   posts: Post[];

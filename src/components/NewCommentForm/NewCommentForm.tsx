@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { postComment } from '../../api/comments';
-import { actions, selectors } from '../../store';
+import { selectors } from '../../store';
+import { actions } from '../../store/comments';
+
 import './NewCommentForm.scss';
 
 type Props = {

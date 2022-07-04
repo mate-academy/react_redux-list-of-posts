@@ -4,9 +4,9 @@
 
 body {
   min-height: 100vh;
-  background-color: #e9e6f2;
+  background-color: #f2f0e6;
   padding: 20px;
-  color: #4d457b;
+  color: #4d506d;
   font-family: "Roboto", sans-serif;
 }
 
@@ -44,11 +44,17 @@ ul {
   }
 
   &__user-selector {
+    margin-right: 20px;
+  }
+
+  &__user-selector,
+  &__user-input {
+    outline: none;
     padding: 5px;
     cursor: pointer;
     font-size: 1rem;
-    color: #4d457b;
-    border: 1px solid #4d457b;
+    color: #4d506d;
+    border: 1px solid #565869;
     border-radius: 5px;
   }
 
@@ -62,7 +68,7 @@ ul {
     @extend %stretch-panel;
 
     flex-basis: 60%;
-    border-color: blue;
+    border-color: rgb(0, 132, 255);
   }
 
   &__content {

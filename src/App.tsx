@@ -1,27 +1,38 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import debounce from 'lodash/debounce';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { actions, selectors } from './store';
+import { setQuery } from './store/query';
+import { usersActions } from './store/users';
+import { setUserId } from './store/userId';
+import { setPostId } from './store/postId';
 import './App.scss';
 import './styles/general.scss';
 
 const App: React.FC = () => {
   const [isOpenDetails, setIsOpenDetails] = useState(false);
+  const [visibleQuery, setVisibleQuery] = useState('');
 
   const dispatch = useDispatch();
 
+  const query = useSelector(selectors.getQuery);
   const users = useSelector(selectors.getUsers);
   const userId = useSelector(selectors.getUserId);
   const postId = useSelector(selectors.getPostId);
 
   useEffect(() => {
-    dispatch(actions.loadUsers());
+    dispatch(usersActions.loadUsers());
   }, []);
 
   useEffect(() => {
     dispatch(actions.loadPosts(userId));
   }, [userId]);
+
+  const applyQuery = useCallback(debounce((val: string) => {
+    dispatch(setQuery(val));
+  }, 1000), [query]);
 
   return (
     <div className="App">
@@ -33,7 +44,8 @@ const App: React.FC = () => {
             className="App__user-selector"
             value={userId}
             onChange={({ target }) => {
-              dispatch(actions.setUserId(+target.value));
+              dispatch(setUserId(+target.value));
+              dispatch(setPostId(0));
             }}
           >
             <option value="0">All users</option>
@@ -47,6 +59,19 @@ const App: React.FC = () => {
             ))}
           </select>
         </label>
+        <label>
+          Filter posts: &nbsp;
+          <input
+            type="text"
+            className="App__user-input"
+            value={visibleQuery}
+            onChange={({ target }) => {
+              setVisibleQuery(target.value);
+              applyQuery(target.value);
+            }}
+          />
+        </label>
+
       </header>
 
       <main className="App__main">

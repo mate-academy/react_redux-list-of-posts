@@ -9,3 +9,9 @@ export const getUserPosts = (userId?: number) => {
 export const getPostDetails = (postId: number) => {
   return request(`/posts/${postId}`);
 };
+
+export const removePost = (postId: number) => {
+  return request(`/posts/${postId}`, {
+    method: 'DELETE',
+  });
+};

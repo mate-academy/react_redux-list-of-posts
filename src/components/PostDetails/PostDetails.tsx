@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
-import './PostDetails.scss';
-
 import { Loader } from '../Loader';
-import { actions, selectors } from '../../store';
+import { selectors } from '../../store';
+import { actions as postDetailsActions } from '../../store/postDetails';
+import { actions as commentsActions } from '../../store/comments';
+
+import './PostDetails.scss';
 
 type Props = {
   isClicked: boolean;
@@ -28,8 +30,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
   };
 
   useEffect(() => {
-    dispatch(actions.loadPostDetails(postId));
-    dispatch(actions.loadComments(postId));
+    dispatch(postDetailsActions.loadPostDetails(postId));
+    dispatch(commentsActions.loadComments(postId));
     setIsOpenDetails(false);
   }, [postId]);
 
@@ -54,8 +56,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
                 >
                   {
                     `${isHideCommets ? 'Show' : 'Hide'}
-                  ${comments.length}
-                  ${comments.length > 1 ? 'comments' : 'comment'}`
+                    ${comments.length}
+                    ${comments.length > 1 ? 'comments' : 'comment'}`
                   }
                 </button>
               )}
@@ -69,9 +71,14 @@ export const PostDetails: React.FC<Props> = React.memo(({
                     >
                       <button
                         type="button"
-                        className="PostDetails__remove-button button"
-                        onClick={async () => {
-                          dispatch(actions.deleteComment(comment.id, postId));
+                        className="
+                          PostDetails__remove-button
+                          button
+                          button--is-light"
+                        onClick={() => {
+                          dispatch(
+                            commentsActions.deleteComment(comment.id, postId),
+                          );
                         }}
                       >
                         X

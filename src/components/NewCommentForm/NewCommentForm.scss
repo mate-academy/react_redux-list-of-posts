@@ -7,11 +7,11 @@
 
   &__input {
     border: none;
-    border-bottom: 1px solid #4d457b;
+    border-bottom: 1px solid #57492d;
     font-family: inherit;
     font-size: 0.9rem;
     padding: 10px 5px;
-    color: #4d457b;
+    color: #7b6545;
     outline: none;
 
     &--textarea {
@@ -27,7 +27,7 @@
 
   &__warning-message {
     font-size: 1.1em;
-    color: #ff2929;
+    color: #ff5858;
     margin-top: 10px;
   }
 }
