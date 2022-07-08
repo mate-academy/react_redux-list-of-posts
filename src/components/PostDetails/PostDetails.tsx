@@ -94,9 +94,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            postId={postId}
-          />
+          <NewCommentForm postId={postId} />
         </div>
       </section>
     </div>

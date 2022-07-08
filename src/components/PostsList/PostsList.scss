@@ -28,6 +28,10 @@
     line-height: 1.5;
   }
 
+  &__buttons {
+    display: flex;
+  }
+
   &__button {
     margin-left: 10px;
   }

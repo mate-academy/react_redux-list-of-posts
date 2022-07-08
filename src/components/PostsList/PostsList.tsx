@@ -41,27 +41,30 @@ export const PostsList: React.FC<Props> = React.memo(({
                   <b>{`[User #${post.userId}]: `}</b>
                   {post.body}
                 </div>
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => {
-                    dispatch(setPostId(
-                      postId === post.id ? 0 : post.id,
-                    ));
-                    setIsOpenDetails(true);
-                  }}
-                >
-                  {postId === post.id ? 'Closed' : 'Open'}
-                </button>
-                <button
-                  type="button"
-                  className="PostsList__button button button--is-red"
-                  onClick={() => {
-                    dispatch(actions.removePost(post.id));
-                  }}
-                >
-                  x
-                </button>
+                <div className="PostsList__buttons">
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => {
+                      dispatch(setPostId(
+                        postId === post.id ? 0 : post.id,
+                      ));
+                      setIsOpenDetails(true);
+                    }}
+                  >
+                    {postId === post.id ? 'Closed' : 'Open'}
+                  </button>
+                  <button
+                    type="button"
+                    className="PostsList__button button button--is-red"
+                    onClick={() => {
+                      dispatch(actions.removePost(post.id));
+                    }}
+                  >
+                    x
+                  </button>
+                </div>
+
               </li>
             ))}
           </ul>

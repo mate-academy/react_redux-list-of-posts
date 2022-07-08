@@ -53,11 +53,11 @@ export const NewCommentForm: React.FC<Props> = React.memo((
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        if (!!comment.name.length && !!comment.body.length) {
+        if (!comment.name.length || !comment.body.length) {
+          setIsValid(false);
+        } else {
           toPostComment();
           stateReset();
-        } else {
-          setIsValid(false);
         }
       }}
     >
