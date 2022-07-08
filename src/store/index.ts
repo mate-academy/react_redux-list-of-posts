@@ -1,56 +1,54 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware,
+  AnyAction,
+} from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { Dispatch } from 'react';
+import { getUserPosts } from '../api/posts';
+import { usersReducer } from './users';
+import { postsReducer, actions as postsActions } from './posts';
+import { setIsLoad, isLoadReducer } from './isLoad';
+import { userIdReducer } from './userId';
+import { postIdReducer } from './postId';
+import { postDetailsReducer } from './postDetails';
+import { commentsReducer } from './comments';
+import { queryReducer } from './query';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
-
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
-
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
-
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
-
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
-  };
+export const selectors = {
+  getQuery: (state: RootState) => state.query,
+  getUserId: (state: RootState) => state.userId,
+  getUsers: (state: RootState) => state.users,
+  getPosts: (state: RootState) => state.posts,
+  getIsload: (state: RootState) => state.isLoad,
+  getPostId: (state: RootState) => state.postId,
+  getPost: (state: RootState) => state.postDetails,
+  getComments: (state: RootState) => state.comments,
 };
 
+export const actions = {
+  loadPosts: (id: number) => (dispatch: Dispatch<AnyAction>) => {
+    getUserPosts(id)
+      .then((res) => dispatch(postsActions.setPosts(res)))
+      .then(() => dispatch(setIsLoad(false)));
+  },
+};
+
+const reducer = combineReducers({
+  query: queryReducer,
+  userId: userIdReducer,
+  postId: postIdReducer,
+  postDetails: postDetailsReducer,
+  users: usersReducer,
+  posts: postsReducer,
+  isLoad: isLoadReducer,
+  comments: commentsReducer,
+});
+
 const store = createStore(
-  rootReducer,
+  reducer,
   composeWithDevTools(applyMiddleware(thunk)),
 );
 

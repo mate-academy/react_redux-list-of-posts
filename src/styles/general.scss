@@ -1,0 +1,31 @@
+.button {
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #d2c5b3;
+  border: 0;
+  color: white;
+  transition: background-color 0.3s;
+  font-size: inherit;
+  min-width: 100px;
+
+  &:hover {
+    background-color: #81b1a6;
+  }
+
+  &--is-red {
+    min-width: auto;
+    background-color: #ff6d50;
+
+    &:hover {
+      background-color: #ff441f;
+    }
+  }
+
+  &--is-light {
+    &:hover {
+      background-color: #ff7e65;
+    }
+  }
+}
