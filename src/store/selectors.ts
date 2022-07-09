@@ -3,7 +3,9 @@ import { RootState } from '../react-app-env';
 export const getUsersSelector = (state: RootState) => state.users;
 export const getPostsSelector = (state: RootState) => state.posts;
 export const getCommentsSelector = (state: RootState) => state.comments;
-export const getCurrentUserSelector = (state: RootState) => state.currentUser;
+export const getCurrentUserSelector = (
+  state: RootState,
+) => state.selectedUserId;
 export const getSelectedPostIdSelector = (
   state: RootState,
 ) => state.selectedPostId;

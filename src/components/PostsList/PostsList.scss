@@ -29,6 +29,11 @@
   }
 
   &__button {
-    margin-left: 10px;
+    margin-left: 5px;
+  }
+
+  &__buttonbox {
+    display: flex;
+    flex-direction: row;
   }
 }

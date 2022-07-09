@@ -15,11 +15,19 @@ export async function getPosts(userId: string): Promise<Post[]> {
 export async function getPostbyId(postId:number) {
   const response = await fetch(`${BASE_URL}/posts/${postId}`);
 
+  if (!response.ok) {
+    throw new Error(`${response.status} - ${response.statusText}`);
+  }
+
   return response.json();
 }
 
 export async function getAllPosts() {
   const response = await fetch(`${BASE_URL}/posts`);
+
+  if (!response.ok) {
+    throw new Error(`${response.status} - ${response.statusText}`);
+  }
 
   return response.json();
 }

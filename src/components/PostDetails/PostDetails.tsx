@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getComments, delComment } from '../../api/comments';
+import { delComment } from '../../api/comments';
 import { getPostbyId } from '../../api/posts';
 
 import {
@@ -11,7 +11,7 @@ import {
   getSelectedPostIdSelector,
 } from '../../store/selectors';
 import {
-  setCommentsAction,
+  loadComments,
   setIsLoadingAction,
   setPostTitleAction,
 } from '../../store';
@@ -23,6 +23,8 @@ export const PostDetails: React.FC = () => {
   const commentsList = useSelector(getCommentsSelector);
   const postId = useSelector(getSelectedPostIdSelector);
   const [visiblecomments, setVisiblecomments] = useState(false);
+  // console.log(postId)
+  // console.log(commentsList)
 
   const findPost = async () => {
     if (postId) {
@@ -33,11 +35,7 @@ export const PostDetails: React.FC = () => {
   };
 
   const findcomments = async () => {
-    if (postId) {
-      const result = await getComments(postId);
-
-      dispatch(setCommentsAction(result));
-    }
+    dispatch(loadComments(postId));
   };
 
   const deletecomment = async (id: number) => {
@@ -54,7 +52,7 @@ export const PostDetails: React.FC = () => {
     dispatch(setIsLoadingAction(true));
     findcomments();
     dispatch(setIsLoadingAction(false));
-  }, [postId]);
+  }, [commentsList]);
 
   return (
     <div className="PostDetails">

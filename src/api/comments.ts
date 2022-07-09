@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://mate.academy/students-api/';
 
-export async function getComments(postId: number) {
+export async function getComments(postId: number | undefined) {
   const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
 
   if (!response.ok) {
@@ -20,7 +20,7 @@ export async function postComment(
   name : string,
   email : string,
   body : string,
-  postId: number,
+  postId: number | undefined,
 ) {
   await fetch(`${BASE_URL}/comments`, {
     method: 'POST',

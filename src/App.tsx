@@ -59,11 +59,8 @@ const App: React.FC = () => {
           {isLoading && <Loader />}
           <PostsList />
         </div>
-
         <div className="App__content">
-          {currentUser !== '0' ? (
-            <PostDetails />
-          ) : (<p>Choose user!</p>)}
+          <PostDetails />
         </div>
       </main>
     </div>

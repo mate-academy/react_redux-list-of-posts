@@ -9,6 +9,7 @@ import {
 } from '../../store/selectors';
 import {
   loadAllPosts,
+  loadComments,
   setIsLoadingAction,
   setPostsAction,
   setSelectedPostIdAction,
@@ -58,31 +59,34 @@ export const PostsList: React.FC = () => {
                 </b>
                 {post.body}
               </div>
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => {
-                  if (postId === post.id) {
-                    dispatch(setSelectedPostIdAction(undefined));
-                  } else {
-                    dispatch(setSelectedPostIdAction(post.id));
-                  }
+              <div className="PostsList__buttonbox">
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => {
+                    if (postId === post.id) {
+                      dispatch(setSelectedPostIdAction(undefined));
+                    } else {
+                      dispatch(setSelectedPostIdAction(post.id));
+                      dispatch(loadComments(post.id));
+                    }
 
-                  dispatch(setIsLoadingAction(true));
-                }}
-              >
-                {postId === post.id ? 'Close' : 'Open'}
-              </button>
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={async () => {
-                  await deletePost(post.id);
-                  dispatch(loadAllPosts());
-                }}
-              >
-                X
-              </button>
+                    dispatch(setIsLoadingAction(true));
+                  }}
+                >
+                  {postId === post.id ? 'Close' : 'Open'}
+                </button>
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={async () => {
+                    await deletePost(post.id);
+                    dispatch(loadAllPosts());
+                  }}
+                >
+                  X
+                </button>
+              </div>
             </li>
           ))}
         </ul>

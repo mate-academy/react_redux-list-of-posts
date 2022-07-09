@@ -1,20 +1,24 @@
 import './NewCommentForm.scss';
 import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Comment } from '../../react-app-env';
-import { postComment, getComments } from '../../api/comments';
-import { getCommentsSelector } from '../../store/selectors';
-import { setCommentsAction } from '../../store';
+import { NewComment } from '../../react-app-env';
+import { postComment } from '../../api/comments';
+import {
+  getCommentsSelector,
+  getSelectedPostIdSelector,
+} from '../../store/selectors';
+import { loadComments } from '../../store';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useDispatch();
   const commentsList = useSelector(getCommentsSelector);
-  const [yourname, setYourname] = useState('');
-  const [youremail, setYouremail] = useState('');
-  const [yourcomment, setYourcomment] = useState('');
+  const postId = useSelector(getSelectedPostIdSelector);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
   const [error, setError] = useState(false);
 
-  const addComment = async (newComment: Comment) => {
+  const addComment = async (newComment: NewComment) => {
     if (commentsList) {
       postComment(
         newComment.name,
@@ -23,29 +27,26 @@ export const NewCommentForm: React.FC = () => {
         newComment.postId,
       );
 
-      const afterAdded = await getComments(newComment.postId);
-
-      dispatch(setCommentsAction(afterAdded));
+      dispatch(loadComments(postId));
     }
   };
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (yourname && youremail && yourcomment && commentsList) {
-      const newComment = {
-        id: commentsList.length + 1,
-        postId: commentsList[0].postId,
-        name: yourname,
-        email: youremail,
-        body: yourcomment,
+    if (name && email && comment && commentsList) {
+      const newComment: NewComment = {
+        postId,
+        name,
+        email,
+        body: comment,
       };
 
       addComment(newComment);
       setError(false);
-      setYourname('');
-      setYouremail('');
-      setYourcomment('');
+      setName('');
+      setEmail('');
+      setComment('');
     } else {
       setError(true);
     }
@@ -62,10 +63,10 @@ export const NewCommentForm: React.FC = () => {
           name="name"
           required
           placeholder="Your name"
-          value={yourname}
+          value={name}
           className="NewCommentForm__input"
           onChange={(event) => {
-            setYourname(event.target.value);
+            setName(event.target.value);
           }}
         />
       </div>
@@ -77,9 +78,9 @@ export const NewCommentForm: React.FC = () => {
           required
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={youremail}
+          value={email}
           onChange={(event) => {
-            setYouremail(event.target.value);
+            setEmail(event.target.value);
           }}
         />
       </div>
@@ -90,9 +91,9 @@ export const NewCommentForm: React.FC = () => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           required
-          value={yourcomment}
+          value={comment}
           onChange={(event) => {
-            setYourcomment(event.target.value);
+            setComment(event.target.value);
           }}
         />
       </div>

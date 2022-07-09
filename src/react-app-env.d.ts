@@ -50,8 +50,15 @@ export interface RootState {
   posts: Post[];
   users: User[];
   comments: Comment[];
-  currentUser: string,
+  selectedUserId: string,
   selectedPostId: number | undefined,
   isLoading: boolean,
   posttitle: string,
+}
+
+export interface NewComment {
+  postId: number | undefined,
+  name: string,
+  email: string,
+  body: string,
 }
