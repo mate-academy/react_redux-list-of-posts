@@ -1,20 +1,68 @@
-import { useSelector } from 'react-redux';
-
+import React, { useEffect } from 'react';
 import './App.scss';
-import { Start } from './components/Start';
+import './styles/general.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  AppDispatch,
+  loadUsers,
+  setCurrentUserAction,
+  setIsLoadingAction,
+} from './store/index';
+import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
+import {
+  getCurrentUserSelector,
+  getIsLoadingSelector,
+  getUsersSelector,
+} from './store/selectors';
+import { Loader } from './components/Loader';
 
-import { isLoading, getMessage } from './store';
+const App: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const users = useSelector(getUsersSelector);
+  const isLoading = useSelector(getIsLoadingSelector);
+  const currentUser = useSelector(getCurrentUserSelector);
 
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
 
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
 
-      <Start />
+          <select
+            className="App__user-selector"
+            value={currentUser}
+            onChange={(event) => {
+              dispatch(setCurrentUserAction(event.target.value));
+              dispatch(setIsLoadingAction(true));
+            }}
+          >
+            <option value="0" disabled>All users</option>
+            {users.map(user => (
+              <option
+                key={user.id}
+                value={`${user.id}`}
+              >
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          {isLoading && <Loader />}
+          <PostsList />
+        </div>
+        <div className="App__content">
+          <PostDetails />
+        </div>
+      </main>
     </div>
   );
 };
