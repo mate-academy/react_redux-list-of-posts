@@ -1,0 +1,113 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { NewCommentForm } from '../NewCommentForm';
+import './PostDetails.scss';
+import { delComment } from '../../api/comments';
+import { getPostbyId } from '../../api/posts';
+
+import {
+  getCommentsSelector,
+  getPostTitleSelector,
+  getSelectedPostIdSelector,
+} from '../../store/selectors';
+import {
+  loadComments,
+  setIsLoadingAction,
+  setPostTitleAction,
+} from '../../store';
+import { Post } from '../../react-app-env';
+
+export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch();
+  const postTitle = useSelector(getPostTitleSelector);
+  const commentsList = useSelector(getCommentsSelector);
+  const postId = useSelector(getSelectedPostIdSelector);
+  const [visiblecomments, setVisiblecomments] = useState(false);
+  // console.log(postId)
+  // console.log(commentsList)
+
+  const findPost = async () => {
+    if (postId) {
+      const result:Post = await getPostbyId(postId);
+
+      dispatch(setPostTitleAction(result.title));
+    }
+  };
+
+  const findcomments = async () => {
+    dispatch(loadComments(postId));
+  };
+
+  const deletecomment = async (id: number) => {
+    if (commentsList) {
+      await delComment(id);
+      findcomments();
+    }
+  };
+
+  useEffect(() => {
+    dispatch(setIsLoadingAction(true));
+    findPost();
+    dispatch(setIsLoadingAction(false));
+    dispatch(setIsLoadingAction(true));
+    findcomments();
+    dispatch(setIsLoadingAction(false));
+  }, [commentsList]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+      {postId !== 0 && (
+        <>
+          <section className="PostDetails__post">
+            <p>
+              {postTitle}
+            </p>
+          </section>
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={() => {
+                setVisiblecomments(!visiblecomments);
+              }}
+            >
+              {commentsList && ((visiblecomments)
+                ? `Show ${commentsList.length} comments`
+                : `Hide ${commentsList.length} comments`)}
+            </button>
+            <ul
+              className={visiblecomments
+                ? 'PostDetails__visiblelist'
+                : 'PostDetails__list'}
+            >
+              {commentsList && commentsList.map(comm => (
+                <li
+                  className="PostDetails__list-item"
+                  key={comm.id}
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => {
+                      deletecomment(comm.id);
+                    }}
+                  >
+                    X
+                  </button>
+                  <p>{comm.body}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm />
+            </div>
+          </section>
+        </>
+      )}
+    </div>
+  );
+};
