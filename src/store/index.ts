@@ -1,56 +1,74 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+  applyMiddleware, combineReducers, createStore, Dispatch,
+} from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import postsReducer, {
+  PostsState,
+  actions as postsActions,
+  selectors as postsSelectors,
+} from './posts';
+import { getUserPosts } from '../api/posts';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import usersReducer, {
+  UsersState,
+  actions as usersActions,
+  selectors as usersSelectors,
+} from './users';
+import { getUsers } from '../api/users';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
+type CombinedState = {
+  posts: PostsState,
+  users: UsersState,
+};
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+export const loadPosts = (userId: number) => (dispatch: Dispatch) => {
+  getUserPosts(userId)
+    .then((posts) => {
+      dispatch(postsActions.setPosts(posts));
+    })
+    .catch(() => {
+      dispatch(postsActions.setLoadPostsError());
+    });
+};
 
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const loadUsers = () => (dispatch: Dispatch) => {
+  getUsers()
+    .then((users) => {
+      dispatch(usersActions.setUsers(users));
+    })
+    .catch(() => {
+      dispatch(usersActions.setLoadUsersError());
+    });
+};
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
-
-    try {
-      const message = await fetchMessage();
-
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
-
-    dispatch(finishLoading());
+export const changeSelectedUserId = (userId: number) => {
+  return (dispatch: Dispatch) => {
+    dispatch(usersActions.setSelectedUserId(userId));
   };
 };
 
+export const selectors = {
+  getPosts: (state: CombinedState) => postsSelectors.getPosts(state.posts),
+  getLoadPostsError: (state: CombinedState) => {
+    return postsSelectors.getLoadPostsError(state.posts);
+  },
+  getUsers: (state: CombinedState) => usersSelectors.getUsers(state.users),
+  getLoadUsersError: (state: CombinedState) => {
+    return usersSelectors.getLoadUsersError(state.users);
+  },
+  getSelectedUserId: (state: CombinedState) => {
+    return usersSelectors.getSelectedUserId(state.users);
+  },
+};
+
+const reducer = combineReducers({
+  posts: postsReducer,
+  users: usersReducer,
+});
+
 const store = createStore(
-  rootReducer,
+  reducer,
   composeWithDevTools(applyMiddleware(thunk)),
 );
 
