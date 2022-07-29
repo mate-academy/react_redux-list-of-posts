@@ -1,16 +1,15 @@
 import React, { FormEvent, useState } from 'react';
 import './NewCommentForm.scss';
-import { addComment, getPostComments } from '../../api/comments';
-import { Comment } from '../../types/coment';
+import { addComment } from '../../api/comments';
 
 type Props = {
   postId: number,
-  setComments: (comments: Comment[]) => void;
+  reloadComments: () => void;
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(({
   postId,
-  setComments,
+  reloadComments,
 }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -34,11 +33,9 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
 
     await addComment(newComment);
 
-    const updatedComments = await getPostComments(postId);
+    await reloadComments();
 
-    setComments(updatedComments);
-
-    clearForm();
+    await clearForm();
   };
 
   const handleUserName = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -11,7 +11,7 @@ export type UsersState = {
   selectedUserId: number,
 };
 
-const initialState = {
+const initialState: UsersState = {
   users: [],
   loadUsersError: false,
   selectedUserId: 0,
@@ -26,8 +26,8 @@ export const selectors = {
 export const actions = {
   setUsers: (users: User[]) => ({ type: SET_USERS, users }),
   setLoadUsersError: () => ({ type: SET_LOAD_USERS_ERROR }),
-  setSelectedUserId: (userId: number) => {
-    return { type: SET_SELECTED_USER_ID, userId };
+  setSelectedUserId: (selectedUserId: number) => {
+    return { type: SET_SELECTED_USER_ID, selectedUserId };
   },
 };
 
@@ -35,7 +35,7 @@ const usersReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_USERS:
       return {
-        ...action,
+        ...state,
         users: action.users,
       };
 

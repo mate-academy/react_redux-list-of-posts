@@ -1,23 +1,32 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './PostsList.scss';
 import { Post } from '../../types/post';
+import { deletePost } from '../../api/posts';
 
 type Props = {
   posts: Post[],
   selectedPostId: number | null,
   handleSelectedPostId: (postId: number | null) => void,
+  reloadPosts: () => void
 };
 
 export const PostsList: React.FC<Props> = React.memo(({
   posts,
   selectedPostId,
   handleSelectedPostId,
+  reloadPosts,
 }) => {
   const onPostIdChange = (postId: number | null) => {
     if (selectedPostId !== postId) {
       handleSelectedPostId(postId);
     }
   };
+
+  const onPostDeleting = useCallback(async (commentId) => {
+    await deletePost(commentId);
+
+    await reloadPosts();
+  }, [posts]);
 
   return (
     <div className="PostsList">
@@ -30,17 +39,27 @@ export const PostsList: React.FC<Props> = React.memo(({
               <b>{`[User #${post.userId}]:`}</b>
               {post.title}
             </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => onPostIdChange(
-                selectedPostId === post.id
-                  ? null
-                  : post.id,
-              )}
-            >
-              {selectedPostId === post.id ? 'Close' : 'Open'}
-            </button>
+            <div className="Posts__buttons">
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => onPostIdChange(
+                  selectedPostId === post.id
+                    ? null
+                    : post.id,
+                )}
+              >
+                {selectedPostId === post.id ? 'Close' : 'Open'}
+              </button>
+
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => onPostDeleting(post.id)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
 

@@ -1,112 +1,91 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { Post } from '../../types/post';
-import { getPostDetails } from '../../api/posts';
-import { deleteComment, getPostComments } from '../../api/comments';
-import { Comment } from '../../types/coment';
+import { deleteComment } from '../../api/comments';
+import { loadComments, loadPostDetails, selectors } from '../../store';
 
 type Props = {
   postId: number,
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
-  const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const dispatch = useDispatch();
+  const postDetails = useSelector(selectors.getPostDetails);
+  const comments = useSelector(selectors.getComments);
   const [isCommentsVisible, setIsCommentsVisible] = useState(false);
-  const [fetchDetailsError, setFetchDetailsError] = useState(false);
-  const [fetchCommentsError, setFetchCommentsError] = useState(false);
+  const loadDetailsError = useSelector(selectors.getLoadDetailsError);
+  const loadCommentsError = useSelector(selectors.getLoadCommentsError);
 
   const onCommentVisibilityChange = () => {
     setIsCommentsVisible(!isCommentsVisible);
   };
 
   useEffect(() => {
-    const fetchPostDetails = async () => {
-      try {
-        const response = await getPostDetails(postId);
+    dispatch(loadPostDetails(postId));
 
-        setPostDetails(response);
-      } catch (error) {
-        setFetchDetailsError(true);
-      }
-    };
-
-    const fetchPostComments = async () => {
-      try {
-        const response = await getPostComments(postId);
-
-        setComments(response);
-      } catch (error) {
-        setFetchCommentsError(true);
-      }
-    };
-
-    fetchPostDetails();
-    fetchPostComments();
+    dispatch(loadComments(postId));
   }, [postId]);
 
   const onCommentDeleting = useCallback(async (commentId) => {
     await deleteComment(commentId);
 
-    const filteredComments = [...comments].filter(
-      comment => comment.id !== commentId,
-    );
-
-    await setComments(filteredComments);
-  }, [comments]);
+    await dispatch(loadComments(postId));
+  }, [comments, postId]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {fetchDetailsError && (
-        <span>Failed to load posts details</span>
-      )}
+      {loadDetailsError ? (
+        <h3>Failed to load posts details</h3>
+      ) : (
+        <>
+          <section className="PostDetails__post">
+            <p>{postDetails?.body}</p>
+          </section>
 
-      <section className="PostDetails__post">
-        <p>{postDetails?.body}</p>
-      </section>
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={onCommentVisibilityChange}
+            >
+              {isCommentsVisible ? 'Hide comments' : 'Show comments'}
+            </button>
 
-      <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={onCommentVisibilityChange}
-        >
-          {isCommentsVisible ? 'Hide comments' : 'Show comments'}
-        </button>
+            {isCommentsVisible && (
+              <ul data-cy="postDetails" className="PostDetails__list">
+                {loadCommentsError && (
+                  <span>Failed to load posts comments</span>
+                )}
 
-        {isCommentsVisible && (
-          <ul data-cy="postDetails" className="PostDetails__list">
-            {fetchCommentsError && (
-              <span>Failed to load posts comments</span>
+                {comments.map(comment => (
+                  <li key={comment.id} className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => onCommentDeleting(comment.id)}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
             )}
+          </section>
 
-            {comments.map(comment => (
-              <li key={comment.id} className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => onCommentDeleting(comment.id)}
-                >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            postId={postId}
-            setComments={setComments}
-          />
-        </div>
-      </section>
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                postId={postId}
+                reloadComments={() => dispatch(loadComments(postId))}
+              />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 });

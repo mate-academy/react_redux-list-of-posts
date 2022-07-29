@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import {
+  changeSelectedPostId,
   changeSelectedUserId, loadPosts, loadUsers, selectors,
 } from './store';
 
@@ -13,7 +14,7 @@ const App: React.FC = () => {
   const posts = useSelector(selectors.getPosts);
   const users = useSelector(selectors.getUsers);
   const selectedUserId = useSelector(selectors.getSelectedUserId);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const selectedPostId = useSelector(selectors.getSelectedPostId);
   const loadUsersError = useSelector(selectors.getLoadUsersError);
   const loadPostsError = useSelector(selectors.getLoadPostsError);
 
@@ -25,14 +26,14 @@ const App: React.FC = () => {
     dispatch(loadPosts(selectedUserId));
   }, [selectedUserId]);
 
-  const handleSelectedUserId = (
+  const handleSelectedUserId = useCallback((
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     dispatch(changeSelectedUserId(Number(event.target.value)));
-  };
+  }, [selectedUserId]);
 
   const handleSelectedPostId = useCallback((postId: number | null) => {
-    setSelectedPostId(postId);
+    dispatch(changeSelectedPostId(postId));
   }, [selectedPostId]);
 
   return (
@@ -69,6 +70,7 @@ const App: React.FC = () => {
               posts={posts}
               selectedPostId={selectedPostId}
               handleSelectedPostId={handleSelectedPostId}
+              reloadPosts={() => dispatch(loadPosts(selectedUserId))}
             />
           )}
         </div>
