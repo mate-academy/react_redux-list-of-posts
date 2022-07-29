@@ -1,56 +1,133 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+  applyMiddleware, combineReducers, createStore, Dispatch,
+} from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Dispatch } from 'react';
+import postsReducer, {
+  PostsState,
+  actions as postsActions,
+  selectors as postsSelectors,
+} from './posts';
+import { getPostDetails, getUserPosts } from '../api/posts';
 
-import loadingReducer, { finishLoading, startLoading } from './loading';
-import messageReducer, { setMessage } from './message';
-import { fetchMessage } from '../helpers/api';
+import usersReducer, {
+  UsersState,
+  actions as usersActions,
+  selectors as usersSelectors,
+} from './users';
 
-/**
- * Each concrete reducer will receive all the actions but only its part of the state
- *
- * const rootReducer = (state = {}, action) => ({
- *   loading: loadingReducer(state.loading, action),
- *   message: messageReducer(state.message, action),
- * })
- */
-const rootReducer = combineReducers({
-  loading: loadingReducer,
-  message: messageReducer,
-});
+import commentsReducer, {
+  CommentsState,
+  actions as commentsActions,
+  selectors as commsntsSelectors,
+} from './comments';
+import { getUsers } from '../api/users';
+import { getPostComments } from '../api/comments';
 
-// We automatically get types returned by concrete reducers
-export type RootState = ReturnType<typeof rootReducer>;
+type CombinedState = {
+  posts: PostsState,
+  users: UsersState,
+  comments: CommentsState,
+};
 
-// Selectors - a function receiving Redux state and returning some data from it
-export const isLoading = (state: RootState) => state.loading;
-export const getMessage = (state: RootState) => state.message;
+export const loadPosts = (userId: number) => (dispatch: Dispatch) => {
+  getUserPosts(userId)
+    .then((posts) => {
+      dispatch(postsActions.setPosts(posts));
+    })
+    .catch(() => {
+      dispatch(postsActions.setLoadPostsError());
+    });
+};
 
-/**
- * Thunk - is a function that should be used as a normal action creator
- *
- * dispatch(loadMessage())
- */
-export const loadMessage = () => {
-  // inner function is an action handled by Redux Thunk
-  return async (dispatch: Dispatch<any>) => {
-    dispatch(startLoading());
+export const loadUsers = () => (dispatch: Dispatch) => {
+  getUsers()
+    .then((users) => {
+      dispatch(usersActions.setUsers(users));
+    })
+    .catch(() => {
+      dispatch(usersActions.setLoadUsersError());
+    });
+};
 
-    try {
-      const message = await fetchMessage();
+export const loadPostDetails = (postId: number) => (dispatch: Dispatch) => {
+  getPostDetails(postId)
+    .then((post) => {
+      dispatch(postsActions.setPostsDetails(post));
+    })
+    .catch(() => {
+      dispatch(postsActions.setLoadDetailsError());
+    });
+};
 
-      dispatch(setMessage(message));
-    } catch (error) {
-      dispatch(setMessage('Error occurred when loading data'));
-    }
+export const loadComments = (postId: number) => (dispatch: Dispatch) => {
+  getPostComments(postId)
+    .then((comments) => {
+      dispatch(commentsActions.setComments(comments));
+    })
+    .catch(() => {
+      dispatch(commentsActions.setLoadCommentsError());
+    });
+};
 
-    dispatch(finishLoading());
+export const changeSelectedUserId = (userId: number) => {
+  return (dispatch: Dispatch) => {
+    dispatch(usersActions.setSelectedUserId(userId));
   };
 };
 
+export const changeSelectedPostId = (postId: number | null) => {
+  return (dispatch: Dispatch) => {
+    dispatch(postsActions.setSelectedPostId(postId));
+  };
+};
+
+export const selectors = {
+  getPosts: (state: CombinedState) => postsSelectors.getPosts(state.posts),
+
+  getLoadPostsError: (state: CombinedState) => {
+    return postsSelectors.getLoadPostsError(state.posts);
+  },
+
+  getSelectedPostId: (state: CombinedState) => {
+    return postsSelectors.getSelectedPostId(state.posts);
+  },
+
+  getPostDetails: (state: CombinedState) => {
+    return postsSelectors.getPostDetails(state.posts);
+  },
+
+  getLoadDetailsError: (state: CombinedState) => {
+    return postsSelectors.getLoadDetailsError(state.posts);
+  },
+
+  getUsers: (state: CombinedState) => usersSelectors.getUsers(state.users),
+
+  getLoadUsersError: (state: CombinedState) => {
+    return usersSelectors.getLoadUsersError(state.users);
+  },
+
+  getSelectedUserId: (state: CombinedState) => {
+    return usersSelectors.getSelectedUserId(state.users);
+  },
+
+  getComments: (state: CombinedState) => {
+    return commsntsSelectors.getComments(state.comments);
+  },
+
+  getLoadCommentsError: (state: CombinedState) => {
+    return commsntsSelectors.getLoadCommentsError(state.comments);
+  },
+};
+
+const reducer = combineReducers({
+  posts: postsReducer,
+  users: usersReducer,
+  comments: commentsReducer,
+});
+
 const store = createStore(
-  rootReducer,
+  reducer,
   composeWithDevTools(applyMiddleware(thunk)),
 );
 
