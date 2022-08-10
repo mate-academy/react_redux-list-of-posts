@@ -37,5 +37,13 @@ export const clientAPI = createApi({
       }),
       invalidatesTags: ['Comments'],
     }),
+    addComment: build.mutation<Comment, Comment>({
+      query: (post) => ({
+        url: '/comments/',
+        method: 'POST',
+        body: post,
+      }),
+      invalidatesTags: ['Comments'],
+    }),
   }),
 });

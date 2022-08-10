@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-// import { CommentData } from '../types/Comment';
-// type Props = {
-//   onSubmit: (data: CommentData) => Promise<void>;
-// };
+import { clientAPI } from '../store/clientApi';
+import { useAppSelector } from '../store/hooks';
+import { Comment } from '../types/Comment';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const [addComment] = clientAPI.useAddCommentMutation();
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const [values, setValues] = useState({
     name: '',
@@ -28,9 +29,6 @@ export const NewCommentForm: React.FC = () => {
     });
   };
 
-  /**
-   * This factory function returns a change handler for a given field
-   */
   const handleChange = (field: string) => {
     // eslint-disable-next-line max-len
     return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -54,14 +52,17 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    setSubmitting(true);
+    if (selectedPost) {
+      setSubmitting(true);
+      await addComment({
+        name,
+        email,
+        body,
+        postId: selectedPost?.id,
+      } as Comment);
+      setSubmitting(false);
+    }
 
-    // it is very easy to forget about `await` keyword
-    // await onSubmit({ name, email, body });
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-
-    // We keep the entered name and email
     setValues({ ...values, body: '' });
   };
 
@@ -156,6 +157,7 @@ export const NewCommentForm: React.FC = () => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            onClick={handleSubmit}
           >
             Add
           </button>

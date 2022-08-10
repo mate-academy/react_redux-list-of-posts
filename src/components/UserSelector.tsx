@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
-import { clientAPI } from '../app/clientApi';
+import { clientAPI } from '../store/clientApi';
 import { Loader } from './Loader';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setAuthor } from '../store/Reducers/AuthorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
+  const { author } = useAppSelector(state => state.author);
   const { data: users, isLoading } = clientAPI.useFetchAllUsersQuery('');
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -44,7 +39,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={() => setExpanded(current => !current)}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {author?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -61,9 +56,9 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                onClick={() => onChange(user)}
+                onClick={() => dispatch(setAuthor(user))}
                 className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
+                  'is-active': user.id === author?.id,
                 })}
               >
                 {user.name}

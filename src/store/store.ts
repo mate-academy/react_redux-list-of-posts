@@ -1,15 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { combineReducers } from 'redux';
 import { clientAPI } from './clientApi';
-
-const rootReduser = combineReducers({
-  [clientAPI.reducerPath]: clientAPI.reducer,
-});
+import authorReducer from './Reducers/AuthorSlice';
+import selectedPostReducer from './Reducers/SelectedPostSlice';
 
 export const storCreat = () => {
   return configureStore({
-    reducer: rootReduser,
+    reducer: {
+      [clientAPI.reducerPath]: clientAPI.reducer,
+      author: authorReducer,
+      selectedPost: selectedPostReducer,
+    },
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware().concat(clientAPI.middleware);
     },

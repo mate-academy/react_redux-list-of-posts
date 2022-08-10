@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from 'react';
-
-// We can move CSS imports to index.tsx
-import 'bulma/bulma.sass';
-import '@fortawesome/fontawesome-free/css/all.css';
-
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { clientAPI } from './app/clientApi';
+import { clientAPI } from './store/clientApi';
+import { useAppSelector } from './store/hooks';
 
 export const App: React.FC = () => {
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { author } = useAppSelector(state => state.author);
+  // eslint-disable-next-line max-len
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const {
     data: posts = [],
     isLoading,
     isError,
   } = clientAPI.useFetchAllPostsQuery(author?.id);
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-  }, [author?.id]);
+  // const dispatch = useAppDispatch();
 
   return (
     <main className="section">
@@ -33,7 +23,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block">
@@ -63,11 +53,7 @@ export const App: React.FC = () => {
                 {
                 // eslint-disable-next-line max-len
                   author && !isLoading && !isError && posts && posts.length > 0 && (
-                    <PostsList
-                      posts={posts}
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
-                    />
+                    <PostsList />
                   )
                 }
               </div>
