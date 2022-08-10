@@ -1,20 +1,29 @@
-import { useSelector } from 'react-redux';
-
+import React from 'react';
 import './App.scss';
-import { Start } from './components/Start';
+import './styles/general.scss';
 
-import { isLoading, getMessage } from './store';
+import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect';
 
-const App = () => {
-  const loading = useSelector(isLoading);
-  const message = useSelector(getMessage) || 'Ready!';
-
+const App: React.FC = () => {
   return (
     <div className="App">
-      <h1>Redux list of posts</h1>
-      <h2>{loading ? 'Loading...' : message}</h2>
+      <header className="App__header">
+        <UserSelect />
+      </header>
 
-      <Start />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList />
+        </div>
+
+        <div className="App__content">
+
+          <PostDetails />
+
+        </div>
+      </main>
     </div>
   );
 };
