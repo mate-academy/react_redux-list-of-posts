@@ -1,21 +1,31 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import counterReducer from '../features/counter/counterSlice';
+import { combineReducers } from 'redux';
+import { clientAPI } from './clientApi';
 
-export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
+const rootReduser = combineReducers({
+  [clientAPI.reducerPath]: clientAPI.reducer,
 });
+
+export const storCreat = () => {
+  return configureStore({
+    reducer: rootReduser,
+    middleware: (getDefaultMiddleware) => {
+      return getDefaultMiddleware().concat(clientAPI.middleware);
+    },
+  });
+};
+
+export const store = storCreat();
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 
-/* eslint-disable @typescript-eslint/indent */
+// /* eslint-disable @typescript-eslint/indent */
 export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
+ReturnType,
+RootState,
+unknown,
+Action<string>
 >;
-/* eslint-enable @typescript-eslint/indent */
+// /* eslint-enable @typescript-eslint/indent */
