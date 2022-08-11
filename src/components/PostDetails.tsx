@@ -1,34 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import {
+  addComment, addCommentLocal, deleteComment, deleteCommentLocal,
+  loadComments,
+  setVisibleComments,
+} from '../store/reducers/commentsSlice';
 
-import * as commentsApi from '../api/comments';
+export const PostDetails: React.FC = () => {
+  const {
+    comments,
+    loaded,
+    hasError,
+    visibleComments,
+  } = useAppSelector(state => state.comments);
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.posts);
+  // function loadComments() {
+  //   setLoaded(false);
+  //   setError(false);
+  //   setVisible(false);
+  //
+  //   commentsApi.getPostComments(post.id)
+  //     .then(setComments) // save the loaded comments
+  //     .catch(() => setError(true)) // show an error when something went wrong
+  //     .finally(() => setLoaded(true)); // hide the spinner
+  // }
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
-
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
-
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
+  useEffect(() => {
+    if (selectedPost) {
+      dispatch(loadComments(selectedPost.id));
+    }
+  }, [selectedPost?.id]);
 
   // The same useEffect with async/await
   /*
@@ -56,48 +61,30 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   // effect can return only a function but not a Promise
   */
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+  const onAddComment = async ({ name, email, body }: CommentData) => {
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: selectedPost?.id || 0,
+    };
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
+    dispatch(addComment(newComment));
+    dispatch(addCommentLocal(newComment));
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+  const onDeleteComment = async (commentId: number) => {
+    dispatch(deleteComment(commentId));
+    dispatch(deleteCommentLocal(commentId));
   };
 
   return (
     <div className="content">
       <div className="block">
         <h2>
-          {`#${post.id}: ${post.title}`}
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
         </h2>
-        <p>{post.body}</p>
+        <p>{selectedPost?.body}</p>
       </div>
 
       <div className="block">
@@ -128,7 +115,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => onDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -142,18 +129,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {loaded && !hasError && !visibleComments && (
           <button
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={() => dispatch(setVisibleComments())}
           >
             Write a comment
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {loaded && !hasError && visibleComments && (
+          <NewCommentForm onSubmit={onAddComment} />
         )}
       </div>
     </div>
