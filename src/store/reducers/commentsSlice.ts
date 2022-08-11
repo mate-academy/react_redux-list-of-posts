@@ -53,7 +53,9 @@ export const commentsSlice = createSlice({
       state.comments.push({ ...action.payload, id: Math.random() });
     },
     deleteCommentLocal: (state, action) => {
-      state.comments.filter(comment => comment.id !== action.payload);
+      state.comments = state
+        .comments
+        .filter(comment => comment.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
