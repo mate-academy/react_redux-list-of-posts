@@ -1,35 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { selectUsers } from '../features/users/usersSlice';
+import { selectAuthor, setAuthor } from '../features/users/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+export const UserSelector = () => {
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(selectUsers);
+  const { author } = useAppSelector(selectAuthor);
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (!expanded) {
-      // no need to listen to outside click when the dropdown is closed
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -39,7 +27,6 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // the listener is removed when we close the dropdown
   }, [expanded]);
 
   return (
@@ -53,7 +40,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={() => setExpanded(current => !current)}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {author?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -65,16 +52,16 @@ export const UserSelector: React.FC<Props> = ({
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => (
-            <a
+            <Link
               key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => onChange(user)}
+              to={`user-${user.id}`}
+              onClick={() => dispatch(setAuthor(user))}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
