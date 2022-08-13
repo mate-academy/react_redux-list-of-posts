@@ -1,11 +1,11 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectPosts } from '../features/posts/postsSlice';
 import { selectPost, setSelectPost } from '../features/posts/selectedPostSlice';
 
-export const PostsList: React.FC = () => {
+export const PostsList = React.memo(() => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector(selectPosts);
   const { selectedPost } = useAppSelector(selectPost);
@@ -14,6 +14,13 @@ export const PostsList: React.FC = () => {
   const navigation = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+
+  useEffect(() => {
+    const initialPost = posts
+      .find(post => post.id === +location.search.slice(6)) || null;
+
+    dispatch(setSelectPost(initialPost));
+  }, []);
 
   return (
     <div className="PostsList">
@@ -73,4 +80,4 @@ export const PostsList: React.FC = () => {
       </table>
     </div>
   );
-};
+});

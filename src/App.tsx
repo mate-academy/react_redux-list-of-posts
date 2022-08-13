@@ -17,7 +17,9 @@ import {
   postsLoadingSuccess,
   selectPosts,
 } from './features/posts/postsSlice';
-import { setUsers } from './features/users/usersSlice';
+import {
+  setUsersSuccess, setUsersFail, loadingUsers,
+} from './features/users/usersSlice';
 import { getUsers } from './api/users';
 import { selectAuthor } from './features/users/authorSlice';
 import {
@@ -26,7 +28,7 @@ import {
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loaded, hasError } = useAppSelector(selectPosts);
+  const { posts, loaded: postsLoaded, hasError } = useAppSelector(selectPosts);
   const { author } = useAppSelector(selectAuthor);
   const { selectedPost } = useAppSelector(selectPost);
 
@@ -39,8 +41,10 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
+    dispatch(loadingUsers());
     getUsers()
-      .then(usersFromServer => dispatch(setUsers(usersFromServer)));
+      .then(usersFromServer => dispatch(setUsersSuccess(usersFromServer)))
+      .catch(() => dispatch(setUsersFail()));
   }, []);
 
   useEffect(() => {
@@ -68,23 +72,23 @@ export const App: React.FC = () => {
                   <p>No user selected</p>
                 )}
 
-                {author && !loaded && (
+                {author && !postsLoaded && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && postsLoaded && hasError && (
                   <div className="notification is-danger">
                     Something went wrong!
                   </div>
                 )}
 
-                {author && loaded && !hasError && !posts.length && (
+                {author && postsLoaded && !hasError && !posts.length && (
                   <div className="notification is-warning">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && !!posts.length && (
+                {author && postsLoaded && !hasError && !!posts.length && (
                   <Routes>
                     <Route path="/">
                       <Route index element={<PostsList />} />

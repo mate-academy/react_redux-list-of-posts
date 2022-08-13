@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 
-interface PostState {
+export interface PostState {
   posts: Post[],
   loaded: boolean,
   hasError: boolean,

@@ -1,16 +1,26 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectUsers } from '../features/users/usersSlice';
 import { selectAuthor, setAuthor } from '../features/users/authorSlice';
+import { Loader } from './Loader';
 
-export const UserSelector = () => {
+export const UserSelector = React.memo(() => {
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector(selectUsers);
+  const { users, loaded } = useAppSelector(selectUsers);
   const { author } = useAppSelector(selectAuthor);
 
   const [expanded, setExpanded] = useState(false);
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const initialAuthorId = pathname.slice(6);
+    const initialAuthor = users.find(user => user.id === +initialAuthorId);
+
+    dispatch(setAuthor(initialAuthor || null));
+  }, [loaded]);
 
   useEffect(() => {
     if (!expanded) {
@@ -40,7 +50,8 @@ export const UserSelector = () => {
           onClick={() => setExpanded(current => !current)}
         >
           <span>
-            {author?.name || 'Choose a user'}
+            {!loaded && <Loader />}
+            {loaded && (author?.name || 'Choose a user')}
           </span>
 
           <span className="icon is-small">
@@ -67,4 +78,4 @@ export const UserSelector = () => {
       </div>
     </div>
   );
-};
+});

@@ -15,7 +15,7 @@ import {
   selectComments,
 } from '../features/comments/commentsSlice';
 
-export const PostDetails: React.FC = () => {
+export const PostDetails = React.memo(() => {
   const dispatch = useAppDispatch();
   const { selectedPost: post } = useAppSelector(selectPost);
   const {
@@ -23,6 +23,7 @@ export const PostDetails: React.FC = () => {
     loaded,
     hasError,
   } = useAppSelector(selectComments);
+
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
@@ -128,4 +129,4 @@ export const PostDetails: React.FC = () => {
       </div>
     </div>
   );
-};
+});
