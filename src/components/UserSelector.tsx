@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useGetUsersQuery } from '../app/ReduxToolKitApi';
 
 type Props = {
   value: User | null;
@@ -9,27 +9,19 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+
+  const { data: users = [] } = useGetUsersQuery();
 
   useEffect(() => {
     if (!expanded) {
-      // no need to listen to outside click when the dropdown is closed
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -39,7 +31,6 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // the listener is removed when we close the dropdown
   }, [expanded]);
 
   return (
