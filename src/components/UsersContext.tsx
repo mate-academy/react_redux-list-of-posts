@@ -5,7 +5,7 @@ import { User } from '../types/User';
 export const UserContext = React.createContext<User[]>([]);
 
 type Props = {
-  children?: React.ReactNode
+  children: React.ReactNode;
 };
 
 export const UsersProvider: React.FC<Props> = ({ children }) => {
