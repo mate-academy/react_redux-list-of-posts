@@ -22,23 +22,6 @@ export const UserSelector = React.memo(() => {
     dispatch(setAuthor(initialAuthor || null));
   }, [loaded]);
 
-  useEffect(() => {
-    if (!expanded) {
-      return;
-    }
-
-    const handleDocumentClick = () => {
-      setExpanded(false);
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [expanded]);
-
   return (
     <div className={classNames('dropdown', { 'is-active': expanded })}>
       <div className="dropdown-trigger">
@@ -66,7 +49,10 @@ export const UserSelector = React.memo(() => {
             <Link
               key={user.id}
               to={`user-${user.id}`}
-              onClick={() => dispatch(setAuthor(user))}
+              onClick={() => {
+                dispatch(setAuthor(user));
+                setExpanded(false);
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}

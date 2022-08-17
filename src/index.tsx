@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter as Router } from 'react-router-dom';
 
@@ -13,4 +13,7 @@ const Root = () => (
   </Provider>
 );
 
-ReactDOM.render(<Root />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container!);
+
+root.render(<Root />);
