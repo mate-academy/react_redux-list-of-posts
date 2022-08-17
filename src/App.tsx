@@ -1,59 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 // We can move CSS imports to index.tsx
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import {
+  postsLoading,
+  postsLoadingFail,
+  postsLoadingSuccess,
+  selectPosts,
+} from './features/posts/postsSlice';
+import {
+  setUsersSuccess, setUsersFail, loadingUsers,
+} from './features/users/usersSlice';
+import { getUsers } from './api/users';
+import { selectAuthor } from './features/users/authorSlice';
+import {
+  resetSelectedPost, selectPost,
+} from './features/posts/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
+  const { posts, loaded: postsLoaded, hasError } = useAppSelector(selectPosts);
+  const { author } = useAppSelector(selectAuthor);
+  const { selectedPost } = useAppSelector(selectPost);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(postsLoading());
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .then(postFromServer => dispatch(postsLoadingSuccess(postFromServer)))
+      .catch(() => dispatch(postsLoadingFail()));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(loadingUsers());
+    getUsers()
+      .then(usersFromServer => dispatch(setUsersSuccess(usersFromServer)))
+      .catch(() => dispatch(setUsersFail()));
+  }, []);
+
+  useEffect(() => {
+    dispatch(resetSelectedPost());
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(postsLoadingSuccess([]));
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block">
@@ -61,28 +72,30 @@ export const App: React.FC = () => {
                   <p>No user selected</p>
                 )}
 
-                {author && !loaded && (
+                {author && !postsLoaded && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && postsLoaded && hasError && (
                   <div className="notification is-danger">
                     Something went wrong!
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && postsLoaded && !hasError && !posts.length && (
                   <div className="notification is-warning">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && postsLoaded && !hasError && !!posts.length && (
+                  <Routes>
+                    <Route path="/">
+                      <Route index element={<PostsList />} />
+                      <Route path=":id" element={<PostsList />} />
+                    </Route>
+                    <Route path="/home" element={<Navigate to="/" replace />} />
+                  </Routes>
                 )}
               </div>
             </div>
@@ -91,7 +104,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent is-8-desktop">
             <div className="tile is-child box is-success ">
               {selectedPost ? (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               ) : (
                 <p>Choose a post</p>
               )}

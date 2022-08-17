@@ -6,7 +6,7 @@ type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm = React.memo<Props>(({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [values, setValues] = useState({
@@ -29,9 +29,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  /**
-   * This factory function returns a change handler for a given field
-   */
   const handleChange = (field: string) => {
     // eslint-disable-next-line max-len
     return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -57,12 +54,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-    // and the spinner will disappear immediately
     setSubmitting(false);
 
-    // We keep the entered name and email
     setValues({ ...values, body: '' });
   };
 
@@ -171,4 +165,4 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       </div>
     </form>
   );
-};
+});
