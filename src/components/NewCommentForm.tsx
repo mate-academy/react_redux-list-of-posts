@@ -9,16 +9,16 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
-  const [values, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
+  });
+
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
   });
 
   const clearForm = () => {
@@ -27,23 +27,25 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: '',
       body: '',
     });
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
-  /**
-   * This factory function returns a change handler for a given field
-   */
-  const handleChange = (field: string) => {
-    // eslint-disable-next-line max-len
-    return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setErrors({ ...errors, [field]: false });
-      setValues({ ...values, [field]: event.target.value });
-    };
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: field, value } = event.target;
+
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const { name, body, email } = values;
 
     setErrors({
       name: !name,
@@ -51,7 +53,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !body || !email) {
+    if (!name || !email || !body) {
       return;
     }
 
@@ -59,16 +61,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
+
     // and the spinner will disappear immediately
     setSubmitting(false);
-
+    setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
-    setValues({ ...values, body: '' });
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm}>
-      <div className="field">
+    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
@@ -76,11 +78,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
+            name="name"
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
-            value={values.name}
-            onChange={handleChange('name')}
+            value={name}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -88,18 +91,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </span>
 
           {errors.name && (
-            <span className="icon is-small is-right has-text-danger">
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>
 
         {errors.name && (
-          <p className="help is-danger">Name is required</p>
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
         )}
       </div>
 
-      <div className="field">
+      <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
@@ -107,11 +115,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
+            name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
-            value={values.email}
-            onChange={handleChange('email')}
+            value={email}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -119,18 +128,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </span>
 
           {errors.email && (
-            <span className="icon is-small is-right has-text-danger">
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>
 
         {errors.email && (
-          <p className="help is-danger">Email is required</p>
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
         )}
       </div>
 
-      <div className="field">
+      <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
@@ -138,15 +152,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <textarea
             id="comment-body"
+            name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
-            value={values.body}
-            onChange={handleChange('body')}
+            value={body}
+            onChange={handleChange}
           />
         </div>
 
         {errors.body && (
-          <p className="help is-danger">Enter some text</p>
+          <p
+            className="help is-danger"
+            data-cy="ErrorMessage"
+          >
+            Enter some text
+          </p>
         )}
       </div>
 

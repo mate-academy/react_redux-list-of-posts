@@ -1,22 +1,18 @@
-function wait(delay: number) {
-  return new Promise(done => setTimeout(done, delay));
-}
+// function wait(delay: number) {
+//   return new Promise(done => setTimeout(done, delay));
+// }
 
-export async function read(key: string) {
-  await wait(500);
-
+function read(key: string) {
   const data = window.localStorage.getItem(key);
 
   try {
     return data && JSON.parse(data);
   } catch (error) {
-    return data;
+    return null;
   }
 }
 
-export async function write(key: string, data: any) {
-  await wait(500);
-
+function write(key: string, data: any) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 

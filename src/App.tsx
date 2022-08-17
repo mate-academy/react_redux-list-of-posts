@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-
-// We can move CSS imports to index.tsx
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import './App.scss';
 
+import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -56,9 +56,11 @@ export const App: React.FC = () => {
                 <UserSelector value={author} onChange={setAuthor} />
               </div>
 
-              <div className="block">
+              <div className="block" data-cy="MainContent">
                 {!author && (
-                  <p>No user selected</p>
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
                 )}
 
                 {author && !loaded && (
@@ -66,13 +68,16 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && hasError && (
-                  <div className="notification is-danger">
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
                     Something went wrong!
                   </div>
                 )}
 
                 {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning">
+                  <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
@@ -88,12 +93,21 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="tile is-parent is-8-desktop">
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': selectedPost,
+              },
+            )}
+          >
             <div className="tile is-child box is-success ">
-              {selectedPost ? (
+              {selectedPost && (
                 <PostDetails post={selectedPost} />
-              ) : (
-                <p>Choose a post</p>
               )}
             </div>
           </div>

@@ -22,7 +22,6 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     if (!expanded) {
-      // no need to listen to outside click when the dropdown is closed
       return;
     }
 
@@ -39,18 +38,24 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // the listener is removed when we close the dropdown
+  // we don't want to listening for outside clicks
+  // when the Dopdown is closed
   }, [expanded]);
 
   return (
-    <div className={classNames('dropdown', { 'is-active': expanded })}>
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': expanded })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setExpanded(current => !current)}
+          onClick={() => {
+            setExpanded(current => !current);
+          }}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -68,7 +73,9 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => onChange(user)}
+              onClick={() => {
+                onChange(user);
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
