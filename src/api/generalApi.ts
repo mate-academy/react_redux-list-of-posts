@@ -11,17 +11,22 @@ export const api = createApi({
 
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
 
+  tagTypes: ['Users', 'Posts', 'Comments'],
+
   endpoints: (builder) => ({
     getUsers: builder.query<User[], void>({
       query: () => '/users',
+      providesTags: ['Users'],
     }),
 
     getPosts: builder.query<Post[], number | null>({
       query: (userId) => `/posts?userId=${userId}`,
+      providesTags: ['Posts'],
     }),
 
     getComments: builder.query<Comment[], number>({
       query: (postId) => `/comments?postId=${postId}`,
+      providesTags: ['Comments'],
     }),
 
     addComment: builder.mutation<void, Partial<Comment>>({
@@ -32,6 +37,7 @@ export const api = createApi({
           body,
         };
       },
+      invalidatesTags: ['Comments'],
     }),
 
     deleteComment: builder.mutation<Comment, number>({
@@ -39,6 +45,7 @@ export const api = createApi({
         url: `/comments/${commentId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Comments'],
     }),
   }),
 });

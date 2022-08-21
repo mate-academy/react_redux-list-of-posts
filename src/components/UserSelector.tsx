@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 import { User } from '../types/User';
 import { useGetUsersQuery } from '../api/generalApi';
+import { Loader } from './Loader';
 
 type Props = {
-  value: User | null;
+  selectedUser: User | null | undefined;
   onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
+  selectedUser,
   onChange,
 }) => {
-  const { data: users = [] } = useGetUsersQuery();
+  const { data: users = [], isLoading } = useGetUsersQuery();
 
   const [expanded, setExpanded] = useState(false);
 
@@ -33,6 +35,8 @@ export const UserSelector: React.FC<Props> = ({
     };
   }, [expanded]);
 
+  // const { userId, postId } = useParams();
+
   return (
     <div className={classNames('dropdown', { 'is-active': expanded })}>
       <div className="dropdown-trigger">
@@ -43,9 +47,15 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setExpanded(current => !current)}
         >
-          <span>
-            {selectedUser?.name || 'Choose a user'}
-          </span>
+          {isLoading
+            ? (
+              <Loader />
+            )
+            : (
+              <span>
+                {selectedUser?.name || 'Choose a user'}
+              </span>
+            )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -56,16 +66,16 @@ export const UserSelector: React.FC<Props> = ({
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => (
-            <a
+            <Link
               key={user.id}
-              href={`#user-${user.id}`}
+              to={`/user-${user.id}`}
               onClick={() => onChange(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
             >
               {user.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

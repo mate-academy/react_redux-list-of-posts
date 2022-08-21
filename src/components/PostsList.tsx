@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Post } from '../types/Post';
 
 type Props = {
@@ -32,8 +33,8 @@ export const PostsList: React.FC<Props> = ({
               <th>{post.id}</th>
               <td>{post.title}</td>
               <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
+                <Link
+                  to={`/user-${post.userId}/post-${post.id}`}
                   className={classNames(
                     'button',
                     'is-link',
@@ -46,7 +47,7 @@ export const PostsList: React.FC<Props> = ({
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
-                </button>
+                </Link>
               </td>
             </tr>
           ))}
