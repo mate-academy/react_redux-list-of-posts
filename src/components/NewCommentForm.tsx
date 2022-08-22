@@ -1,55 +1,52 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useCallback, useState } from 'react';
+import { debounce } from 'lodash';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addNewComment,
+  clearNewComment,
+  setNewCommentError,
+  setNewCommentField,
+} from '../features/postComments/postCommentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+enum NewCommentKeys {
+  name = 'name',
+  email = 'email',
+  body = 'body',
+}
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const postId = useAppSelector(state => state.userPosts.selectedPost?.id);
+  const values = useAppSelector(state => state.postComments.newComment);
+  const errors = useAppSelector(state => state.postComments.newCommentError);
   const [submitting, setSubmitting] = useState(false);
+  const [query, setQuery] = useState(
+    { name: '', email: '', body: '' },
+  );
 
-  const [values, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-  };
-
-  /**
-   * This factory function returns a change handler for a given field
-   */
-  const handleChange = (field: string) => {
+  const handleChange = useCallback(debounce((
+    field: NewCommentKeys,
+    value: string,
+  ) => {
     // eslint-disable-next-line max-len
-    return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setErrors({ ...errors, [field]: false });
-      setValues({ ...values, [field]: event.target.value });
-    };
-  };
+    if (errors[field]) {
+      dispatch(setNewCommentError({ ...errors, [field]: false }));
+    }
+
+    dispatch(setNewCommentField({ key: field, value }));
+  }, 500), []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const { name, body, email } = values;
 
-    setErrors({
+    dispatch(setNewCommentError({
       name: !name,
       email: !email,
       body: !body,
-    });
+    }));
 
     if (!name || !body || !email) {
       return;
@@ -57,17 +54,25 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-    // and the spinner will disappear immediately
+    if (postId) {
+      // eslint-disable-next-line object-curly-newline
+      dispatch(addNewComment({ name, email, body, postId }));
+    }
+
     setSubmitting(false);
 
-    // We keep the entered name and email
-    setValues({ ...values, body: '' });
+    dispatch(setNewCommentField({ key: 'body', value: '' }));
+    setQuery(prev => ({ ...prev, body: '' }));
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm}>
+    <form
+      onSubmit={handleSubmit}
+      onReset={() => {
+        dispatch(clearNewComment());
+        setQuery({ name: '', email: '', body: '' });
+      }}
+    >
       <div className="field">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -79,8 +84,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
-            value={values.name}
-            onChange={handleChange('name')}
+            value={query.name}
+            onChange={event => {
+              setQuery(prev => ({ ...prev, name: event.target.value }));
+              handleChange(NewCommentKeys.name, event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -110,8 +118,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
-            value={values.email}
-            onChange={handleChange('email')}
+            value={query.email}
+            onChange={({ target }) => {
+              setQuery(prev => ({ ...prev, email: target.value }));
+              handleChange(NewCommentKeys.email, target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -140,8 +151,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
-            value={values.body}
-            onChange={handleChange('body')}
+            value={query.body}
+            onChange={({ target }) => {
+              setQuery(prev => ({ ...prev, body: target.value }));
+              handleChange(NewCommentKeys.body, target.value);
+            }}
           />
         </div>
 
@@ -154,9 +168,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames('button', 'is-link', {
-              'is-loading': submitting,
-            })}
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': submitting },
+            )}
           >
             Add
           </button>
