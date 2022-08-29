@@ -39,14 +39,17 @@ ul {
   margin: 10px;
   padding: 20px;
   border-radius: 20px;
-  background-color: white;
+  background-color: rgb(228, 207, 207);
 }
 
 .App {
+  height: 100vh;
+
   &__main {
     display: flex;
     justify-content: stretch;
     align-content: stretch;
+    height: 100%;
   }
 
   &__sidebar {
@@ -58,7 +61,6 @@ ul {
 
   &__content {
     @extend %stretch-panel;
-    padding: 0;
 
     flex-basis: 30%;
     border-color: green;

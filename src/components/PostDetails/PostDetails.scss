@@ -1,4 +1,9 @@
 .PostDetails {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   &__post {
     padding: 10px 0 15px;
   }
@@ -10,8 +15,9 @@
   &__list {
     list-style: none;
     scroll-behavior: smooth;
-    overflow-y: scroll;
-    height: 100px;
+    overflow-y: auto;
+    height: 150px;
+    padding-left: 0;
   }
 
   &__list-item {

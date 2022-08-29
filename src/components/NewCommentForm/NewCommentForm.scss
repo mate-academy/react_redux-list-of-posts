@@ -5,6 +5,8 @@
   padding: 20px;
 
   &__input {
+    width: 100%;
+
     border: none;
     border-bottom: 1px solid #4d457b;
     font-family: inherit;
@@ -16,4 +18,8 @@
   &__submit-button {
     margin-top: 10px;
   }
+}
+
+.form-field {
+  width: 100%;
 }
