@@ -1,24 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchUsersAction } from '../features/usersStateSlice';
 
 type Props = {
   value: User | null;
   onChange: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector = ({ value: selectedUser, onChange }: Props) => {
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector((state) => state.usersState);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchUsersAction());
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
