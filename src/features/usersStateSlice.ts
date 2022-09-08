@@ -1,14 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
+// eslint-disable-next-line import/no-cycle
+import { RootState } from '../app/store';
 import { User } from '../types/User';
 
-interface State {
+interface UsersState {
   users: User[],
   isLoading: boolean,
   error: null | string,
 }
 
-const initialState: State = {
+const initialState: UsersState = {
   users: [],
   isLoading: false,
   error: null,
@@ -19,7 +21,7 @@ export const fetchUsers = createAsyncThunk<User[]>(
   getUsers,
 );
 
-export const usersStateSlice = createSlice({
+export const usersSlice = createSlice({
   name: 'usersState',
   initialState,
   reducers: {},
@@ -37,4 +39,6 @@ export const usersStateSlice = createSlice({
   },
 });
 
-export default usersStateSlice.reducer;
+export const selectUsers = (state: RootState) => state.usersState;
+
+export default usersSlice.reducer;

@@ -4,31 +4,44 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { postSelector } from '../features/postStateSllice';
+import {
+  fetchCommentsByPostId,
+  selectComments,
+} from '../features/commentsStateSlice';
 
-type Props = {
-  post: Post;
-};
+export const PostDetails: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const post = useAppSelector(postSelector);
+  const {
+    comments,
+    loaded,
+    hasError,
+  } = useAppSelector(selectComments);
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [comments, setComments] = useState<Comment[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
+  // function loadComments() {
+  //   setLoaded(false);
+  //   setError(false);
+  //   setVisible(false);
 
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
+  //   commentsApi.getPostComments(post.id)
+  //     .then(setComments) // save the loaded comments
+  //     .catch(() => setError(true)) // show an error when something went wrong
+  //     .finally(() => setLoaded(true)); // hide the spinner
+  // }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(() => {
+    if (post) {
+      dispatch(fetchCommentsByPostId(post.id));
+    }
+  }, [post?.id]);
 
   // The same useEffect with async/await
   /*
