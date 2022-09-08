@@ -1,17 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useGetUsersFromServerQuery } from '../features/api/users';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  value: number | null;
+  onChange: (userId: number) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
+  value: userId,
   onChange,
 }) => {
   const { data } = useGetUsersFromServerQuery(
@@ -63,7 +60,7 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {users.find(user => user.id === userId)?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -79,10 +76,10 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                onChange(user.id);
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === userId,
               })}
             >
               {user.name}
