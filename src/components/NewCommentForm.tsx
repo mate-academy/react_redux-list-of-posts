@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: CommentData) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm = ({ onSubmit }: Props) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({

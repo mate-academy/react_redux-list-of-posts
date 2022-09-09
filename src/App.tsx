@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,52 +8,36 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppSelector } from './app/hooks';
+import { selectors } from './app/store';
+import { useGetPostsByUserIdQuery, useGetUserQuery } from './features/apiSlice';
 
-export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+export const App = () => {
+  const selectedUserId = useAppSelector(selectors.getSelectedUserId);
+  const { data: author } = useGetUserQuery(selectedUserId);
+  const selectedPostId = useAppSelector(selectors.getSelectedPostId);
+  const {
+    data: postsFromServer,
+    isFetching,
+    isError: hasError,
+  } = useGetPostsByUserIdQuery(selectedUserId);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const posts = useMemo(() => (postsFromServer || []), [postsFromServer]);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const selectedPost = useMemo(() => {
+    const post = posts.find(p => p.id === selectedPostId);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+    return post || null;
+  }, [selectedPostId]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -63,11 +47,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && isFetching && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && !isFetching && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,17 +60,16 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !isFetching && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !isFetching && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
@@ -101,12 +84,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': selectedPostId && selectedPostId !== 0,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {selectedPost && selectedPostId !== 0 && (
                 <PostDetails post={selectedPost} />
               )}
             </div>
