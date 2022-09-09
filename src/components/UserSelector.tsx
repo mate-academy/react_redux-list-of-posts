@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { useGetUserQuery, useGetUsersQuery } from '../features/userApi';
+import { useGetUserQuery, useGetUsersQuery } from '../features/apiSlice';
 import { selectUserId } from '../features/userSlice';
 import { selectors } from '../app/store';
 

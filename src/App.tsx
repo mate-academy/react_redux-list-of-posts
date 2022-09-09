@@ -10,8 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppSelector } from './app/hooks';
 import { selectors } from './app/store';
-import { useGetUserQuery } from './features/userApi';
-import { useGetPostsByUserIdQuery } from './features/postApi';
+import { useGetPostsByUserIdQuery, useGetUserQuery } from './features/apiSlice';
 
 export const App = () => {
   const selectedUserId = useAppSelector(selectors.getSelectedUserId);
