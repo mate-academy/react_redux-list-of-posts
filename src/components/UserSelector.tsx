@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { useGetUsersFromServerQuery } from '../features/api/users';
+import {
+  GET_USERS_ENDPOINT,
+  useGetUsersFromServerQuery,
+} from '../features/api/users';
 
 type Props = {
   value: number | null;
@@ -12,7 +15,7 @@ export const UserSelector: React.FC<Props> = ({
   onChange,
 }) => {
   const { data } = useGetUsersFromServerQuery(
-    'users',
+    GET_USERS_ENDPOINT,
     { refetchOnMountOrArgChange: true },
   );
 

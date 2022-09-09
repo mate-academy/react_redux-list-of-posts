@@ -8,26 +8,21 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 import { useGetPostsByUserIdQuery } from './features/api/posts';
 
 export const App: React.FC = () => {
   const [userId, setUserId] = useState<number | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   const { data, isError, isLoading } = useGetPostsByUserIdQuery(userId || -1,
     { refetchOnMountOrArgChange: true });
 
   const posts = useMemo(() => {
     return data || [];
-  }, [data]);
+  }, [data, userId]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -64,9 +59,9 @@ export const App: React.FC = () => {
 
                 {userId && !isLoading && !isError && posts.length > 0 && (
                   <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    selectedPostId={selectedPostId}
+                    onPostSelectedId={setSelectedPostId}
+                    userId={userId}
                   />
                 )}
               </div>
@@ -81,13 +76,13 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': selectedPostId,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
+              {selectedPostId && (
+                <PostDetails postId={selectedPostId} />
               )}
             </div>
           </div>

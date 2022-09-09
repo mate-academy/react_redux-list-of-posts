@@ -3,6 +3,8 @@ import { User } from '../../types/User';
 
 const BASE_URL = 'https://mate.academy/students-api';
 
+export const GET_USERS_ENDPOINT = '/users';
+
 export const usersApi = createApi({
   reducerPath: 'users',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
