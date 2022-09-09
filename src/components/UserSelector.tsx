@@ -1,32 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsersAction } from '../features/usersStateSlice';
+import { useGetUserQuery, useGetUsersQuery } from '../features/userApi';
+import { selectUserId } from '../features/userSlice';
+import { selectors } from '../app/store';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector = ({ value: selectedUser, onChange }: Props) => {
+export const UserSelector = () => {
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector((state) => state.usersState);
+  const selectedUserId = useAppSelector(selectors.getSelectedUserId);
+  const { data } = useGetUsersQuery(undefined);
+  const { data: selectedUser } = useGetUserQuery(selectedUserId);
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchUsersAction());
-  }, []);
+  const users = useMemo(() => (
+    data || []
+  ), [data]);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -36,8 +31,6 @@ export const UserSelector = ({ value: selectedUser, onChange }: Props) => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
   }, [expanded]);
 
   return (
@@ -72,7 +65,7 @@ export const UserSelector = ({ value: selectedUser, onChange }: Props) => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(selectUserId(user.id));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
