@@ -1,23 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import {
+  GET_USERS_ENDPOINT,
+  useGetUsersFromServerQuery,
+} from '../features/api/users';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  value: number | null;
+  onChange: (userId: number) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
+  value: userId,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const { data } = useGetUsersFromServerQuery(
+    GET_USERS_ENDPOINT,
+    { refetchOnMountOrArgChange: true },
+  );
+
+  const users = useMemo(() => {
+    return data || [];
+  }, [data]);
+
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -58,7 +63,7 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {users.find(user => user.id === userId)?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -74,10 +79,10 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                onChange(user.id);
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === userId,
               })}
             >
               {user.name}
