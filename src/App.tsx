@@ -6,26 +6,24 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { UserSelect } from './components/UserSelect';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { postsAsync } from './features/postsSlice/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
+  const { author } = useAppSelector(state => state.users);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { posts, selectedPost } = useAppSelector(state => state.posts);
+
+  const dispatch = useAppDispatch();
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
+    dispatch(postsAsync(userId))
       .catch(() => setError(true))
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
@@ -34,26 +32,22 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
 
     if (author) {
       loadUserPosts(author.id);
-    } else {
-      setPosts([]);
     }
   }, [author?.id]);
 
   return (
     <main className="section">
       {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
 
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelect />
               </div>
 
               <div className="block">
@@ -78,11 +72,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -91,7 +81,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent is-8-desktop">
             <div className="tile is-child box is-success ">
               {selectedPost ? (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               ) : (
                 <p>Choose a post</p>
               )}

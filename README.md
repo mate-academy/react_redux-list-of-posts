@@ -1,6 +1,6 @@
 # React + Redux list of posts
 
-> Here is the [working DEMO](https://mate-academy.github.io/react_redux-list-of-posts/)
+> Here is the [working DEMO](https://k-romakovalchuk.github.io/react_redux-list-of-posts/)
 
 You have the already implemented
 [Dynamic list of posts](https://github.com/mate-academy/react_dynamic-list-of-posts#react_dynamic-list-of-posts)

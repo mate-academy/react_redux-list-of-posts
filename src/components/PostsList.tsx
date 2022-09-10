@@ -1,55 +1,57 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setSelectPost } from '../features/postsSlice/postsSlice';
 
-type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
-};
+export const PostsList: React.FC = () => {
+  // const {author: selectedUser} = useAppSelector(state => state.users);
+  const { posts, selectedPost } = useAppSelector(state => state.posts);
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
-  <div className="PostsList">
-    <p className="title">Posts:</p>
+  const dispatch = useAppDispatch();
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  return (
+    <div className="PostsList">
+      <p className="title">Posts:</p>
 
-      <tbody>
-        {posts.map(post => (
-          <tr key={post.id}>
-            <th>{post.id}</th>
-            <td>{post.title}</td>
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
-              >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
-              </button>
-            </td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr key={post.id}>
+              <th>{post.id}</th>
+              <td>{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    {
+                      'is-light': post.id !== selectedPost?.id,
+                    },
+                  )}
+                  onClick={() => {
+                    if (selectedPost?.id === post.id) {
+                      dispatch(setSelectPost(null));
+                    } else {
+                      dispatch(setSelectPost(post));
+                    }
+                  }}
+                >
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
