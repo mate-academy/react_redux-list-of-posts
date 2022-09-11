@@ -7,7 +7,6 @@ export interface CommentsState {
   comments: Comment[],
   loaded: boolean,
   hasError: boolean,
-  submitting: boolean,
 }
 
 const initialState: CommentsState = {
@@ -15,7 +14,6 @@ const initialState: CommentsState = {
   comments: [],
   loaded: false,
   hasError: false,
-  submitting: false,
 };
 
 export const fetchComments = createAsyncThunk(
@@ -68,18 +66,12 @@ export const commentsSlice = createSlice({
       state.hasError = true;
     });
 
-    builder.addCase(addNewComment.pending, (state) => {
-      state.submitting = true;
-    });
-
     builder.addCase(addNewComment.fulfilled, (state, action) => {
       state.comments.push({ ...action.payload });
-      state.submitting = false;
     });
 
     builder.addCase(addNewComment.rejected, (state) => {
       state.hasError = true;
-      state.submitting = false;
     });
   },
 });
@@ -88,7 +80,6 @@ export const selectors = {
   getComments: (state: CommentsState) => state.comments,
   getCommentsState: (state: CommentsState) => state,
   getSelectedPostId: (state: CommentsState) => state.selectedPostId,
-  getSubmiting: (state: CommentsState) => state.submitting,
 };
 
 export default commentsSlice.reducer;

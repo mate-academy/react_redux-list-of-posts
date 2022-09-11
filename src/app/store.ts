@@ -48,7 +48,4 @@ export const selectors = {
     .getSelectedPostId(state.comments),
 
   getCommentsState: (state: RootState) => state.comments,
-
-  getSubmitting: (state: RootState) => commentsSelectors
-    .getSubmiting(state.comments),
 };

@@ -7,7 +7,7 @@ import { selectors } from '../app/store';
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedPostId = useAppSelector(selectors.getSelectedPostId);
-  const submitting = useAppSelector(selectors.getSubmitting);
+  const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -57,15 +57,17 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
+    setSubmitting(true);
     // it is very easy to forget about `await` keyword
     // await onSubmit({ name, email, body });
-    dispatch(addNewComment({
+    await dispatch(addNewComment({
       name,
       email,
       body,
       postId: selectedPostId as number,
     }));
 
+    setSubmitting(false);
     // and the spinner will disappear immediately
     setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
