@@ -1,25 +1,15 @@
 # React + Redux list of posts
 
-You have the already implemented
-[Dynamic list of posts](https://github.com/mate-academy/react_dynamic-list-of-posts#react_dynamic-list-of-posts)
-and the `Counter` example of Redux Toolkit usage.
+## Main functionality:
+ - The main window has `selector` with list of `users`. The list of users is implemented through an AJAX request to the server.
+ - After the user is selected, the `table of posts` of the selected user is displayed below. Each post has the ability to open it in detail with the `"Open"` button. Then a `sidebar` opens with detailed information on the selected post and a `list of comments` from all users.
+ - The list of comments has the ability to send an email to the selected user (link to the mail in the name), the body of the comment and the button to `delete the comment`.
+ - Below the list of comments is the button `"Write a comment"`, which opens a new `form`, where there are two inputs (name and e-mail) and a text form for commenting. Two buttons for interaction with the form are also implemented - `add a comment` and `clear the form`.
 
-> Here is the [working DEMO](https://mate-academy.github.io/react_redux-list-of-posts/)
+## Technical specifications:
+ - The application was created using the `React` library (functional components) + `TypeScript`.
+ - All states except for the submit form are stored using the `Redux toolkit` and asynchronous code is executed through `Redux Thunk`.
+  - The design is made using `Bulma's` CSS framework.
+  - Requests to the server are made using `Fetch` and using the `Axios` library.
 
-Learn the implemented App and the example and reimplement it with Redux having the next slice:
-- `users` and remove `UsersContext`;
-- `author` that is currently in the `App`;
-- `posts` having 3 props `loaded`, `hasError` and `items`;
-- `selectedPost`;
-- `comments` with `loaded`, `hasError` and `items` props (keep the `visible` in the `PostDetails`);
-- `NewCommentForm` should keep its state.
-
-## Useful links
-- [Why Redux Toolkit is How To Use Redux Today](https://redux.js.org/introduction/why-rtk-is-redux-today)
-- [Learn Modern Redux Livestream](https://redux.js.org/introduction/getting-started#learn-modern-redux-livestream)
-
-## Instructions
-- Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
-- Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
-- This task does not have tests yet!
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://<your_account>.github.io/react_redux-list-of-posts/) and add it to the PR description.
+## [DEMO LINK](https://illnino380.github.io/react_redux-list-of-posts/)
