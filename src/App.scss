@@ -2,6 +2,14 @@ iframe {
   display: none;
 }
 
+.header {
+  &__title {
+    padding: 20px 0;
+
+    text-align: center;
+  }
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
