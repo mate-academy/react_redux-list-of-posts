@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-// We can move CSS imports to index.tsx
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -16,7 +15,6 @@ export const App: React.FC = () => {
   const [hasError, setError] = useState(false);
   const { author } = useAppSelector(state => state.users);
 
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const { posts, selectedPost } = useAppSelector(state => state.posts);
 
   const dispatch = useAppDispatch();
@@ -25,14 +23,10 @@ export const App: React.FC = () => {
     setLoaded(false);
     dispatch(postsAsync(userId))
       .catch(() => setError(true))
-      // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-
     if (author) {
       loadUserPosts(author.id);
     }
@@ -40,8 +34,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">

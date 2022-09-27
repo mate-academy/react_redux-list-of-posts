@@ -54,7 +54,10 @@ export const UserSelect: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(setAuthor(user))}
+              onClick={() => {
+                setExpanded(current => !current);
+                dispatch(setAuthor(user));
+              }}
               className={classNames(
                 'dropdown-item',
                 { 'is-active': user.id === selectedUser?.id },
