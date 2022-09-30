@@ -1,94 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
-import { Post } from '../types/Post';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import * as commentsActions from '../features/commentsSlice';
 import { Comment, CommentData } from '../types/Comment';
+import * as commentsApi from '../api/comments';
+import { Post } from '../types/Post';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const dispatch = useAppDispatch();
+  const { loaded, hasError } = useAppSelector(state => state.comments);
+  const comments = useAppSelector(state => state.comments.items);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(commentsActions.setLoaded(false));
     setVisible(false);
 
     commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(commentsFromServer => dispatch(
+        commentsActions.setComments(commentsFromServer),
+      ))
+      .catch(() => dispatch(commentsActions.setError(true)))
+      .finally(() => dispatch(commentsActions.setLoaded(true)));
   }
 
   useEffect(loadComments, [post.id]);
 
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
+  const addComment = ({ name, email, body }: CommentData) => {
+    const newComment: Comment = {
+      name,
+      email,
+      body,
+      postId: post.id,
+    };
 
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
+    commentsApi.createComment(newComment)
+      .then(comment => {
+        if (!comment.id) {
+          setErrorMessage('Unable to add a comment');
 
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
+          return;
+        }
+
+        dispatch(commentsActions.setComments([...comments, comment]));
+      })
+      .catch(() => setErrorMessage('Something went wrong!'));
   };
 
-  useEffect(() => {
-    loadComments();
-  }, []);
+  const handleDeleteBtnClick = (commentId = 0) => {
+    if (commentId !== 0) {
+      const copyComments = [...comments];
 
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
+      dispatch(commentsActions.setComments(comments.filter(
         comment => comment.id !== commentId,
-      ),
-    );
+      )));
 
-    await commentsApi.deleteComment(commentId);
+      commentsApi.deleteComment(commentId)
+        .then(deletedComment => {
+          if (deletedComment && typeof deletedComment === 'object') {
+            if (Object.values(deletedComment).includes('Not Found')) {
+              setErrorMessage('Unable to delete a comment');
+              dispatch(commentsActions.setComments(copyComments));
+            }
+          }
+        })
+        .catch(() => setErrorMessage('Something went wrong!'));
+    }
   };
 
   return (
@@ -120,6 +104,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </p>
         )}
 
+        {errorMessage
+          && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              {errorMessage}
+            </div>
+          )}
+
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
@@ -140,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteBtnClick(comment.id)}
                   >
                     delete button
                   </button>
