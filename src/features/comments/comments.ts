@@ -6,14 +6,14 @@ import { NewComment } from '../../types/NewComment';
 
 export interface InitialState {
   comments: Comment [] | null;
-  loaded: boolean;
-  hasError: boolean;
+  isLoaded: boolean;
+  isError: boolean;
 }
 
 const initialState: InitialState = {
   comments: null,
-  loaded: false,
-  hasError: false,
+  isLoaded: false,
+  isError: false,
 };
 
 export const fetchComments = createAsyncThunk('comments/fetchComments',
@@ -41,27 +41,27 @@ const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state) => {
-        state.loaded = false;
+        state.isLoaded = false;
         state.comments = [];
-        state.hasError = false;
+        state.isError = false;
       })
 
       .addCase(fetchComments.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
-          state.loaded = true;
+          state.isLoaded = true;
           state.comments = [...action.payload];
         })
 
       .addCase(fetchComments.rejected, (state) => {
-        state.loaded = false;
+        state.isLoaded = false;
         state.comments = [];
-        state.hasError = true;
+        state.isError = true;
       })
 
       .addCase(addNewComment.fulfilled,
         (state, action: PayloadAction<Comment>) => {
-          state.loaded = true;
-          state.hasError = false;
+          state.isLoaded = true;
+          state.isError = false;
           if (state.comments) {
             state.comments = [...state.comments, action.payload];
           } else {
@@ -70,8 +70,8 @@ const commentsSlice = createSlice({
         })
 
       .addCase(addNewComment.rejected, (state) => {
-        state.loaded = true;
-        state.hasError = true;
+        state.isLoaded = true;
+        state.isError = true;
       });
   },
 });

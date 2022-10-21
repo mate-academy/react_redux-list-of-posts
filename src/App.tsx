@@ -15,7 +15,7 @@ import { deselectPost } from './features/selectedPost/selectedPost';
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
 
-  const { items: posts, loaded, hasError } = useAppSelector(
+  const { items: posts, isLoaded, isError } = useAppSelector(
     state => state.posts,
   );
   const dispatch = useAppDispatch();
@@ -49,11 +49,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && !isLoaded && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && isLoaded && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -62,13 +62,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && isLoaded && !isError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && isLoaded && !isError && posts.length > 0 && (
                   <PostsList posts={posts} />
                 )}
               </div>

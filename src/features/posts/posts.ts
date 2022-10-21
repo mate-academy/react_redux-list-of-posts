@@ -9,14 +9,14 @@ export const fetchPosts = createAsyncThunk('posts/fetch', (userId: number) => {
 
 export interface InitialState {
   items: Array<Post> | [],
-  loaded: boolean,
-  hasError: boolean,
+  isLoaded: boolean,
+  isError: boolean,
 }
 
 const initialState: InitialState = {
   items: [],
-  loaded: false,
-  hasError: false,
+  isLoaded: false,
+  isError: false,
 };
 
 const postsSlice = createSlice({
@@ -25,19 +25,19 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPosts.pending, (state) => {
-      state.loaded = false;
-      state.hasError = false;
+      state.isLoaded = false;
+      state.isError = false;
     });
 
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.items = action.payload;
-      state.loaded = true;
-      state.hasError = false;
+      state.isLoaded = true;
+      state.isError = false;
     });
 
     builder.addCase(fetchPosts.rejected, (state) => {
-      state.loaded = false;
-      state.hasError = true;
+      state.isLoaded = false;
+      state.isError = true;
       state.items = [];
     });
   },

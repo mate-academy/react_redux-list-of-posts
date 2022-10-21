@@ -12,12 +12,12 @@ export const UserSelector: React.FC = () => {
 
   const { users } = useAppSelector(state => state.users);
 
-  const [expanded, setExpanded] = useState(false);
+  const [isExpanded, setExpanded] = useState(false);
   const { author: selectedUser } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!expanded) {
+    if (!isExpanded) {
       return;
     }
 
@@ -37,12 +37,12 @@ export const UserSelector: React.FC = () => {
     };
   // we don't want to listening for outside clicks
   // when the Dopdown is closed
-  }, [expanded]);
+  }, [isExpanded]);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': isExpanded })}
     >
       <div className="dropdown-trigger">
         <button
