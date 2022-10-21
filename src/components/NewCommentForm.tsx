@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -175,7 +175,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
