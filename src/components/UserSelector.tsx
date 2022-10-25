@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { UserContext } from './UsersContext'; useContext,
+
 import { User } from '../types/User';
+
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersSlice from '../features/user/usersSlice';
-// import {selectCount} from "../features/counter/counterSlice";
 
 type Props = {
   value: User | null;
@@ -80,9 +80,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(usersSlice.setUser(user));
-              }}
+              onClick={() => dispatch(usersSlice.setUser(user))}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

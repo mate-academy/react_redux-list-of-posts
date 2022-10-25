@@ -2,30 +2,23 @@ import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-// import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
+
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsSlice from './features/posts/postsSlice';
+
 import { Post } from './types/Post';
-// import {useAppSelector} from "./app/hooks";
+import { User } from './types/User';
 
 const IS_COUNTER = false;
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const dispatch = useAppDispatch();
 
   const author: User | null = useAppSelector(
@@ -40,16 +33,6 @@ export const App: React.FC = () => {
     dispatch(postsSlice.setPost(post));
   };
 
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-  //
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     .finally(() => setLoaded(true));
-  // }
-
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
@@ -57,10 +40,7 @@ export const App: React.FC = () => {
     dispatch(postsSlice.setPost(null));
 
     if (author) {
-      // loadUserPosts(author.id);
       dispatch(postsSlice.getPostsAsync(author.id));
-    } else {
-      // setPosts([]);
     }
   }, [author?.id]);
 
@@ -103,13 +83,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && PostsStatus === 'idle' && allPosts && allPosts.length > 0 && (
-                  <PostsList
-                    posts={allPosts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={onPostSelect}
-                  />
-                )}
+                {
+                  author
+                  && PostsStatus === 'idle'
+                  && allPosts
+                  && allPosts.length > 0
+                  && (
+                    <PostsList
+                      posts={allPosts}
+                      selectedPostId={selectedPost?.id}
+                      onPostSelected={onPostSelect}
+                    />
+                  )
+                }
               </div>
             </div>
           </div>
@@ -128,7 +114,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               )}
             </div>
           </div>

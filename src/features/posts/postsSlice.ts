@@ -19,7 +19,6 @@ export const getPostsAsync = createAsyncThunk(
   async (userID: number) => {
     const posts = await fetchPosts(userID);
 
-    // The value we return becomes the `fulfilled` action payload
     return posts;
   },
 );
@@ -29,6 +28,9 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPost: (state, action: PayloadAction<Post | null>) => {
+      //
+      // IF ANYONE KNOWS HOW TO FIX IT TO AVOID USING es-lint-disable WOULD BE GREAT :)
+      //
       // eslint-disable-next-line no-param-reassign
       state.selectedPost = action.payload;
     },

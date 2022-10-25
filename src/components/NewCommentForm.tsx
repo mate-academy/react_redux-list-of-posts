@@ -1,13 +1,26 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsSlice from '../features/comments/commentsSlice';
+import { Post } from '../types/Post';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+// type Props = {
+//   onSubmit: (data: CommentData) => Promise<void>;
+// };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC<{}> = () => {
+  // const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const post: Post | null = useAppSelector(
+    (state => state.posts),
+  ).selectedPost;
+
+  const { newCommentStatus } = useAppSelector(
+    (state => state.comments),
+  );
 
   const [errors, setErrors] = useState({
     name: false,
@@ -57,13 +70,22 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
+    // setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    // await onSubmit({ name, email, body });
+    const data: Comment = {
+      id: 0,
+      postId: post?.id || 1,
+      body,
+      email,
+      name,
+    };
+
+    dispatch(commentsSlice.createCommentAsync(data));
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
+    // setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
@@ -175,7 +197,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': newCommentStatus === 'loading',
             })}
           >
             Add

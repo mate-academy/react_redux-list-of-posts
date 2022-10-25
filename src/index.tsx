@@ -4,13 +4,14 @@ import { HashRouter as Router } from 'react-router-dom';
 
 import { store } from './app/store';
 import { App } from './App';
-// import { UsersProvider } from './components/UsersContext';
 
 const Root = () => (
   <Provider store={store}>
+
     {/* Remove UsersProvider when you move users to Redux store
-    <UsersProvider>
-    </UsersProvider> */}
+    Done:
+    <UsersProvider></UsersProvider> */}
+
     <Router>
       <App />
     </Router>
