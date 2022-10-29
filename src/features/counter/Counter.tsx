@@ -83,3 +83,5 @@ export function Counter() {
     </div>
   );
 }
+
+export const MemoizedCounter = React.memo(Counter);
