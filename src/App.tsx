@@ -1,59 +1,48 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable max-len */
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchUsers } from './features/users/users';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { fetchPosts, clearPosts } from './features/posts/posts';
+import { selectPost } from './features/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const { author } = useAppSelector(state => state.author);
+  const { posts, status, error } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
     }
   }, [author?.id]);
 
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
+
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -63,32 +52,38 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && status === 'pending' && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && status === 'failed' && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {error}
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {
+                  author
+                  && status === 'fullfilled'
+                  && posts
+                  && posts.length === 0 && (
+                    <div className="notification is-warning" data-cy="NoPostsYet">
+                      No posts yet
+                    </div>
+                  )
+                }
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {
+                  author
+                  && status === 'fullfilled'
+                  && posts
+                  && posts.length > 0 && (
+                    <PostsList posts={posts} />
+                  )
+                }
               </div>
             </div>
           </div>
