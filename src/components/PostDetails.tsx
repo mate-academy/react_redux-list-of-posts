@@ -21,6 +21,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setVisible(false);
     dispatch(fetchComments(post.id));
   }, [post.id]);
 
@@ -33,6 +34,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     };
 
     dispatch(addComment(newComment));
+    setVisible(false);
   };
 
   const deleteComment = async (commentId: number) => {
