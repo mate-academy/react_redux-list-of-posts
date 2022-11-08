@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  clearNewCommentForm,
+  // clearNewCommentForm,
   postComment,
-  selectNewCommentErrors,
-  selectNewCommentValue,
-  setNewCommentErrors,
-  setNewCommentValue,
+  // selectNewCommentErrors,
+  // selectNewCommentValue,
+  // setNewCommentErrors,
+  // setNewCommentValue,
 } from '../features/comments/commentsSlice';
 import { selectCurrentPost } from '../features/posts/postsSLice';
 // import { CommentData } from '../types/Comment';

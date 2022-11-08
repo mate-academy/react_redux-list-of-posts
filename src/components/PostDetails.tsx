@@ -17,6 +17,7 @@ import {
   selectCommentsStatus,
   getCommentsByPostId,
 } from '../features/comments/commentsSlice';
+// import { Dispatch } from '@reduxjs/toolkit';
 
 type Props = {
   // post: Post;
@@ -50,6 +51,19 @@ export const PostDetails: React.FC<Props> = () => {
       dispatch(getCommentsByPostId(post.id));
     }
   }, [post?.id]);
+
+  useEffect(() => {
+    if (post?.id) {
+      dispatch(getCommentsByPostId(post.id));
+    }
+  }, []);
+
+  // const deleteCommentHandler = (commentId: number) => {
+  //   return (dispatch: Dispatch) => {
+  //     dispatch(deleteCommentByCommentId(commentId));
+  //     dispatch(getCommentsByPostId(postId));
+  //   };
+  // };
 
   // The same useEffect with async/await
   /*
