@@ -26,7 +26,7 @@ export const getAllUsersAsync = createAsyncThunk(
     const value = await getUsers();
 
     // eslint-disable-next-line no-console
-    // console.log('getUsersAsync value', value);
+    console.log('getUsersAsync value', value);
 
     // The value we return becomes the `fulfilled` action payload
     return value;

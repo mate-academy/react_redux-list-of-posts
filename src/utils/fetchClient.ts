@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const BASE_URL = 'https://mate.academy/students-api';
+// const BASE_URL = 'https://mate.academy/students-api';
+const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
 // a promise resolved after a given delay
 function wait(delay: number) {
@@ -18,6 +19,9 @@ function request<T>(
 ): Promise<T> {
   const options: RequestInit = { method };
 
+  // eslint-disable-next-line no-console
+  console.log('request method = ', method);
+
   if (data) {
     // We add body and Content-Type only for the requests with data
     options.body = JSON.stringify(data);
@@ -25,6 +29,9 @@ function request<T>(
       'Content-Type': 'application/json; charset=UTF-8',
     };
   }
+
+  // eslint-disable-next-line no-console
+  console.log('data = ', data);
 
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)

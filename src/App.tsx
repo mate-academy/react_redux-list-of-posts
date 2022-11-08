@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  // useState
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -17,6 +20,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   getAllUsersAsync,
   selectCurrentUser,
+  // selectUsers,
 } from './features/users/usersSlice';
 // import { PostsListOld } from './components/PostsListOld';
 import {
@@ -47,6 +51,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllUsersAsync());
+    // eslint-disable-next-line no-console
+    // console.log('dispatch(getAllUsersAsync())');
   },
   []);
 
@@ -68,9 +74,16 @@ export const App: React.FC = () => {
   const postsFromStore = useAppSelector(selectPosts);
   const authorFromStore = useAppSelector(selectCurrentUser);
   const statusPostsDownload = useAppSelector(selectPostsStatus);
+  // const users = useAppSelector(selectUsers);
 
   // eslint-disable-next-line no-console
-  console.log('statusPostsDownload = ', statusPostsDownload);
+  // console.log('postsFromStore = ', postsFromStore);
+  // eslint-disable-next-line no-console
+  // console.log('authorFromStore = ', authorFromStore);
+  // eslint-disable-next-line no-console
+  // console.log('statusPostsDownload = ', statusPostsDownload);
+  // eslint-disable-next-line no-console
+  // console.log('users = ', users);
 
   return (
     <main className="section">

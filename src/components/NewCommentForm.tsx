@@ -2,9 +2,15 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  clearNewCommentForm, selectNewCommentErrors, selectNewCommentValue, setNewCommentErrors, setNewCommentValue,
-} from '../features/newComment/newCommentSlice';
-import { CommentData } from '../types/Comment';
+  clearNewCommentForm,
+  postComment,
+  selectNewCommentErrors,
+  selectNewCommentValue,
+  setNewCommentErrors,
+  setNewCommentValue,
+} from '../features/comments/commentsSlice';
+import { selectCurrentPost } from '../features/posts/postsSLice';
+// import { CommentData } from '../types/Comment';
 
 type Props = {
   // onSubmit: (data: CommentData) => Promise<void>;
@@ -13,36 +19,37 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = () => {
   const [submitting, setSubmitting] = useState(false);
 
-  // const [errors, setErrors] = useState({
-  //   name: false,
-  //   email: false,
-  //   body: false,
-  // });
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
-  // const [{ name, email, body }, setValues] = useState({
-  //   name: '',
-  //   email: '',
-  //   body: '',
-  // });
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const postId = useAppSelector(selectCurrentPost)?.id;
+
   const dispatch = useAppDispatch();
-  const { name, email, body } = useAppSelector(selectNewCommentValue);
-  const errors = useAppSelector(selectNewCommentErrors);
-
-  // const { value, errors }
+  // const { name, email, body } = useAppSelector(selectNewCommentValue);
+  // const errors = useAppSelector(selectNewCommentErrors);
 
   const clearForm = () => {
-    // setValues({
-    //   name: '',
-    //   email: '',
-    //   body: '',
-    // });
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
 
-    // setErrors({
-    //   name: false,
-    //   email: false,
-    //   body: false,
-    // });
-    dispatch(clearNewCommentForm());
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+    // dispatch(clearNewCommentForm());
   };
 
   const handleChange = (
@@ -53,11 +60,11 @@ export const NewCommentForm: React.FC<Props> = () => {
     // eslint-disable-next-line no-console
     console.log(name, value);
 
-    // setValues(current => ({ ...current, [field]: value }));
-    // setErrors(current => ({ ...current, [field]: false }));
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
 
-    dispatch(setNewCommentValue({ field, value }));
-    dispatch(setNewCommentErrors({ field, value: false }));
+    // dispatch(setNewCommentValue({ field, value }));
+    // dispatch(setNewCommentErrors({ field, value: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -65,23 +72,23 @@ export const NewCommentForm: React.FC<Props> = () => {
 
     event.preventDefault();
 
-    // setErrors({
-    //   name: !name,
-    //   email: !email,
-    //   body: !body,
-    // });
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
 
     // eslint-disable-next-line no-console
-    console.log('before', 'name: ',
-      name, 'email:', email, 'body: ', body, errors);
+    // console.log('before', 'name: ',
+    //   name, 'email:', email, 'body: ', body, errors);
 
-    dispatch(setNewCommentErrors({ field: 'name', value: !name }));
-    dispatch(setNewCommentErrors({ field: 'email', value: !email }));
-    dispatch(setNewCommentErrors({ field: 'body', value: !body }));
+    // dispatch(setNewCommentErrors({ field: 'name', value: !name }));
+    // dispatch(setNewCommentErrors({ field: 'email', value: !email }));
+    // dispatch(setNewCommentErrors({ field: 'body', value: !body }));
     // eslint-disable-next-line no-console
-    console.log('after', !name, !email, !body, errors);
+    // console.log('after', !name, !email, !body, errors);
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body || !postId) {
       return;
     }
 
@@ -89,6 +96,16 @@ export const NewCommentForm: React.FC<Props> = () => {
 
     // it is very easy to forget about `await` keyword
     // await onSubmit({ name, email, body });
+
+    // eslint-disable-next-line no-console
+    console.log('post comment');
+
+    dispatch(postComment({
+      name,
+      email,
+      body,
+      postId,
+    }));
 
     // and the spinner will disappear immediately
     setSubmitting(false);

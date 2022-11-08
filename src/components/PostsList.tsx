@@ -21,7 +21,7 @@ export const PostsList: React.FC<Props> = () => {
   const posts = useAppSelector(selectPosts);
 
   // eslint-disable-next-line no-console
-  console.log('postsList = ', posts);
+  // console.log('postsList = ', posts);
 
   return (
     <div data-cy="PostsList">

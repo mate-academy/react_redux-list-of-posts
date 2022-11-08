@@ -6,9 +6,11 @@ import postsSLice from '../features/posts/postsSLice';
 // eslint-disable-next-line import/no-cycle
 import usersReducer from '../features/users/usersSlice';
 // eslint-disable-next-line import/no-cycle
-import commentsReducer from '../features/comments/commentsSlice';
+// import commentsReducer from '../features/comments/commentsSlice';
 // eslint-disable-next-line import/no-cycle
-import newCommentReducer from '../features/newComment/newCommentSlice';
+// import newCommentReducer from '../features/newComment/newCommentSlice';
+// eslint-disable-next-line import/no-cycle
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +18,6 @@ export const store = configureStore({
     users: usersReducer,
     posts: postsSLice,
     comments: commentsReducer,
-    newComment: newCommentReducer,
   },
 });
 

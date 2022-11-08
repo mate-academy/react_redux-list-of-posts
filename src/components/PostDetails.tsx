@@ -2,13 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
+// import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+// import { Post } from '../types/Post';
+// import {
+//   // Comment,
+//   // CommentData,
+// } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectCurrentPost } from '../features/posts/postsSLice';
-import { getCommentsAsync, selectComments, selectCommentsStatus } from '../features/comments/commentsSlice';
+import {
+  deleteCommentByCommentId,
+  selectComments,
+  selectCommentsStatus,
+  getCommentsByPostId,
+} from '../features/comments/commentsSlice';
 
 type Props = {
   // post: Post;
@@ -39,7 +47,7 @@ export const PostDetails: React.FC<Props> = () => {
   useEffect(() => {
     // loadComments();
     if (post?.id) {
-      dispatch(getCommentsAsync(post?.id));
+      dispatch(getCommentsByPostId(post.id));
     }
   }, [post?.id]);
 
@@ -69,28 +77,28 @@ export const PostDetails: React.FC<Props> = () => {
   // effect can return only a function but not a Promise
   */
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+  // const addComment = async ({ name, email, body }: CommentData) => {
+  //   try {
+  //     const newComment = await commentsApi.createComment({
+  //       name,
+  //       email,
+  //       body,
+  //       postId: post.id,
+  //     });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+  //     setComments(
+  //       currentComments => [...currentComments, newComment],
+  //     );
 
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
+  //     // setComments([...comments, newComment]);
+  //     // works wrong if we wrap `addComment` with `useCallback`
+  //     // because it takes the `comments` cached during the first render
+  //     // not the actual ones
+  //   } catch (error) {
+  //     // we show an error message in case of any error
+  //     setError(true);
+  //   }
+  // };
 
   // const deleteComment = async (commentId: number) => {
   //   // we delete the comment immediately so as
@@ -135,43 +143,55 @@ export const PostDetails: React.FC<Props> = () => {
             </p>
           )}
 
-        { statusCommentsDownload === 'idle'
-          && comments.length > 0
-          && (
-            <>
-              <p className="title is-4">Comments:</p>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            // border: '1px solid red',
+          }}
+        >
+          { statusCommentsDownload === 'idle'
+            && comments.length > 0
+            && (
+              <>
+                <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => (
-                <article
-                  className="message is-small"
-                  key={comment.id}
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
+                {comments.map(comment => (
+                  <article
+                    className="message is-small"
+                    key={comment.id}
+                    data-cy="Comment"
+                    // style={{
+                    //   boxSizing: 'border-box',
+                    //   border: '1px solid red',
+                    // }}
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                        {comment.name}
+                      </a>
 
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => {
-                        // deleteComment(comment.id);
-                      }}
-                    >
-                      delete button
-                    </button>
-                  </div>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => {
+                          // deleteComment(comment.id);
+                          dispatch(deleteCommentByCommentId(comment.id));
+                        }}
+                      >
+                        delete button
+                      </button>
+                    </div>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
-            </>
-          )}
+                    <div className="message-body" data-cy="CommentBody">
+                      {comment.body}
+                    </div>
+                  </article>
+                ))}
+              </>
+            )}
+        </div>
 
         {/* {comments.map(comment => (
           <article

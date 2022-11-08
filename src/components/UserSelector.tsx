@@ -13,7 +13,6 @@ import {
 // import { useSelector } from 'react-redux';
 import {
   useAppDispatch,
-  // useAppDispatch,
   useAppSelector,
 } from '../app/hooks';
 import { getPostsAsync } from '../features/posts/postsSLice';
@@ -32,10 +31,20 @@ export const UserSelector: React.FC<Props> = () => {
 
   const dispatch = useAppDispatch();
   const users = useAppSelector(selectUsers);
+
+  // eslint-disable-next-line no-console
+  // console.log('UserSelector users = ', users);
+
   const selectedUser = useAppSelector(selectCurrentUser);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    // console.log('expanded = ', expanded);
+
     if (!expanded) {
+      // eslint-disable-next-line no-console
+      // console.log('nothing to do');
+
       return;
     }
 
@@ -46,10 +55,14 @@ export const UserSelector: React.FC<Props> = () => {
       setExpanded(false);
     };
 
+    // eslint-disable-next-line no-console
+    // console.log('document.addEventListener');
     document.addEventListener('click', handleDocumentClick);
 
     // eslint-disable-next-line consistent-return
     return () => {
+      // eslint-disable-next-line no-console
+      // console.log('return document.removeEventListener');
       document.removeEventListener('click', handleDocumentClick);
     };
   // we don't want to listening for outside clicks
@@ -68,7 +81,10 @@ export const UserSelector: React.FC<Props> = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
+            // eslint-disable-next-line no-console
+            // console.log('setExpanded() ');
             setExpanded(current => !current);
+            // setExpanded(true);
           }}
         >
           <span>
