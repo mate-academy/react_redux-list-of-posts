@@ -56,20 +56,20 @@ export const App: React.FC = () => {
   },
   []);
 
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    // setSelectedPost(null);
+  // useEffect(() => {
+  //   // we clear the post when an author is changed
+  //   // not to confuse the user
+  //   // setSelectedPost(null);
 
-    // if (author) {
-    //   loadUserPosts(author.id);
-    // } else {
-    //   setPosts([]);
-    // }
-  },
-  [
-    // author?.id,
-  ]);
+  //   // if (author) {
+  //   //   loadUserPosts(author.id);
+  //   // } else {
+  //   //   setPosts([]);
+  //   // }
+  // },
+  // [
+  //   // author?.id,
+  // ]);
 
   const postsFromStore = useAppSelector(selectPosts);
   const authorFromStore = useAppSelector(selectCurrentUser);

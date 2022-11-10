@@ -58,7 +58,7 @@ export const NewCommentForm: React.FC<Props> = () => {
     const { name: field, value } = event.target;
 
     // eslint-disable-next-line no-console
-    console.log(name, value);
+    // console.log(name, value);
 
     setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));

@@ -16,6 +16,7 @@ import {
   selectComments,
   selectCommentsStatus,
   getCommentsByPostId,
+  deleteCommentThunk,
 } from '../features/comments/commentsSlice';
 // import { Dispatch } from '@reduxjs/toolkit';
 
@@ -52,11 +53,11 @@ export const PostDetails: React.FC<Props> = () => {
     }
   }, [post?.id]);
 
-  useEffect(() => {
-    if (post?.id) {
-      dispatch(getCommentsByPostId(post.id));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (post?.id) {
+  //     dispatch(getCommentsByPostId(post.id));
+  //   }
+  // }, []);
 
   // const deleteCommentHandler = (commentId: number) => {
   //   return (dispatch: Dispatch) => {
@@ -126,7 +127,7 @@ export const PostDetails: React.FC<Props> = () => {
   //   await commentsApi.deleteComment(commentId);
   // };
 
-  return (
+  return post && (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
@@ -192,6 +193,7 @@ export const PostDetails: React.FC<Props> = () => {
                         onClick={() => {
                           // deleteComment(comment.id);
                           dispatch(deleteCommentByCommentId(comment.id));
+                          // dispatch(deleteCommentThunk(post.id, comment.id));
                         }}
                       >
                         delete button
