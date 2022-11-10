@@ -18,7 +18,10 @@ export function Counter() {
   const [incrementAmount, setIncrementAmount] = useState(2);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIncrementAmount(+event.target.value);
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(+event.target.value)) {
+      setIncrementAmount(+event.target.value);
+    }
   };
 
   return (
@@ -80,3 +83,5 @@ export function Counter() {
     </div>
   );
 }
+
+export const MemoizedCounter = React.memo(Counter);

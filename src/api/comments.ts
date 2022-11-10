@@ -1,5 +1,5 @@
-// import { client } from '../utils/axiosClient';
-import { client } from '../utils/fetchClient';
+import { client } from '../utils/axiosClient';
+// import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
 export const getPostComments = (postId: number) => {

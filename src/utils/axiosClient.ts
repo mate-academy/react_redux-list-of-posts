@@ -1,10 +1,11 @@
-// axios docs https://axios-http.com/docs/intro
 import axios from 'axios';
 
 const instance = axios.create({
   baseURL: 'https://mate.academy/students-api',
-  // application/json is a default Content-Type
 });
+
+type FetchData = {
+};
 
 export const client = {
   async get<T>(url: string) {
@@ -14,20 +15,19 @@ export const client = {
     return response.data;
   },
 
-  async post<T>(url: string, data: any) {
+  async post<T>(url: string, data: FetchData) {
     const response = await instance.post<T>(url, data);
 
     return response.data;
   },
 
-  async patch<T>(url: string, data: any) {
+  async patch<T>(url: string, data: FetchData) {
     const response = await instance.patch<T>(url, data);
 
     return response.data;
   },
 
   async delete(url: string) {
-    // if we don't need the response data
     return instance.delete(url);
   },
 };

@@ -18,6 +18,9 @@ function request<T>(
 ): Promise<T> {
   const options: RequestInit = { method };
 
+  // eslint-disable-next-line no-console
+  console.log('request method = ', method);
+
   if (data) {
     // We add body and Content-Type only for the requests with data
     options.body = JSON.stringify(data);
@@ -26,9 +29,17 @@ function request<T>(
     };
   }
 
+  // eslint-disable-next-line no-console
+  console.log('data = ', data);
+
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
+    .then(() => {
+      // eslint-disable-next-line no-console
+      console.log('fetch to:', BASE_URL + url, options);
+
+      return fetch(BASE_URL + url, options);
+    })
     .then(response => response.json());
 }
 
