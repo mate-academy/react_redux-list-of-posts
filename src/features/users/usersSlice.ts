@@ -20,15 +20,8 @@ const initialState: UsersState = {
 export const getAllUsersAsync = createAsyncThunk(
   'users/fetchUsers',
   async () => {
-    // eslint-disable-next-line no-console
-    // console.log('getAllUsersAsync');
-
     const value = await getUsers();
 
-    // eslint-disable-next-line no-console
-    console.log('getUsersAsync value', value);
-
-    // The value we return becomes the `fulfilled` action payload
     return value;
   },
 );
@@ -38,12 +31,6 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action: PayloadAction<User>) => {
-      // eslint-disable-next-line no-console
-      // console.log('user:', action.payload);
-
-      // state.currentUser = action.payload;
-
-      // eslint-disable-next-line no-console
       state.currentUser = action.payload;
     },
     clear: (state) => {

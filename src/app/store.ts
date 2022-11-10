@@ -6,10 +6,6 @@ import postsSLice from '../features/posts/postsSLice';
 // eslint-disable-next-line import/no-cycle
 import usersReducer from '../features/users/usersSlice';
 // eslint-disable-next-line import/no-cycle
-// import commentsReducer from '../features/comments/commentsSlice';
-// eslint-disable-next-line import/no-cycle
-// import newCommentReducer from '../features/newComment/newCommentSlice';
-// eslint-disable-next-line import/no-cycle
 import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
@@ -31,4 +27,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
-/* eslint-enable @typescript-eslint/indent */
