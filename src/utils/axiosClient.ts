@@ -5,7 +5,6 @@ const instance = axios.create({
 });
 
 type FetchData = {
-
 };
 
 export const client = {
@@ -22,7 +21,7 @@ export const client = {
     return response.data;
   },
 
-  async patch<T>(url: string, data: any) {
+  async patch<T>(url: string, data: FetchData) {
     const response = await instance.patch<T>(url, data);
 
     return response.data;
