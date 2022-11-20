@@ -6,16 +6,20 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
+import { getUsers } from './Users/usersSlice';
+import { selectComments } from './Comments/commentsSlicer';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const comments = useAppSelector(selectComments);
 
   function loadComments() {
     setLoaded(false);
@@ -29,33 +33,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }
 
   useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({

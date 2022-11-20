@@ -11,6 +11,8 @@ type Props = {
 export const UsersProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
 
+  console.log(users);
+  // const users = useAppSelector(selectUsers);
   useEffect(() => {
     getUsers()
       .then(setUsers);
