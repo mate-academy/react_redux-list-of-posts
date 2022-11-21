@@ -67,6 +67,7 @@ export const App: React.FC = () => {
                   selectedAuthor.id !== 0
                   && error === ''
                   && authorPosts.length === 0
+                  && loading === 'idle'
                   && (
                     <div
                       className="notification is-warning"
@@ -79,7 +80,8 @@ export const App: React.FC = () => {
 
                 {
                   selectedAuthor
-                  && error === '' && authorPosts.length > 0 && (
+                  && error === '' && authorPosts.length > 0
+                  && loading === 'idle' && (
                     <PostsList />
                   )
                 }

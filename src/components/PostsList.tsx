@@ -3,15 +3,12 @@ import React from 'react';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getPosts } from './Posts/userPostsSlicer';
-import { fetchPostComments, getPost, selectPost } from './Comments/commentsSlicer';
+import { clearSelectedPost, fetchPostComments, getPost } from './Comments/commentsSlicer';
 
 export const PostsList: React.FC = () => {
   const authorPosts = useAppSelector(getPosts);
   const selectedPost = useAppSelector(getPost);
   const dispatch = useAppDispatch();
-
-  console.log('selectedPost');
-  console.log(selectedPost);
 
   return (
     <div data-cy="PostsList">
@@ -43,8 +40,11 @@ export const PostsList: React.FC = () => {
                     },
                   )}
                   onClick={() => {
-                    dispatch(selectPost(post));
-                    dispatch(fetchPostComments(post.id));
+                    if (selectedPost && post.id === selectedPost.id) {
+                      dispatch(clearSelectedPost());
+                    } else {
+                      dispatch(fetchPostComments(post));
+                    }
                   }}
                 >
                   {

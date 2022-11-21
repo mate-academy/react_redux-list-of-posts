@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { client } from '../../utils/axiosClient';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 import { User } from '../../types/User';
+import { getUserPosts } from '../../api/posts';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface PostsState {
@@ -28,20 +28,20 @@ const initialState: PostsState = {
 
 export const fetchUserPosts = createAsyncThunk(
   'posts/fetchPosts',
-  async (selectedUserId: number) => {
-    return client.get<Post[]>(`/posts?userId=${selectedUserId}`);
+  async (user: User) => {
+    return {
+      selectedAuthor: user,
+      posts: await getUserPosts(user.id),
+    };
   },
+
 );
 
 export const postsSlice = createSlice(
   {
     name: 'posts',
     initialState,
-    reducers: {
-      selectAuthor: (state, action) => {
-        state.selectedAuthor = action.payload;
-      },
-    },
+    reducers: {},
     extraReducers: (builder) => {
       builder
         .addCase(fetchUserPosts.pending, (state) => {
@@ -49,7 +49,8 @@ export const postsSlice = createSlice(
         })
         .addCase(fetchUserPosts.fulfilled, (state, action) => {
           state.loading = 'idle';
-          state.posts = action.payload;
+          state.selectedAuthor = action.payload.selectedAuthor;
+          state.posts = action.payload.posts;
         })
         .addCase(fetchUserPosts.rejected, (state) => {
           state.loading = 'failed';
@@ -59,7 +60,6 @@ export const postsSlice = createSlice(
   },
 );
 
-export const { selectAuthor } = postsSlice.actions;
 export const getPosts = (state: RootState) => state.posts.posts;
 export const getSelectedAuthor = (
   state: RootState,

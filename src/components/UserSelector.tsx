@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { getUsers, fetchUsers } from './Users/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUserPosts, selectAuthor, getSelectedAuthor } from './Posts/userPostsSlicer';
+import { fetchUserPosts, getSelectedAuthor } from './Posts/userPostsSlicer';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -75,8 +75,8 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 setSelectedName(user.name);
-                dispatch(selectAuthor(user));
-                dispatch(fetchUserPosts(user.id));
+                // dispatch(selectAuthor(user));
+                dispatch(fetchUserPosts(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
