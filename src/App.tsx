@@ -8,7 +8,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
 import { useAppSelector } from './app/hooks';
 import {
   getError,
@@ -25,13 +24,8 @@ export const App: React.FC = () => {
   const loading = useAppSelector(getLoading);
   const selectedPost = useAppSelector(getPost);
 
-  console.log({ selectedPost });
-
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -41,7 +35,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedAuthor && (
+                {selectedAuthor.id === 0 && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>

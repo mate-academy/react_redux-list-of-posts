@@ -64,8 +64,7 @@ export const getPosts = (state: RootState) => state.posts.posts;
 export const getSelectedAuthor = (
   state: RootState,
 ) => state.posts.selectedAuthor;
-
-export const getError = (state: RootState) => state.error.error;
-export const getLoading = (state: RootState) => state.loading.loading;
+export const getError = (state: RootState) => state.posts.error;
+export const getLoading = (state: RootState) => state.posts.loading;
 
 export default postsSlice.reducer;

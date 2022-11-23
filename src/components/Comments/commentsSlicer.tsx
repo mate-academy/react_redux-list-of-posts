@@ -42,43 +42,21 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-export const createComment = createAsyncThunk(
-  'comments/createComment',
-  async ({ name, email, body }: CommentData, { getState }) => {
-    const state = getState() as RootState;
-    const postId = state.comments.selectedPost!.id;
+export const createComment
+  = createAsyncThunk<Comment, CommentData, { state: RootState }>(
+    'comments/createComment',
+    async ({ name, email, body }: CommentData, { getState }) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const postId = getState().comments.selectedPost!.id;
 
-    return commentsApi.createComment({
-      name,
-      email,
-      body,
-      postId,
-    });
-  },
-);
-
-// const addComment = async ({ name, email, body }: CommentData) => {
-//   try {
-//     const newComment = await commentsApi.createComment({
-//       name,
-//       email,
-//       body,
-//       postId: post.id,
-//     });
-//
-//     setComments(
-//       currentComments => [...currentComments, newComment],
-//     );
-//
-//     // setComments([...comments, newComment]);
-//     // works wrong if we wrap `addComment` with `useCallback`
-//     // because it takes the `comments` cached during the first render
-//     // not the actual ones
-//   } catch (error) {
-//     // we show an error message in case of any error
-//     setError(true);
-//   }
-// };
+      return commentsApi.createComment({
+        name,
+        email,
+        body,
+        postId,
+      });
+    },
+  );
 
 export const commentsSlice = createSlice(
   {
@@ -120,14 +98,27 @@ export const commentsSlice = createSlice(
         });
 
       builder
+        .addCase(fetchUserPosts.pending, (state) => {
+          state.loading = 'loading';
+        })
         .addCase(fetchUserPosts.fulfilled, (state) => {
+          state.loading = 'idle';
           state.comments = [];
           state.selectedPost = null;
+        })
+        .addCase(fetchUserPosts.rejected, (state) => {
+          state.loading = 'failed';
+          state.error = 'Failed to fetch';
         });
 
       builder
         .addCase(createComment.fulfilled, (state, action) => {
           state.comments = [...state.comments, action.payload];
+          state.loading = 'idle';
+        })
+        .addCase(createComment.rejected, (state) => {
+          state.loading = 'failed';
+          state.error = 'Failed to fetch';
         });
     },
   },
@@ -135,8 +126,8 @@ export const commentsSlice = createSlice(
 
 export const selectComments = (state: RootState) => state.comments.comments;
 export const getPost = (state: RootState) => state.comments.selectedPost;
-export const getLoading = (state: RootState) => state.loading.loading;
-export const getError = (state: RootState) => state.error.error;
+export const getLoading = (state: RootState) => state.comments.loading;
+export const getError = (state: RootState) => state.comments.error;
 
 export const { clearSelectedPost } = commentsSlice.actions;
 
