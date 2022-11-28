@@ -32,11 +32,6 @@ export const commentSlice = createSlice({
       state.loaded = true;
       state.hasError = true;
     },
-
-    commentDelete(state, action: PayloadAction<number>) {
-      state.comments = state.comments
-        .filter(comment => comment.id !== action.payload);
-    },
   },
 });
 
@@ -44,7 +39,6 @@ export const {
   setCommentsLoading,
   setCommentsError,
   setComments,
-  commentDelete,
 } = commentSlice.actions;
 
 export default commentSlice.reducer;
