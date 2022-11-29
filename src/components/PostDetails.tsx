@@ -1,34 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import {
+  setComments,
+  setCommentsError,
+  setCommentsLoading,
+} from '../features/comments';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+export const PostDetails = () => {
+  const dispatch = useAppDispatch();
+  const { comments, loaded, hasError }
+    = useAppSelector(state => state.comments);
+  const selectedPost
+    = useAppSelector<Post | null>(state => state.selectPost.selectedPost);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    if (!selectedPost) {
+      return;
+    }
+
+    dispatch(setCommentsLoading());
+    dispatch(setCommentsError());
     setVisible(false);
 
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+    commentsApi.getPostComments(selectedPost.id)
+      .then(data => dispatch(setComments(data))) // save the loaded comments
+      .catch(() => dispatch(setCommentsError())) // show an error when something went wrong
+      .finally(() => dispatch(setCommentsLoading())); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [selectedPost?.id]);
 
   // The same useEffect with async/await
   /*
@@ -57,17 +65,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   */
 
   const addComment = async ({ name, email, body }: CommentData) => {
+    if (!selectedPost) {
+      return;
+    }
+
     try {
       const newComment = await commentsApi.createComment({
         name,
         email,
         body,
-        postId: post.id,
+        postId: selectedPost.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      dispatch(setComments(
+        [...comments, newComment],
+      ));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -75,18 +87,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setCommentsError());
     }
   };
 
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
+    dispatch(setComments(
+      comments.filter(
         comment => comment.id !== commentId,
       ),
-    );
+    ));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -95,11 +107,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post.body}
+          {selectedPost?.body}
         </p>
       </div>
 

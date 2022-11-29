@@ -14,7 +14,7 @@ const initialState: CommentsSlice = {
   hasError: false,
 };
 
-export const commentSlice = createSlice({
+const commentSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {

@@ -14,7 +14,7 @@ const initialState: PostState = {
   hasError: false,
 };
 
-export const postsSlice = createSlice({
+const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
