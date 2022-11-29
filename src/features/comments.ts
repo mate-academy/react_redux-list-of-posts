@@ -18,8 +18,8 @@ const commentSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setCommentsLoading(state) {
-      state.loaded = false;
+    setCommentsLoading(state, action: PayloadAction<boolean>) {
+      state.loaded = action.payload;
     },
 
     setComments(state, action: PayloadAction<Comment[]>) {
@@ -28,9 +28,8 @@ const commentSlice = createSlice({
       state.comments = action.payload;
     },
 
-    setCommentsError(state) {
-      state.loaded = true;
-      state.hasError = true;
+    setCommentsError(state, action: PayloadAction<boolean>) {
+      state.hasError = action.payload;
     },
   },
 });

@@ -26,14 +26,12 @@ export const PostDetails = () => {
       return;
     }
 
-    dispatch(setCommentsLoading());
-    dispatch(setCommentsError());
     setVisible(false);
 
     commentsApi.getPostComments(selectedPost.id)
       .then(data => dispatch(setComments(data))) // save the loaded comments
-      .catch(() => dispatch(setCommentsError())) // show an error when something went wrong
-      .finally(() => dispatch(setCommentsLoading())); // hide the spinner
+      .catch(() => dispatch(setCommentsError(true))) // show an error when something went wrong
+      .finally(() => dispatch(setCommentsLoading(true))); // hide the spinner
   }
 
   useEffect(loadComments, [selectedPost?.id]);
@@ -87,7 +85,7 @@ export const PostDetails = () => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      dispatch(setCommentsError());
+      dispatch(setCommentsError(true));
     }
   };
 
