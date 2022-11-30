@@ -34,30 +34,40 @@ export const PostsList: React.FC = () => {
                 <td data-cy="PostId">{post.id}</td>
                 <td data-cy="PostTitle">{post.title}</td>
                 <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames(
-                      'button',
-                      'is-link',
-                      {
-                        'is-light': selectedPost && post.id !== selectedPost.id,
-                      },
+                  {(selectedPost && post.id === selectedPost.id)
+                    ? (
+                      <button
+                        type="button"
+                        className={classNames(
+                          'button',
+                          'is-link',
+                          {
+                            'is-light': selectedPost
+                            && post.id === selectedPost.id,
+                          },
+                        )}
+                        onClick={() => dispatch(clearSelectedPost())}
+                      >
+                        Close
+                      </button>
+                    )
+                    : (
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className={classNames(
+                          'button',
+                          'is-link',
+                          {
+                            'is-light': selectedPost
+                            && post.id !== selectedPost.id,
+                          },
+                        )}
+                        onClick={() => dispatch(fetchPostComments(post))}
+                      >
+                        Open
+                      </button>
                     )}
-                    onClick={() => {
-                      if (selectedPost && post.id === selectedPost.id) {
-                        dispatch(clearSelectedPost());
-                      } else {
-                        dispatch(fetchPostComments(post));
-                      }
-                    }}
-                  >
-                    {
-                      selectedPost && post.id === selectedPost.id
-                        ? 'Close'
-                        : 'Open'
-                    }
-                  </button>
                 </td>
               </tr>
             )))
