@@ -5,12 +5,13 @@ import { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 import { User } from '../../types/User';
 import { getUserPosts } from '../../api/posts';
+import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface PostsState {
   selectedAuthor: User;
   posts: Post[];
-  loading: 'idle' | 'loading' | 'failed';
+  loading: LoadingStatus;
   error: string,
 }
 
@@ -22,7 +23,7 @@ const initialState: PostsState = {
     phone: '',
   },
   posts: [],
-  loading: 'idle',
+  loading: LoadingStatus.Idle,
   error: '',
 };
 
@@ -45,16 +46,16 @@ export const postsSlice = createSlice(
     extraReducers: (builder) => {
       builder
         .addCase(fetchUserPosts.pending, (state) => {
-          state.loading = 'loading';
+          state.loading = LoadingStatus.Loading;
         })
         .addCase(fetchUserPosts.fulfilled, (state, action) => {
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
           state.selectedAuthor = action.payload.selectedAuthor;
           state.posts = action.payload.posts;
         })
         .addCase(fetchUserPosts.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
     },
   },

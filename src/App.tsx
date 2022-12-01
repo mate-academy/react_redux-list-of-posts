@@ -16,6 +16,7 @@ import {
   getLoading,
 } from './components/Posts/userPostsSlicer';
 import { getPost } from './components/Comments/commentsSlicer';
+import { ErrorTypes, LoadingStatus } from './types/enums';
 
 export const App: React.FC = () => {
   const selectedAuthor = useAppSelector(getSelectedAuthor);
@@ -35,19 +36,19 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedAuthor.id === 0 && (
+                {!selectedAuthor.id && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {selectedAuthor && loading === 'loading' && (
+                {selectedAuthor && loading === LoadingStatus.Loading && (
                   <Loader />
                 )}
 
                 {
-                  selectedAuthor && loading === 'failed'
-                  && error === 'Failed to fetch' && (
+                  selectedAuthor && loading === LoadingStatus.Failed
+                  && error === ErrorTypes.FailedToFetch && (
                     <div
                       className="notification is-danger"
                       data-cy="PostsLoadingError"
@@ -58,10 +59,10 @@ export const App: React.FC = () => {
                 }
 
                 {
-                  selectedAuthor.id !== 0
-                  && error === ''
-                  && authorPosts.length === 0
-                  && loading === 'idle'
+                  !!selectedAuthor.id
+                  && !error
+                  && !authorPosts.length
+                  && loading === LoadingStatus.Idle
                   && (
                     <div
                       className="notification is-warning"
@@ -75,7 +76,7 @@ export const App: React.FC = () => {
                 {
                   selectedAuthor
                   && error === '' && authorPosts.length > 0
-                  && loading === 'idle' && (
+                  && loading === LoadingStatus.Idle && (
                     <PostsList />
                   )
                 }

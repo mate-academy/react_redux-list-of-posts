@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -9,6 +8,7 @@ import {
   getLoading,
   selectComments,
 } from './Comments/commentsSlicer';
+import { ErrorTypes, LoadingStatus } from '../types/enums';
 
 type Props = {
   post: Post;
@@ -34,23 +34,26 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {loading === 'loading' && (
-          <Loader />
-        )}
 
-        {loading === 'failed' && error === 'Failed to fetch' && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )}
+        {loading === LoadingStatus.Failed
+          && error === ErrorTypes.FailedToFetch
+          && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
-        {loading === 'idle' && error === '' && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-        )}
+        {loading === LoadingStatus.Idle
+          && error === ''
+          && comments.length === 0
+          && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-        {loading === 'idle' && error === '' && comments.length > 0 && (
+        {(loading === LoadingStatus.Idle || loading === LoadingStatus.Loading)
+          && error === '' && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -86,7 +89,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loading === 'idle' && error === '' && !visible && (
+        {loading === LoadingStatus.Idle && error === '' && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -97,7 +100,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loading === 'idle' && error === '' && visible && (
+        {(loading === LoadingStatus.Idle || loading === LoadingStatus.Loading)
+          && error === '' && visible && (
           <NewCommentForm />
         )}
       </div>

@@ -4,17 +4,18 @@ import { client } from '../../utils/axiosClient';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../../app/store';
 import { User } from '../../types/User';
+import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface UsersState {
   users: User[];
-  loading: 'idle' | 'loading' | 'failed';
+  loading: LoadingStatus;
   error: string,
 }
 
 const initialState: UsersState = {
   users: [],
-  loading: 'idle',
+  loading: LoadingStatus.Idle,
   error: '',
 };
 
@@ -30,15 +31,15 @@ export const usersSlice = createSlice(
     extraReducers: (builder) => {
       builder
         .addCase(fetchUsers.pending, (state) => {
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
         })
         .addCase(fetchUsers.fulfilled, (state, action) => {
-          state.loading = 'loading';
+          state.loading = LoadingStatus.Loading;
           state.users = action.payload;
         })
         .addCase(fetchUsers.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
     },
   },

@@ -7,18 +7,19 @@ import { Post } from '../../types/Post';
 // eslint-disable-next-line import/no-cycle
 import { fetchUserPosts } from '../Posts/userPostsSlicer';
 import * as commentsApi from '../../api/comments';
+import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface CommentsState {
   comments: Comment[];
-  loading: 'idle' | 'loading' | 'failed';
+  loading: LoadingStatus;
   error: string,
   selectedPost: Post | null,
 }
 
 const initialState: CommentsState = {
   comments: [],
-  loading: 'idle',
+  loading: LoadingStatus.Idle,
   error: '',
   selectedPost: null,
 };
@@ -70,55 +71,58 @@ export const commentsSlice = createSlice(
     extraReducers: (builder) => {
       builder
         .addCase(deleteComment.pending, (state) => {
-          state.loading = 'loading';
+          state.loading = LoadingStatus.Loading;
         })
         .addCase(deleteComment.fulfilled, (state, action) => {
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
           state.comments = state.comments && state.comments.filter(
             comment => comment.id !== action.payload.id,
           );
         })
         .addCase(deleteComment.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
 
       builder
         .addCase(fetchPostComments.pending, (state) => {
-          state.loading = 'loading';
+          state.loading = LoadingStatus.Loading;
         })
         .addCase(fetchPostComments.fulfilled, (state, action) => {
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
+          state.error = '';
           state.comments = action.payload.comments;
           state.selectedPost = action.payload.selectedPost;
         })
         .addCase(fetchPostComments.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
 
       builder
         .addCase(fetchUserPosts.pending, (state) => {
-          state.loading = 'loading';
+          state.loading = LoadingStatus.Loading;
         })
         .addCase(fetchUserPosts.fulfilled, (state) => {
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
+          state.error = '';
           state.comments = [];
           state.selectedPost = null;
         })
         .addCase(fetchUserPosts.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
 
       builder
         .addCase(createComment.fulfilled, (state, action) => {
           state.comments = [...state.comments, action.payload];
-          state.loading = 'idle';
+          state.loading = LoadingStatus.Idle;
+          state.error = '';
         })
         .addCase(createComment.rejected, (state) => {
-          state.loading = 'failed';
-          state.error = 'Failed to fetch';
+          state.loading = LoadingStatus.Failed;
+          state.error = ErrorTypes.FailedToFetch;
         });
     },
   },

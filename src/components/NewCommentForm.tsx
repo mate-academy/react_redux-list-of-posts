@@ -45,13 +45,14 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    if (name.trim() === '' || email.trim() === '' || body.trim() === '') {
+      setErrors({
+        name: !name,
+        email: !email,
+        body: !body,
+      });
+      setSubmitting(false);
 
-    if (!name || !email || !body) {
       return;
     }
 
@@ -60,7 +61,10 @@ export const NewCommentForm: React.FC = () => {
     await dispatch(createComment({ name, email, body }));
 
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues(current => ({
+      ...current, name: '', email: '', body: '',
+    }
+    ));
   };
 
   return (
