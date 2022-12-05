@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { createComment } from './Comments/commentsSlicer';
 import { useAppDispatch } from '../app/hooks';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  postId: number;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -58,12 +62,17 @@ export const NewCommentForm: React.FC = () => {
 
     setSubmitting(true);
 
-    await dispatch(createComment({ name, email, body }));
+    await dispatch(createComment({
+      name,
+      email,
+      body,
+      postId,
+    }));
 
     setSubmitting(false);
     setValues(current => ({
-      ...current, name: '', email: '', body: '',
-    }
+        ...current, name: '', email: '', body: '',
+      }
     ));
   };
 
@@ -86,7 +95,7 @@ export const NewCommentForm: React.FC = () => {
           />
 
           <span className="icon is-small is-left">
-            <i className="fas fa-user" />
+            <i className="fas fa-user"/>
           </span>
 
           {errors.name && (
@@ -94,7 +103,7 @@ export const NewCommentForm: React.FC = () => {
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
-              <i className="fas fa-exclamation-triangle" />
+              <i className="fas fa-exclamation-triangle"/>
             </span>
           )}
         </div>
@@ -123,7 +132,7 @@ export const NewCommentForm: React.FC = () => {
           />
 
           <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
+            <i className="fas fa-envelope"/>
           </span>
 
           {errors.email && (
@@ -131,7 +140,7 @@ export const NewCommentForm: React.FC = () => {
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
-              <i className="fas fa-exclamation-triangle" />
+              <i className="fas fa-exclamation-triangle"/>
             </span>
           )}
         </div>
@@ -182,8 +191,7 @@ export const NewCommentForm: React.FC = () => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button type="button" className="button is-link is-light">
             Clear
           </button>
         </div>

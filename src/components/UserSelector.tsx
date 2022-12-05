@@ -17,7 +17,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     if (!expanded) {
-      return;
+      return undefined;
     }
 
     const handleDocumentClick = () => {
@@ -26,7 +26,6 @@ export const UserSelector: React.FC = () => {
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };

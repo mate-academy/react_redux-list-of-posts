@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   deleteComment,
   getError,
-  getLoading,
+  getLoading, getPost,
   selectComments,
 } from './Comments/commentsSlicer';
 import { ErrorTypes, LoadingStatus } from '../types/enums';
@@ -16,6 +16,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments = useAppSelector(selectComments);
+  const selectedPost = useAppSelector(getPost);
   const loading = useAppSelector(getLoading);
   const error = useAppSelector(getError);
   const dispatch = useAppDispatch();
@@ -101,8 +102,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {(loading === LoadingStatus.Idle || loading === LoadingStatus.Loading)
-          && error === '' && visible && (
-          <NewCommentForm />
+          && error === '' && visible && selectedPost && (
+          <NewCommentForm postId={selectedPost.id} />
         )}
       </div>
     </div>

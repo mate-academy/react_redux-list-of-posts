@@ -1,12 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { client } from '../../utils/axiosClient';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { User } from '../../types/User';
 import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface UsersState {
   users: User[];
   loading: LoadingStatus;

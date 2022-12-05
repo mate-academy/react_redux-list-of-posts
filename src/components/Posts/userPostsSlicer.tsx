@@ -1,13 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 import { User } from '../../types/User';
 import { getUserPosts } from '../../api/posts';
 import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface PostsState {
   selectedAuthor: User;
   posts: Post[];

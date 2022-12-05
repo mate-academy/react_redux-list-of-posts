@@ -1,15 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { Comment, CommentData } from '../../types/Comment';
 import { Post } from '../../types/Post';
-// eslint-disable-next-line import/no-cycle
 import { fetchUserPosts } from '../Posts/userPostsSlicer';
 import * as commentsApi from '../../api/comments';
 import { ErrorTypes, LoadingStatus } from '../../types/enums';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface CommentsState {
   comments: Comment[];
   loading: LoadingStatus;
@@ -46,10 +43,12 @@ export const deleteComment = createAsyncThunk(
 export const createComment
   = createAsyncThunk<Comment, CommentData, { state: RootState }>(
     'comments/createComment',
-    async ({ name, email, body }: CommentData, { getState }) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const postId = getState().comments.selectedPost!.id;
-
+    async ({
+      name,
+      email,
+      body,
+      postId,
+    }: CommentData) => {
       return commentsApi.createComment({
         name,
         email,
