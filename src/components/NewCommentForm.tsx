@@ -49,12 +49,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (name.trim() === '' || email.trim() === '' || body.trim() === '') {
-      setErrors({
-        name: !name,
-        email: !email,
-        body: !body,
-      });
+    if (!name.trim() || !email.trim() || !body.trim()) {
       setSubmitting(false);
 
       return;
@@ -71,8 +66,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
     setSubmitting(false);
     setValues(current => ({
-        ...current, name: '', email: '', body: '',
-      }
+      ...current, name: '', email: '', body: '',
+    }
     ));
   };
 
@@ -95,7 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           />
 
           <span className="icon is-small is-left">
-            <i className="fas fa-user"/>
+            <i className="fas fa-user" />
           </span>
 
           {errors.name && (
@@ -103,7 +98,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
-              <i className="fas fa-exclamation-triangle"/>
+              <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>
@@ -132,7 +127,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           />
 
           <span className="icon is-small is-left">
-            <i className="fas fa-envelope"/>
+            <i className="fas fa-envelope" />
           </span>
 
           {errors.email && (
@@ -140,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
-              <i className="fas fa-exclamation-triangle"/>
+              <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>

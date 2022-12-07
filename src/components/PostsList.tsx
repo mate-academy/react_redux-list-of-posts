@@ -33,45 +33,44 @@ export const PostsList: React.FC = () => {
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
               <td className="has-text-right is-vcentered">
-                {(selectedPost && post.id === selectedPost.id)
-                  ? (
-                    <button
-                      type="button"
-                      className={classNames(
-                        'button',
-                        'is-link',
-                        {
-                          'is-light': selectedPost
+                {(selectedPost && post.id === selectedPost.id) ? (
+                  <button
+                    type="button"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      {
+                        'is-light': selectedPost
                             && post.id === selectedPost.id,
-                        },
-                      )}
-                      onClick={() => dispatch(clearSelectedPost())}
-                    >
-                      Close
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      data-cy="PostButton"
-                      className={classNames(
-                        'button',
-                        'is-link',
-                        {
-                          'is-light': selectedPost
+                      },
+                    )}
+                    onClick={() => dispatch(clearSelectedPost())}
+                  >
+                    Close
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      {
+                        'is-light': selectedPost
                             && post.id !== selectedPost.id,
-                        },
-                      )}
-                      onClick={() => {
-                        dispatch(fetchPostComments(post));
-                      }}
-                    >
-                      Open
-                    </button>
-                  )}
+                      },
+                    )}
+                    onClick={() => {
+                      dispatch(fetchPostComments(post));
+                    }}
+                  >
+                    Open
+                  </button>
+                )}
               </td>
             </tr>
-          )))
-            : (<div style={{ color: 'red' }}> Error </div>)}
+          ))) : (
+            <div style={{ color: 'red' }}> Error </div>)}
         </tbody>
       </table>
     </div>

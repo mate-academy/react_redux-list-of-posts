@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { getUsers, fetchUsers } from './Users/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUserPosts, getSelectedAuthor } from './Posts/userPostsSlicer';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -30,6 +31,11 @@ export const UserSelector: React.FC = () => {
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
+
+  const selectHandler = (user: User) => {
+    setSelectedName(user.name);
+    dispatch(fetchUserPosts(user));
+  };
 
   return (
     <div
@@ -62,11 +68,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                setSelectedName(user.name);
-                // dispatch(selectAuthor(user));
-                dispatch(fetchUserPosts(user));
-              }}
+              onClick={() => selectHandler(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
