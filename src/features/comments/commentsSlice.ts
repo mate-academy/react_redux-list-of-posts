@@ -14,8 +14,8 @@ export const addComment = createAsyncThunk('newComment/fetch',
   (data: Omit<Comment, 'id'>) => createComment(data));
 
 export const removeComment = createAsyncThunk('deleteComment/fetch',
-  async (id: number) => {
-    await deleteComment(id);
+  (id: number) => {
+    deleteComment(id);
 
     return id;
   });
