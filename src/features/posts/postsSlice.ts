@@ -17,7 +17,8 @@ const initialState: Posts = {
   selectedPost: null,
 };
 
-export const initPosts = createAsyncThunk('getPosts/fetch', getUserPosts);
+export const initPosts = createAsyncThunk('getPosts/fetch',
+  (userId: number) => getUserPosts(userId));
 
 const postsSlice = createSlice({
   name: 'posts',
