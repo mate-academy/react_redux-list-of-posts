@@ -1,0 +1,71 @@
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  getPostComments,
+  createComment,
+  deleteComment,
+} from '../../api/comments';
+import { Comment } from '../../types/Comment';
+
+export const initComments = createAsyncThunk('comments/fetch',
+  (id: number) => getPostComments(id));
+
+export const addComment = createAsyncThunk('newComment/fetch',
+  (data: Omit<Comment, 'id'>) => createComment(data));
+
+export const removeComment = createAsyncThunk('deleteComment/fetch',
+  async (id: number) => {
+    await deleteComment(id);
+
+    return id;
+  });
+
+type Comments = {
+  comments: Comment[],
+  loaded: boolean,
+  hasError: boolean,
+};
+
+const initialState: Comments = {
+  comments: [],
+  loaded: false,
+  hasError: false,
+};
+
+const commentsSlice = createSlice({
+  name: 'details',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(initComments.pending, (state) => {
+      state.loaded = true;
+      state.hasError = false;
+    });
+
+    builder.addCase(initComments.fulfilled, (state, action) => {
+      state.comments = action.payload;
+      state.loaded = false;
+    });
+
+    builder.addCase(initComments.rejected, (state) => {
+      state.hasError = true;
+      state.loaded = false;
+    });
+
+    builder.addCase(addComment.fulfilled, (state, action) => {
+      state.comments.push(action.payload);
+      state.hasError = false;
+    });
+
+    builder.addCase(addComment.rejected, (state) => {
+      state.hasError = true;
+    });
+
+    builder.addCase(removeComment.fulfilled, (state, action) => {
+      state.comments = state.comments
+        .filter(item => item.id !== action.payload);
+    });
+  },
+});
+
+export default commentsSlice.reducer;
