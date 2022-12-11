@@ -22,13 +22,13 @@ export const removeComment = createAsyncThunk('deleteComment/fetch',
 
 type Comments = {
   comments: Comment[],
-  loaded: boolean,
+  loading: boolean,
   hasError: boolean,
 };
 
 const initialState: Comments = {
   comments: [],
-  loaded: false,
+  loading: false,
   hasError: false,
 };
 
@@ -38,18 +38,18 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(initComments.pending, (state) => {
-      state.loaded = true;
+      state.loading = true;
       state.hasError = false;
     });
 
     builder.addCase(initComments.fulfilled, (state, action) => {
       state.comments = action.payload;
-      state.loaded = false;
+      state.loading = false;
     });
 
     builder.addCase(initComments.rejected, (state) => {
       state.hasError = true;
-      state.loaded = false;
+      state.loading = false;
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {

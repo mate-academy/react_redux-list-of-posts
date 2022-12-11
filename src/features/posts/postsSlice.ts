@@ -5,14 +5,14 @@ import { Post } from '../../types/Post';
 
 type Posts = {
   posts: Post[],
-  loaded: boolean,
+  loading: boolean,
   hasError: boolean,
   selectedPost: Post | null,
 };
 
 const initialState: Posts = {
   posts: [],
-  loaded: false,
+  loading: false,
   hasError: false,
   selectedPost: null,
 };
@@ -30,18 +30,21 @@ const postsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(initPosts.pending, (state) => {
-      state.loaded = true;
+      state.loading
+   = true;
       state.hasError = false;
     });
 
     builder.addCase(initPosts.fulfilled, (state, action) => {
-      state.loaded = false;
+      state.loading
+   = false;
       state.posts = action.payload;
     });
 
     builder.addCase(initPosts.rejected, (state) => {
       state.hasError = true;
-      state.loaded = false;
+      state.loading
+   = false;
     });
   },
 });

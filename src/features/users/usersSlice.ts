@@ -5,15 +5,11 @@ import { User } from '../../types/User';
 
 type Users = {
   users: User[],
-  loading: boolean,
-  error: string,
   selectedUser: User | null,
 };
 
 const initialState: Users = {
   users: [],
-  loading: false,
-  error: '',
   selectedUser: null,
 };
 
