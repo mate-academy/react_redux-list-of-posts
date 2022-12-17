@@ -5,12 +5,15 @@ export interface NewFormCommentState {
   name: string;
   email: string;
   body: string;
+  visible: boolean;
+
 }
 
 const initialState = {
   name: '',
   email: '',
   body: '',
+  visible: false,
 };
 
 export const newFormCommentStateSlice = createSlice({
@@ -30,6 +33,9 @@ export const newFormCommentStateSlice = createSlice({
       state.body = '';
       state.email = '';
       state.name = '';
+    },
+    setVisible: (state, action: PayloadAction<boolean>) => {
+      state.visible = action.payload;
     },
   },
 });

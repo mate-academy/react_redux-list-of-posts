@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { initComments, removeComment, actions as actionsComments }
   from '../features/comments/commentsSlice';
+import { actions as actionsNewComment }
+  from '../features/newFormComment/newFormCommentSlice';
 
 export const PostDetails: React.FC = () => {
-  const [visible, setVisible] = useState(false);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { comments, loading, error } = useAppSelector(state => state.comments);
+  const { visible } = useAppSelector(state => state.newFormComment);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export const PostDetails: React.FC = () => {
       dispatch(initComments(selectedPost.id));
     }
 
-    setVisible(false);
+    dispatch(actionsNewComment.setVisible(false));
   }, [selectedPost?.id]);
 
   return (
@@ -90,7 +92,7 @@ export const PostDetails: React.FC = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={() => dispatch(actionsNewComment.setVisible(true))}
           >
             Write a comment
           </button>

@@ -14,6 +14,7 @@ export interface CommentsState {
   submitting: boolean;
   newComment: NewComment | null;
   deletedCommentId: number | null;
+  errorNewComment: string;
 }
 
 type NewComment = {
@@ -30,6 +31,7 @@ const initialState: CommentsState = {
   submitting: false,
   newComment: null,
   deletedCommentId: null,
+  errorNewComment: '',
 };
 
 export const initComments = createAsyncThunk(
@@ -70,18 +72,26 @@ export const commentsSlice = createSlice({
       })
       .addCase(addNewComment.pending, (state) => {
         state.submitting = true;
+        state.errorNewComment = '';
       })
       .addCase(addNewComment.fulfilled, (state, action) => {
         state.submitting = false;
         state.comments = [...state.comments, action.payload];
       })
       .addCase(addNewComment.rejected, (state) => {
+        state.errorNewComment = 'Something went wrong';
         state.submitting = false;
+      })
+      .addCase(removeComment.pending, (state) => {
+        state.errorNewComment = '';
       })
       .addCase(removeComment.fulfilled, (state) => {
         state.comments = state.comments.filter(
           comment => comment.id !== state.deletedCommentId,
         );
+      })
+      .addCase(removeComment.rejected, (state) => {
+        state.errorNewComment = 'Something went wrong';
       });
   },
 });
