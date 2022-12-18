@@ -67,11 +67,7 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser && !loading && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -90,9 +86,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              <PostDetails />
             </div>
           </div>
         </div>
