@@ -11,23 +11,22 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
-import { useAppSelector } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { set, setHasError, setLoaded } from './features/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const author = useAppSelector(state => state.author.author);
+  const dispatch = useAppDispatch();
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { author } = useAppSelector(state => state.author);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(setLoaded(false));
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .then(data => dispatch(set(data)))
+      .catch(() => dispatch(setHasError(true)))
+      .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(() => {
@@ -38,13 +37,12 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(set([]));
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
       <Counter />
 
       <div className="container">
@@ -83,7 +81,6 @@ export const App: React.FC = () => {
 
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
-                    posts={posts}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={setSelectedPost}
                   />
