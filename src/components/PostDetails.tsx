@@ -30,9 +30,9 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
 
     commentsApi.getPostComments(post?.id || 0)
-      .then(data => dispatch(setComments(data))) // save the loaded comments
-      .catch(() => dispatch(setHasError(true))) // show an error when something went wrong
-      .finally(() => dispatch(setLoaded(true))); // hide the spinner
+      .then(data => dispatch(setComments(data)))
+      .catch(() => dispatch(setHasError(true)))
+      .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(loadComments, [post?.id]);

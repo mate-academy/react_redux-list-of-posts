@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
+import { getUsers } from '../api/users';
+import { set } from '../features/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
   const { author: selectedUser } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
 
@@ -34,6 +32,11 @@ export const UserSelector: React.FC = () => {
   // we don't want to listening for outside clicks
   // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    getUsers()
+      .then(data => dispatch(set(data)));
+  }, []);
 
   return (
     <div
