@@ -4,14 +4,11 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
+  const { selectedPost: post } = useAppSelector(state => state.selectedPost);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
@@ -22,13 +19,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setError(false);
     setVisible(false);
 
-    commentsApi.getPostComments(post.id)
+    commentsApi.getPostComments(post?.id || 0)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post?.id]);
 
   // The same useEffect with async/await
   /*
@@ -62,7 +59,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         name,
         email,
         body,
-        postId: post.id,
+        postId: post?.id || 0,
       });
 
       setComments(
@@ -95,11 +92,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
+          {`#${post?.id}: ${post?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post.body}
+          {post?.body}
         </p>
       </div>
 
