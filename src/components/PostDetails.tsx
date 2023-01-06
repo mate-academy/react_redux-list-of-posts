@@ -4,25 +4,35 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Comment, CommentData } from '../types/Comment';
-import { useAppSelector } from '../app/hooks';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  setComments,
+  addNewComment,
+  removeComment,
+  setLoaded,
+  setHasError,
+} from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const {
+    comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setLoaded(false));
+    dispatch(setHasError(false));
     setVisible(false);
 
     commentsApi.getPostComments(post?.id || 0)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(data => dispatch(setComments(data))) // save the loaded comments
+      .catch(() => dispatch(setHasError(true))) // show an error when something went wrong
+      .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
 
   useEffect(loadComments, [post?.id]);
@@ -62,28 +72,15 @@ export const PostDetails: React.FC = () => {
         postId: post?.id || 0,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
+      dispatch(addNewComment(newComment));
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setHasError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
+    dispatch(removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
