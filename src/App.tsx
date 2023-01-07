@@ -112,9 +112,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {selectedPost?.id ? (
                 <PostDetails post={selectedPost} />
-              )}
+              ) : 'Choose a post'}
             </div>
           </div>
         </div>

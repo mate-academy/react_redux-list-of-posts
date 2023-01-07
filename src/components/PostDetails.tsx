@@ -52,7 +52,6 @@ export const PostDetails: React.FC<Props> = () => {
       });
 
       addNewComment(newComment);
-
     } catch (error) {
       setError(true);
     }
