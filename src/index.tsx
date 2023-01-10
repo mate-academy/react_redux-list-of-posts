@@ -1,20 +1,23 @@
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter as Router } from 'react-router-dom';
 
-import { store } from './app/store';
-import { App } from './App';
-import { UsersProvider } from './components/UsersContext';
+import { store } from 'store';
+import { App } from 'app/App';
 
-const Root = () => (
+import './index.scss';
+import 'bulma/bulma.sass';
+import '@fortawesome/fontawesome-free/css/all.css';
+import { SnackbarProvider } from 'notistack';
+import Notifications from 'components/Notifications';
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>
-    {/* Remove UsersProvider when you move users to Redux store */}
-    <UsersProvider>
-      <Router>
+    <Router>
+      <SnackbarProvider maxSnack={3}>
         <App />
-      </Router>
-    </UsersProvider>
-  </Provider>
+        <Notifications />
+      </SnackbarProvider>
+    </Router>
+  </Provider>,
 );
-
-ReactDOM.render(<Root />, document.getElementById('root'));
