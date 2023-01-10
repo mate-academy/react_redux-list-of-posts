@@ -70,7 +70,7 @@ export const NewCommentForm: React.FC = () => {
       .unwrap()
       .then(() => {
         dispatch(appActions.enqueueSnackbar(
-          { key: Date.now().toString(), message: 'Post was created' },
+          { key: Date.now().toString(), message: 'Comment was created' },
         ));
         clearForm();
       });

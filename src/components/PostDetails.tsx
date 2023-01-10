@@ -31,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .unwrap()
       .then(() => {
         dispatch(appActions.enqueueSnackbar(
-          { key: Date.now().toString(), message: 'Post was deleted' },
+          { key: Date.now().toString(), message: 'Comment was deleted' },
         ));
       });
   };
