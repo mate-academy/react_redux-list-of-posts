@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import PostsAsync from 'store/posts/postsAsync';
 import { selectPosts } from 'store/posts/postsSelectors';
-import Post from 'models/Post';
 import { postsActions } from 'store/posts/postsSlice';
 import Loader from './Loader';
 import PostItem from './PostItem';
@@ -14,7 +13,7 @@ type Props = {
 export const PostsList: React.FC<Props> = ({ authorId }) => {
   const dispatch = useAppDispatch();
 
-  const posts:Post[] | null = useAppSelector(selectPosts);
+  const posts = useAppSelector(selectPosts);
 
   useEffect(() => {
     dispatch(PostsAsync.fetchPosts(authorId));

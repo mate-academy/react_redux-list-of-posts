@@ -12,7 +12,7 @@ type Props = {
 const PostItem:FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const selectedPost:Post | null = useAppSelector(selectSelectedPost);
+  const selectedPost = useAppSelector(selectSelectedPost);
 
   const handleSelectedPost = (newPost: Post) => {
     const nextPost = selectedPost?.id === newPost.id ? null : newPost;

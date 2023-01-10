@@ -2,7 +2,6 @@ import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import UsersAsync from 'store/users/usersAsync';
 import User from 'models/User';
-import Post from 'models/Post';
 import { selectUsers } from 'store/users/usersSelectors';
 import { selectSelectedPost } from 'store/posts/postsSelectors';
 import { PostsList } from 'components/PostsList';
@@ -12,8 +11,8 @@ import { Autocomplete, TextField } from '@mui/material';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const users: User[] | null = useAppSelector(selectUsers);
-  const selectedPost: Post | null = useAppSelector(selectSelectedPost);
+  const users = useAppSelector(selectUsers);
+  const selectedPost = useAppSelector(selectSelectedPost);
 
   const [author, setAuthor] = useState<User | null>(null);
 

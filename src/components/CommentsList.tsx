@@ -1,12 +1,11 @@
 import { FC } from 'react';
 import { useAppSelector } from 'hooks/useRedux';
-import Comment from 'models/Comment';
 import { selectComments } from 'store/comments/commentsSelectors';
 import Loader from './Loader';
 import CommentItem from './CommentItem';
 
 const CommentsList:FC = () => {
-  const comments:Comment[] | null = useAppSelector(selectComments);
+  const comments = useAppSelector(selectComments);
 
   if (!comments) {
     return <Loader />;

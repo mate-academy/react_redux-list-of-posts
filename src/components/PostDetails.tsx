@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import Post from 'models/Post';
-import Comment from 'models/Comment';
 import CommentsAsync from 'store/comments/commentsAsync';
 import { selectComments } from 'store/comments/commentsSelectors';
 import { commentsActions } from 'store/comments/commentsSlice';
@@ -15,7 +14,7 @@ type Props = {
 export const PostDetails:FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const comments:Comment[] | null = useAppSelector(selectComments);
+  const comments = useAppSelector(selectComments);
 
   const [visible, setVisible] = useState<boolean>(false);
   const handleVisible = () => setVisible((prev:boolean) => !prev);

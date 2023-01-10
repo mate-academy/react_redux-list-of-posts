@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import CommentsAsync from 'store/comments/commentsAsync';
 import { UiActions } from 'store/ui/uiSlice';
 import { selectSelectedPost } from 'store/posts/postsSelectors';
-import Post from 'models/Post';
 import { isEmailValid, isFieldRequired } from 'utilities/Validation';
 import Input from 'components/Controls/Input';
 import Textarea from './Controls/Textarea';
@@ -19,7 +18,7 @@ interface Form {
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const selectedPost: Post | null = useAppSelector(selectSelectedPost);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
