@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { appActions } from '../store/app/appSlice';
+import { commentsAsync } from '../store/comments/commentsAsync';
+import { selectSubmitting } from '../store/comments/postsSelectors';
+import { selectCurrentPost } from '../store/posts/postsSelectors';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const submitting = useAppSelector(selectSubmitting);
+  const currenPost = useAppSelector(selectCurrentPost);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -53,19 +55,25 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body || !currenPost) {
       return;
     }
 
-    setSubmitting(true);
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: currenPost?.id,
+    };
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(commentsAsync.addComment(newComment))
+      .unwrap()
+      .then(() => {
+        dispatch(appActions.enqueueSnackbar(
+          { key: Date.now().toString(), message: 'Post was created' },
+        ));
+        clearForm();
+      });
   };
 
   return (
