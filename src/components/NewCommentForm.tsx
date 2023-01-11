@@ -5,6 +5,7 @@ import { appActions } from '../store/app/appSlice';
 import { commentsAsync } from '../store/comments/commentsAsync';
 import { selectSubmitting } from '../store/comments/postsSelectors';
 import { selectCurrentPost } from '../store/posts/postsSelectors';
+import localClient from '../utils/localClient';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,8 +19,8 @@ export const NewCommentForm: React.FC = () => {
   });
 
   const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
+    name: localClient.read('name') || '',
+    email: localClient.read('email') || '',
     body: '',
   });
 
@@ -72,7 +73,16 @@ export const NewCommentForm: React.FC = () => {
         dispatch(appActions.enqueueSnackbar(
           { key: Date.now().toString(), message: 'Comment was created' },
         ));
-        clearForm();
+      })
+      .then(() => {
+        localClient.write('name', name);
+        localClient.write('email', email);
+      })
+      .then(() => {
+        setValues(value => ({
+          ...value,
+          body: '',
+        }));
       });
   };
 

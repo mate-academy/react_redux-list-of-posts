@@ -12,14 +12,15 @@ export const UserSelector: React.FC = () => {
   const selectedUser = useAppSelector(selectSelectedUser);
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLButtonElement | null>(null);
+  const refSpan = useRef<HTMLDivElement | null>(null);
 
   const handleChangeUser = (user: User) => {
     dispatch(usersAction.changeAuthor(user));
   };
 
-  const handleClick = (event: any) => {
+  const handleClick = (event: MouseEvent) => {
     if ((event.target === ref.current
-      || event.target.parentElement === ref.current) && !expanded) {
+      || event.target === refSpan.current) && !expanded) {
       return;
     }
 
@@ -51,7 +52,7 @@ export const UserSelector: React.FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>
+          <span ref={refSpan}>
             {selectedUser?.name || 'Choose a user'}
           </span>
 

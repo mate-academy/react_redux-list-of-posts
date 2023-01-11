@@ -21,7 +21,7 @@ export const PostsList: React.FC = () => {
 
         <tbody>
           {posts.map(post => (
-            <PostItem post={post} />
+            <PostItem post={post} key={post.id} />
           ))}
         </tbody>
       </table>
