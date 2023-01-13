@@ -15,11 +15,9 @@ const PostItem: React.FC<Props> = ({ post }) => {
   const selectedPost = useAppSelector(selectCurrentPost);
 
   const handleChangePost = () => {
-    if (post.id === selectedPost?.id) {
-      dispatch(postsAction.changePost(null));
-    } else {
-      dispatch(postsAction.changePost(post));
-    }
+    dispatch(postsAction.changePost(
+      post.id === selectedPost?.id ? null : post,
+    ));
   };
 
   return (

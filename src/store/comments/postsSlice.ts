@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import { commentsAsync } from './commentsAsync';
@@ -22,42 +21,49 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     setInitialField: <IStateKey extends keyof CommentsState>(
-      state: CommentsState, action: PayloadAction<IStateKey>) => {
-      state[action.payload] = initialState[action.payload];
-    },
+      state: CommentsState, action: PayloadAction<IStateKey>) => ({
+      ...state,
+      [action.payload]: initialState[action.payload],
+    }),
   },
   extraReducers: (builder) => {
     builder
     // fetch comments
-      .addCase(commentsAsync.fetchComments.pending, (state) => {
-        state.loaded = false;
-      })
+      .addCase(commentsAsync.fetchComments.pending, (state) => ({
+        ...state,
+        loaded: false,
+      }))
       .addCase(commentsAsync.fetchComments.fulfilled,
-        (state, action) => {
-          state.comments = action.payload;
-          state.loaded = true;
-        })
+        (state, action) => ({
+          ...state,
+          comments: action.payload,
+          loaded: true,
+        }))
       .addCase(commentsAsync.fetchComments.rejected,
         (state) => ({
           ...state, loaded: true, error: 'Error',
         }))
     // delete comment
       .addCase(commentsAsync.deleteComment.fulfilled,
-        (state, action) => {
-          state.comments = state.comments
-            .filter(com => com.id !== action.payload);
-        })
+        (state, action) => ({
+          ...state,
+          comments: state.comments
+            .filter(com => com.id !== action.payload),
+        }))
     // add comment
-      .addCase(commentsAsync.addComment.pending, (state) => {
-        state.submitting = true;
-      })
-      .addCase(commentsAsync.addComment.fulfilled, (state, action) => {
-        state.comments = [...state.comments, action.payload];
-        state.submitting = false;
-      })
-      .addCase(commentsAsync.addComment.rejected, (state) => {
-        state.error = 'Error';
-      });
+      .addCase(commentsAsync.addComment.pending, (state) => ({
+        ...state,
+        submitting: true,
+      }))
+      .addCase(commentsAsync.addComment.fulfilled, (state, action) => ({
+        ...state,
+        comments: [...state.comments, action.payload],
+        submitting: false,
+      }))
+      .addCase(commentsAsync.addComment.rejected, (state) => ({
+        ...state,
+        error: 'Error',
+      }));
   },
 });
 

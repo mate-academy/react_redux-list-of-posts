@@ -1,42 +1,34 @@
 import { FC, useEffect } from 'react';
-import { useSnackbar } from 'notistack';
-// Redux
+import { SnackbarKey, useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
-// Mui
 import { Button } from '@mui/material';
-// Icons
 import { Close as CloseIcon } from '@mui/icons-material';
-// Models
 import Notification from '../types/Notification';
-// Actions
 import { appActions } from '../store/app/appSlice';
-// Selectors
 import { selectNotifications } from '../store/app/appSelectors';
 
-let displayed:string[] = [];
+let displayed:SnackbarKey[] = [];
 
 const Notifications:FC = () => {
-  // Dispatch
   const dispatch = useDispatch();
-  // State
-  const notifications:Notification[] = useSelector(selectNotifications);
+  const notifications = useSelector(selectNotifications);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const closeNotification = (key:string) => {
+  const closeNotification = (key:SnackbarKey) => {
     dispatch(appActions.closeSnackbar({ key, dismissAll: Boolean(key) }));
   };
 
-  const removeNotification = (key:string) => {
+  const removeNotification = (key:SnackbarKey) => {
     dispatch(appActions.removeSnackbar(key));
   };
 
-  const storeDisplayed = (key:string) => {
+  const storeDisplayed = (key:SnackbarKey) => {
     displayed = [...displayed, key];
   };
 
-  const removeDisplayed = (key:string) => {
-    displayed = displayed.filter((id:string) => id !== key);
+  const removeDisplayed = (key:SnackbarKey) => {
+    displayed = displayed.filter((id:SnackbarKey) => id !== key);
   };
 
   useEffect(() => {
@@ -55,7 +47,6 @@ const Notifications:FC = () => {
           return;
         }
 
-        // do nothing if snackbar is already displayed
         if (displayed.includes(key)) {
           return;
         }
@@ -63,7 +54,7 @@ const Notifications:FC = () => {
         enqueueSnackbar(message, {
           key,
           ...options,
-          action: (myKey:string) => (
+          action: (myKey:SnackbarKey) => (
             <Button
               style={{ color: 'white' }}
               size="small"
@@ -77,16 +68,14 @@ const Notifications:FC = () => {
               options.onClose(event, reason, myKey);
             }
           },
-          onExited: (_:unknown, myKey:string) => {
+          onExited: (_, myKey:SnackbarKey) => {
             removeNotification(myKey);
             removeDisplayed(myKey);
           },
         });
-        // keep track of snackbars that we've displayed
         storeDisplayed(key);
       });
     }
-    // eslint-disable-next-line
   }, [notifications]);
 
   return null;

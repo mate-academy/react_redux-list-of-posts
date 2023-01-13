@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { fetchPosts } from './postsAsync';
@@ -21,28 +20,33 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    changePost: (state: PostsState, action) => {
-      state.currentPost = action.payload;
-    },
+    changePost: (state: PostsState, action) => ({
+      ...state,
+      currentPost: action.payload,
+    }),
     setInitialField: <IStateKey extends keyof PostsState>(
-      state: PostsState, action: PayloadAction<IStateKey>) => {
-      state[action.payload] = initialState[action.payload];
-    },
+      state: PostsState, action: PayloadAction<IStateKey>) => ({
+      ...state,
+      [action.payload]: initialState[action.payload],
+    }),
   },
   extraReducers: (builder) => {
     builder
     // fetch posts
-      .addCase(fetchPosts.pending, (state: PostsState) => {
-        state.loaded = false;
-      })
+      .addCase(fetchPosts.pending, (state: PostsState) => ({
+        ...state,
+        loaded: false,
+      }))
       .addCase(fetchPosts.fulfilled,
-        (state: PostsState, action: PayloadAction<Post[]>) => {
-          state.posts = action.payload;
-          state.loaded = true;
-        })
-      .addCase(fetchPosts.rejected, (state: PostsState) => {
-        state.loaded = true;
-      });
+        (state: PostsState, action: PayloadAction<Post[]>) => ({
+          ...state,
+          posts: action.payload,
+          loaded: true,
+        }))
+      .addCase(fetchPosts.rejected, (state: PostsState) => ({
+        ...state,
+        loaded: true,
+      }));
   },
 });
 
