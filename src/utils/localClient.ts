@@ -2,22 +2,24 @@
 //   return new Promise(done => setTimeout(done, delay));
 // }
 
-function read(key: string) {
-  const data = window.localStorage.getItem(key);
+const localClient = {
+  read(key: string) {
+    const data = window.localStorage.getItem(key);
 
-  try {
-    return data && JSON.parse(data);
-  } catch (error) {
-    return null;
-  }
-}
+    try {
+      return data && JSON.parse(data);
+    } catch (error) {
+      return null;
+    }
+  },
+  write(key: string, data: string) {
+    window.localStorage.setItem(key, JSON.stringify(data));
+  },
+  init(key: string, initialData: string) {
+    if (!this.read(key)) {
+      this.write(key, initialData);
+    }
+  },
+};
 
-function write(key: string, data: any) {
-  window.localStorage.setItem(key, JSON.stringify(data));
-}
-
-export function init(key: string, initialData: any) {
-  if (!read(key)) {
-    write(key, initialData);
-  }
-}
+export default localClient;

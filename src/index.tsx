@@ -1,20 +1,21 @@
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter as Router } from 'react-router-dom';
 
-import { store } from './app/store';
+import { SnackbarProvider } from 'notistack';
+import { store } from './store/store';
 import { App } from './App';
-import { UsersProvider } from './components/UsersContext';
 
-const Root = () => (
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement,
+);
+
+root.render(
   <Provider store={store}>
-    {/* Remove UsersProvider when you move users to Redux store */}
-    <UsersProvider>
+    <SnackbarProvider maxSnack={3}>
       <Router>
         <App />
       </Router>
-    </UsersProvider>
-  </Provider>
+    </SnackbarProvider>
+  </Provider>,
 );
-
-ReactDOM.render(<Root />, document.getElementById('root'));
