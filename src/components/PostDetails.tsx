@@ -4,7 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentsActions from '../features/comment';
+import * as commentsActions from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);

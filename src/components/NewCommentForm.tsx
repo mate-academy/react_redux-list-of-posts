@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { createCommentAsync } from '../features/comment';
+import { createCommentAsync } from '../features/comments';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
