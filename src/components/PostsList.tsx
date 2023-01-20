@@ -22,32 +22,36 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames(
-                    'button',
-                    'is-link',
-                    {
-                      'is-light': post.id !== selectedPost?.id,
-                    },
-                  )}
-                  onClick={() => {
-                    dispatch(setSelectedPost(
-                      post.id === selectedPost?.id ? null : post,
-                    ));
-                  }}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {posts.map(post => {
+            const isPostSelected = post.id === selectedPost?.id;
+
+            return (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      {
+                        'is-light': !isPostSelected,
+                      },
+                    )}
+                    onClick={() => {
+                      dispatch(setSelectedPost(
+                        isPostSelected ? null : post,
+                      ));
+                    }}
+                  >
+                    {isPostSelected ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

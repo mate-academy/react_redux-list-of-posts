@@ -9,9 +9,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { set, setHasError, setLoaded } from './features/postsSlice';
+import { setPosts, setHasError, setLoaded } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
@@ -24,7 +23,7 @@ export const App: React.FC = () => {
     dispatch(setLoaded(false));
 
     getUserPosts(userId)
-      .then(data => dispatch(set(data)))
+      .then(data => dispatch(setPosts(data)))
       .catch(() => dispatch(setHasError(true)))
       .finally(() => dispatch(setLoaded(true)));
   }
@@ -35,14 +34,16 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      dispatch(set([]));
+      dispatch(setPosts([]));
     }
   }, [author?.id]);
 
+  const showNoPostsMessage = author
+    && loaded && !hasError && posts.length === 0;
+  const showPosts = author && loaded && !hasError && posts.length > 0;
+
   return (
     <main className="section">
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -71,13 +72,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {showNoPostsMessage && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {showPosts && (
                   <PostsList />
                 )}
               </div>

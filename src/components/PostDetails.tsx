@@ -25,43 +25,21 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
+    if (!post) {
+      return;
+    }
+
     dispatch(setLoaded(false));
     dispatch(setHasError(false));
     setVisible(false);
 
-    commentsApi.getPostComments(post?.id || 0)
+    commentsApi.getPostComments(post.id || 0)
       .then(data => dispatch(setComments(data)))
       .catch(() => dispatch(setHasError(true)))
       .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(loadComments, [post?.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
