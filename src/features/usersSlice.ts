@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
-import { getUsers } from '../../api/users';
+import { User } from '../types/User';
+import { getUsers } from '../api/users';
 
 type UsersState = {
   users: User[],
@@ -24,8 +24,6 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
-      // eslint-disable-next-line no-console
-      console.log('starting');
       state.loading = true;
     });
 
@@ -41,5 +39,6 @@ const usersSlice = createSlice({
   },
 });
 
-export default usersSlice.reducer;
-export const { actions } = usersSlice;
+const { reducer } = usersSlice;
+
+export default reducer;

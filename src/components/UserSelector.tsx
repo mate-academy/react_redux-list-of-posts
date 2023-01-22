@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as usersActions from '../features/users/usersSlice';
+import { init } from '../features/usersSlice';
+import { authorActions } from '../features/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    dispatch(usersActions.init());
+    dispatch(init());
   }, []);
 
   useEffect(() => {
@@ -76,9 +67,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={() => (dispatch(authorActions.set(user)))}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
