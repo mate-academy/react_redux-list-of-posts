@@ -8,21 +8,27 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+// import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/authorSlice';
+import { loadPosts, setPosts } from './features/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const author = useAppSelector(state => state.author);
+  const {
+    posts,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.posts);
 
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -30,25 +36,39 @@ export const App: React.FC = () => {
     dispatch(setAuthor(user));
   };
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  // const onSetPosts = (postsToSet: Post[]) => {
+  //   dispatch(setPosts(posts));
+  // };
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  // function loadUserPosts(userId: number) {
+  //   setLoaded(false);
+
+  //   getUserPosts(userId)
+  //     .then(setPosts)
+  //     .catch(() => setError(true))
+  //     // We disable the spinner in any case
+  //     .finally(() => setLoaded(true));
+  // }
+
+  // useEffect(() => {
+  //   // we clear the post when an author is changed
+  //   // not to confuse the user
+  //   setSelectedPost(null);
+
+  //   if (author) {
+  //     loadUserPosts(author.id);
+  //   } else {
+  //     setPosts([]);
+  //   }
+  // }, [author?.id]);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch((loadPosts(author.id)));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
   }, [author?.id]);
 
