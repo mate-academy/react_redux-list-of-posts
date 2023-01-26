@@ -1,38 +1,31 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addNewComment } from '../features/comments/commentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [submitting, setSubmitting] = useState(false);
 
-  const [errors, setErrors] = useState({
+  const initialErrorsState = {
     name: false,
     email: false,
     body: false,
-  });
+  };
 
-  const [{ name, email, body }, setValues] = useState({
+  const initialValuesState = {
     name: '',
     email: '',
     body: '',
-  });
+  };
+
+  const [errors, setErrors] = useState(initialErrorsState);
+  const [{ name, email, body }, setValues] = useState(initialValuesState);
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    setValues(initialValuesState);
+    setErrors(initialErrorsState);
   };
 
   const handleChange = (
@@ -53,23 +46,32 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body || !selectedPost) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await dispatch(addNewComment({
+      name,
+      email,
+      body,
+      postId: selectedPost.id,
+    }));
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setValues(current => ({
+      ...current,
+      body: '',
+    }));
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
