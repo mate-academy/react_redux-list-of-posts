@@ -8,7 +8,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as usersActions from './features/usersSlice';
 import * as postsActions from './features/postsSlice';
@@ -41,19 +40,15 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* <Counter /> */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
 
-                {!usersError && (<UserSelector />)}
-
-                {usersError && (
-                  <p className="notification is-danger"> Something wrong!</p>
-                )}
+                {!usersError
+                  ? <UserSelector />
+                  : <p className="notification is-danger">Something wrong!</p>}
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -96,8 +91,7 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                // 'Sidebar--open': selectedPost,
-                'Sidebar--open': true,
+                'Sidebar--open': selectedPost,
               },
             )}
           >
