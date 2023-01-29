@@ -21,8 +21,8 @@ export const PostItem: FC<Props> = ({ post }) => {
     if (isSidebarOpen) {
       dispatch(selectPost(post));
     } else {
-      dispatch(setSidebarStatus(false));
-      selectPost(post);
+      dispatch(selectPost(post));
+      dispatch(setSidebarStatus(true));
     }
 
     dispatch(setFormStatus(false));
