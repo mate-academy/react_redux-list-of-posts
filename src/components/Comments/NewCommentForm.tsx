@@ -17,8 +17,8 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
   const [isNameError, setIsNameError] = useState<boolean>(false);
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [isTextError, setIsTextError] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
   const { status } = useAppSelector(state => state.comment);
+  const dispatch = useAppDispatch();
 
   const isAllFilled = name && email && text;
   const isOneFilled = name || email || text;
@@ -34,6 +34,7 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     if (!isAllFilled) {
       setIsNameError(Boolean(!name));
       setIsEmailError(Boolean(!email));
