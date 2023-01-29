@@ -1,25 +1,13 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { PostItem } from './PostItem';
 import { Loader } from '../Loader';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getPostsByUserId } from '../../app/slices/postSlice';
+import { useAppSelector } from '../../app/hooks';
 
 export const PostsList: FC = () => {
   const { selectedUser } = useAppSelector(state => state.user);
   const { posts, status } = useAppSelector(state => state.post);
-  const [isUser, setIsUser] = useState(false);
-  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (selectedUser === null) {
-      setIsUser(false);
-    } else {
-      setIsUser(true);
-      dispatch(getPostsByUserId(selectedUser.id));
-    }
-  }, []);
-
-  if (!isUser) {
+  if (!selectedUser) {
     return <p data-cy="NoSelectedUser">No user selected</p>;
   }
 

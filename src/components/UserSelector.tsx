@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 import { getAllUsers, selectUser } from '../app/slices/userSlice';
 import { setFormStatus, setSidebarStatus } from '../app/slices/uiSlice';
+import { getPostsByUserId } from '../app/slices/postSlice';
 
 export const UserSelector: FC = () => {
   const { users, status, selectedUser } = useAppSelector(state => state.user);
@@ -20,6 +21,8 @@ export const UserSelector: FC = () => {
     dispatch(selectUser(usr));
     dispatch(setFormStatus(false));
     dispatch(setSidebarStatus(false));
+    dispatch(getPostsByUserId(usr.id));
+    setIsVisible(false);
   };
 
   return (
