@@ -5,6 +5,10 @@ export const getUserPosts = (userId: number) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
 };
 
+export const setUserPosts = (data: Omit<Post, 'id'>) => {
+  return client.post<Comment>('/posts', data);
+};
+
 export const getPosts = () => {
   return client.get<Post[]>('/posts');
 };
