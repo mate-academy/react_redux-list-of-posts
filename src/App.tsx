@@ -19,6 +19,10 @@ export const App: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
+  const isPostsLoadingError = author && !loaded && hasError;
+  const isNoPostsYet = author && !loaded && !hasError && posts.length === 0;
+  const isPostsList = author && !loaded && !hasError && posts.length > 0;
+
   const getUsersFromServer = async () => {
     try {
       const result = await getUsers();
@@ -61,7 +65,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {author && !loaded && hasError && (
+                {isPostsLoadingError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -70,13 +74,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
+                {isNoPostsYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
+                {isPostsList && (
                   <PostsList />
                 )}
               </div>

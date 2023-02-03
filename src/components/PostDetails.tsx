@@ -15,6 +15,11 @@ export const PostDetails: React.FC = () => {
 
   const [visible, setVisible] = useState(false);
 
+  const isNoCommentsMessage = !loaded && !hasError && comments.length === 0;
+  const isComments = !loaded && !hasError && comments.length > 0;
+  const isButton = !loaded && !hasError && !visible;
+  const isNewCommentForm = !loaded && !hasError && visible;
+
   function loadComments() {
     setVisible(false);
 
@@ -31,15 +36,17 @@ export const PostDetails: React.FC = () => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">
-          {`#${selectedPost?.id}: ${selectedPost?.title}`}
-        </h2>
+      {selectedPost && (
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${selectedPost.id}: ${selectedPost.title}`}
+          </h2>
 
-        <p data-cy="PostBody">
-          {selectedPost?.body}
-        </p>
-      </div>
+          <p data-cy="PostBody">
+            {selectedPost.body}
+          </p>
+        </div>
+      )}
 
       <div className="block">
         {loaded && (
@@ -52,13 +59,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {isNoCommentsMessage && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {isComments && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -92,7 +99,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {isButton && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -103,7 +110,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && (
+        {isNewCommentForm && (
           <NewCommentForm />
         )}
       </div>
