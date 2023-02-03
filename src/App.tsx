@@ -8,11 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setAuthor } from './features/authorSlice';
 import { loadPosts, setPosts } from './features/postsSlice';
 import { setPost } from './features/selectedPostSlice';
 
@@ -25,11 +23,7 @@ export const App: React.FC = () => {
     posts,
     hasError,
     loaded,
-  } = useAppSelector(state => state.posts);
-
-  const onSetAuthor = (user: User) => {
-    dispatch(setAuthor(user));
-  };
+  } = useAppSelector(state => state.postsState);
 
   const setSelectedPost = (post: Post | null) => {
     dispatch(setPost(post));
@@ -55,7 +49,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={onSetAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
