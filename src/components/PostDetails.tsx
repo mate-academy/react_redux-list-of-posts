@@ -56,15 +56,17 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {loaded && hasError ? (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
-        ) : (
+        )}
+
+        {loaded && !hasError && (
           <Comments />
         )}
 
-        {loaded && !hasError && !visible ? (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -73,7 +75,9 @@ export const PostDetails: React.FC = () => {
           >
             Write a comment
           </button>
-        ) : (
+        )}
+
+        {loaded && !hasError && visible && (
           <NewCommentForm currentPostId={post.id} />
         )}
       </div>
