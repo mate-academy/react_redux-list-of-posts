@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import 'bulma/bulma.sass';
+import { useEffect } from 'react';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-import { Post } from './types/Post';
-import { loadUsers } from './features/users/usersSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { Loader } from './components/Loader';
+import { PostDetails } from './components/PostDetails';
+import { PostsList } from './components/PostsList';
+import { UserSelector } from './components/UserSelector';
 import { loadPosts, removePosts } from './features/posts/postsSlice';
+import { removePost } from './features/selectedPost/selectedPostSlice';
+import { loadUsers } from './features/users/usersSlice';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.value);
   const { loaded, hasError } = useAppSelector(state => state.posts);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { post: selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   const showLoader = !loaded;
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(removePost());
 
     dispatch(author
       ? loadPosts(author.id)
@@ -61,12 +61,7 @@ export const App: React.FC = () => {
                       Something went wrong!
                     </div>
                   ))
-                  || (showPosts && (
-                    <PostsList
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
-                    />
-                  ))}
+                  || (showPosts && <PostsList />)}
               </div>
             </div>
           </div>
@@ -84,9 +79,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

@@ -1,18 +1,12 @@
 import classNames from 'classnames';
-import React from 'react';
-import { useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { removePost, setPost } from
+  '../features/selectedPost/selectedPostSlice';
 
-type Props = {
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
-};
-
-export const PostsList: React.FC<Props> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+export const PostsList: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
+  const selectedPostId = useAppSelector(state => state.selectedPost.post?.id);
+  const dispatch = useAppDispatch();
 
   if (!posts.length) {
     return (
@@ -51,9 +45,9 @@ export const PostsList: React.FC<Props> = ({
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
-                  }}
+                  onClick={() => dispatch(post.id === selectedPostId
+                    ? removePost()
+                    : setPost(post))}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
