@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserPosts } from '../../api/posts';
-import { Post } from '../../types/Post';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getUserPosts } from '../api/posts';
+import { Post } from '../types/Post';
 
 interface PostsState {
   loaded: boolean
@@ -16,7 +16,7 @@ const initialState: PostsState = {
 };
 
 export const loadPosts = createAsyncThunk(
-  'posts/setPosts',
+  'posts/set',
   async (userId: number) => {
     const posts = await getUserPosts(userId);
 

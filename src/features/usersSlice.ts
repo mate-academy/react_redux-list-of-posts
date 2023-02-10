@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUsers } from '../../api/users';
-import { User } from '../../types/User';
+import { getUsers } from '../api/users';
+import { User } from '../types/User';
 
 interface UsersState {
   value: User[]

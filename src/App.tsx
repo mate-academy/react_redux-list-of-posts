@@ -9,9 +9,9 @@ import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { loadPosts, removePosts } from './features/posts/postsSlice';
-import { removePost } from './features/selectedPost/selectedPostSlice';
-import { loadUsers } from './features/users/usersSlice';
+import { loadPosts, removePosts } from './features/postsSlice';
+import { removePost } from './features/selectedPostSlice';
+import { loadUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.value);

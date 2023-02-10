@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setAuthor } from '../features/author/authorSlice';
+import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const users = useAppSelector(state => state.users.value);

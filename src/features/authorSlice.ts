@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
+import { User } from '../types/User';
 
 interface AuthorState {
   value: User | null
