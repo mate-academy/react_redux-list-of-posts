@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
-interface UsersState {
+export interface UsersState {
   items: User[]
   status: 'loading' | 'idle' | 'failed'
 }

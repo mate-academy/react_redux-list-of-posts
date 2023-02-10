@@ -1,16 +1,18 @@
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/bulma.sass';
-import { useEffect } from 'react';
 import './App.scss';
 
 import classNames from 'classnames';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+
 import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
+
 import { loadPosts, removePosts } from './features/postsSlice';
-import { removePost } from './features/selectedPostSlice';
+import { closePost } from './features/selectedPostSlice';
 import { loadUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
@@ -28,7 +30,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(removePost());
+    dispatch(closePost());
 
     dispatch(author
       ? loadPosts(author.id)

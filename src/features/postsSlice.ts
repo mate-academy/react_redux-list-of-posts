@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
-interface PostsState {
+export interface PostsState {
   loaded: boolean
   hasError: boolean
   items: Post[]

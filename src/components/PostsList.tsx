@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { removePost, setPost } from '../features/selectedPostSlice';
+import { closePost, setPost } from '../features/selectedPostSlice';
 
 type Props = {
   postId: number | undefined
@@ -48,7 +48,7 @@ export const PostsList: React.FC<Props> = ({ postId }) => {
                     },
                   )}
                   onClick={() => dispatch(post.id === postId
-                    ? removePost()
+                    ? closePost()
                     : setPost(post))}
                 >
                   {post.id === postId ? 'Close' : 'Open'}

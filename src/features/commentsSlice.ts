@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
-interface CommentsState {
+export interface CommentsState {
   loaded: boolean
   hasError: boolean
   items: Comment[]
