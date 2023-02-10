@@ -14,7 +14,7 @@ import { removePost } from './features/selectedPostSlice';
 import { loadUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author.value);
+  const author = useAppSelector(state => state.author.author);
   const { loaded, hasError } = useAppSelector(state => state.posts);
   const { post: selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 interface CommentsState {
@@ -18,23 +18,32 @@ const initialState: CommentsState = {
 export const loadComments = createAsyncThunk(
   'comments/load',
   async (postId: number) => {
-    const comments = await getPostComments(postId);
+    const response = await getPostComments(postId);
 
-    return comments;
+    return response;
+  },
+);
+
+export const addComment = createAsyncThunk(
+  'comments/add',
+  async (comment: Omit<Comment, 'id'>) => {
+    const response = await createComment(comment);
+
+    return response;
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/remove',
+  async (commentId: number) => {
+    await deleteComment(commentId);
   },
 );
 
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment(state, action: PayloadAction<Comment>) {
-      state.items.push(action.payload);
-    },
-    removeComment(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(({ id }) => id !== action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loadComments.pending, (state) => {
@@ -47,9 +56,14 @@ const commentsSlice = createSlice({
       .addCase(loadComments.rejected, (state) => {
         state.hasError = true;
         state.loaded = true;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(({ id }) => id !== action.meta.arg);
       });
   },
 });
 
-export const { addComment, removeComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

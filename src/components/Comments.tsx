@@ -1,4 +1,3 @@
-import { deleteComment } from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { removeComment } from '../features/commentsSlice';
 
@@ -13,11 +12,6 @@ export const Comments = () => {
       </p>
     );
   }
-
-  const deleteCommentById = (id: number) => () => {
-    deleteComment(id)
-      .then(() => dispatch(removeComment(id)));
-  };
 
   return (
     <>
@@ -39,7 +33,7 @@ export const Comments = () => {
               type="button"
               className="delete is-small"
               aria-label="delete"
-              onClick={deleteCommentById(comment.id)}
+              onClick={() => dispatch(removeComment(comment.id))}
             >
               delete button
             </button>

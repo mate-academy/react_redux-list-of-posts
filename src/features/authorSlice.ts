@@ -3,11 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
 interface AuthorState {
-  value: User | null
+  author: User | null
 }
 
 const initialState: AuthorState = {
-  value: null,
+  author: null,
 };
 
 const authorSlice = createSlice({
@@ -15,10 +15,10 @@ const authorSlice = createSlice({
   initialState,
   reducers: {
     setAuthor(state, action: PayloadAction<User>) {
-      state.value = action.payload;
+      state.author = action.payload;
     },
     removeAuthor(state) {
-      state.value = null;
+      state.author = null;
     },
   },
 });

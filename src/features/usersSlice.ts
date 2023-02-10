@@ -4,21 +4,21 @@ import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
 interface UsersState {
-  value: User[]
+  items: User[]
   status: 'loading' | 'idle' | 'failed'
 }
 
 const initialState: UsersState = {
-  value: [],
+  items: [],
   status: 'idle',
 };
 
 export const loadUsers = createAsyncThunk(
-  'users/setUsers',
+  'users/set',
   async () => {
-    const users = await getUsers();
+    const response = await getUsers();
 
-    return users;
+    return response;
   },
 );
 
@@ -33,7 +33,7 @@ const usersSlice = createSlice({
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.value = action.payload;
+        state.items = action.payload;
       })
       .addCase(loadUsers.rejected, (state) => {
         state.status = 'failed';

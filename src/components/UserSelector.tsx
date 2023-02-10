@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
-  const users = useAppSelector(state => state.users.value);
-  const selectedUser = useAppSelector(state => state.author.value);
+  const users = useAppSelector(state => state.users.items);
+  const selectedUser = useAppSelector(state => state.author.author);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 

@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import { useAppDispatch } from '../app/hooks';
 import { addComment } from '../features/commentsSlice';
-import { createComment } from '../api/comments';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -57,12 +56,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
     if (name && email && body && postId) {
       setSubmitting(true);
-      createComment({ ...values, postId })
-        .then(comment => dispatch(addComment(comment)))
-        .finally(() => {
-          setSubmitting(false);
-          setValues(current => ({ ...current, body: '' }));
-        });
+      dispatch(addComment({ ...values, postId }));
+      setSubmitting(false);
+      setValues(current => ({ ...current, body: '' }));
     }
   };
 

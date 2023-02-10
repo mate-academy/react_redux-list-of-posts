@@ -18,9 +18,9 @@ const initialState: PostsState = {
 export const loadPosts = createAsyncThunk(
   'posts/set',
   async (userId: number) => {
-    const posts = await getUserPosts(userId);
+    const response = await getUserPosts(userId);
 
-    return posts;
+    return response;
   },
 );
 
