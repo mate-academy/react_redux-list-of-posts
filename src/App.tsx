@@ -61,7 +61,7 @@ export const App: React.FC = () => {
                       Something went wrong!
                     </div>
                   ))
-                  || (showPosts && <PostsList />)}
+                  || (showPosts && <PostsList postId={selectedPost?.id} />)}
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails />}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

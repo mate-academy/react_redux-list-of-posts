@@ -14,9 +14,9 @@ export const Comments = () => {
     );
   }
 
-  const deleteCommentById = (commentId: number) => () => {
-    deleteComment(commentId)
-      .then(() => dispatch(removeComment(commentId)));
+  const deleteCommentById = (id: number) => () => {
+    deleteComment(id)
+      .then(() => dispatch(removeComment(id)));
   };
 
   return (

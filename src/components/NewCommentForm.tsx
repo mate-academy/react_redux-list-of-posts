@@ -1,11 +1,15 @@
 import classNames from 'classnames';
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import { addComment } from '../features/commentsSlice';
 import { createComment } from '../api/comments';
 import { CommentData } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  postId: number
+};
+
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const initialValues: CommentData = {
     name: '',
     email: '',
@@ -20,7 +24,6 @@ export const NewCommentForm: React.FC = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState(initialValues);
-  const postId = useAppSelector(state => state.selectedPost.post?.id);
   const dispatch = useAppDispatch();
   const { name, email, body } = values;
 

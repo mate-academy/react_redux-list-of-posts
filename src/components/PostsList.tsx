@@ -2,9 +2,12 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { removePost, setPost } from '../features/selectedPostSlice';
 
-export const PostsList: React.FC = () => {
+type Props = {
+  postId: number | undefined
+};
+
+export const PostsList: React.FC<Props> = ({ postId }) => {
   const posts = useAppSelector(state => state.posts.items);
-  const selectedPostId = useAppSelector(state => state.selectedPost.post?.id);
   const dispatch = useAppDispatch();
 
   if (!posts.length) {
@@ -41,14 +44,14 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPostId,
+                      'is-light': post.id !== postId,
                     },
                   )}
-                  onClick={() => dispatch(post.id === selectedPostId
+                  onClick={() => dispatch(post.id === postId
                     ? removePost()
                     : setPost(post))}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === postId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
