@@ -11,7 +11,8 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { loadUsers } from './features/users/usersSlice';
+import { useAppDispatch } from './app/hooks';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -20,6 +21,7 @@ export const App: React.FC = () => {
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -30,6 +32,10 @@ export const App: React.FC = () => {
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
+
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -45,9 +51,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
