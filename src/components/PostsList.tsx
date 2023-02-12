@@ -9,10 +9,8 @@ export const PostsList: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPostState.item);
   const dispatch = useAppDispatch();
 
-  const handleClick = (post: Post) => {
-    dispatch(setSelectedPost(
-      post.id === selectedPost?.id ? null : post,
-    ));
+  const handleClick = (value: Post | null) => {
+    dispatch(setSelectedPost(value));
   };
 
   return (
@@ -29,28 +27,32 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames(
-                    'button',
-                    'is-link',
-                    {
-                      'is-light': post.id !== selectedPost?.id,
-                    },
-                  )}
-                  onClick={() => handleClick(post)}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {posts.map(post => {
+            const isOpenedPost = post.id === selectedPost?.id;
+
+            return (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      {
+                        'is-light': !isOpenedPost,
+                      },
+                    )}
+                    onClick={() => handleClick(isOpenedPost ? null : post)}
+                  >
+                    {isOpenedPost ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
