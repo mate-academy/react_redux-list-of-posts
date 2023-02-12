@@ -22,10 +22,10 @@ const postsSlice = createSlice({
       state.loaded = payload;
     },
     setHasError: (state, { payload }) => {
-      state.loaded = payload;
+      state.hasError = payload;
     },
     setPosts: (state, { payload }) => {
-      state.loaded = payload;
+      state.posts = payload;
     },
   },
 });

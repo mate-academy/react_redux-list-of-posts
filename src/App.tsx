@@ -75,13 +75,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && Boolean(!posts.length) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && Boolean(posts.length) && (
                   <PostsList
                     selectedPostId={selectedPost?.id}
                   />
