@@ -10,6 +10,7 @@ import {
   addComment,
   deleteComment,
   removeComment,
+  selectComments,
 } from '../features/comments/commentsSlice';
 
 type Props = {
@@ -21,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     comments,
     loaded,
     hasError,
-  } = useAppSelector(state => state.comments);
+  } = useAppSelector(selectComments);
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
 

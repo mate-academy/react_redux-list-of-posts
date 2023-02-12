@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
+import type { RootState } from '../../app/store';
 
 type AuthorState = User | null;
 
@@ -16,5 +17,7 @@ export const authorSlice = createSlice({
 });
 
 export const { setAuthor } = authorSlice.actions;
+
+export const selectAuthor = (state: RootState) => state.author;
 
 export default authorSlice.reducer;

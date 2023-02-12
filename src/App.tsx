@@ -4,26 +4,27 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
+import { PostsList } from './components/PostsList/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPosts, clear } from './features/posts/postsSlice';
-import { selectPost } from './features/posts/selectedPostSlice';
+import { fetchPosts, clear, selectPosts } from './features/posts/postsSlice';
+import { resetPost, selectPost } from './features/posts/selectedPostSlice';
+import { selectAuthor } from './features/author/authorSlice';
 
 export const App: React.FC = () => {
   const {
     posts,
     loaded,
     hasError,
-  } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost);
-  const author = useAppSelector(state => state.author);
+  } = useAppSelector(selectPosts);
+  const selectedPost = useAppSelector(selectPost);
+  const author = useAppSelector(selectAuthor);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(selectPost(null));
+    dispatch(resetPost());
 
     if (author) {
       dispatch(fetchPosts(author.id));

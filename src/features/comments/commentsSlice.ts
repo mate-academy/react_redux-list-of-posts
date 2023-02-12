@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import * as commentsApi from '../../api/comments';
+import type { RootState } from '../../app/store';
 
 export interface CommentsState {
   comments: Comment[];
@@ -46,9 +47,9 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    removeComment: (state, action: PayloadAction<number>) => {
+    removeComment: (state, { payload: commentId }: PayloadAction<number>) => {
       state.comments = state.comments.filter(comment => (
-        comment.id !== action.payload
+        comment.id !== commentId
       ));
     },
   },
@@ -74,9 +75,14 @@ export const commentsSlice = createSlice({
       state.loaded = true;
       state.hasError = true;
     });
+    builder.addCase(deleteComment.rejected, (state) => {
+      state.hasError = true;
+    });
   },
 });
 
 export const { removeComment } = commentsSlice.actions;
+
+export const selectComments = (state: RootState) => state.comments;
 
 export default commentsSlice.reducer;

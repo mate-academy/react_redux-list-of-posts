@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
+import type { RootState } from '../../app/store';
 
 export interface PostsState {
   loaded: boolean;
@@ -50,5 +51,7 @@ export const postsSlice = createSlice({
 });
 
 export const { clear } = postsSlice.actions;
+
+export const selectPosts = (state: RootState) => state.posts;
 
 export default postsSlice.reducer;
