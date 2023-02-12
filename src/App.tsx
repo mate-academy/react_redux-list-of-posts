@@ -14,11 +14,11 @@ import { initPosts, set as setPosts } from './features/postsSlice';
 import { set as setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author.author);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const posts = useAppSelector(state => state.posts.items);
-  const hasError = useAppSelector(state => state.posts.hasError);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const author = useAppSelector(state => state.authorState.author);
+  const loaded = useAppSelector(state => state.postsState.loaded);
+  const posts = useAppSelector(state => state.postsState.items);
+  const hasError = useAppSelector(state => state.postsState.hasError);
+  const selectedPost = useAppSelector(state => state.selectedPostState.item);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

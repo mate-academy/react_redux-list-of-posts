@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 
 type SelectedPostState = {
-  selectedPost: Post | null;
+  item: Post | null;
 };
 
 const initialState: SelectedPostState = {
-  selectedPost: null,
+  item: null,
 };
 
 const selectedPostSlice = createSlice({
@@ -15,7 +15,7 @@ const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     set: (state, action) => {
-      state.selectedPost = action.payload;
+      state.item = action.payload;
     },
   },
 });

@@ -5,8 +5,8 @@ import { set as setSelectedUser } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
-  const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.author.author);
+  const users = useAppSelector(state => state.usersState.users);
+  const selectedUser = useAppSelector(state => state.authorState.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,9 +42,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={() => setExpanded(current => !current)}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -62,9 +60,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(setSelectedUser(user));
-              }}
+              onClick={() => dispatch(setSelectedUser(user))}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

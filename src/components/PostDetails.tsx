@@ -7,7 +7,12 @@ import * as commentsApi from '../api/comments';
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initComments, setComments, setError } from '../features/commentsSlice';
+import {
+  initComments,
+  setError,
+  add as addComment,
+  remove as deleteComment,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
@@ -15,9 +20,9 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
-  const comments = useAppSelector(state => state.comments.items);
-  const loaded = useAppSelector(state => state.comments.loaded);
-  const hasError = useAppSelector(state => state.comments.hasError);
+  const comments = useAppSelector(state => state.commentsState.items);
+  const loaded = useAppSelector(state => state.commentsState.loaded);
+  const hasError = useAppSelector(state => state.commentsState.hasError);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -25,7 +30,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(initComments(post.id));
   }, [post.id]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const addNewComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -34,14 +39,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(setComments([...comments, newComment]));
+      dispatch(addComment(newComment));
     } catch (error) {
       setError(true);
     }
   };
 
-  const deleteComment = async (commentId: number) => {
-    dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
+  const deleteCommentById = async (commentId: number) => {
+    dispatch(deleteComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -95,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => deleteCommentById(comment.id)}
                   >
                     delete button
                   </button>
@@ -121,7 +126,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm onSubmit={addNewComment} />
         )}
       </div>
     </div>

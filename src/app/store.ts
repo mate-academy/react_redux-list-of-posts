@@ -7,11 +7,11 @@ import commentsReducer from '../features/commentsSlice';
 
 export const store = configureStore({
   reducer: {
-    users: usersReducer,
-    author: authorReducer,
-    posts: postsReducer,
-    selectedPost: selectedPostReducer,
-    comments: commentsReducer,
+    usersState: usersReducer,
+    authorState: authorReducer,
+    postsState: postsReducer,
+    selectedPostState: selectedPostReducer,
+    commentsState: commentsReducer,
   },
 });
 

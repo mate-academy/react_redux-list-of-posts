@@ -24,7 +24,13 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setComments: (state, action) => {
+    add: (state, action) => {
+      state.items = [...state.items, action.payload];
+    },
+    remove: (state, action) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
+    },
+    set: (state, action) => {
       state.items = action.payload;
     },
     setError: (state, action) => {
@@ -47,5 +53,10 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { setComments, setError } = commentsSlice.actions;
+export const {
+  set,
+  setError,
+  remove,
+  add,
+} = commentsSlice.actions;
 export default commentsSlice.reducer;
