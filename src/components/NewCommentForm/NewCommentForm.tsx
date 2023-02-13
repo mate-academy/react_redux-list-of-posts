@@ -1,19 +1,21 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { CommentData } from '../../types/Comment';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
+export const NewCommentForm: React.FC<Props> = ({
+  onSubmit,
+}) => {
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [{ name, email, body }, setValues] = useState({
     name: '',
@@ -57,15 +59,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setValues(curr => ({ ...curr, body: '' }));
+    setIsSubmitting(false);
   };
 
   return (
@@ -175,7 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
