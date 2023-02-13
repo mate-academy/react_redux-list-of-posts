@@ -1,13 +1,25 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CommentData } from '../types/Comment';
+import * as commentsApi from '../api/comments';
+import { createComment } from '../features/commentsReducer';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const post = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    const newComment = await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: post?.id as number,
+    });
+
+    dispatch(createComment(newComment));
+  };
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,17 +71,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await addComment({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    clearForm();
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
