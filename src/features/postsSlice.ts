@@ -4,13 +4,13 @@ import { Post } from '../types/Post';
 
 type DefaultState = {
   posts: Post[],
-  loaded: boolean,
+  isLoading: boolean,
   hasError: boolean,
 };
 
 const initialState: DefaultState = {
   posts: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -19,7 +19,7 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     setLoading: (state, { payload }) => {
-      state.loaded = payload;
+      state.isLoading = payload;
     },
     setHasError: (state, { payload }) => {
       state.hasError = payload;
@@ -27,8 +27,16 @@ const postsSlice = createSlice({
     setPosts: (state, { payload }) => {
       state.posts = payload;
     },
+    resetPosts: (state) => {
+      state.posts = [];
+    },
   },
 });
 
-export const { actions } = postsSlice;
+export const {
+  setLoading,
+  setHasError,
+  setPosts,
+  resetPosts,
+} = postsSlice.actions;
 export default postsSlice.reducer;
