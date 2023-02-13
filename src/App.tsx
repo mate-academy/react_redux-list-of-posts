@@ -1,73 +1,95 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { PostsList } from './features/posts/PostsList';
+import { PostDetails } from './features/comments/PostDetails';
+import { UserSelector } from './features/users/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppSelector } from './app/hooks';
+import { useGetUserPostsQuery } from './features/posts/postsApi';
+import { useGetUsersQuery } from './features/users/usersApi';
+import { selectPost } from './features/posts/postsSlice';
+import { selectUser } from './features/users/usersSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const currentUser = useAppSelector(selectUser);
+  const currentPost = useAppSelector(selectPost);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const {
+    isLoading: isLoadingUsers,
+    isFetching: isFetchingUsers,
+    isError: isErrorUsers,
+  } = useGetUsersQuery();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const {
+    data: posts,
+    isLoading: isLoadingPosts,
+    isFetching: isFetchingPosts,
+    isError: isErrorPosts,
+  } = useGetUserPostsQuery(currentUser?.id || 0);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+  const isErrorMessageShown = (
+    currentUser
+    && !isLoadingPosts
+    && !isFetchingPosts
+    && isErrorPosts
+  );
+
+  const isNoPostsYetMessageShown = (
+    currentUser
+    && !isLoadingPosts
+    && !isFetchingPosts
+    && !isErrorPosts
+    && !!posts
+    && !posts.length
+  );
+
+  const isPostListShown = (
+    currentUser
+    && !isLoadingPosts
+    && !isFetchingPosts
+    && !isErrorPosts
+    && !!posts
+    && !!posts.length
+  );
+
+  if (isLoadingUsers || isFetchingUsers) {
+    return <Loader />;
   }
 
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+  if (isErrorUsers) {
+    return (
+      <div className="notification is-danger">
+        Something went wrong! Cannot load users.
+      </div>
+    );
+  }
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!currentUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author && !loaded && (
+                {currentUser && (isLoadingPosts || isFetchingPosts) && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {isErrorMessageShown && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,18 +98,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {isNoPostsYetMessageShown && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {isPostListShown && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -101,13 +122,13 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': currentPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
+              {currentPost && (
+                <PostDetails />
               )}
             </div>
           </div>
