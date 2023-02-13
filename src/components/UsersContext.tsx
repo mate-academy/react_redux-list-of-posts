@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { getUsers } from '../api/users';
+import React, { useState } from 'react';
 import { User } from '../types/User';
 
 export const UserContext = React.createContext<User[]>([]);
@@ -9,12 +8,7 @@ type Props = {
 };
 
 export const UsersProvider: React.FC<Props> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    getUsers()
-      .then(setUsers);
-  }, []);
+  const [users] = useState<User[]>([]);
 
   return (
     <UserContext.Provider value={users}>
