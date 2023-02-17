@@ -18,7 +18,11 @@ import { clearSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const author = useAppSelector(selectAuthor);
-  const { posts, status, error } = useAppSelector(state => state.posts);
+  const {
+    posts,
+    status,
+    error: hasError,
+  } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
   const loaded = status === 'idle';
@@ -54,7 +58,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {error && (
+                {hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -63,13 +67,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length === 0 && (
+                {author && loaded && !hasError && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length && (
                   <PostsList
                     posts={posts}
                   />
