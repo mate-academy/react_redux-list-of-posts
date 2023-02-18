@@ -45,6 +45,10 @@ export const PostDetails: React.FC = () => {
     await commentsApi.deleteComment(commentId);
   };
 
+  useEffect(() => {
+    setVisible(false);
+  }, [selectedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">

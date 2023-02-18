@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions } from '../features/selectedPostSlice';
+import { clearSelectedPost, set } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
@@ -10,7 +10,10 @@ export const PostsList: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const handleSelectPost = (post: Post) => {
-    dispatch(actions.set(post));
+    dispatch(set(post));
+    if (post.id === selectedPost?.id) {
+      dispatch(clearSelectedPost());
+    }
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -9,6 +10,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init } from './features/postsSlice';
 import { User } from './types/User';
+import { clearSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +19,7 @@ export const App: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
+    dispatch(clearSelectedPost());
     dispatch(init(author as User));
   }, [author]);
 
@@ -66,7 +69,13 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className="tile is-parent is-8-desktop Sidebar Sidebar--open"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
           >
             <div className="tile is-child box is-success ">
               {selectedPost ? (

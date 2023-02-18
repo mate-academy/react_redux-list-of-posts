@@ -17,8 +17,11 @@ const selectedPostSlice = createSlice({
     set: (state, action: PayloadAction<Post>) => {
       state.selectedPost = action.payload;
     },
+    clearSelectedPost: (state) => {
+      state.selectedPost = null;
+    },
   },
 });
 
 export default selectedPostSlice.reducer;
-export const { actions } = selectedPostSlice;
+export const { set, clearSelectedPost } = selectedPostSlice.actions;
