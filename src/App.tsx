@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -12,7 +11,7 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/usersSlicer';
-import { deletePosts, fetchPosts } from './features/postsSlicer';
+import { deletePosts, fetchPosts } from './features/postsSlice';
 import { removeSelectedPost } from './features/selectedPostReducer';
 
 export const App: React.FC = () => {
@@ -26,7 +25,7 @@ export const App: React.FC = () => {
     dispatch(removeSelectedPost());
 
     if (author) {
-      dispatch(fetchPosts(author?.id));
+      dispatch(fetchPosts(author.id));
     } else {
       dispatch(deletePosts());
     }
