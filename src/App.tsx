@@ -12,7 +12,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
@@ -38,7 +37,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
 
       <div className="container">
         <div className="tile is-ancestor">
@@ -68,13 +66,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length && (
                   <PostsList />
                 )}
               </div>
@@ -87,16 +85,15 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
               {
                 'Sidebar--open': selectedPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails />
-              )}
+              {selectedPost
+                ? <PostDetails />
+                : 'Choose a post'}
             </div>
           </div>
         </div>
