@@ -1,10 +1,10 @@
-import { client } from '../utils/fetchClient';
-import { Post } from '../types/Post';
+import { client } from '../utils/axiosClient';
+import { IPost } from '../types/IPost';
 
 export const getUserPosts = (userId: number) => {
-  return client.get<Post[]>(`/posts?userId=${userId}`);
+  return client.get<IPost[]>(`/posts?userId=${userId}`);
 };
 
 export const getPosts = () => {
-  return client.get<Post[]>('/posts');
+  return client.get<IPost[]>('/posts');
 };
