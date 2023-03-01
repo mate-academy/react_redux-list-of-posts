@@ -1,6 +1,4 @@
-import {
-  FunctionComponent,
-} from 'react';
+import { FunctionComponent } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';

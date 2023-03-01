@@ -84,8 +84,6 @@ export const NewCommentForm: FunctionComponent<Props> = ({ postId }) => {
       setSubmitting(false);
       setValues(cur => ({ ...cur, body: '' }));
     }
-
-    clearForm();
   };
 
   return (
