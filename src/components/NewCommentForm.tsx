@@ -196,6 +196,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="button"
             className="button is-link is-light"
+            onClick={clearForm}
           >
             Clear
           </button>
