@@ -14,7 +14,7 @@ import {
   loadPosts,
 } from './features/postsSlice';
 import { selectAuthor } from './features/authorSlice';
-import { clearPost } from './features/selectedPostSlice';
+import { clearSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const author = useAppSelector(selectAuthor);
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
   const loaded = status === 'idle';
 
   useEffect(() => {
-    dispatch(clearPost());
+    dispatch(clearSelectedPost());
 
     if (author) {
       dispatch(loadPosts(author.id));
@@ -36,6 +36,8 @@ export const App: React.FC = () => {
       dispatch(clearPosts());
     }
   }, [author?.id]);
+
+  const loadedRight = author && loaded && !hasError;
 
   return (
     <main className="section">
@@ -68,13 +70,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && !posts.length && (
+                {loadedRight && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length && (
+                {loadedRight && !!posts.length && (
                   <PostsList
                     posts={posts}
                   />

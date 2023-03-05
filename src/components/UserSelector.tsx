@@ -68,7 +68,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.users.map(user => (
+          {users.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}

@@ -1,44 +1,40 @@
+/* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
+import { Status } from '../types/Status';
 
 export interface CommentsState {
   comments: Comment[];
-  status: 'idle' | 'loading' | 'failed';
+  status: Status;
   error: boolean,
 }
 
 const initialState: CommentsState = {
   comments: [],
-  status: 'idle',
+  status: Status.idle,
   error: false,
 };
 
 export const loadComments = createAsyncThunk(
-  'users/SET',
+  'comments/SET',
   (async (postId: number) => {
-    const commentsFromServer = await getPostComments(postId);
-
-    return commentsFromServer;
+    return await getPostComments(postId);
   }),
 );
 
 export const addComment = createAsyncThunk(
-  'users/ADD',
+  'comments/ADD',
   (async (data: Omit<Comment, 'id'>) => {
-    const newComment = await createComment(data);
-
-    return newComment;
+    return await createComment(data);
   }),
 );
 
 export const removeComment = createAsyncThunk(
-  'users/DELETE',
+  'comments/DELETE',
   (async (commentId: number) => {
-    const commentToRemove = await deleteComment(commentId);
-
-    return commentToRemove;
+    return await deleteComment(commentId);
   }),
 );
 
@@ -53,14 +49,14 @@ export const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadComments.pending, (state) => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(loadComments.fulfilled, (state, { payload }) => {
-        state.status = 'idle';
+        state.status = Status.idle;
         state.comments = payload;
       })
       .addCase(loadComments.rejected, (state) => {
-        state.status = 'failed';
+        state.status = Status.failed;
         state.error = true;
       })
       .addCase(addComment.fulfilled, (state, { payload }) => {

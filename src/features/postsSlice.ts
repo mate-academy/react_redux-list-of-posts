@@ -1,26 +1,26 @@
+/* eslint-disable @typescript-eslint/return-await */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
+import { Status } from '../types/Status';
 
 export interface PostsState {
   posts: Post[];
-  status: 'idle' | 'loading' | 'failed';
+  status: Status;
   error: boolean,
 }
 
 const initialState: PostsState = {
   posts: [],
-  status: 'idle',
+  status: Status.idle,
   error: false,
 };
 
 export const loadPosts = createAsyncThunk(
   'posts/SET',
   (async (userId: number) => {
-    const postsFromServer = await getUserPosts(userId);
-
-    return postsFromServer;
+    return await getUserPosts(userId);
   }),
 );
 
@@ -35,14 +35,14 @@ export const postsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(loadPosts.pending, (state) => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = Status.idle;
         state.posts = action.payload;
       })
       .addCase(loadPosts.rejected, (state) => {
-        state.status = 'failed';
+        state.status = Status.failed;
         state.error = true;
       });
   },

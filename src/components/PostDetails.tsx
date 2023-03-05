@@ -8,6 +8,7 @@ import {
   removeComment,
   setComments,
 } from '../features/commentsSlice';
+import { Status } from '../types/Status';
 
 type Props = {
   post: Post;
@@ -21,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     status,
     error: hasError,
   } = useAppSelector(state => state.comments);
-  const loaded = status === 'idle';
+  const loaded = status === Status.idle;
 
   useEffect(() => {
     dispatch(loadComments(post.id));
@@ -59,13 +60,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -99,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {(loaded && !hasError && !visible) && (
           <button
             data-cy="WriteCommentButton"
             type="button"
