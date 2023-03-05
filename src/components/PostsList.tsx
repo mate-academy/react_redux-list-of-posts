@@ -2,11 +2,20 @@ import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as selectedPostAction } from '../features/selectedPost';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
+
+  const selectPost = (post: Post) => {
+    if (selectedPost === post) {
+      return dispatch(selectedPostAction.setSelectedPost(null));
+    }
+
+    return dispatch(selectedPostAction.setSelectedPost(post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -37,9 +46,7 @@ export const PostsList: React.FC = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(selectedPostAction.setSelectedPost(post));
-                  }}
+                  onClick={() => selectPost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

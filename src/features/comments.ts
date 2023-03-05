@@ -56,6 +56,7 @@ const commentsSlice = createSlice({
         ...state,
         comments: action.payload,
         loading: false,
+        error: '',
       };
     });
 
