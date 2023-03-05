@@ -55,15 +55,6 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateEmail(email)) {
-      setErrors(prev => ({
-        ...prev,
-        email: true,
-      }));
-
-      return;
-    }
-
     setErrors({
       name: !name,
       email: !email,
@@ -71,6 +62,15 @@ export const NewCommentForm: React.FC = () => {
     });
 
     if (!name || !email || !body || !selectedPost) {
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrors(prev => ({
+        ...prev,
+        email: true,
+      }));
+
       return;
     }
 
