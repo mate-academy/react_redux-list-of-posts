@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
   }, [post.id]);
 
-  const handlerDeleteComment = (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => {
     dispatch(remove(commentId));
 
     try {
@@ -87,7 +87,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handlerDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>

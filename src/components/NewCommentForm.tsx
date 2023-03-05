@@ -44,8 +44,25 @@ export const NewCommentForm: React.FC = () => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
+  const validateEmail = (value: string) => {
+    if (value.includes('@')) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!validateEmail(email)) {
+      setErrors(prev => ({
+        ...prev,
+        email: true,
+      }));
+
+      return;
+    }
 
     setErrors({
       name: !name,
