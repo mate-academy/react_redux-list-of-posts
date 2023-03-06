@@ -10,7 +10,7 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPostId,
   onPostSelected,
 }) => (
   <div data-cy="PostsList">
