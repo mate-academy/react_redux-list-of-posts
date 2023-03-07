@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { postComment } from '../app/thunks';
 
+// eslint-disable-next-line max-len
+const pattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
@@ -35,6 +38,11 @@ export const NewCommentForm: React.FC = () => {
     });
   };
 
+  const trimName = () => name.trim();
+  const trimEmail = () => email.trim();
+  const isEmailValid = () => pattern.test(email);
+  const trimBody = () => body.trim();
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -48,18 +56,20 @@ export const NewCommentForm: React.FC = () => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimName(),
+      email: !trimEmail() || !isEmailValid(),
+      body: !trimBody(),
     });
 
-    if (!name || !email || !body) {
+    if (!trimName()
+    || !trimEmail()
+    || !isEmailValid()
+    || !trimBody()) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await dispatch(
       postComment({
         name,
@@ -69,10 +79,8 @@ export const NewCommentForm: React.FC = () => {
       }),
     );
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
