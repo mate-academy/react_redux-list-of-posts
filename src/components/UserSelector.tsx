@@ -13,7 +13,7 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
 }) => {
   const { users } = useAppSelector(state => state.users);
-  const [expanded, setExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -21,12 +21,12 @@ export const UserSelector: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (!expanded) {
+    if (!isExpanded) {
       return;
     }
 
     const handleDocumentClick = () => {
-      setExpanded(false);
+      setIsExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -35,12 +35,12 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, [expanded]);
+  }, [isExpanded]);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': isExpanded })}
     >
       <div className="dropdown-trigger">
         <button
@@ -49,7 +49,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            setExpanded(current => !current);
+            setIsExpanded(current => !current);
           }}
         >
           <span>
