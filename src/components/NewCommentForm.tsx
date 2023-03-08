@@ -45,23 +45,19 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const validateEmail = (value: string) => {
-    if (value.includes('@')) {
-      return true;
-    }
-
-    return false;
+    return value.match(/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body || !selectedPost) {
+    if (!name.trim() || !email.trim() || !body.trim() || !selectedPost) {
       return;
     }
 

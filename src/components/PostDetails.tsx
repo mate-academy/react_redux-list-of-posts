@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
-// import { NewCommentForm } from './NewCommentForm';
-
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadComments, remove, setError } from '../features/commentsSlice';
+import { loadComments, remove } from '../features/commentsSlice';
 import { deleteComment } from '../api/comments';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -29,13 +27,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleDeleteComment = (commentId: number) => {
     dispatch(remove(commentId));
-
-    try {
-      deleteComment(commentId);
-    } catch {
-      dispatch(loadComments(post.id));
-      dispatch(setError(true));
-    }
+    deleteComment(commentId);
   };
 
   return (

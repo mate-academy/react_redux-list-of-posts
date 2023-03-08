@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch } from '../app/hooks';
 import { Post } from '../types/Post';
-import { set } from '../features/counter/selectedPostSlice';
+import { set } from '../features/selectedPostSlice';
 
 type Props = {
   posts: Post[],

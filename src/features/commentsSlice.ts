@@ -41,9 +41,6 @@ const commentsSlice = createSlice({
         comment.id !== action.payload
       ));
     },
-    setError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending, (state) => {
@@ -69,4 +66,4 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { remove, setError } = commentsSlice.actions;
+export const { set, remove } = commentsSlice.actions;

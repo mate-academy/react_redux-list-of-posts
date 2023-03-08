@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers } from '../features/counter/usersSlice';
-import { set } from '../features/counter/authorSlice';
+import { loadUsers } from '../features/usersSlice';
+import { set } from '../features/authorSlice';
 
 type Props = {
   value: User | null;
