@@ -17,9 +17,8 @@ Learn the implemented App and the example and reimplement it with Redux having t
 ## Useful links
 - [Why Redux Toolkit is How To Use Redux Today](https://redux.js.org/introduction/why-rtk-is-redux-today)
 - [Learn Modern Redux Livestream](https://redux.js.org/introduction/getting-started#learn-modern-redux-livestream)
-
 ## Instructions
 - Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
 - Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
 - This task does not have tests yet!
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://<your_account>.github.io/react_redux-list-of-posts/) and add it to the PR description.
+- Replace `<your_account>` with your Github username in the [DEMO LINK](https://oleksii-bieliaiev.github.io/react_redux-list-of-posts/) and add it to the PR description.
