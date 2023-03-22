@@ -4,56 +4,65 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
+import PostsList from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import UserSelector from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { getUsers } from './api/users';
+import { setUsers } from './features/users';
+import * as postsActions from './features/posts';
+import { actions as selectedPostActions } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    author,
+    posts: postsState,
+    selectedPost,
+  } = useAppSelector(state => state);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [hasUsersError, setUsersError] = useState(false);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const { loaded, hasError: hasPostsError, items: posts } = postsState;
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+  function loadUsersPosts(userId: number) {
+    dispatch(postsActions.initUserPosts(userId));
   }
+
+  // fetch users for dropdowns on first render
+  useEffect(() => {
+    getUsers()
+      .then(users => {
+        dispatch(setUsers(users));
+      })
+      .catch(() => {
+        setUsersError(true);
+      });
+  }, []);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostActions.setPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      loadUsersPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(postsActions.setItems([]));
     }
   }, [author?.id]);
 
+  const hasError = hasPostsError || hasUsersError;
+
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -83,11 +92,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -107,7 +112,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               )}
             </div>
           </div>
