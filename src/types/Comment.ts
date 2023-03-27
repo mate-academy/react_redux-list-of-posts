@@ -1,4 +1,4 @@
-export interface Comment {
+export interface IComment {
   id: number;
   postId: number;
   name: string;
@@ -6,4 +6,7 @@ export interface Comment {
   body: string;
 }
 
-export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+export type ICommentData = Pick<IComment, 'name' | 'email' | 'body'>;
+
+export type ICommentDataToServer =
+  Pick<IComment, 'name' | 'email' | 'body' | 'postId'>;
