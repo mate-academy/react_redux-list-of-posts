@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CommentData } from '../types/Comment';
+import * as commentsActions from '../features/commentSlice';
+import * as commentsApi from '../api/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { post } = useAppSelector(state => state.posts);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -35,13 +37,40 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const addComment = async (item: CommentData) => {
+    if (post === null) {
+      return;
+    }
+
+    try {
+      const newComment = await commentsApi.createComment({
+        name: item.name,
+        email: item.email,
+        body: item.body,
+        postId: post.id,
+      });
+
+      // setComments((currentComments) => [...currentComments, newComment]);
+      dispatch(commentsActions.addComment(newComment));
+
+      // setComments([...comments, newComment]);
+      // works wrong if we wrap `addComment` with `useCallback`
+      // because it takes the `comments` cached during the first render
+      // not the actual ones
+    } catch (error) {
+      // we show an error message in case of any error
+      // setError(true);
+      dispatch(commentsActions.changeError(true));
+    }
+  };
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -60,11 +89,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await addComment({ name, email, body });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues((current) => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
 
@@ -161,10 +190,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.body && (
-          <p
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+          <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
