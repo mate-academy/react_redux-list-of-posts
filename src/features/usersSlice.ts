@@ -26,7 +26,7 @@ export const usersSlice = createSlice({
     addUser: (state, action) => {
       const findUser = state.users.find((user) => user.id === action.payload);
 
-      if (findUser !== undefined) {
+      if (findUser) {
         state.user = findUser;
       }
     },

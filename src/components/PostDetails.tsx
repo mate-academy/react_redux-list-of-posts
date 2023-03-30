@@ -17,12 +17,6 @@ export const PostDetails: React.FC = () => {
   const { post } = useAppSelector(state => state.posts);
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // setComments((currentComments) =>
-    //   // eslint-disable-next-line implicit-arrow-linebreak
-    //   currentComments.filter((comment) => comment.id !== commentId));
-
     dispatch(commentsActions.removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);

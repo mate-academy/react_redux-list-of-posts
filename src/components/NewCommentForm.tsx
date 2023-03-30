@@ -38,7 +38,7 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const addComment = async (item: CommentData) => {
-    if (post === null) {
+    if (!post) {
       return;
     }
 
