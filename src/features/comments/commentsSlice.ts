@@ -75,7 +75,8 @@ const commentsSlider = createSlice({
     builder.addCase(
       deleteCommentAction.fulfilled,
       (state, action:PayloadAction<number>) => {
-        state.comments?.filter((el:Comment) => el.id !== action.payload);
+        state.comments = state.comments
+          ?.filter((el:Comment) => el.id !== action.payload);
       },
     );
     builder.addCase(deleteCommentAction.rejected, (state) => {

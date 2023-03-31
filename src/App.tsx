@@ -15,15 +15,15 @@ import {
   selectedPostAction,
 } from './features/posts/postsSlice';
 import { selecedUser } from './features/users/seletors';
-import { selectLoaded, selectorError } from './features/comments/selectors';
-import { selectorPosts } from './features/posts/selectors';
+import { selectorError } from './features/comments/selectors';
+import { selectorPosts, selectPostsLoad } from './features/posts/selectors';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const author = useAppSelector(selecedUser);
   const hasError = useAppSelector(selectorError);
   const posts = useAppSelector(selectorPosts);
-  const loaded = useAppSelector(selectLoaded);
+  const loaded = useAppSelector(selectPostsLoad);
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 

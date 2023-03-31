@@ -80,7 +80,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </p>
         )}
 
-        {!loaded && !hasError && comments.length && (
+        {!loaded && !hasError && comments.length ? (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -112,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               </article>
             ))}
           </>
-        )}
+        ) : <></>}
 
         {!loaded && !hasError && !visible && (
           <button
