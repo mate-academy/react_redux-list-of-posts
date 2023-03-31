@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -11,10 +9,14 @@ import {
   getCommentsAction,
   hiddeError,
   stopLoader,
-  addCommentAction,
   setCommentAction,
   deleteCommentAction,
 } from '../features/comments/commentsSlice';
+import {
+  selectComments,
+  selectLoaded,
+  selectorError,
+} from '../features/comments/selectors';
 
 type Props = {
   post: Post;
@@ -23,9 +25,9 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const loaded = useAppSelector(state => state.comments.loader);
-  const comments = useAppSelector(state => state.comments.comments);
-  const hasError = useAppSelector(state => state.comments.error);
+  const loaded = useAppSelector(selectLoaded);
+  const comments = useAppSelector(selectComments);
+  const hasError = useAppSelector(selectorError);
 
   function loadComments() {
     dispatch(stopLoader());
@@ -63,15 +65,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   */
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = await commentsApi.createComment({
+    dispatch(setCommentAction({
       name,
       email,
       body,
       postId: post.id,
-    });
-
-    dispatch(setCommentAction(newComment));
-    dispatch(addCommentAction(newComment));
+    }));
   };
 
   const deleteComment = async (commentId: number) => {

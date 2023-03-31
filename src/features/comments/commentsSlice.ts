@@ -15,8 +15,12 @@ const initialState: IPostState = {
   error: false,
 };
 
+const GET = 'comment/GET';
+const POST = 'comment/POST';
+const DELETE = 'comment/DELETE';
+
 export const getCommentsAction = createAsyncThunk(
-  'comments/GET',
+  GET,
   async (id:number) => {
     const result = await commentsApi.getPostComments(id);
 
@@ -25,8 +29,13 @@ export const getCommentsAction = createAsyncThunk(
 );
 
 export const setCommentAction = createAsyncThunk(
-  'comment/POST',
-  async (comment: Comment) => {
+  POST,
+  async (comment: {
+    name: string,
+    email: string,
+    body: string,
+    postId: number,
+  }) => {
     const result = commentsApi.createComment(comment);
 
     return result;
@@ -34,7 +43,7 @@ export const setCommentAction = createAsyncThunk(
 );
 
 export const deleteCommentAction = createAsyncThunk(
-  'comment/DELETE',
+  DELETE,
   async (id: number) => {
     commentsApi.deleteComment(id);
 
@@ -57,6 +66,9 @@ const commentsSlider = createSlice({
       state.error = true;
       state.loader = false;
     });
+    builder.addCase(setCommentAction.fulfilled, (state, action) => {
+      state.comments.push(action.payload);
+    });
     builder.addCase(setCommentAction.rejected, (state) => {
       state.error = true;
     });
@@ -77,16 +89,12 @@ const commentsSlider = createSlice({
     hiddeError: (state) => {
       state.error = false;
     },
-    addCommentAction: (state, action:PayloadAction<Comment>) => {
-      state.comments.push(action.payload);
-    },
   },
 });
 
 export const {
   stopLoader,
   hiddeError,
-  addCommentAction,
 } = commentsSlider.actions;
 
 export const commentsReducer = commentsSlider.reducer;

@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import { UserContext } from './UsersContext';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectUser } from '../features/users/usersSlice';
+import { selecedUser } from '../features/users/seletors';
 
 export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const selectedUser = useAppSelector(state => state.users.selectUser);
+  const selectedUser = useAppSelector(selecedUser);
   const dispatch = useAppDispatch();
   const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
