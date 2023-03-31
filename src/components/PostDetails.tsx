@@ -38,32 +38,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(loadComments, [post.id]);
 
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
   const addComment = async ({ name, email, body }: CommentData) => {
     dispatch(setCommentAction({
       name,
@@ -100,13 +74,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {!loaded && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {!loaded && !hasError && comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
