@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { UserContext } from './UsersContext';
-// import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/usersSlice';
 import * as postsActions from '../features/postsSlice';

@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-// import { Post } from '../types/Post';
 import * as postsActions from '../features/postsSlice';
 import * as commentsActions from '../features/commentSlice';
 import { Post } from '../types/Post';

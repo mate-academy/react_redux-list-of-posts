@@ -12,7 +12,10 @@ import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const {
-    posts, post: selectedPost, loaded, error,
+    posts,
+    post: selectedPost,
+    loaded,
+    error,
   } = useAppSelector((state) => state.posts);
   const { user } = useAppSelector((state) => state.users);
 

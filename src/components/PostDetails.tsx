@@ -9,10 +9,10 @@ import * as commentsActions from '../features/commentSlice';
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
-    comments: rComments,
-    loaded: rLoaded,
-    error: rError,
-    visible: rVisible,
+    comments,
+    loaded,
+    error,
+    visible,
   } = useAppSelector((state) => state.comments);
   const { post } = useAppSelector(state => state.posts);
 
@@ -33,25 +33,25 @@ export const PostDetails: React.FC = () => {
       )}
 
       <div className="block">
-        {!rLoaded && <Loader />}
+        {!loaded && <Loader />}
 
-        {rLoaded && rError && (
+        {loaded && error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {rLoaded && !rError && rComments.length === 0 && (
+        {loaded && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {rLoaded && !rError && rComments.length > 0 && (
+        {loaded && !error && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {rComments.map((comment) => (
+            {comments.map((comment) => (
               <article
                 className="message is-small"
                 key={comment.id}
@@ -81,7 +81,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {rLoaded && !rError && !rVisible && (
+        {loaded && !error && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -92,7 +92,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {rLoaded && !rError && rVisible && (
+        {loaded && !error && visible && (
           <NewCommentForm />
         )}
       </div>

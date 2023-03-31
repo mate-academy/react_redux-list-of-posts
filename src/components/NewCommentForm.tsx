@@ -9,7 +9,7 @@ export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { post } = useAppSelector(state => state.posts);
+  const { post } = useAppSelector((state) => state.posts);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -50,16 +50,8 @@ export const NewCommentForm: React.FC = () => {
         postId: post.id,
       });
 
-      // setComments((currentComments) => [...currentComments, newComment]);
       dispatch(commentsActions.addComment(newComment));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
     } catch (error) {
-      // we show an error message in case of any error
-      // setError(true);
       dispatch(commentsActions.changeError(true));
     }
   };
@@ -76,25 +68,28 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    setValues({
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
+    });
+
     setErrors({
       name: !name,
       email: !email,
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await addComment({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues((current) => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
