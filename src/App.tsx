@@ -14,13 +14,16 @@ import {
   getPostsAction,
   selectedPostAction,
 } from './features/posts/postsSlice';
+import { selecedUser } from './features/users/seletors';
+import { selectLoaded, selectorError } from './features/comments/selectors';
+import { selectorPosts } from './features/posts/selectors';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.users.selectUser);
-  const hasError = useAppSelector(state => state.posts.error);
-  const posts = useAppSelector(state => state.posts.listPosts);
-  const loaded = useAppSelector(state => state.posts.loader);
+  const author = useAppSelector(selecedUser);
+  const hasError = useAppSelector(selectorError);
+  const posts = useAppSelector(selectorPosts);
+  const loaded = useAppSelector(selectLoaded);
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
