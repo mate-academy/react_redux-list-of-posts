@@ -1,12 +1,15 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { FC, useState } from 'react';
+import { useAppDispatch } from '../app/hooks';
+import { addComment } from '../features/commentsSlice';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: FC<Props> = ({ postId }) => {
+  const dispatch = useAppDispatch();
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -40,8 +43,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -58,20 +61,33 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
+    const newPost = {
+      postId,
+      name,
+      email,
+      body,
+    };
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    dispatch(addComment(newPost));
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setValues((current) => ({ ...current, body: '' }));
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+    >
+      <div
+        className="field"
+        data-cy="NameField"
+      >
+        <label
+          className="label"
+          htmlFor="comment-author-name"
+        >
           Author Name
         </label>
 
@@ -101,14 +117,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.name && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p
+            className="help is-danger"
+            data-cy="ErrorMessage"
+          >
             Name is required
           </p>
         )}
       </div>
 
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
+      <div
+        className="field"
+        data-cy="EmailField"
+      >
+        <label
+          className="label"
+          htmlFor="comment-author-email"
+        >
           Author Email
         </label>
 
@@ -138,14 +163,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.email && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p
+            className="help is-danger"
+            data-cy="ErrorMessage"
+          >
             Email is required
           </p>
         )}
       </div>
 
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
+      <div
+        className="field"
+        data-cy="BodyField"
+      >
+        <label
+          className="label"
+          htmlFor="comment-body"
+        >
           Comment Text
         </label>
 
@@ -184,7 +218,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+          >
             Clear
           </button>
         </div>
