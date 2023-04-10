@@ -6,11 +6,10 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  loadComents,
-  addNewComents,
-  deleteComents,
-  actions as comentsActions,
-} from '../features/comentsSlice';
+  loadComments,
+  addNewComments,
+  deleteComments,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
@@ -23,17 +22,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const { items, loaded, hasError } = useAppSelector(state => state.comments);
 
   useEffect(() => {
-    setVisible(true);
-    dispatch(loadComents(post.id));
+    setVisible(false);
+
+    dispatch(loadComments(post.id));
   }, [post.id]);
 
   const addComment = async (newComment: CommentData) => {
-    dispatch(addNewComents({ ...newComment, postId: post.id }));
+    dispatch(addNewComments({ ...newComment, postId: post.id }));
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(comentsActions.delete(commentId));
-    dispatch(deleteComents(commentId));
+    dispatch(deleteComments(commentId));
   };
 
   return (

@@ -6,10 +6,6 @@ import { actions as authorAction } from '../features/authorSlice';
 import { getUsers } from '../api/users';
 
 export const UserSelector = () => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
@@ -17,7 +13,7 @@ export const UserSelector = () => {
   useEffect(() => {
     getUsers()
       .then(usersFromServer => dispatch(userActions.set(usersFromServer)));
-  }, []);
+  }, [dispatch]);
 
   const [expanded, setExpanded] = useState(false);
 
