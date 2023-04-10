@@ -8,9 +8,11 @@ import {
   increment,
   incrementByAmount,
   incrementAsync,
+} from './counterSlice';
+import {
   incrementIfOdd,
   selectCount,
-} from './counterSlice';
+} from './selectCount';
 
 export function Counter() {
   const count = useAppSelector(selectCount);
