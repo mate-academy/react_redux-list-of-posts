@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -29,19 +28,16 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(result => dispatch(postsAction.set(result)))
       .catch(() => dispatch(postsAction.setError(true)))
-      // We disable the spinner in any case
       .finally(() => dispatch(postsAction.setLoading(true)));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(selectedPostActions.setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      () => dispatch(postsAction.set([]));
+      dispatch(postsAction.set([]));
     }
   }, [author?.id]);
 
