@@ -15,7 +15,6 @@ const usersSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(loadApiUsers.fulfilled, (state, action) => {
-      // eslint-disable-next-line no-param-reassign
       state.items = action.payload;
     });
   },

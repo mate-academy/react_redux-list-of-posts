@@ -27,7 +27,6 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments: (state, action: PayloadAction<number>) => {
-      // eslint-disable-next-line no-param-reassign
       state.comments = state.comments.filter(
         comment => comment.id !== action.payload,
       );
@@ -36,22 +35,17 @@ const commentsSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(loadApiComments.pending, (state) => {
-      // eslint-disable-next-line no-param-reassign
       state.loaded = false;
     });
 
     builder.addCase(loadApiComments.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
-        // eslint-disable-next-line no-param-reassign
         state.comments = action.payload;
-        // eslint-disable-next-line no-param-reassign
         state.loaded = true;
       });
 
     builder.addCase(loadApiComments.rejected, (state) => {
-      // eslint-disable-next-line no-param-reassign
       state.hasError = true;
-      // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });
 
@@ -62,7 +56,6 @@ const commentsSlice = createSlice({
 
     builder.addCase(addNewComment.rejected,
       (state) => {
-        // eslint-disable-next-line no-param-reassign
         state.hasError = true;
       });
   },
