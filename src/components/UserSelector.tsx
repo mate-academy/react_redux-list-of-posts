@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+// eslint-disable-next-line import/extensions
 import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
@@ -10,7 +11,7 @@ export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const handleDocumentClick = () => {
-    setExpanded(false);
+    setExpanded(state => !state);
   };
 
   useEffect(() => {
