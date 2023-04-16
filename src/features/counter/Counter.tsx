@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import styles from './Counter.module.css';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
