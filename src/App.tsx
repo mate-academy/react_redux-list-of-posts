@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -21,9 +21,9 @@ export const App: React.FC = () => {
 
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
-  const setSelectedPost = (post: Post | null) => {
+  const setSelectedPost = useCallback((post: Post | null) => {
     dispatch(setPost(post));
-  };
+  }, [items]);
 
   useEffect(() => {
     dispatch(loadApiUsers());

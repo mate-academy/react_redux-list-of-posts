@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
@@ -16,7 +15,10 @@ const usersSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(loadApiUsers.fulfilled, (state, action) => {
-      state.items = action.payload;
+      return {
+        ...state,
+        items: action.payload,
+      };
     });
   },
 });

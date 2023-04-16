@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
@@ -22,23 +21,35 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.items = action.payload;
+      return {
+        ...state,
+        items: action.payload,
+      };
     },
   },
   extraReducers: (builder) => {
     builder.addCase(loadApiPosts.pending, (state) => {
-      state.loaded = false;
+      return {
+        ...state,
+        loaded: false,
+      };
     });
 
     builder.addCase(loadApiPosts.fulfilled,
       (state, action: PayloadAction<Post[]>) => {
-        state.items = action.payload;
-        state.loaded = true;
+        return {
+          ...state,
+          items: action.payload,
+          loaded: true,
+        };
       });
 
     builder.addCase(loadApiPosts.rejected, (state) => {
-      state.loaded = true;
-      state.hasError = true;
+      return {
+        ...state,
+        loaded: true,
+        hasError: true,
+      };
     });
   },
 });

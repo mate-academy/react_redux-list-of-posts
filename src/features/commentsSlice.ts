@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
@@ -27,41 +26,59 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setComments: (state, action: PayloadAction<number>) => {
-      state.comments = state.comments.filter(
-        comment => comment.id !== action.payload,
-      );
+    removeComments: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        comments: state.comments.filter(
+          comment => comment.id !== action.payload,
+        ),
+      };
     },
   },
 
   extraReducers: (builder) => {
     builder.addCase(loadApiComments.pending, (state) => {
-      state.loaded = false;
+      return {
+        ...state,
+        loaded: true,
+      };
     });
 
     builder.addCase(loadApiComments.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
-        state.comments = action.payload;
-        state.loaded = true;
+        return {
+          ...state,
+          comments: action.payload,
+          loaded: true,
+        };
       });
 
     builder.addCase(loadApiComments.rejected, (state) => {
-      state.hasError = true;
-      state.loaded = true;
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
     });
 
     builder.addCase(addNewComment.fulfilled,
       (state, action: PayloadAction<Comment>) => {
-        state.comments.push(action.payload);
+        return {
+          ...state,
+          comments: [...state.comments, action.payload],
+        };
       });
 
     builder.addCase(addNewComment.rejected,
       (state) => {
-        state.hasError = true;
+        return {
+          ...state,
+          hasError: true,
+        };
       });
   },
 
 });
 
-export const { setComments } = commentsSlice.actions;
+export const { removeComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
