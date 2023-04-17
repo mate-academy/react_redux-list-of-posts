@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { UserContext } from './UsersContext';
 import { useAppDispatch, useAppSelector } from '../app/hooks';

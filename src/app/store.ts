@@ -5,12 +5,15 @@ import counterReducer from '../features/counter/counterSlice';
 import authorReducer from '../features/author/authorSlice';
 // eslint-disable-next-line import/no-cycle
 import postsReducer from '../features/posts/postsSlice';
+// eslint-disable-next-line import/no-cycle
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     author: authorReducer,
     post: postsReducer,
+    comments: commentsReducer,
   },
 });
 

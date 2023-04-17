@@ -9,17 +9,13 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
 import { useAppSelector, useAppDispatch } from './app/hooks';
 import { currentAuthor } from './features/author/authorSlice';
 import {
   currentPost,
   allPost,
-  setSelectedPost,
   setPosts,
-  resetSelectedPost,
 } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {

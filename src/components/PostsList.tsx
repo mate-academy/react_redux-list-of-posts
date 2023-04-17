@@ -1,6 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
-import { Post } from '../types/Post';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import {
   currentPost,
@@ -14,7 +12,7 @@ export function PostsList() {
   const dispatch = useAppDispatch();
 
   return (
-  <div data-cy="PostsList">
+    <div data-cy="PostsList">
       <p className="title">Posts:</p>
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
@@ -42,7 +40,9 @@ export function PostsList() {
                     },
                   )}
                   onClick={() => {
-                    const postResult =  post.id === currentSelectedPost?.id ? null : post;
+                    // eslint-disable-next-line max-len
+                    const postResult = post.id === currentSelectedPost?.id ? null : post;
+
                     dispatch(setSelectedPost(postResult));
                   }}
                 >

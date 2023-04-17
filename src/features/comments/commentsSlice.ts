@@ -1,24 +1,42 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import { RootState, AppThunk } from '../../app/store';
+import { RootState } from '../../app/store';
+import { Comment } from '../../types/Comment';
 
-type CommentsState = {
-  items: Comment[],
-  loaded: boolean,
-  hasError: boolean,
-};
+export interface Comments {
+  items: Comment[];
+}
 
-const initialCommentsState: CommentsState = {
+const initialState: Comments = {
   items: [],
-  loaded: false,
-  hasError: false,
 };
 
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    addComments: (state, action: PayloadAction<Comment[]>) => {
+      return {
+        ...state,
+        items: action.payload,
+      };
+    },
+    deleteCommentById: (state, action: PayloadAction<number>) => {
+      const filteredItems = state.items.filter(i => i.id !== action.payload);
+
+      return {
+        ...state,
+        items: filteredItems,
+      };
+    },
+  },
 });
 
-export default commentsSlice;
+export default commentsSlice.reducer;
+export const {
+  addComments,
+  deleteCommentById,
+} = commentsSlice.actions;
+
+export const allComments = (state: RootState) => state.comments.items;
