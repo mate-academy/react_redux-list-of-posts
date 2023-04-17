@@ -6,10 +6,14 @@ import { Comment } from '../../types/Comment';
 
 export interface Comments {
   items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: Comments = {
   items: [],
+  loaded: false,
+  hasError: false,
 };
 
 const commentsSlice = createSlice({
@@ -30,6 +34,18 @@ const commentsSlice = createSlice({
         items: filteredItems,
       };
     },
+    setIsLoaded: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        loaded: action.payload,
+      };
+    },
+    setHasError: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        hasError: action.payload,
+      };
+    },
   },
 });
 
@@ -37,6 +53,10 @@ export default commentsSlice.reducer;
 export const {
   addComments,
   deleteCommentById,
+  setIsLoaded,
+  setHasError,
 } = commentsSlice.actions;
 
 export const allComments = (state: RootState) => state.comments.items;
+export const isLoaded = (state: RootState) => state.comments.loaded;
+export const hasCommentsError = (state: RootState) => state.comments.hasError;

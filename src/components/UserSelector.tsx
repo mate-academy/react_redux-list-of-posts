@@ -1,10 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+// import { UserContext } from './UsersContext';
+import { getUsers } from '../api/users';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   setSelectedAuthor,
   currentAuthor,
+  allUsers,
+  setAllUsers,
 } from '../features/author/authorSlice';
 
 export function UserSelector() {
@@ -12,11 +15,16 @@ export function UserSelector() {
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const author = useAppSelector(currentAuthor);
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
+  const users = useAppSelector(allUsers);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    getUsers().then(res => {
+      dispatch(setAllUsers(res));
+    });
+
     if (!expanded) {
       return;
     }

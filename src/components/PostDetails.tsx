@@ -8,7 +8,15 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 // eslint-disable-next-line max-len
-import { addComments, deleteCommentById, allComments } from '../features/comments/commentsSlice';
+import {
+  addComments,
+  deleteCommentById,
+  allComments,
+  isLoaded,
+  hasCommentsError,
+  setIsLoaded,
+  setHasError,
+} from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;
@@ -17,23 +25,28 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
   const comments = useAppSelector(allComments);
+  const loaded = useAppSelector(isLoaded);
+
+  const hasError = useAppSelector(hasCommentsError);
 
   // const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    // setLoaded(false);
+    // setError(false);
+    dispatch(setIsLoaded(false));
+    dispatch(setHasError(false));
     setVisible(false);
 
     commentsApi.getPostComments(post.id)
       .then(res => {
         dispatch(addComments(res));
       }) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .catch(() => dispatch(setHasError(true))) // show an error when something went wrong
+      .finally(() => dispatch(setIsLoaded(true))); // hide the spinner
   }
 
   useEffect(loadComments, [post.id]);
@@ -84,7 +97,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setHasError(true));
     }
   };
 
