@@ -9,7 +9,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Counter } from './features/counter/Counter';
 import { useAppSelector, useAppDispatch } from './app/hooks';
 import { currentAuthor } from './features/author/authorSlice';
 import {
@@ -55,9 +54,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
