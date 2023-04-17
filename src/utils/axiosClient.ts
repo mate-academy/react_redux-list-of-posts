@@ -14,13 +14,13 @@ export const client = {
     return response.data;
   },
 
-  async post<T>(url: string, data: any) {
+  async post<T>(url: string, data: number) {
     const response = await instance.post<T>(url, data);
 
     return response.data;
   },
 
-  async patch<T>(url: string, data: any) {
+  async patch<T>(url: string, data: number) {
     const response = await instance.patch<T>(url, data);
 
     return response.data;

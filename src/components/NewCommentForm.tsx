@@ -1,38 +1,25 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  actions as newCommentFormActions,
+} from '../features/newCommentFormSlice';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const {
+    submitting,
+    errors,
+    values,
+  } = useAppSelector((state) => state.NewCommentForm);
+  const dispatch = useAppDispatch();
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    dispatch(newCommentFormActions.clear());
   };
 
   const handleChange = (
@@ -40,32 +27,31 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(newCommentFormActions.setValues({ ...values, [field]: value }));
+    dispatch(newCommentFormActions.setErrors({ ...errors, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
+    const { name, email, body } = values;
+
+    dispatch(newCommentFormActions.setErrors({
       name: !name,
       email: !email,
       body: !body,
-    });
+    }));
 
     if (!name || !email || !body) {
       return;
     }
 
-    setSubmitting(true);
+    dispatch(newCommentFormActions.setSubmitting(true));
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(newCommentFormActions.setSubmitting(false));
+    dispatch(newCommentFormActions.setValues({ ...values, body: '' }));
   };
 
   return (
@@ -82,7 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
-            value={name}
+            value={values.name}
             onChange={handleChange}
           />
 
@@ -119,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
+            value={values.email}
             onChange={handleChange}
           />
 
@@ -155,7 +141,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
+            value={values.body}
             onChange={handleChange}
           />
         </div>
@@ -184,7 +170,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+          >
             Clear
           </button>
         </div>
