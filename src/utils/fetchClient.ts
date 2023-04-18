@@ -2,6 +2,8 @@
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
+// для емуляції затримки в запиті, щоб побачити, як працює loader
+
 function wait(delay: number) {
   return new Promise(resolve => {
     setTimeout(resolve, delay);
@@ -11,6 +13,7 @@ function wait(delay: number) {
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
+// відправлення запиту на сервер з вказаною URL-адресою та методом GET
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
@@ -31,6 +34,8 @@ function request<T>(
     .then(() => fetch(BASE_URL + url, options))
     .then(response => response.json());
 }
+
+// функції повертають обіцянку, що повертає дані, отримані від сервера у форматі JSON
 
 export const client = {
   get: <T>(url: string) => request<T>(url),
