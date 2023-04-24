@@ -9,12 +9,14 @@ export const usersAsync = createAsyncThunk('users/get', () => {
 
 type UsersState = {
   users: User[];
+  selectedUser: User | null;
   loading: boolean;
   error: string;
 };
 
 const initialState: UsersState = {
   users: [],
+  selectedUser: null,
   loading: false,
   error: '',
 };
@@ -34,6 +36,9 @@ const usersSlice = createSlice({
     },
     clear: (state) => {
       state.users = [];
+    },
+    selectedUser: (state, action: PayloadAction<User | null>) => {
+      state.selectedUser = action.payload;
     },
   },
   extraReducers: (builder) => {

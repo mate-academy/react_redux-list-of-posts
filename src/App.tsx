@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.posts);
   const loaded = useAppSelector(state => state.posts.loading);
   const hasError = useAppSelector(state => state.posts.error);
-  const author = useAppSelector(state => state.author.author);
+  const author = useAppSelector(state => state.users.selectedUser);
   const selectedPost = useAppSelector(state => state.posts.selectedPost);
 
   function loadUserPosts(userId: number) {

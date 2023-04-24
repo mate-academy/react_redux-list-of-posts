@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { actions as authorActions } from '../features/authorSlice/Author';
+import { actions as authorActions } from '../features/users/UsersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
   const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.author.author);
+  const selectedUser = useAppSelector(state => state.users.selectedUser);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    console.log(2)
-    
-    console.log(3)
-    const handleDocumentClick = () => {
-      if (!expanded) {
-        return;
-      }
-      console.log('click')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDocumentClick = useRef((e: any) => {
+    if (!e.target.closest('.dropdown')) {
       setExpanded(false);
-    };
-    console.log(4)
-    document.addEventListener('click', handleDocumentClick);
+    }
+  });
+
+  useEffect(() => {
+    if (!expanded) {
+      return;
+    }
+
+    document.addEventListener('click', handleDocumentClick.current);
 
     // eslint-disable-next-line consistent-return
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('click', handleDocumentClick.current);
     };
   }, [expanded]);
 
@@ -33,13 +33,6 @@ export const UserSelector: React.FC = () => {
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': expanded })}
-    //   tabIndex={0}
-    //   onBlur={
-    //     () => {
-    //       console.log(2)
-    //       setExpanded(false);
-    //     }
-    //  }
     >
       <div className="dropdown-trigger">
         <button
@@ -47,9 +40,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={(e) => {
-            e.preventDefault()
-            console.log(1)
+          onClick={() => {
             setExpanded(current => !current);
           }}
         >
@@ -70,8 +61,8 @@ export const UserSelector: React.FC = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                console.log(user, 5)
-                dispatch(authorActions.set(user));
+                dispatch(authorActions.selectedUser(user));
+                setExpanded(current => !current);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
