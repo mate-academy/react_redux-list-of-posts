@@ -1,9 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
-import { createComment, deleteComment, getPostComments } from '../api/comments';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Comment } from '../../types/Comment';
+import { addCommentAction, fetchComments, removeComment } from './thunks';
 
 export interface CommentsState {
   items: Comment[];
@@ -16,35 +14,6 @@ const initialState: CommentsState = {
   loaded: false,
   hasError: false,
 };
-
-export const fetchComments = createAsyncThunk(
-  'comments/fetch',
-  (postId: number) => getPostComments(postId),
-);
-
-export const addCommentAction = createAsyncThunk(
-  'comments/add',
-  ({
-    name,
-    email,
-    body,
-    postId,
-  }: Omit<Comment, 'id'>) => createComment({
-    name,
-    email,
-    body,
-    postId,
-  }),
-);
-
-export const removeComment = createAsyncThunk(
-  'comments/delete',
-  (id: number) => {
-    deleteComment(id);
-
-    return id;
-  },
-);
 
 export const commentsSlice = createSlice({
   name: 'comments',
@@ -82,7 +51,5 @@ export const commentsSlice = createSlice({
       );
   },
 });
-
-export const selectCommentsState = (state: RootState) => state.comments;
 
 export default commentsSlice.reducer;

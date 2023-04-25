@@ -1,10 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Status } from '../types/Status';
-import { User } from '../types/User';
-import { getUsers } from '../api/users';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
+import { createSlice } from '@reduxjs/toolkit';
+import { Status } from '../../types/Status';
+import { User } from '../../types/User';
+import { fetchUsers } from './thunks';
 
 export interface UsersState {
   items: User[];
@@ -15,11 +13,6 @@ const initialState: UsersState = {
   items: [],
   status: Status.pending,
 };
-
-export const fetchUsers = createAsyncThunk(
-  'users/fetch',
-  () => getUsers(),
-);
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -39,7 +32,5 @@ export const usersSlice = createSlice({
       });
   },
 });
-
-export const selectUsers = (state: RootState) => state.users.items;
 
 export default usersSlice.reducer;

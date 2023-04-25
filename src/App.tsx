@@ -9,16 +9,16 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { selectAuthor } from './features/authorSlice';
+import { selectAuthor } from './features/author/selectors';
 import {
-  clear as clearPosts,
-  fetchPosts,
+  clearPosts,
+  setSelected as setSelectedPost,
+} from './features/posts/slice';
+import { fetchPosts } from './features/posts/thunks';
+import {
   selectPostsState,
-} from './features/postsSlice';
-import {
   selectSelectedPost,
-  set as setSelectedPost,
-} from './features/selectedPost';
+} from './features/posts/selectors';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
