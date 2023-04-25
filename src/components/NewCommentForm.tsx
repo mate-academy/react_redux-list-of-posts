@@ -8,6 +8,11 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [touched, setToched] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
   const [errors, setErrors] = useState({
     name: false,
@@ -42,6 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));
+    setToched(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -68,6 +74,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     // We keep the entered name and email
   };
 
+  const errorName = touched.name || errors.name;
+  const errorEmail = touched.email || errors.email;
+  const errorBody = touched.body || errors.body;
+
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -81,9 +91,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', { 'is-danger': errorName })}
             value={name}
             onChange={handleChange}
+            onBlur={() => {
+              if (!name.length) {
+                setToched(current => ({
+                  ...current,
+                  name: true,
+                }));
+              }
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -100,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.name && (
+        {errorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -118,9 +136,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', { 'is-danger': errorEmail })}
             value={email}
             onChange={handleChange}
+            onBlur={() => {
+              if (!email.length) {
+                setToched(current => ({
+                  ...current,
+                  email: true,
+                }));
+              }
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -137,7 +163,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.email && (
+        {errorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -154,13 +180,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', { 'is-danger': errorBody })}
             value={body}
             onChange={handleChange}
+            onBlur={() => {
+              if (!body.length) {
+                setToched(current => ({
+                  ...current,
+                  body: true,
+                }));
+              }
+            }}
           />
         </div>
 
-        {errors.body && (
+        {errorBody && (
           <p
             className="help is-danger"
             data-cy="ErrorMessage"
