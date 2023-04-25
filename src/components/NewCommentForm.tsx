@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(false);
   const [touched, setToched] = useState({
     name: false,
     email: false,
@@ -77,6 +78,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const errorName = touched.name || errors.name;
   const errorEmail = touched.email || errors.email;
   const errorBody = touched.body || errors.body;
+
+  const validateFields = (text: string) => {
+    // eslint-disable-next-line max-len
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    return !pattern.test(text);
+  };
+
+  useEffect(() => {
+    if (email.length) {
+      setIsValidEmail(validateFields(email));
+    }
+  }, [touched]);
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
@@ -166,6 +180,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         {errorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
+          </p>
+        )}
+
+        {isValidEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is not valid
           </p>
         )}
       </div>
