@@ -9,4 +9,22 @@ module.exports = {
       assert: "either",
     }],
   },
+  overrides: [
+    {
+      files: ['src/features/comments/commentsSlice.ts'], 
+      rules: { 'no-param-reassign': ['error', { props: false }] }, 
+    },
+    {
+      files: ['src/features/user/userSlice.ts'], 
+      rules: { 'no-param-reassign': ['error', { props: false }] }, 
+    },
+    {
+      files: ['src/features/selectedPost/selectedPostSlice.ts'], 
+      rules: { 'no-param-reassign': ['error', { props: false }] }, 
+    },
+    {
+      files: ['src/features/posts/postsSlice.ts'], 
+      rules: { 'no-param-reassign': ['error', { props: false }] }, 
+    },
+  ],
 };
