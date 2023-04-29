@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentsActions from '../features/comments/commentsSlice';
+import { useAppSelector } from '../app/hooks';
+import {
+  useGetCommentsQuery,
+  useClearCommentMutation,
+} from '../features/comments/commentsApi';
 
 export const PostDetails: React.FC = () => {
-  const { selectedPost: post } = useAppSelector(state => state.selectedPost);
-  const {
-    items: comments,
-    loaded,
-    hasError,
-  } = useAppSelector(state => state.comments);
-  const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
+  const { selectedPost: post } = useAppSelector(state => state.selectedPost);
+  const [clearComment] = useClearCommentMutation();
+
+  const {
+    data: comments = [],
+    isLoading,
+    isError,
+  } = useGetCommentsQuery(post?.id || 0);
 
   useEffect(() => {
-    dispatch(commentsActions.initComments(post?.id || 0));
     setVisible(false);
   }, [post?.id]);
 
@@ -33,35 +35,35 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loaded && (
+        {isLoading && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {isError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!isLoading && !isError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!isLoading && !isError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {comments.map(({ id, name, email, body }) => (
               <article
                 className="message is-small"
-                key={comment.id}
+                key={id}
                 data-cy="Comment"
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
                   </a>
 
                   <button
@@ -70,7 +72,9 @@ export const PostDetails: React.FC = () => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={
-                      () => dispatch(commentsActions.clearComment(comment.id))
+                      () => {
+                        clearComment(id);
+                      }
                     }
                   >
                     delete button
@@ -78,14 +82,14 @@ export const PostDetails: React.FC = () => {
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
+                  {body}
                 </div>
               </article>
             ))}
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!isLoading && !isError && !visible && comments && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -96,7 +100,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {!isLoading && !isError && visible && (
           <NewCommentForm />
         )}
       </div>

@@ -1,13 +1,12 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import * as commentsActions from '../features/comments/commentsSlice';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../app/hooks';
+import { useAddCommentMutation } from '../features/comments/commentsApi';
 
 export const NewCommentForm: React.FC = () => {
-  const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-
   const [submitting, setSubmitting] = useState(false);
+  const [addComment] = useAddCommentMutation();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,12 +58,12 @@ export const NewCommentForm: React.FC = () => {
 
     setSubmitting(true);
 
-    await dispatch(commentsActions.addComment({
+    await addComment({
       name,
+      postId: selectedPost?.id || 0,
       email,
       body,
-      postId: selectedPost?.id || 0,
-    }));
+    }).unwrap();
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
