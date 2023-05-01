@@ -4,7 +4,7 @@ import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
 type UsersState = {
-  users: User[]
+  users: User[];
 };
 
 const initialState: UsersState = {
@@ -17,11 +17,10 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(init.fulfilled, (state, action: PayloadAction<User[]>) => {
+  extraReducers: builder => builder
+    .addCase(init.fulfilled, (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
-    });
-  },
+    }),
 });
 
 export default usersSlice.reducer;

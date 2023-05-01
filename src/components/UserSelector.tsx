@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { init } from '../slices/users';
 import * as authorActions from '../slices/author';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
@@ -31,6 +32,10 @@ export const UserSelector: React.FC = () => {
     };
   }, [expanded]);
 
+  const setUser = (user: User) => {
+    dispatch(authorActions.set(user));
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -42,9 +47,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={() => setExpanded(current => !current)}
         >
           <span>
             {author?.name || 'Choose a user'}
@@ -62,10 +65,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                // onChange(user);
-                dispatch(authorActions.set(user));
-              }}
+              onClick={() => setUser(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}

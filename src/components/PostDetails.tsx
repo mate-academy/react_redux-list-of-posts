@@ -3,6 +3,7 @@ import { Loader } from './Loader';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getCommentsByPostId, remove } from '../slices/comments';
 import { NewCommentForm } from './NewCommentForm';
+import { Comment } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
@@ -18,6 +19,14 @@ export const PostDetails: React.FC = () => {
     dispatch(getCommentsByPostId(selectedPost?.id || 0));
     setVisible(false);
   }, [selectedPost]);
+
+  const makeFormVisible = () => {
+    setVisible(true);
+  };
+
+  const removeComment = (comment: Comment) => {
+    dispatch(remove(comment));
+  };
 
   if (loaded && !visible) {
     return (
@@ -129,7 +138,7 @@ export const PostDetails: React.FC = () => {
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={() => dispatch(remove(comment))}
+                  onClick={() => removeComment(comment)}
                 >
                   delete button
                 </button>
@@ -147,7 +156,7 @@ export const PostDetails: React.FC = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={makeFormVisible}
           >
             Write a comment
           </button>

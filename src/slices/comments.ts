@@ -38,43 +38,42 @@ const commentSlice = createSlice({
       deleteComment(action.payload.id);
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(getCommentsByPostId.pending, (state) => {
+  extraReducers: builder => builder
+    .addCase(getCommentsByPostId.pending, (state) => {
       state.loaded = true;
       state.hasError = false;
-    });
+    })
 
-    builder.addCase(
+    .addCase(
       getCommentsByPostId.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
         state.comments = action.payload;
         state.loaded = false;
       },
-    );
+    )
 
-    builder.addCase(getCommentsByPostId.rejected, (state) => {
+    .addCase(getCommentsByPostId.rejected, (state) => {
       state.hasError = true;
       state.loaded = false;
-    });
+    })
 
-    builder.addCase(createNewComment.pending, (state) => {
+    .addCase(createNewComment.pending, (state) => {
       state.loaded = true;
       state.hasError = false;
-    });
+    })
 
-    builder.addCase(
+    .addCase(
       createNewComment.fulfilled,
       (state, action: PayloadAction<Comment>) => {
         state.comments = [...state.comments, action.payload];
         state.loaded = false;
       },
-    );
+    )
 
-    builder.addCase(createNewComment.rejected, (state) => {
+    .addCase(createNewComment.rejected, (state) => {
       state.hasError = true;
       state.loaded = false;
-    });
-  },
+    }),
 });
 
 export const { remove } = commentSlice.actions;

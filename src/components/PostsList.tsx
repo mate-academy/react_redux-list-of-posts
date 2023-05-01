@@ -5,6 +5,7 @@ import * as selectedPostActions from '../slices/selectedPost';
 import { getPostsByUserId } from '../slices/posts';
 import { User } from '../types/User';
 import { Loader } from './Loader';
+import { Post } from '../types/Post';
 
 type Props = {
   author: User,
@@ -18,6 +19,16 @@ export const PostsList: React.FC<Props> = ({ author }) => {
   useEffect(() => {
     dispatch(getPostsByUserId(author?.id || 0));
   }, [author]);
+
+  const setSelectedPost = (post: Post) => {
+    dispatch(
+      selectedPostActions.setSelectedPost(
+        post.id === selectedPost?.id
+          ? null
+          : post,
+      ),
+    );
+  };
 
   if (loading) {
     return <Loader />;
@@ -71,15 +82,7 @@ export const PostsList: React.FC<Props> = ({ author }) => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(
-                      selectedPostActions.setSelectedPost(
-                        post.id === selectedPost?.id
-                          ? null
-                          : post,
-                      ),
-                    );
-                  }}
+                  onClick={() => setSelectedPost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
