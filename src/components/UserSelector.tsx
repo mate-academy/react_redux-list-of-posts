@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initUserFromAPI } from '../features/users/usersReduser';
-import { actionAutor } from '../features/autor/autorReduser';
+import { initUserFromAPI } from '../features/users/usersReducer';
+import { actionAuthor } from '../features/author/authorReducer';
 
 export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(store => store.users);
-  const { autor } = useAppSelector(state => state.selectedAutor);
+  const { author } = useAppSelector(state => state.selectedAuthor);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const UserSelector: React.FC = () => {
           }}
         >
           <span>
-            {autor?.name || 'Choose a user'}
+            {author?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -64,10 +64,10 @@ export const UserSelector: React.FC = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(actionAutor.setAutor(user));
+                dispatch(actionAuthor.setAuthor(user));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === autor?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   commentsActions,
   initComments,
-} from '../features/comments/commentsReduser';
+} from '../features/comments/commentsReducer';
 
 export const PostDetails: React.FC = () => {
   const { comments, loading, error } = useAppSelector(state => state.comments);

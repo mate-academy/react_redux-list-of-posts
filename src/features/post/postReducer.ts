@@ -20,5 +20,5 @@ const postSlice = createSlice({
   },
 });
 
-export const postReduser = postSlice.reducer;
+export const postReducer = postSlice.reducer;
 export const actionPost = postSlice.actions;

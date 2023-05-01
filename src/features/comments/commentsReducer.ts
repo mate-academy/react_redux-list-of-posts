@@ -82,5 +82,5 @@ const commentsSlice = createSlice({
   },
 });
 
-export const commentsReduser = commentsSlice.reducer;
+export const commentsReducer = commentsSlice.reducer;
 export const commentsActions = commentsSlice.actions;

@@ -11,7 +11,7 @@ export const initUserFromAPI = createAsyncThunk(
   () => getUsers(),
 );
 
-const usersSlise = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
@@ -25,4 +25,4 @@ const usersSlise = createSlice({
   },
 });
 
-export const usersReduser = usersSlise.reducer;
+export const usersReducer = usersSlice.reducer;

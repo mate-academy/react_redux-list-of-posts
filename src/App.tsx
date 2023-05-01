@@ -9,22 +9,22 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { initPosts } from './features/posts/postsReduser';
-import { actionPost } from './features/post/postReduser';
+import { initPosts } from './features/posts/postsReducer';
+import { actionPost } from './features/post/postReducer';
 
 export const App: React.FC = () => {
   const { posts, loading, error } = useAppSelector(state => state.posts);
-  const { autor } = useAppSelector(state => state.selectedAutor);
+  const { author } = useAppSelector(state => state.selectedAuthor);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(actionPost.setpost(null));
 
-    if (autor) {
-      dispatch(initPosts(autor.id));
+    if (author) {
+      dispatch(initPosts(author.id));
     }
-  }, [autor?.id]);
+  }, [author?.id]);
 
   return (
     <main className="section">
@@ -37,17 +37,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!autor && (
+                {!author && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {autor && loading && (
+                {author && loading && (
                   <Loader />
                 )}
 
-                {autor && !loading && error && (
+                {author && !loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -56,13 +56,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {autor && !loading && !error && posts.length === 0 && (
+                {author && !loading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {autor && !loading && !error && posts.length > 0 && (
+                {author && !loading && !error && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>

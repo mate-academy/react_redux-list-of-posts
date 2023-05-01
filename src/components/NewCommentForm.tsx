@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addCommentToState } from '../features/comments/commentsReduser';
+import { addCommentToState } from '../features/comments/commentsReducer';
 
 export const NewCommentForm: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);

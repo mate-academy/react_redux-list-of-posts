@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actionPost } from '../features/post/postReduser';
+import { actionPost } from '../features/post/postReducer';
 
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
