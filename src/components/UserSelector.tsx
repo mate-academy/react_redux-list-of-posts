@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { init } from '../slices/users';
+import { fetchUsers } from '../slices/users';
 import * as authorActions from '../slices/author';
 import { User } from '../types/User';
 
@@ -12,7 +12,7 @@ export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    dispatch(init());
+    dispatch(fetchUsers());
   }, []);
 
   useEffect(() => {

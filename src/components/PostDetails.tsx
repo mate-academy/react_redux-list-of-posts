@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getCommentsByPostId, remove } from '../slices/comments';
+import { deleteCommentById, getCommentsByPostId } from '../slices/comments';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 
@@ -10,7 +10,7 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
     comments,
-    loaded,
+    isLoading: loaded,
     hasError,
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
@@ -25,7 +25,7 @@ export const PostDetails: React.FC = () => {
   };
 
   const removeComment = (comment: Comment) => {
-    dispatch(remove(comment));
+    dispatch(deleteCommentById(comment.id));
   };
 
   if (loaded && !visible) {
@@ -93,7 +93,7 @@ export const PostDetails: React.FC = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={makeFormVisible}
           >
             Write a comment
           </button>

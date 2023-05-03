@@ -5,7 +5,7 @@ import { createNewComment } from '../slices/comments';
 
 export const NewCommentForm: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { loaded } = useAppSelector(state => state.comments);
+  const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
@@ -56,7 +56,9 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    dispatch(createNewComment({
+    setSubmitting(true);
+
+    await dispatch(createNewComment({
       name,
       email,
       body,
@@ -67,6 +69,8 @@ export const NewCommentForm: React.FC = () => {
       ...state,
       body: '',
     }));
+
+    setSubmitting(false);
   };
 
   return (
@@ -176,7 +180,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': loaded,
+              'is-loading': submitting,
             })}
           >
             Add

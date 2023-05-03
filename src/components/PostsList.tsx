@@ -13,7 +13,7 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ author }) => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const { posts, isLoading, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -30,11 +30,11 @@ export const PostsList: React.FC<Props> = ({ author }) => {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  if (error) {
+  if (hasError) {
     return (
       <div
         className="notification is-danger"

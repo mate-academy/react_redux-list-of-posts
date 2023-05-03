@@ -6,13 +6,13 @@ import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 type CommentsState = {
   comments: Comment[],
-  loaded: boolean,
+  isLoading: boolean,
   hasError: boolean,
 };
 
 const initialState: CommentsState = {
   comments: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -26,21 +26,18 @@ export const createNewComment = createAsyncThunk(
   (comment: Omit<Comment, 'id'>) => createComment(comment),
 );
 
+export const deleteCommentById = createAsyncThunk(
+  'comments/delete',
+  (commentId: number) => deleteComment(commentId),
+);
+
 const commentSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    remove: (state, action: PayloadAction<Comment>) => {
-      state.comments = state.comments.filter(comment => {
-        return comment.id !== action.payload.id;
-      });
-
-      deleteComment(action.payload.id);
-    },
-  },
+  reducers: {},
   extraReducers: builder => builder
     .addCase(getCommentsByPostId.pending, (state) => {
-      state.loaded = true;
+      state.isLoading = true;
       state.hasError = false;
     })
 
@@ -48,17 +45,17 @@ const commentSlice = createSlice({
       getCommentsByPostId.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
         state.comments = action.payload;
-        state.loaded = false;
+        state.isLoading = false;
       },
     )
 
     .addCase(getCommentsByPostId.rejected, (state) => {
       state.hasError = true;
-      state.loaded = false;
+      state.isLoading = false;
     })
 
     .addCase(createNewComment.pending, (state) => {
-      state.loaded = true;
+      state.isLoading = true;
       state.hasError = false;
     })
 
@@ -66,16 +63,30 @@ const commentSlice = createSlice({
       createNewComment.fulfilled,
       (state, action: PayloadAction<Comment>) => {
         state.comments = [...state.comments, action.payload];
-        state.loaded = false;
+        state.isLoading = false;
       },
     )
 
     .addCase(createNewComment.rejected, (state) => {
       state.hasError = true;
-      state.loaded = false;
-    }),
-});
+      state.isLoading = false;
+    })
 
-export const { remove } = commentSlice.actions;
+    .addCase(
+      deleteCommentById.pending,
+      (state, action) => {
+        state.comments = state.comments.filter(comment => {
+          return comment.id !== action.meta.arg;
+        });
+      },
+    )
+
+    .addCase(
+      deleteCommentById.rejected,
+      (state) => {
+        state.hasError = true;
+      },
+    ),
+});
 
 export default commentSlice.reducer;
