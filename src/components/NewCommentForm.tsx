@@ -22,7 +22,7 @@ export const NewCommentForm = () => {
       };
 
       dispatch(commentActions.postCommentAsync(newComment));
-      dispatch(selectedPostActions.setNewComment(newComment));
+      dispatch(selectedPostActions.setNewComment({ ...newComment, id: Date.now() }));
     }
   };
 

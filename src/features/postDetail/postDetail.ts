@@ -9,7 +9,7 @@ import { Comment } from '../../types/Comment';
 
 export type InitialStateType = {
   status: 'idle' | 'loading' | 'failed',
-  postComments: Comment[] | [],
+  postComments: Comment[],
   selectedPost: Post | null,
 };
 const initialState: InitialStateType = {
@@ -38,15 +38,13 @@ export const selectedPostSlice = createSlice({
     setPostComments: (state, action: PayloadAction<Comment[]>) => {
       state.postComments = action.payload;
     },
-    setNewComment: (state, action: PayloadAction<Omit<Comment, 'id'>>) => {
-      // state.postComments.push(action.payload);
-      console.log(action.payload);
+    setNewComment: (state, action: PayloadAction<Comment>) => {
+      state.postComments.push(action.payload);
     },
     deleteComment: (state, action: PayloadAction<number>) => {
-      // return state.postComments.filter(
-      //   comment => comment.id !== action.payload,
-      // );
-      console.log(action.payload);
+      state.postComments.filter(
+        comment => comment.id !== action.payload,
+      );
     },
   },
   extraReducers(builder) {
