@@ -4,12 +4,6 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addPost, removePost } from '../features/selectedPost';
 
-// type Props = {
-//   posts: Post[],
-//   selectedPostId?: number,
-//   onPostSelected: (post: Post | null) => void,
-// };
-
 export const PostsList: React.FC = () => {
   const { items } = useAppSelector(state => state.posts);
   const { item } = useAppSelector(state => state.selectedPost);

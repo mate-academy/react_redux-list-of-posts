@@ -2,11 +2,6 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addCommentAsync } from '../features/comments';
-// import { CommentData } from '../types/Comment';
-
-// type Props = {
-//   onSubmit: (data: CommentData) => Promise<void>;
-// };
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
