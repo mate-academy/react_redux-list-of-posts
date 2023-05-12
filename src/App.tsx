@@ -11,7 +11,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Counter } from './features/counter/Counter';
 import { authorStates } from './features/authorSlice';
 import {
   postsStates,
@@ -32,36 +31,42 @@ export const App: React.FC = () => {
     hasError,
   } = useAppSelector(postsStates);
   const selectedPost = useAppSelector(selectedPostStates);
+  const {
+    setLoading,
+    setHasError,
+    setItems,
+  } = actionsPosts;
+  const { set: setUser } = actionUser;
+  const { set: setSelectedPost } = actionsSelectedPost;
+  const authorId = author?.id;
 
   function loadUserPosts(userId: number) {
-    dispatch(actionsPosts.setLoading(false));
+    dispatch(setLoading(false));
+    dispatch(setHasError(false));
 
     getUserPosts(userId)
-      .then(items => dispatch(actionsPosts.setItems(items)))
-      .catch(() => dispatch(actionsPosts.setHasError(true)))
-      .finally(() => dispatch(actionsPosts.setLoading(true)));
+      .then(items => dispatch(setItems(items)))
+      .catch(() => dispatch(setHasError(true)))
+      .finally(() => dispatch(setLoading(true)));
   }
 
   useEffect(() => {
     getUsers()
-      .then(users => dispatch(actionUser.set(users)));
+      .then(users => dispatch(setUser(users)));
   }, []);
 
   useEffect(() => {
-    dispatch(actionsSelectedPost.set(null));
+    dispatch(setSelectedPost(null));
 
-    if (author) {
-      loadUserPosts(author.id);
+    if (authorId) {
+      loadUserPosts(authorId);
     } else {
-      dispatch(actionsPosts.setItems([]));
+      dispatch(setItems([]));
     }
-  }, [author?.id]);
+  }, [authorId]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">

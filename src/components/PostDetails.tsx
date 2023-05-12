@@ -23,21 +23,32 @@ export const PostDetails: React.FC = () => {
     visible,
     items: comments,
   } = useAppSelector(commentsListStates);
+  const {
+    setLoaded,
+    setError,
+    setVisible,
+    setItems,
+  } = actionsComments;
+  const {
+    id: postId,
+    title: postTitle,
+    body: postBody,
+  } = post || {};
 
   function loadComments() {
-    dispatch(actionsComments.setLoaded(false));
-    dispatch(actionsComments.setError(false));
-    dispatch(actionsComments.setVisible(false));
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
+    dispatch(setVisible(false));
 
     const commentsLoading = (list: Comment[]) => {
-      dispatch(actionsComments.setItems(list));
+      dispatch(setItems(list));
     };
 
     if (post) {
       commentsApi.getPostComments(post.id)
         .then(list => commentsLoading(list))
-        .catch(() => dispatch(actionsComments.setError(true)))
-        .finally(() => dispatch(actionsComments.setLoaded(true)));
+        .catch(() => dispatch(setError(true)))
+        .finally(() => dispatch(setLoaded(true)));
     }
   }
 
@@ -49,7 +60,7 @@ export const PostDetails: React.FC = () => {
         name,
         email,
         body,
-        postId: post?.id || 0,
+        postId: postId || 0,
       });
 
       dispatch(actionsComments.setItems(
@@ -74,11 +85,11 @@ export const PostDetails: React.FC = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post?.id}: ${post?.title}`}
+          {`#${postId}: ${postTitle}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post?.body}
+          {postBody}
         </p>
       </div>
 
