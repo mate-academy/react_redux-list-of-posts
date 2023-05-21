@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initUsers } from '../features/usersSlice';
+import { loadUsers } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
-import { Loader } from './Loader';
+import {
+  Loader,
+} from './Loader';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -12,7 +14,7 @@ export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(initUsers());
+    dispatch(loadUsers());
   }, []);
 
   useEffect(() => {
@@ -74,7 +76,11 @@ export const UserSelector: React.FC = () => {
             </a>
           ))}
 
-          {hasError && <p>can`t load users from server</p>}
+          {hasError && (
+            <div className="notification is-danger">
+              Something went wrong
+            </div>
+          )}
         </div>
       </div>
     </div>

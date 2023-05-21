@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initComments, removeComment } from '../features/commentsSlice';
+import {
+  deleteItem,
+  loadComments,
+  removeComment,
+} from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useAppSelector((state) => state.selectedPost);
@@ -15,9 +19,8 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const selectedPostId = selectedPost ? selectedPost.id : 0;
-
-    dispatch(initComments(selectedPostId));
+    setVisible(false);
+    dispatch(loadComments(selectedPost!.id));
   }, [selectedPost]);
 
   return (
@@ -69,7 +72,10 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(removeComment(comment.id))}
+                    onClick={() => {
+                      dispatch(deleteItem(comment.id));
+                      dispatch(removeComment(comment.id));
+                    }}
                   >
                     delete button
                   </button>

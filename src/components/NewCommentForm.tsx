@@ -28,7 +28,7 @@ export const NewCommentForm: React.FC = () => {
     dispatch(newCommentFormActions.setErrors({ ...errors, [field]: false }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const { name, email, body } = values;
@@ -45,13 +45,11 @@ export const NewCommentForm: React.FC = () => {
 
     dispatch(newCommentFormActions.setSubmitting(true));
 
-    const postId = selectedPost ? selectedPost.id : 0;
-
-    dispatch(postComment({
+    await dispatch(postComment({
       name,
       email,
       body,
-      postId,
+      postId: selectedPost!.id,
     }));
     dispatch(newCommentFormActions.setSubmitting(false));
     dispatch(newCommentFormActions.setValues({ ...values, body: '' }));

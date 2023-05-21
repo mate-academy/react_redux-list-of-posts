@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, getPostComments, deleteComment } from '../api/comments';
 
@@ -15,49 +15,53 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
-export const initComments = createAsyncThunk(
+export const loadComments = createAsyncThunk(
   'fetch/comments',
   (postId: number) => getPostComments(postId),
 );
 
 export const postComment = createAsyncThunk(
   'post/comment',
-  (props: Omit<Comment, 'id'>) => createComment(props),
+  (commentData: Omit<Comment, 'id'>) => createComment(commentData),
 );
 
 export const removeComment = createAsyncThunk(
   'delete/comment',
-  (commentId: number) => deleteComment(commentId),
+  async (commentId: number) => deleteComment(commentId),
 );
 
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteItem: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(initComments.pending, (state) => {
+    builder.addCase(loadComments.pending, (state) => {
       state.loading = true;
-    });
-    builder.addCase(initComments.fulfilled, (state, action) => {
+    }).addCase(loadComments.fulfilled, (state, action) => {
       state.items = action.payload;
       state.loading = false;
+    }).addCase(loadComments.rejected, (state) => {
+      state.hasError = true;
+      state.loading = false;
     });
-    builder.addCase(initComments.rejected, (state) => {
-      state.hasError = false;
-    });
+
     builder.addCase(postComment.fulfilled, (state, action) => {
       state.items.push(action.payload);
-    });
-    builder.addCase(postComment.rejected, (state) => {
+    }).addCase(postComment.rejected, (state) => {
       state.hasError = true;
     });
+
     builder.addCase(removeComment.fulfilled, (state, action) => {
       state.items = state.items.filter(item => item.id !== action.meta.arg);
-    });
-    builder.addCase(removeComment.rejected, (state) => {
+    }).addCase(removeComment.rejected, (state) => {
       state.hasError = true;
     });
   },
 });
 
 export default commentsSlice.reducer;
+export const { deleteItem } = commentsSlice.actions;

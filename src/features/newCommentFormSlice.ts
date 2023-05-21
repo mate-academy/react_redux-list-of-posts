@@ -37,14 +37,14 @@ const newCommentFormSlice = createSlice({
   name: 'newCommentForm',
   initialState,
   reducers: {
-    setSubmitting: (state, actions: PayloadAction<boolean>) => {
-      state.submitting = actions.payload;
+    setSubmitting: (state, action: PayloadAction<boolean>) => {
+      state.submitting = action.payload;
     },
-    setErrors: (state, actions: PayloadAction<NewCommentFormErrors>) => {
-      state.errors = actions.payload;
+    setErrors: (state, action: PayloadAction<NewCommentFormErrors>) => {
+      state.errors = action.payload;
     },
-    setValues: (state, actions: PayloadAction<NewCommentFormValues>) => {
-      state.values = actions.payload;
+    setValues: (state, action: PayloadAction<NewCommentFormValues>) => {
+      state.values = action.payload;
     },
     clear: () => initialState,
   },
