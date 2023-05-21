@@ -53,6 +53,8 @@ export const NewCommentForm: React.FC = () => {
     }));
     dispatch(newCommentFormActions.setSubmitting(false));
     dispatch(newCommentFormActions.setValues({ ...values, body: '' }));
+
+    document.getElementById('comment-body')!.focus();
   };
 
   return (
