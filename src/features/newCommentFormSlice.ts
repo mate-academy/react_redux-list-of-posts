@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 type NewCommentFormErrors = {
@@ -36,31 +37,16 @@ const newCommentFormSlice = createSlice({
   name: 'newCommentForm',
   initialState,
   reducers: {
-    setSubmitting: (state, actions: PayloadAction<boolean>) => ({
-      ...state,
-      submitting: actions.payload,
-    }),
-    setErrors: (state, actions: PayloadAction<NewCommentFormErrors>) => ({
-      ...state,
-      errors: actions.payload,
-    }),
-    setValues: (state, actions: PayloadAction<NewCommentFormValues>) => ({
-      ...state,
-      values: actions.payload,
-    }),
-    clear: (state) => ({
-      ...state,
-      errrors: {
-        name: false,
-        email: false,
-        body: false,
-      },
-      values: {
-        name: '',
-        email: '',
-        body: '',
-      },
-    }),
+    setSubmitting: (state, actions: PayloadAction<boolean>) => {
+      state.submitting = actions.payload;
+    },
+    setErrors: (state, actions: PayloadAction<NewCommentFormErrors>) => {
+      state.errors = actions.payload;
+    },
+    setValues: (state, actions: PayloadAction<NewCommentFormValues>) => {
+      state.values = actions.payload;
+    },
+    clear: () => initialState,
   },
 });
 

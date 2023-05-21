@@ -1,68 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions as commentsActions } from '../features/commentsSlice';
+import { initComments, removeComment } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useAppSelector((state) => state.selectedPost);
   const {
     items: comments,
-    loaded,
+    loading,
     hasError,
   } = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
-  async function loadComments() {
-    dispatch(commentsActions.setLoaded(false));
-    dispatch(commentsActions.setHasError(false));
-    setVisible(false);
-
-    try {
-      const selectedPostId = selectedPost ? selectedPost.id : 0;
-      const commentsFromServer = await commentsApi.getPostComments(
-        selectedPostId,
-      );
-
-      dispatch(commentsActions.setItems(commentsFromServer));
-    } catch (error) {
-      dispatch(commentsActions.setHasError(true));
-    } finally {
-      dispatch(commentsActions.setLoaded(true));
-    }
-  }
-
   useEffect(() => {
-    loadComments();
+    const selectedPostId = selectedPost ? selectedPost.id : 0;
+
+    dispatch(initComments(selectedPostId));
   }, [selectedPost]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const selectedPostId = selectedPost ? selectedPost.id : 0;
-
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: selectedPostId,
-      });
-
-      dispatch(commentsActions.add(newComment));
-    } catch (error) {
-      dispatch(commentsActions.setHasError(true));
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.delete(commentId));
-
-    await commentsApi.deleteComment(commentId);
-  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -77,23 +33,23 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loaded && (
+        {loading && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {!loading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -113,7 +69,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(removeComment(comment.id))}
                   >
                     delete button
                   </button>
@@ -127,7 +83,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -138,8 +94,8 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {!loading && !hasError && visible && (
+          <NewCommentForm />
         )}
       </div>
     </div>

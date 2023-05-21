@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsers } from '../api/users';
-import { actions as usersActions } from '../features/usersSlice';
+import { initUsers } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
+import { Loader } from './Loader';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
-  const dispatch = useAppDispatch();
-  const { users } = useAppSelector((state) => state.users);
+  const { users, loading, hasError } = useAppSelector((state) => state.users);
   const { author } = useAppSelector((state) => state.author);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getUsers().then((usersFromServer) => {
-      dispatch(usersActions.set(usersFromServer));
-    });
+    dispatch(initUsers());
   }, []);
 
   useEffect(() => {
@@ -59,7 +57,9 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map((user) => (
+          {loading && <Loader />}
+
+          {!loading && users.map((user) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
@@ -73,6 +73,8 @@ export const UserSelector: React.FC = () => {
               {user.name}
             </a>
           ))}
+
+          {hasError && <p>can`t load users from server</p>}
         </div>
       </div>
     </div>
