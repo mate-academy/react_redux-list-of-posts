@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,87 +8,78 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppSelector } from './app/hooks';
+import {
+  getError,
+  getPosts,
+  getSelectedAuthor,
+  getLoading,
+} from './components/Posts/userPostsSlicer';
+import { getPost } from './components/Comments/commentsSlicer';
+import { ErrorTypes, LoadingStatus } from './types/enums';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+  const selectedAuthor = useAppSelector(getSelectedAuthor);
+  const authorPosts = useAppSelector(getPosts);
+  const error = useAppSelector(getError);
+  const loading = useAppSelector(getLoading);
+  const selectedPost = useAppSelector(getPost);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!selectedAuthor.id && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author && !loaded && (
+                {selectedAuthor && loading === LoadingStatus.Loading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
+                {
+                  selectedAuthor && loading === LoadingStatus.Failed
+                  && error === ErrorTypes.FailedToFetch && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      Something went wrong!
+                    </div>
+                  )
+                }
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {
+                  !!selectedAuthor.id
+                  && !error
+                  && !authorPosts.length
+                  && loading === LoadingStatus.Idle
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )
+                }
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {
+                  selectedAuthor
+                  && error === '' && authorPosts.length > 0
+                  && loading === LoadingStatus.Idle && (
+                    <PostsList />
+                  )
+                }
               </div>
             </div>
           </div>
