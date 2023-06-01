@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ post }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({ ...current, [field]: value.trim() }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
@@ -60,7 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     const postId = post?.id || 0;
 
@@ -71,7 +71,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
       postId,
     }));
 
-    setSubmitting(false);
+    setIsSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
   };
 
@@ -182,7 +182,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add

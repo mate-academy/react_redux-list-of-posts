@@ -5,13 +5,13 @@ import { Post } from '../types/Post';
 
 export interface PostsState {
   posts: Post[];
-  loaded: boolean;
+  isLoaded: boolean;
   hasError: boolean;
 }
 
 export const initialState: PostsState = {
   posts: [],
-  loaded: false,
+  isLoaded: false,
   hasError: false,
 };
 
@@ -35,11 +35,11 @@ export const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
-        state.loaded = false;
+        state.isLoaded = false;
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.posts = action.payload;
-        state.loaded = true;
+        state.isLoaded = true;
       })
       .addCase(fetchPosts.rejected, (state) => {
         state.hasError = true;

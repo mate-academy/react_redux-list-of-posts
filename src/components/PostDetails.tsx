@@ -6,20 +6,28 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchComments, deleteCommentAsync } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
-  const [visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const dispatch = useAppDispatch();
   const post = useAppSelector(state => state.post.value);
-  const { comments, loaded, hasError }
+  const { comments, isLoaded, hasError }
     = useAppSelector(state => state.comments);
 
   function loadComments() {
-    setVisible(false);
+    setIsVisible(false);
     if (post) {
       dispatch(fetchComments(post.id));
     }
   }
 
   useEffect(loadComments, [post?.id]);
+
+  const handleCommentFormShow = () => {
+    setIsVisible(true)
+  }
+
+  const handleCommentDelete = (commentId: number) => {
+    dispatch(deleteCommentAsync(commentId))
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -34,23 +42,23 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loaded && (
+        {!isLoaded && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {isLoaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {isLoaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {isLoaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -70,7 +78,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteCommentAsync(comment.id))}
+                    onClick={() => handleCommentDelete(comment.id)}
                   >
                     delete button
                   </button>
@@ -84,18 +92,18 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {isLoaded && !hasError && !isVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={handleCommentFormShow}
           >
             Write a comment
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {isLoaded && !hasError && isVisible && (
           <NewCommentForm post={post} />
         )}
       </div>

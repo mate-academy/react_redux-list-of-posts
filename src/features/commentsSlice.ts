@@ -4,13 +4,13 @@ import { createComment, getPostComments, deleteComment } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 export interface CommentsState {
-  loaded: boolean;
+  isLoaded: boolean;
   hasError: boolean;
   comments: Comment[];
 }
 
 export const initialState: CommentsState = {
-  loaded: false,
+  isLoaded: false,
   hasError: false,
   comments: [],
 };
@@ -49,10 +49,10 @@ export const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state) => {
-        state.loaded = false;
+        state.isLoaded = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        state.loaded = true;
+        state.isLoaded = true;
         state.comments = action.payload;
       })
       .addCase(fetchComments.rejected, (state) => {

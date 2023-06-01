@@ -9,19 +9,19 @@ export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const users: User[] = useAppSelector(state => state.users.users);
   const selectedUser = useAppSelector(state => state.author.value);
-  const [expanded, setExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, []);
 
   useEffect(() => {
-    if (!expanded) {
+    if (!isExpanded) {
       return undefined;
     }
 
     const handleDocumentClick = () => {
-      setExpanded(false);
+      setIsExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -29,12 +29,20 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, [expanded]);
+  }, [isExpanded]);
+
+  const handleToggleMenu = () => {
+    setIsExpanded(current => !current);
+  }
+
+  const handleOnUserClick = (user: User) => {
+    dispatch(setAuthor(user));
+  }
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': isExpanded })}
     >
       <div className="dropdown-trigger">
         <button
@@ -43,9 +51,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           disabled={!users.length}
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={handleToggleMenu}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -63,9 +69,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(setAuthor(user));
-              }}
+              onClick={() => handleOnUserClick(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

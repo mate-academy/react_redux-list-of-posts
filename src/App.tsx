@@ -14,7 +14,7 @@ import { setPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { posts, isLoaded, hasError } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.author.value);
   const selectedPost = useAppSelector(state => state.post.value);
 
@@ -49,11 +49,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && !isLoaded && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && isLoaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -62,13 +62,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && isLoaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && isLoaded && !hasError && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>
