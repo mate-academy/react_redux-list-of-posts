@@ -190,7 +190,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="control">
-          <button type="reset" className="button is-link is-light">
+          <button type="button" className="button is-link is-light">
             Clear
           </button>
         </div>

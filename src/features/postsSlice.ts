@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
@@ -27,7 +28,7 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: (state, action) => {
+    setPosts: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
     },
   },

@@ -17,7 +17,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     if (!expanded) {
-      return;
+      return undefined;
     }
 
     const handleDocumentClick = () => {
