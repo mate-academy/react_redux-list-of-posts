@@ -1,13 +1,16 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch } from '../app/hooks';
+import { addCommentAsync } from '../features/commentsSlice';
+import { Post } from '../types/Post';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  post: Post | null;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ post }) => {
   const [submitting, setSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,13 +62,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    const postId = post?.id || 0;
 
-    // and the spinner will disappear immediately
+    await dispatch(addCommentAsync({
+      name,
+      email,
+      body,
+      postId,
+    }));
+
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -183,7 +190,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
