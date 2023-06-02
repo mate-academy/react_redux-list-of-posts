@@ -1,13 +1,16 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch } from '../app/hooks';
+import { addCommentAsync } from '../features/commentsSlice';
+import { Post } from '../types/Post';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  post: Post | null;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC<Props> = ({ post }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -48,24 +51,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    const postId = post?.id || 0;
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+    await dispatch(addCommentAsync({
+      name,
+      email,
+      body,
+      postId,
+    }));
+
+    setIsSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -175,7 +182,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
@@ -183,8 +190,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button type="button" className="button is-link is-light">
             Clear
           </button>
         </div>
