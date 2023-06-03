@@ -49,7 +49,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     getUsers()
-      .then(users => dispatch(setUsers(users)));
+      .then(users => dispatch(setUsers(users)))
+      .catch(() => dispatch(setError(true)));
   }, []);
 
   return (

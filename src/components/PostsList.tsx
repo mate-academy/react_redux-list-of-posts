@@ -4,11 +4,17 @@ import { postsFromServer } from '../features/postsSlice';
 import {
   selectedPost, set as setSelectedPost,
 } from '../features/selectedPostSlice';
+import { Post } from '../types/Post';
 
 export const PostsList = () => {
   const dispatch = useAppDispatch();
   const selectedPostId = useAppSelector(selectedPost)?.id;
   const { items: posts } = useAppSelector(postsFromServer);
+  const onPostSelect = (post: Post) => {
+    dispatch(
+      setSelectedPost(post.id === selectedPostId ? null : post),
+    );
+  };
 
   return (
     <div data-cy="PostsList">
@@ -39,11 +45,7 @@ export const PostsList = () => {
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(
-                      setSelectedPost(post.id === selectedPostId ? null : post),
-                    );
-                  }}
+                  onClick={() => onPostSelect(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
