@@ -1,20 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/RootState';
 
-const initialUsers: User[] = [];
+type InitialState = {
+  users: User[],
+  hasError: boolean,
+};
+
+const initialUsers: InitialState = {
+  users: [],
+  hasError: false,
+};
 
 const userSlice = createSlice({
   name: 'users',
   initialState: initialUsers,
   reducers: {
-    set: (state, action: PayloadAction<User[]>) => {
-      return action.payload ?? state;
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      // eslint-disable-next-line no-param-reassign
+      state.users = action.payload ?? state.users;
+    },
+    setError: (state, action: PayloadAction<boolean>) => {
+      // eslint-disable-next-line no-param-reassign
+      state.hasError = action.payload;
+      console.log(action.payload);
     },
   },
 });
 
 export default userSlice.reducer;
-export const { set } = userSlice.actions;
-export const usersFromServer = (state: RootState) => state.users;
+export const { setUsers, setError } = userSlice.actions;

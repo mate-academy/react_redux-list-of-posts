@@ -6,9 +6,9 @@ import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  postComments, setComments, setError, setLoaded,
+  setComments, setError, setLoaded,
 } from '../features/commentsSlice';
-import { selectedPost } from '../features/selectedPostSlice';
+import { postComments, selectedPost } from '../app/selectors';
 
 export const PostDetails = () => {
   const post = useAppSelector(selectedPost);

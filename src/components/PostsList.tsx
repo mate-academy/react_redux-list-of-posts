@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { postsFromServer } from '../features/postsSlice';
 import {
-  selectedPost, set as setSelectedPost,
+  set as setSelectedPost,
 } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
+import { selectedPost, postsFromServer } from '../app/selectors';
 
 export const PostsList = () => {
   const dispatch = useAppDispatch();

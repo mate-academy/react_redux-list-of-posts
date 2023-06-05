@@ -9,13 +9,16 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { set as setUsers } from './features/usersSlice';
+import { setUsers, setError as setUsersError } from './features/usersSlice';
 import {
-  postsFromServer, setError, setPosts, setLoaded,
+  setError as setPostsError, setPosts, setLoaded,
 } from './features/postsSlice';
-import { authorFromReducer } from './features/authorSlice';
 import {
-  set as setSelectedPost, selectedPost as currentPost,
+  selectedPost as currentPost,
+  postsFromServer, authorFromReducer,
+} from './app/selectors';
+import {
+  set as setSelectedPost,
 } from './features/selectedPostSlice';
 import { getUsers } from './api/users';
 import { useAppDispatch, useAppSelector } from './app/hooks';
@@ -32,8 +35,10 @@ export const App: React.FC = () => {
     dispatch(setLoaded(false));
 
     getUserPosts(userId)
-      .then(posts => dispatch(setPosts(posts)))
-      .catch(() => dispatch(setError(true)))
+      .then(posts => {
+        dispatch(setPosts(posts));
+      })
+      .catch(() => dispatch(setPostsError(true)))
       .finally(() => dispatch(setLoaded(true)));
   }
 
@@ -48,9 +53,13 @@ export const App: React.FC = () => {
   }, [author?.id]);
 
   useEffect(() => {
+    dispatch(setUsersError(false));
+
     getUsers()
       .then(users => dispatch(setUsers(users)))
-      .catch(() => dispatch(setError(true)));
+      .catch(() => {
+        dispatch(setUsersError(true));
+      });
   }, []);
 
   return (

@@ -1,7 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/RootState';
 
 type InitialState = User | null;
 
@@ -19,4 +17,3 @@ const authorSlice = createSlice({
 
 export default authorSlice.reducer;
 export const { set } = authorSlice.actions;
-export const authorFromReducer = (state: RootState) => state.author;

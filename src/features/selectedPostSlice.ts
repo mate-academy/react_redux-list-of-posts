@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/RootState';
 import { Post } from '../types/Post';
 
 type InitialState = {
@@ -24,4 +22,3 @@ const selectedPostSlice = createSlice({
 
 export default selectedPostSlice.reducer;
 export const { set } = selectedPostSlice.actions;
-export const selectedPost = (state: RootState) => state.currentPost.initial;

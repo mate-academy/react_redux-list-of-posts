@@ -1,6 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/RootState';
 import { Comment } from '../types/Comment';
 
 type InitialState = {
@@ -36,4 +34,3 @@ const commentsSlice = createSlice({
 
 export default commentsSlice.reducer;
 export const { setComments, setLoaded, setError } = commentsSlice.actions;
-export const postComments = (state: RootState) => state.postComments;

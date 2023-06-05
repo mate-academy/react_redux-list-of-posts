@@ -1,6 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/RootState';
 import { Post } from '../types/Post';
 
 type InitialState = {
@@ -36,4 +34,3 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 export const { setPosts, setLoaded, setError } = postsSlice.actions;
-export const postsFromServer = (state: RootState) => state.posts;
