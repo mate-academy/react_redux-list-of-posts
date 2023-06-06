@@ -9,16 +9,16 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
+import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
+  const { author } = useAppSelector(state => state.author);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
@@ -53,7 +53,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
