@@ -53,7 +53,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
