@@ -6,9 +6,9 @@ import { getUsers } from '../../api/users';
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async () => {
-    const value = await getUsers();
+    const users = await getUsers();
 
-    return value;
+    return users;
   },
 );
 
