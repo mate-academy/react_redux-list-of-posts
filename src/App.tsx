@@ -14,7 +14,7 @@ import { Counter } from './features/counter/Counter';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const { author } = useAppSelector(state => state.author);
+  const { author } = useAppSelector(state => state.authorState);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);

@@ -6,9 +6,9 @@ import authorReducer from '../features/author/authorSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
-    users: usersReducer,
-    author: authorReducer,
+    counterState: counterReducer,
+    usersState: usersReducer,
+    authorState: authorReducer,
   },
 });
 
