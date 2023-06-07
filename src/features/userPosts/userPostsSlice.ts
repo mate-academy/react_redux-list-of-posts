@@ -4,7 +4,7 @@ import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
 export const fetchUserPosts = createAsyncThunk(
-  'users/fetchUserPosts',
+  'posts/fetchUserPosts',
   async (userId: number) => {
     const posts = await getUserPosts(userId);
 
@@ -13,13 +13,15 @@ export const fetchUserPosts = createAsyncThunk(
 );
 
 export interface UserPostsState {
-  posts: Post[];
-  status: 'idle' | 'loading' | 'failed';
+  items: Post[];
+  isLoaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: UserPostsState = {
-  posts: [],
-  status: 'idle',
+  items: [],
+  isLoaded: true,
+  hasError: false,
 };
 
 const postsSlice = createSlice({
@@ -29,14 +31,15 @@ const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserPosts.pending, (state) => {
-        state.status = 'loading';
+        state.isLoaded = false;
       })
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
-        state.status = 'idle';
-        state.posts = action.payload;
+        state.isLoaded = true;
+        state.items = action.payload;
       })
       .addCase(fetchUserPosts.rejected, (state) => {
-        state.status = 'failed';
+        state.isLoaded = true;
+        state.hasError = true;
       });
   },
 });

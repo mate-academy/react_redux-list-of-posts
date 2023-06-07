@@ -10,8 +10,8 @@ const initialState: AuthorState = {
   author: null,
 };
 
-const authorSlice = createSlice({
-  name: 'author',
+const selectedAuthorSlice = createSlice({
+  name: 'selectedAuthor',
   initialState,
   reducers: {
     selectAuthor: (state, action) => {
@@ -23,6 +23,6 @@ const authorSlice = createSlice({
   },
 });
 
-export const { selectAuthor, unselectAuthor } = authorSlice.actions;
+export const { selectAuthor, unselectAuthor } = selectedAuthorSlice.actions;
 
-export default authorSlice.reducer;
+export default selectedAuthorSlice.reducer;

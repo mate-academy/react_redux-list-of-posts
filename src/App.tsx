@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,16 +8,18 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchUserPosts } from './features/posts/userPostsSlice';
+import { fetchUserPosts } from './features/userPosts/userPostsSlice';
 
 export const App: React.FC = () => {
-  const { author } = useAppSelector(state => state.authorState);
-  const { posts, status } = useAppSelector(state => state.userPostsState);
+  const { author } = useAppSelector((state) => state.selectedAuthorState);
+  const {
+    items,
+    isLoaded,
+    hasError,
+  } = useAppSelector((state) => state.userPostsState);
+  const { selectedPost } = useAppSelector((state) => state.selectedPostState);
   const dispatch = useAppDispatch();
-
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     if (author) {
@@ -36,17 +38,11 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && status === 'loading' && (
-                  <Loader />
-                )}
+                {author && !isLoaded && <Loader />}
 
-                {author && status === 'failed' && (
+                {author && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -55,17 +51,16 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && status === 'idle' && posts.length === 0 && (
+                {author && isLoaded && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && status === 'idle' && posts.length > 0 && (
+                {author && isLoaded && !hasError && items.length > 0 && (
                   <PostsList
-                    posts={posts}
+                    posts={items}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
@@ -85,9 +80,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>
