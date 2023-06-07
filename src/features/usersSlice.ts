@@ -3,10 +3,10 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-interface UserState {
+type UserState = {
   users: User[],
   currentUser: User | null,
-}
+};
 
 const initialState: UserState = {
   users: [],

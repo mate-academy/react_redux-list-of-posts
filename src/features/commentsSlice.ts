@@ -3,11 +3,11 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment, CommentServerData } from '../types/Comment';
 import { getPostComments, createComment, deleteComment } from '../api/comments';
 
-interface CommentState {
+type CommentState = {
   comments: Comment[],
   loading: boolean,
   error: boolean,
-}
+};
 
 const initialState: CommentState = {
   comments: [],

@@ -3,12 +3,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
-interface PostState {
+type PostState = {
   posts: Post[],
   selectedPost: Post | null,
   loading: boolean,
   error: boolean,
-}
+};
 
 const initialState: PostState = {
   posts: [],
