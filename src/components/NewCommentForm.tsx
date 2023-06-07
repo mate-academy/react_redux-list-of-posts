@@ -2,8 +2,8 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import * as selectedPostActions from '../features/postDetail/postDetail';
-import * as commentActions from '../features/comments/comments';
+import * as selectedPostActions from '../features/postDetail/postDetailSlice';
+import * as commentActions from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const NewCommentForm = () => {

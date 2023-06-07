@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as selectedPostActions from '../features/postDetail/postDetail';
-import * as commentActions from '../features/comments/comments';
+import * as selectedPostActions from '../features/postDetail/postDetailSlice';
+import * as commentActions from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const PostDetails = () => {
   const selectedPost = useAppSelector(selectedPostActions.selectedPost);
   const { postComments } = useAppSelector(state => state.selectedPost);
-  const { status } = useAppSelector(state => state.comments);
+  const { status } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
@@ -18,11 +18,13 @@ export const PostDetails = () => {
   useEffect(() => {
     if (selectedPost) {
       dispatch(selectedPostActions.loadPostCommentsAsync(selectedPost.id));
+    } else {
+      dispatch(selectedPostActions.clearPostComments());
     }
   }, [selectedPost?.id]);
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentActions.deleteCommentAsync(commentId));
+    dispatch(commentActions.deleteCommentById(commentId));
   };
 
   return (
@@ -90,7 +92,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {loading && !hasError && !visible && (
+        {!loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -101,7 +103,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {loading && !hasError && visible && (
+        {!loading && !hasError && visible && (
           <NewCommentForm />
         )}
       </div>

@@ -2,9 +2,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
-import postsReducer from '../features/posts/posts';
-import selectedPostReducer from '../features/postDetail/postDetail';
-import commentsReducer from '../features/comments/comments';
+import postsReducer from '../features/posts/postsSlice';
+import selectedPostReducer from '../features/postDetail/postDetailSlice';
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {

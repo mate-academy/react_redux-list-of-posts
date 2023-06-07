@@ -12,12 +12,14 @@ import { Loader } from './components/Loader';
 import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as UserActions from './features/users/usersSlice';
-import * as PostsActions from './features/posts/posts';
+import * as PostsActions from './features/posts/postsSlice';
+import * as selectedPostActions from './features/postDetail/postDetailSlice';
 
 export const App: React.FC = () => {
   const author = useAppSelector(UserActions.selectedUser);
-  const selectedPost = useAppSelector(PostsActions.selectedPost);
+  const selectedPost = useAppSelector(selectedPostActions.selectedPost);
   const { status, posts } = useAppSelector(state => state.posts);
+
   const dispatch = useAppDispatch();
 
   const loading = status === 'loading';
@@ -26,7 +28,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(PostsActions.setSelectedPost(null));
+    dispatch(selectedPostActions.setEmptyPost());
 
     if (author) {
       dispatch(PostsActions.loadPostsAsync(author.id));

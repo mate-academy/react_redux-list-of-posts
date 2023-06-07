@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
@@ -38,6 +39,9 @@ export const selectedPostSlice = createSlice({
     setPostComments: (state, action: PayloadAction<Comment[]>) => {
       state.postComments = action.payload;
     },
+    clearPostComments: (state) => {
+      state.postComments = [];
+    },
     setNewComment: (state, action: PayloadAction<Comment>) => {
       state.postComments.push(action.payload);
     },
@@ -65,8 +69,9 @@ export const selectedPostSlice = createSlice({
 export const {
   setSelectedPost,
   setEmptyPost, setPostComments, setNewComment, deleteComment,
+  clearPostComments,
 } = selectedPostSlice.actions;
-export const posts = (state: RootState) => state.posts.posts;
-export const selectedPost = (state: RootState) => state.posts.selectedPost;
+
+export const selectedPost = (state: RootState) => state.selectedPost.selectedPost;
 
 export default selectedPostSlice.reducer;

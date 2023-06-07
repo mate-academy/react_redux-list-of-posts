@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import * as selectedPostActions from '../features/postDetail/postDetail';
+import * as selectedPostActions from '../features/postDetail/postDetailSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
@@ -44,7 +45,13 @@ export const PostsList: React.FC<Props> = ({
                     },
                   )}
                   onClick={() => {
-                    dispatch(selectedPostActions.setSelectedPost(post));
+                    if (post.id === selectedPost?.id) {
+                      console.log('empty');
+                      dispatch(selectedPostActions.setEmptyPost());
+                    } else {
+                      dispatch(selectedPostActions.setSelectedPost(post));
+                      console.log('selected');
+                    }
                   }}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
