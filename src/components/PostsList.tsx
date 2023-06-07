@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
@@ -46,11 +45,9 @@ export const PostsList: React.FC<Props> = ({
                   )}
                   onClick={() => {
                     if (post.id === selectedPost?.id) {
-                      console.log('empty');
                       dispatch(selectedPostActions.setEmptyPost());
                     } else {
                       dispatch(selectedPostActions.setSelectedPost(post));
-                      console.log('selected');
                     }
                   }}
                 >
