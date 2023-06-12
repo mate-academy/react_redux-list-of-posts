@@ -1,13 +1,30 @@
+/* eslint-disable max-len */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import * as selectedPostActions from '../features/postDetail/postDetailSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Status } from '../types/Status';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost, status } = useAppSelector(state => state.selectedPost);
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const loading = status === Status.loading;
+
+  const addComment = ({ name, email, body }: CommentData) => {
+    if (selectedPost) {
+      const newComment = {
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      };
+
+      dispatch(selectedPostActions.postCommentAsync(newComment));
+      dispatch(selectedPostActions.setNewComment({ ...newComment, id: Date.now() }));
+    }
+  };
 
   const [errors, setErrors] = useState({
     name: false,
@@ -57,13 +74,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
-
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    addComment({ name, email, body });
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
@@ -175,7 +189,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': loading,
             })}
           >
             Add
