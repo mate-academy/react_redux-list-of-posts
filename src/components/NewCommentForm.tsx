@@ -3,14 +3,14 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import * as selectedPostActions from '../features/postDetail/postDetailSlice';
-import * as commentActions from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Status } from '../types/Status';
 
 export const NewCommentForm = () => {
   const dispatch = useAppDispatch();
   const { selectedPost, status } = useAppSelector(state => state.selectedPost);
 
-  const loading = status === 'loading';
+  const loading = status === Status.loading;
 
   const addComment = ({ name, email, body }: CommentData) => {
     if (selectedPost) {
@@ -21,7 +21,7 @@ export const NewCommentForm = () => {
         postId: selectedPost.id,
       };
 
-      dispatch(commentActions.postCommentAsync(newComment));
+      dispatch(selectedPostActions.postCommentAsync(newComment));
       dispatch(selectedPostActions.setNewComment({ ...newComment, id: Date.now() }));
     }
   };

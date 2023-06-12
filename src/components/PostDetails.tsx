@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import * as selectedPostActions from '../features/postDetail/postDetailSlice';
-import * as commentActions from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Status } from '../types/Status';
 
 export const PostDetails = () => {
   const selectedPost = useAppSelector(selectedPostActions.selectedPost);
@@ -12,8 +12,8 @@ export const PostDetails = () => {
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
-  const loading = status === 'loading';
-  const hasError = status === 'failed';
+  const loading = status === Status.loading;
+  const hasError = status === Status.failed;
 
   useEffect(() => {
     if (selectedPost) {
@@ -24,14 +24,15 @@ export const PostDetails = () => {
   }, [selectedPost?.id]);
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentActions.deleteCommentById(commentId));
+    dispatch(selectedPostActions.deleteCommentAsync(commentId));
+    dispatch(selectedPostActions.deleteCommentById(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${selectedPost?.id}: ${selectedPost?.title}`}
+          {selectedPost && `#${selectedPost.id}: ${selectedPost.title}`}
         </h2>
 
         <p data-cy="PostBody">
@@ -50,13 +51,13 @@ export const PostDetails = () => {
           </div>
         )}
 
-        {!loading && !hasError && postComments.length === 0 && (
+        {!loading && !hasError && !postComments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !hasError && postComments.length > 0 && (
+        {!loading && !hasError && !!postComments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
