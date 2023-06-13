@@ -1,17 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { User } from '../../types/User';
 
 type UsersState = {
-  users: User[],
-  loading: boolean,
-  error: string,
+  users: User[]
 };
 
 const initialState: UsersState = {
   users: [],
-  loading: false,
-  error: '',
 };
 
 const usersSlice = createSlice({

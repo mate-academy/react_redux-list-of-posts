@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
-import { User } from '../../types/User';
-import { getUsers } from '../../api/users';
-import { useAppSelector } from '../../app/hooks';
-import { actions as userActions } from './userSlice';
+import { getUsers } from '../api/users';
+import { useAppSelector } from '../app/hooks';
+import { actions as userActions } from '../features/users/userSlice';
+import { actions as authorActions } from '../features/authors/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   const dispatch = useDispatch();
 
   const { users } = useAppSelector(state => state.users);
+  const { author: selectedUser } = useAppSelector(state => state.author);
+
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -80,9 +72,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={() => dispatch(authorActions.set(user))}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
