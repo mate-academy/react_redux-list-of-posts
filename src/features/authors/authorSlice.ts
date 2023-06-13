@@ -22,7 +22,3 @@ const authorSlice = createSlice({
 
 export default authorSlice.reducer;
 export const { actions } = authorSlice;
-
-// export const init = createAsyncThunk('users/fetch', () => {
-//   return fetchGoods();
-// });

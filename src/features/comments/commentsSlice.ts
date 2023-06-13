@@ -1,21 +1,21 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
 
-type PostsState = {
-  posts: Post[],
+type CommentsState = {
+  comments: Comment[],
   loaded: boolean,
   hasError: boolean,
 };
 
-const initialState: PostsState = {
-  posts: [],
+const initialState: CommentsState = {
+  comments: [],
   loaded: false,
   hasError: false,
 };
 
-const postsSlice = createSlice({
-  name: 'posts',
+const commentsSlice = createSlice({
+  name: 'comments',
   initialState,
   reducers: {
     setLoaded: (state, action: PayloadAction<boolean>) => {
@@ -26,11 +26,11 @@ const postsSlice = createSlice({
       state.hasError = action.payload;
     },
 
-    set: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+    set: (state, action: PayloadAction<Comment[]>) => {
+      state.comments = action.payload;
     },
   },
 });
 
-export default postsSlice.reducer;
-export const { actions } = postsSlice;
+export default commentsSlice.reducer;
+export const { actions } = commentsSlice;

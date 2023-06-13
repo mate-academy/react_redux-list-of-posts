@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -10,21 +10,21 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
 import { useAppSelector } from './app/hooks';
 import { actions as postsActions } from './features/posts/postsSlice';
+// eslint-disable-next-line max-len
+import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useDispatch();
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const { author } = useAppSelector(state => state.author);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
   function loadUserPosts(userId: number) {
-    dispatch(postsActions.setLoading(false));
+    dispatch(postsActions.setLoaded(false));
 
     getUserPosts(userId)
       .then(loadedPosts => {
@@ -34,26 +34,22 @@ export const App: React.FC = () => {
         dispatch(postsActions.setError(true));
       })
       .finally(() => {
-        dispatch(postsActions.setLoading(true));
+        dispatch(postsActions.setLoaded(true));
       });
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostActions.set(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      // setPosts([]);
       dispatch(postsActions.set([]));
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
       <Counter />
 
       <div className="container">
@@ -91,11 +87,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
