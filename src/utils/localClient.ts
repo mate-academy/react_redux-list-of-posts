@@ -1,4 +1,4 @@
-// function wait(delay: number) {
+/* // function wait(delay: number) {
 //   return new Promise(done => setTimeout(done, delay));
 // }
 
@@ -21,3 +21,4 @@ export function init(key: string, initialData: any) {
     write(key, initialData);
   }
 }
+ */

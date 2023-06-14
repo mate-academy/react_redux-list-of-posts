@@ -1,25 +1,23 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useCallback, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { add } from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
-
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
     body: '',
   });
+
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
 
   const clearForm = () => {
     setValues({
@@ -44,7 +42,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = useCallback((event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
@@ -59,14 +57,30 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (selectedPost) {
+      const newComment = {
+        name,
+        email,
+        body,
+        postId: selectedPost?.id,
+      };
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+      const addNewComment = async () => {
+        setSubmitting(true);
+        try {
+          await dispatch(add(newComment));
+        } catch (error) {
+          throw new Error('Adding new comment went wrong');
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      addNewComment();
+    }
+
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
-  };
+  }, [[name, email, body, selectedPost]]);
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">

@@ -1,4 +1,4 @@
-// axios docs https://axios-http.com/docs/intro
+/* // axios docs https://axios-http.com/docs/intro
 import axios from 'axios';
 
 const instance = axios.create({
@@ -31,3 +31,4 @@ export const client = {
     return instance.delete(url);
   },
 };
+ */
