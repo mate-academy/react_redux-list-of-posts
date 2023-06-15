@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { add } from '../features/comments';
+import { addComment } from '../features/comments';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -42,7 +42,7 @@ export const NewCommentForm: React.FC = () => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
-  const handleSubmit = useCallback((event: React.FormEvent) => {
+  const handleSubmit = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
@@ -65,18 +65,15 @@ export const NewCommentForm: React.FC = () => {
         postId: selectedPost?.id,
       };
 
-      const addNewComment = async () => {
-        setSubmitting(true);
-        try {
-          await dispatch(add(newComment));
-        } catch (error) {
-          throw new Error('Adding new comment went wrong');
-        } finally {
-          setSubmitting(false);
-        }
-      };
+      setSubmitting(true);
 
-      addNewComment();
+      try {
+        await dispatch(addComment(newComment));
+      } catch (error) {
+        throw new Error('Adding new comment went wrong');
+      } finally {
+        setSubmitting(false);
+      }
     }
 
     setValues(current => ({ ...current, body: '' }));

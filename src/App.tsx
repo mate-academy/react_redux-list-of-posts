@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { set as setUsersAction } from './features/users';
 
 import { getUsers } from './api/users';
-import { init } from './features/posts';
+import { fetchPosts } from './features/posts';
 
 export const App: React.FC = () => {
   const { posts, isLoading, error } = useAppSelector(state => state.posts);
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (author?.id) {
-      dispatch(init(author.id));
+      dispatch(fetchPosts(author.id));
     }
   }, [author?.id]);
 

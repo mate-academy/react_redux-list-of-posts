@@ -14,7 +14,7 @@ const initialState: PostState = {
   error: false,
 };
 
-export const init = createAsyncThunk('posts/fetch', (value: number) => {
+export const fetchPosts = createAsyncThunk('posts/fetch', (value: number) => {
   return getUserPosts(value);
 });
 
@@ -23,11 +23,11 @@ const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(fetchPosts.pending, (state) => {
       state.isLoading = true;
     });
 
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
       if (action.payload) {
         state.posts = action.payload;
       }
@@ -35,7 +35,7 @@ const postSlice = createSlice({
       state.isLoading = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(fetchPosts.rejected, (state) => {
       state.isLoading = false;
       state.error = true;
     });

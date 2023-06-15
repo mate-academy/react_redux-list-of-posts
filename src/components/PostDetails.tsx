@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { init, remove } from '../features/comments';
+import { fetchComments, removeComments } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -18,10 +18,14 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     if (selectedPost?.id) {
-      dispatch(init(selectedPost.id));
+      dispatch(fetchComments(selectedPost.id));
       setVisible(false);
     }
   }, [selectedPost?.id]);
+
+  const deleteComment = useCallback((commentId: number) => {
+    dispatch(removeComments(commentId));
+  }, [comments]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -72,7 +76,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(remove(comment.id))}
+                    onClick={() => deleteComment(comment.id)}
                   >
                     delete button
                   </button>

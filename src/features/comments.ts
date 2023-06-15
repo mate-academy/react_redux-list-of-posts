@@ -15,13 +15,13 @@ const initialState: CommentState = {
   hasError: false,
 };
 
-export const init = createAsyncThunk(
+export const fetchComments = createAsyncThunk(
   'comments/fetch', (value: number) => {
     return getPostComments(value);
   },
 );
 
-export const remove = createAsyncThunk(
+export const removeComments = createAsyncThunk(
   'comments/remove', async (value: number) => {
     await commentsApi.deleteComment(value);
 
@@ -29,7 +29,7 @@ export const remove = createAsyncThunk(
   },
 );
 
-export const add = createAsyncThunk(
+export const addComment = createAsyncThunk(
   'comments/add', (newComment: Omit<Comment, 'id'>) => {
     return commentsApi.createComment(newComment);
   },
@@ -40,11 +40,11 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(fetchComments.pending, (state) => {
       state.isLoading = true;
     });
 
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(fetchComments.fulfilled, (state, action) => {
       if (action.payload) {
         state.comments = action.payload;
       }
@@ -52,19 +52,19 @@ const commentsSlice = createSlice({
       state.isLoading = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(fetchComments.rejected, (state) => {
       state.isLoading = false;
       state.hasError = true;
     });
 
-    builder.addCase(remove.fulfilled, (state, action) => {
+    builder.addCase(removeComments.fulfilled, (state, action) => {
       const newComments = state.comments
         .filter(comment => comment.id !== action.payload);
 
       state.comments = newComments;
     });
 
-    builder.addCase(add.fulfilled, (state, action) => {
+    builder.addCase(addComment.fulfilled, (state, action) => {
       state.comments = [...state.comments, action.payload];
       state.isLoading = false;
     });
