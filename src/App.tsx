@@ -18,7 +18,7 @@ import { getUsers } from './api/users';
 import { init } from './features/posts';
 
 export const App: React.FC = () => {
-  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const { posts, isLoading, error } = useAppSelector(state => state.posts);
   const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
@@ -64,11 +64,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && loading && (
+                {author && isLoading && (
                   <Loader />
                 )}
 
-                {author && loading && error && (
+                {author && isLoading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -77,13 +77,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && !isLoading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && !isLoading && !error && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>

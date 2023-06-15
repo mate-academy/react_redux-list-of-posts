@@ -80,7 +80,7 @@ export const NewCommentForm: React.FC = () => {
     }
 
     setValues(current => ({ ...current, body: '' }));
-  }, [[name, email, body, selectedPost]]);
+  }, [name, email, body, selectedPost]);
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">

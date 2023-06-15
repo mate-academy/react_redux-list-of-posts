@@ -5,13 +5,13 @@ import * as commentsApi from '../api/comments';
 
 type CommentState = {
   comments: Comment[],
-  loaded: boolean,
+  isLoading: boolean,
   hasError: boolean,
 };
 
 const initialState: CommentState = {
   comments: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -41,7 +41,7 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
-      state.loaded = true;
+      state.isLoading = true;
     });
 
     builder.addCase(init.fulfilled, (state, action) => {
@@ -49,24 +49,24 @@ const commentsSlice = createSlice({
         state.comments = action.payload;
       }
 
-      state.loaded = false;
+      state.isLoading = false;
     });
 
     builder.addCase(init.rejected, (state) => {
-      state.loaded = false;
+      state.isLoading = false;
       state.hasError = true;
     });
 
     builder.addCase(remove.fulfilled, (state, action) => {
-      const newCommets = state.comments
+      const newComments = state.comments
         .filter(comment => comment.id !== action.payload);
 
-      state.comments = newCommets;
+      state.comments = newComments;
     });
 
     builder.addCase(add.fulfilled, (state, action) => {
       state.comments = [...state.comments, action.payload];
-      state.loaded = false;
+      state.isLoading = false;
     });
   },
 });

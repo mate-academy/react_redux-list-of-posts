@@ -11,7 +11,7 @@ const initialState: SelectedPostState = {
 };
 
 const selectedPostSlice = createSlice({
-  name: 'selectePost',
+  name: 'selectedPost',
   initialState,
   reducers: {
     set: (state, action: PayloadAction<Post | null>) => {
