@@ -1,24 +1,41 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+// import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as authorActions from '../features/author/authorSlice';
+import * as postsActions from '../features/posts/postsSlice';
+import * as selectedPostActions
+  from '../features/selectedPost/selectedPostSlice';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  // value: User | null;
+  // onChange: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector: React.FC<Props> = (
+  // {
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+  // value: selectedUser,
+  // onChange,
+// }
+) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
+
+  const setAuthor = (user: User) => {
+    dispatch(authorActions.set(user));
+    dispatch(postsActions.init(user.id));
+    dispatch(selectedPostActions.clear());
+  };
 
   useEffect(() => {
     if (!expanded) {
@@ -58,7 +75,7 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {author?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -74,10 +91,11 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                setAuthor(user);
+                // onChange(user);
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}
