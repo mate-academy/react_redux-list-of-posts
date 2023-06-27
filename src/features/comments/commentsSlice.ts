@@ -29,19 +29,20 @@ const commentsSlice = createSlice({
     remove: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(({ id }) => id !== action.payload);
     },
+    setError: (state, action: PayloadAction<boolean>) => {
+      state.hasError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending,
       (state) => {
         state.loading = true;
-        state.hasError = false;
       });
 
     builder.addCase(loadComments.fulfilled,
       (state, action) => {
         state.loading = false;
         state.items = action.payload;
-        state.hasError = false;
       });
 
     builder.addCase(loadComments.rejected,
@@ -53,4 +54,4 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { add, remove } = commentsSlice.actions;
+export const { add, remove, setError } = commentsSlice.actions;

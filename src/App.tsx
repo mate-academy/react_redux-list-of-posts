@@ -9,7 +9,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
 import { getUsers } from './api/users';
 
 import { set as setUsers } from './features/users/usersSlice';
@@ -37,8 +36,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -54,7 +51,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loading && (
+                {author && loading && (
                   <Loader />
                 )}
 
@@ -67,14 +64,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !hasError && posts.length === 0 && (
+                {author && !loading && !hasError && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loading && !hasError
-                  && posts.length && (
+                {author && !loading && !hasError
+                  && !!posts.length && (
                   <PostsList />
                 )}
               </div>
@@ -94,9 +91,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && posts.length ? (
-                <PostDetails />
-              ) : <p>Choose a post</p>}
+              {selectedPost && !!posts.length
+                ? <PostDetails />
+                : <p> Choose a post </p>}
             </div>
           </div>
         </div>

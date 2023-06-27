@@ -6,7 +6,9 @@ import * as commentsApi from '../api/comments';
 
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { add, loadComments, remove } from '../features/comments/commentsSlice';
+import {
+  add, loadComments, remove, setError,
+} from '../features/comments/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -37,13 +39,20 @@ export const PostDetails: React.FC = () => {
       postId: post.id,
     });
 
-    dispatch(add(newComment));
+    try {
+      dispatch(add(newComment));
+    } catch {
+      dispatch(setError(true));
+    }
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(remove(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    try {
+      dispatch(remove(commentId));
+      await commentsApi.deleteComment(commentId);
+    } catch {
+      dispatch(setError(true));
+    }
   };
 
   return (
@@ -63,19 +72,19 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {loading && hasError && (
+        {!loading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loading && !hasError && !comments.length && (
+        {!loading && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !hasError && comments.length && (
+        {!loading && !hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
