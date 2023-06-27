@@ -1,16 +1,21 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { set as setSelectedPost } from '../features/selectedPost/selectedPost';
+import { set as setSelectedPost }
+  from '../features/selectedPost/selectedPostSlice';
 import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
-  const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
 
   const onPostSelected = (post: Post | null) => {
-    dispatch(setSelectedPost(post));
+    if (selectedPost === post) {
+      dispatch(setSelectedPost(null));
+    } else {
+      dispatch(setSelectedPost(post));
+    }
   };
 
   return (

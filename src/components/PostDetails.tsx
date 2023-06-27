@@ -12,7 +12,7 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
   const {
-    loaded,
+    loading: loaded,
     hasError,
     items: comments,
   } = useAppSelector(state => state.comments);
@@ -50,11 +50,11 @@ export const PostDetails: React.FC = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
+          {`#${post?.id}: ${post?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post.body}
+          {post?.body}
         </p>
       </div>
 
@@ -63,19 +63,19 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {!loaded && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {!loaded && !hasError && comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 

@@ -4,13 +4,13 @@ import { Comment } from '../../types/Comment';
 import { getPostComments } from '../../api/comments';
 
 type InitialState = {
-  loaded: boolean;
+  loading: boolean;
   hasError: boolean;
   items: Comment[];
 };
 
 const initialState: InitialState = {
-  loaded: false,
+  loading: false,
   hasError: false,
   items: [],
 };
@@ -20,7 +20,7 @@ export const loadComments = createAsyncThunk('comments/fetch', (id: number) => {
 });
 
 const commentsSlice = createSlice({
-  name: 'comment',
+  name: 'comments',
   initialState,
   reducers: {
     add: (state, action: PayloadAction<Comment>) => {
@@ -33,20 +33,20 @@ const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending,
       (state) => {
-        state.loaded = true;
+        state.loading = true;
         state.hasError = false;
       });
 
     builder.addCase(loadComments.fulfilled,
       (state, action) => {
-        state.loaded = false;
+        state.loading = false;
         state.items = action.payload;
         state.hasError = false;
       });
 
     builder.addCase(loadComments.rejected,
       (state) => {
-        state.loaded = false;
+        state.loading = false;
         state.hasError = true;
       });
   },

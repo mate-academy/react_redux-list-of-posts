@@ -8,9 +8,6 @@ export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  // `пользователи загружаются из API, поэтому по соображениям производительности
-  // мы загружаем их один раз в `usersContext`, когда открывается приложение`
-  // и теперь мы можем легко повторно использовать `userelector 'в любой форме
   const users = useAppSelector(state => state.users.users);
   const [expanded, setExpanded] = useState(false);
 

@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    const newErrosData: ErrorForForm = {
+    const newErrorsData: ErrorForForm = {
       name: false,
       email: false,
       body: false,
@@ -57,7 +57,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       ...current,
       [field]: value,
     }));
-    dispatch(setErrors(newErrosData));
+    dispatch(setErrors(newErrorsData));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {

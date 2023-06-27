@@ -77,8 +77,6 @@ export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectCount = (state: RootState) => state.counter.value;
 
-// Мы также можем написать кусочки вручную, которые могут содержать как синхронизацию, так и асинхронную логику.
-// Вот пример условного отправки действий на основе текущего состояния.
 export const incrementIfOdd = (amount: number): AppThunk => {
   return (dispatch, getState) => {
     const currentValue = selectCount(getState());

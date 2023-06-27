@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 
@@ -14,7 +15,7 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     set: (state, action: PayloadAction<User[]>) => {
-      state.users.push(...action.payload);
+      state.users = action.payload;
     },
   },
 });

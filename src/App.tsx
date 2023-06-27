@@ -13,22 +13,20 @@ import { Counter } from './features/counter/Counter';
 import { getUsers } from './api/users';
 
 import { set as setUsers } from './features/users/usersSlice';
-import { loadPosts } from './features/post/postsSlice';
+import { loadPosts } from './features/posts/postsSlice';
 
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
-  const { loaded, hasError, posts } = useAppSelector(state => state.posts);
+  const { loading, hasError, posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     getUsers()
       .then(users => dispatch(setUsers(users)))
-      .catch(error => {
-        throw new Error(error);
-      });
+      .catch(error => dispatch(setUsers(error)));
   }, []);
 
   useEffect(() => {
@@ -56,11 +54,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && !loading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && loading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -69,13 +67,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loading && !hasError
+                  && posts.length && (
                   <PostsList />
                 )}
               </div>
@@ -95,9 +94,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {selectedPost && posts.length ? (
                 <PostDetails />
-              )}
+              ) : <p>Choose a post</p>}
             </div>
           </div>
         </div>
