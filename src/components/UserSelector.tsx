@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsers } from '../api/users';
-import { setUsers } from '../features/user/usersSlice';
+import { fetchUsers } from '../features/user/usersSlice';
 import { setAuthor } from '../features/author/authorSlice';
+import { Loader } from './Loader';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector(state => state.users);
+  const { users, isLoading, hasError } = useAppSelector(state => state.users);
   const { author: selectedUser } = useAppSelector(state => state.author);
 
   useEffect(() => {
@@ -16,10 +16,7 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -29,13 +26,10 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
   }, [expanded]);
 
   useEffect(() => {
-    getUsers()
-      .then(usersFromServer => dispatch(setUsers(usersFromServer)));
+    dispatch(fetchUsers());
   }, []);
 
   return (
@@ -62,9 +56,14 @@ export const UserSelector: React.FC = () => {
           </span>
         </button>
       </div>
+      {hasError && (
+        <p>Error</p>
+      )}
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
+          {isLoading && <Loader />}
+
           {users.map(user => (
             <a
               key={user.id}

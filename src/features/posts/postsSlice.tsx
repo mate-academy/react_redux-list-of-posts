@@ -1,34 +1,44 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
 
 export interface PostsState {
-  loaded: boolean,
+  isLoading: boolean,
   hasError: boolean,
   items: Post [],
 }
 
 const initialState: PostsState = {
-  loaded: false,
+  isLoading: false,
   hasError: false,
   items: [],
 };
 
+export const fetchPosts = createAsyncThunk(
+  'posts/fetch',
+  (userId: number) => getUserPosts(userId),
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
-    },
-    setHasError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
-    setItems: (state, action: PayloadAction<Post []>) => {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.pending, state => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.items = action.payload;
-    },
+      state.isLoading = false;
+    });
+
+    builder.addCase(fetchPosts.rejected, state => {
+      state.hasError = true;
+      state.isLoading = false;
+    });
   },
 });
 
 export default postsSlice.reducer;
-export const { setLoaded, setHasError, setItems } = postsSlice.actions;

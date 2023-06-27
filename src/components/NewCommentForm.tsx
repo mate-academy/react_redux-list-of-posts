@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { addComment } from '../features/comments/commentsSlice';
+import { useAppDispatch } from '../app/hooks';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+interface Props {
+  postId: number,
+}
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const [submitting, setSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,7 +61,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    await onSubmit({ name, email, body });
+    await dispatch(addComment({
+      name,
+      email,
+      body,
+      postId,
+    }));
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));

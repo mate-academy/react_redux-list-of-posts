@@ -8,34 +8,22 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setHasError, setItems, setLoaded } from './features/posts/postsSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPost';
+import { fetchPosts } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
-  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+  const { items, isLoading, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
-
-  function loadUserPosts(userId: number) {
-    dispatch(setLoaded(false));
-
-    getUserPosts(userId)
-      .then(loadedPosts => dispatch(setItems(loadedPosts)))
-      .catch(() => dispatch(setHasError(true)))
-      .finally(() => dispatch(setLoaded(true)));
-  }
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      dispatch(setItems([]));
+      dispatch(fetchPosts(author.id));
     }
   }, [author?.id]);
 
@@ -58,11 +46,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && isLoading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && !isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -71,13 +59,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length === 0 && (
+                {author && !isLoading && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length > 0 && (
+                {author && !isLoading && !hasError && items.length > 0 && (
                   <PostsList />
                 )}
               </div>
