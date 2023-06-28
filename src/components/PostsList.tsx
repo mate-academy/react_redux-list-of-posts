@@ -5,19 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as selectedPostActions
   from '../features/selectedPost/selectedPostSlice';
 
-type Props = {
-  // posts: Post[],
-  // selectedPostId?: number,
-  // onPostSelected: (post: Post | null) => void,
-};
-
-export const PostsList: React.FC<Props> = (
-  // {
-  // posts,
-  // selectedPostId = 0,
-  // onPostSelected,
-// }
-) => {
+export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items: posts } = useAppSelector(state => state.posts);
   const {
@@ -62,7 +50,6 @@ export const PostsList: React.FC<Props> = (
                     },
                   )}
                   onClick={() => {
-                    // onPostSelected(post.id === selectedPostId ? null : post);
                     handleSelectPost(
                       post.id === selectedPost?.id
                         ? null

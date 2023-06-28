@@ -25,11 +25,7 @@ const initialState: PostsInfo = {
 export const postsSlice = createSlice({
   name: 'userPosts',
   initialState,
-  reducers: {
-    // set: (state: AuthorInfo, action: PayloadAction<User>) => {
-    //   state.author = action.payload;
-    // },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
       state.loaded = false;
