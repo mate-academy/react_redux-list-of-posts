@@ -27,16 +27,16 @@ export const PostDetails: React.FC = () => {
     }
   }, [post?.id]);
 
-  if (!post) {
-    return null;
-  }
-
   const addComment = async ({ name, email, body }: CommentData) => {
+    if (!post?.id) {
+      return;
+    }
+
     const newComment = await commentsApi.createComment({
       name,
       email,
       body,
-      postId: post.id,
+      postId: post?.id,
     });
 
     try {
@@ -57,16 +57,17 @@ export const PostDetails: React.FC = () => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">
-          {`#${post?.id}: ${post?.title}`}
-        </h2>
+      {post && (
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${post?.id}: ${post?.title}`}
+          </h2>
 
-        <p data-cy="PostBody">
-          {post?.body}
-        </p>
-      </div>
-
+          <p data-cy="PostBody">
+            {post?.body}
+          </p>
+        </div>
+      )}
       <div className="block">
         {loading && (
           <Loader />
