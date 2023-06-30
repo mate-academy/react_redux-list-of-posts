@@ -23,7 +23,6 @@ export const PostDetails: React.FC = () => {
   }, [post?.id]);
 
   const deleteComment = (commentId: number) => {
-    dispatch(commentsActions.remove(commentId));
     dispatch(commentsActions.removeComment(commentId));
   };
 
@@ -52,7 +51,7 @@ export const PostDetails: React.FC = () => {
           </p>
         )}
 
-        {!hasError && comments.length > 0 && (
+        {!hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 

@@ -4,7 +4,8 @@ import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import postsReducer from '../features/posts/postsSlice';
-import selectedPostReucer from '../features/selectedPost/selectedPostSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+// eslint-disable-next-line import/no-cycle
 import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
@@ -13,7 +14,7 @@ export const store = configureStore({
     users: usersReducer,
     author: authorReducer,
     posts: postsReducer,
-    selectedPost: selectedPostReucer,
+    selectedPost: selectedPostReducer,
     comments: commentsReducer,
   },
 });

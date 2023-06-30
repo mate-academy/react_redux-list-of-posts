@@ -50,11 +50,11 @@ export const PostsList: React.FC = () => {
                     },
                   )}
                   onClick={() => {
-                    handleSelectPost(
-                      post.id === selectedPost?.id
-                        ? null
-                        : post,
-                    );
+                    const postId = post.id === selectedPost?.id
+                      ? null
+                      : post;
+
+                    handleSelectPost(postId);
                   }}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}

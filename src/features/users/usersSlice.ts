@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import {
-  // PayloadAction,
+  SerializedError,
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
@@ -10,26 +10,26 @@ import { getUsers } from '../../api/users';
 type UsersState = {
   users: User[],
   loading: boolean,
-  error: string,
+  error: SerializedError | null,
 };
 
 const initialState: UsersState = {
   users: [],
   loading: false,
-  error: '',
+  error: null,
 };
 
-export const init = createAsyncThunk('users/fetchUsers', async () => {
-  const usersFromServer = await getUsers();
-
-  return usersFromServer;
-});
+export const init = createAsyncThunk(
+  'users/fetchUsers',
+  () => {
+    return getUsers();
+  },
+);
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
-
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
       state.loading = true;
@@ -40,8 +40,8 @@ export const usersSlice = createSlice({
       state.loading = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
-      state.error = 'Error';
+    builder.addCase(init.rejected, (state, action) => {
+      state.error = action.error;
       state.loading = false;
     });
   },

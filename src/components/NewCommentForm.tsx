@@ -35,6 +35,10 @@ export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const { post } = useAppSelector(state => state.selectedPost);
 
+  if (!post) {
+    return null;
+  }
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -53,7 +57,7 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body || !post) {
+    if (!name || !email || !body) {
       return;
     }
 
