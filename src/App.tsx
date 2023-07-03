@@ -1,59 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import * as usersAction from './features/users/users';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
+  const { post: selectedPost } = useAppSelector(state => state.selectedPost);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(usersAction.init());
+  }, []);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -76,18 +60,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && loaded && !hasError && !!posts.length && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -95,7 +75,7 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
@@ -106,9 +86,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost
+                ? <PostDetails />
+                : <p>Chose a post</p>}
             </div>
           </div>
         </div>
