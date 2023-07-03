@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
@@ -18,13 +16,11 @@ const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     select: (state: SelectedPost, action: PayloadAction<Post>) => {
-      state.post = action.payload;
-      state.isSelected = true;
+      return { ...state, post: action.payload, isSelected: true };
     },
 
     clear: (state: SelectedPost) => {
-      state.post = null;
-      state.isSelected = false;
+      return { ...state, post: null, isSelected: false };
     },
   },
 });

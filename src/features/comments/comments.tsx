@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import {
   createAsyncThunk,
   createSlice,
@@ -39,22 +38,21 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     remove: (state: CommentsInfo, action: PayloadAction<number>) => {
-      state.items = state.items.filter(
-        (comment) => comment.id !== action.payload,
-      );
+      return {
+        ...state,
+        items: state.items.filter((comment) => comment.id !== action.payload),
+      };
     },
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending || addComment.pending, (state) => {
-      state.loaded = false;
+      return { ...state, loaded: false };
     });
     builder.addCase(init.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = true;
+      return { ...state, items: action.payload, loaded: true };
     });
     builder.addCase(init.rejected || addComment.rejected, (state) => {
-      state.hasError = true;
-      state.loaded = true;
+      return { ...state, hasError: true, loaded: true };
     });
     builder.addCase(addComment.fulfilled, (state, action) => {
       state.items.push(action.payload);
