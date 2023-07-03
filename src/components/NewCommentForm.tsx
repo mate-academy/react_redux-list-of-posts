@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 import React, { useState } from 'react';
 import * as commentsAction from '../features/comments/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -73,7 +73,7 @@ export const NewCommentForm: React.FC = () => {
     await dispatch(commentsAction.addComment(newComment));
 
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    clearForm();
   };
 
   return (
@@ -89,7 +89,7 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={cn('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -126,7 +126,7 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={cn('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -162,7 +162,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={cn('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
@@ -182,7 +182,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <button
             type="submit"
-            className={classNames('button', 'is-link', {
+            className={cn('button', 'is-link', {
               'is-loading': submitting,
             })}
           >

@@ -1,7 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { AppThunk } from '../../app/store';
+import {
+  createAsyncThunk,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
   createComment,
@@ -23,18 +26,12 @@ const initialState: CommentsInfo = {
 
 export const init = createAsyncThunk(
   'comments/fetchComments',
-  (postId: number) => {
-    return getPostComments(postId);
-  },
+  (postId: number) => getPostComments(postId),
 );
 
 export const addComment = createAsyncThunk(
   'comment/addComment',
-  async (comment: Omit<Comment, 'id'>) => {
-    const addedComment = await createComment(comment);
-
-    return addedComment;
-  },
+  (comment: Omit<Comment, 'id'>) => createComment(comment),
 );
 
 export const commentsSlice = createSlice({
@@ -48,14 +45,14 @@ export const commentsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(init.pending || addComment.pending, (state) => {
       state.loaded = false;
     });
     builder.addCase(init.fulfilled, (state, action) => {
       state.items = action.payload;
       state.loaded = true;
     });
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(init.rejected || addComment.rejected, (state) => {
       state.hasError = true;
       state.loaded = true;
     });
@@ -67,10 +64,11 @@ export const commentsSlice = createSlice({
 
 export const { remove } = commentsSlice.actions;
 
-export const removeComment = (commentId: number): AppThunk => {
-  return (dispatch) => {
+export const removeComment = (commentId: number) => {
+  return async (dispatch: Dispatch) => {
     dispatch(remove(commentId));
-    deleteComment(commentId);
+
+    await deleteComment(commentId);
   };
 };
 

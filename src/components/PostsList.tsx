@@ -12,7 +12,9 @@ export const PostsList: React.FC = () => {
   const handleSelectPost = (post: Post | null) => {
     if (post) {
       dispatch(selectedPostAction.select(post));
-    } else {
+    }
+
+    if (!post) {
       dispatch(selectedPostAction.clear());
     }
   };
@@ -39,13 +41,9 @@ export const PostsList: React.FC = () => {
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className={cn(
-                    'button',
-                    'is-link',
-                    {
-                      'is-light': post.id !== selectedPost?.id,
-                    },
-                  )}
+                  className={cn('button is-link', {
+                    'is-light': post.id !== selectedPost?.id,
+                  })}
                   onClick={() => {
                     handleSelectPost(post.id === selectedPost?.id
                       ? null
