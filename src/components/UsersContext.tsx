@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { getUsers } from '../api/users';
-import { User } from '../types/User';
-
-export const UserContext = React.createContext<User[]>([]);
+import { actions as userActions } from '../features/users/usersSlice';
+import { useAppDispatch } from '../app/hooks';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export const UsersProvider: React.FC<Props> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>([]);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     getUsers()
-      .then(setUsers);
-  }, []);
+      .then(usersFromServer => dispatch(userActions.setUsers(usersFromServer)));
+  }, [dispatch]);
 
   return (
-    <UserContext.Provider value={users}>
+    <>
       {children}
-    </UserContext.Provider>
+    </>
   );
 };
