@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers, setExpanded } from '../features/users/usersSlice';
+import { loadUsers } from '../features/users/usersSlice';
 import { setAuthor } from '../features/author/authorSlice';
 
 export const UserSelector: React.FC = () => {
-  const { users, expanded } = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
+  const [expanded, setExpanded] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -16,7 +17,7 @@ export const UserSelector: React.FC = () => {
     }
 
     const handleDocumentClick = () => {
-      dispatch(setExpanded(false));
+      setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -43,7 +44,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            dispatch(setExpanded(true));
+            setExpanded(true);
           }}
         >
           <span>

@@ -1,19 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
 export interface UsersState {
   users: User[];
-  expanded: boolean,
-  userError: boolean,
+  hasError: boolean,
 }
 
 const initialState: UsersState = {
   users: [],
-  expanded: false,
-  userError: false,
+  hasError: false,
 };
 
 export const loadUsers = createAsyncThunk(
@@ -28,21 +26,16 @@ export const loadUsers = createAsyncThunk(
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setExpanded: (state, action: PayloadAction<boolean>) => {
-      state.expanded = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(loadUsers.fulfilled, (state, action) => {
       state.users = action.payload;
     });
 
     builder.addCase(loadUsers.rejected, (state) => {
-      state.userError = true;
+      state.hasError = true;
     });
   },
 });
 
-export const { setExpanded } = usersSlice.actions;
 export default usersSlice.reducer;

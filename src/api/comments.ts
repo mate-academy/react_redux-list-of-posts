@@ -7,7 +7,7 @@ export const getPostComments = (postId: number) => {
 };
 
 export const createComment = (data: Omit<Comment, 'id'>) => {
-  return client.post<Comment>('/comments', data);
+  return client.post<Comment>('/commen111ts', data);
 };
 
 export const deleteComment = (commentId: number) => {

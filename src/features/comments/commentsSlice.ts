@@ -9,13 +9,13 @@ import {
 
 export interface CommentsState {
   comments: Comment[];
-  loaded: boolean;
+  isLoading: boolean;
   hasError: boolean;
 }
 
 const initialState: CommentsState = {
   comments: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -55,14 +55,14 @@ export const commentsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(loadComments.pending, (state) => {
-        state.loaded = false;
+        state.isLoading = true;
       })
       .addCase(loadComments.fulfilled, (state, action) => {
-        state.loaded = true;
+        state.isLoading = false;
         state.comments = action.payload;
       })
       .addCase(loadComments.rejected, (state) => {
-        state.loaded = true;
+        state.isLoading = false;
         state.hasError = true;
       });
 
@@ -78,7 +78,7 @@ export const commentsSlice = createSlice({
 
     builder
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.comments = [...state.comments, action.payload];
       })
       .addCase(addComment.rejected, (state) => {
         state.hasError = true;
