@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
@@ -20,19 +21,15 @@ const postsSlice = createSlice({
   initialState: InitialState,
   reducers: {
     set: (state, action: PayloadAction<Post[]>) => {
-      // eslint-disable-next-line no-param-reassign
       state.posts = action.payload;
     },
     setIsLoaded: (state, action: PayloadAction<boolean>) => {
-      // eslint-disable-next-line no-param-reassign
       state.isLoaded = action.payload;
     },
     setHasError: (state, action: PayloadAction<boolean>) => {
-      // eslint-disable-next-line no-param-reassign
       state.hasError = action.payload;
     },
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
-      // eslint-disable-next-line no-param-reassign
       state.selectedPost = action.payload;
     },
   },

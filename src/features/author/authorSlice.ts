@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 
@@ -14,7 +15,6 @@ const authorSlice = createSlice({
   initialState: InitialState,
   reducers: {
     setAuthor: (state, action: PayloadAction<User>) => {
-      // eslint-disable-next-line no-param-reassign
       state.author = action.payload;
     },
   },

@@ -27,10 +27,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(commentsACtions.setHasError(false));
     setVisible(false);
 
-    commentsApi.getPostComments(post.id)
-      .then((response) => dispatch(commentsACtions.setComments(response)))
-      .catch(() => dispatch(commentsACtions.setHasError(true)))
-      .finally(() => dispatch(commentsACtions.setIsLoaded(true)));
+    async function getComments() {
+      try {
+        const response = await commentsApi.getPostComments(post.id);
+
+        dispatch(commentsACtions.setComments(response));
+      } catch (error) {
+        dispatch(commentsACtions.setHasError(true));
+      } finally {
+        dispatch(commentsACtions.setIsLoaded(true));
+      }
+    }
+
+    getComments();
   }
 
   useEffect(loadComments, [post.id]);

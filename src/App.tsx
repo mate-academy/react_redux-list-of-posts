@@ -9,7 +9,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { actions as postsActions } from './features/posts/postsSlice';
 
@@ -26,19 +25,24 @@ export const App: React.FC = () => {
 
   function loadUserPosts(userId: number) {
     dispatch(postsActions.setIsLoaded(false));
+    dispatch(postsActions.setHasError(false));
 
-    getUserPosts(userId)
-      .then((postsFromServer) => {
+    async function getUserPostsData() {
+      try {
+        const postsFromServer = await getUserPosts(userId);
+
         dispatch(postsActions.set(postsFromServer));
-      })
-      .catch(() => dispatch(postsActions.setHasError(true)))
-      // We disable the spinner in any case
-      .finally(() => dispatch(postsActions.setIsLoaded(true)));
+      } catch (error) {
+        dispatch(postsActions.setHasError(true));
+      } finally {
+        dispatch(postsActions.setIsLoaded(true));
+      }
+    }
+
+    getUserPostsData();
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(postsActions.setSelectedPost(null));
 
     if (author) {
@@ -50,9 +54,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -81,13 +82,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && isLoaded && !hasError && posts.length === 0 && (
+                {author && isLoaded && !hasError && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && isLoaded && !hasError && posts.length > 0 && (
+                {author && isLoaded && !hasError && !!posts.length && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
