@@ -31,15 +31,17 @@ export const PostDetails: React.FC = () => {
     dispatch(removeComment(commentId));
   };
 
+  const { id, title, body } = selectedPost || {};
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${selectedPost?.id}: ${selectedPost?.title}`}
+          {`#${id}: ${title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {selectedPost?.body}
+          {body}
         </p>
       </div>
 
@@ -64,33 +66,39 @@ export const PostDetails: React.FC = () => {
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+            {comments.map(comment => {
+              const {
+                email, name, id: commentId, body: commentBody,
+              } = comment;
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+              return (
+                <article
+                  className="message is-small"
+                  key={commentId}
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
+                    </a>
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => deleteComment(commentId)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {commentBody}
+                  </div>
+                </article>
+              );
+            })}
           </>
         )}
 

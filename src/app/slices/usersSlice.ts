@@ -9,15 +9,21 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   return fetchedUsers;
 });
 
+enum Status {
+  Idle = 'idle',
+  Loading = 'loading',
+  Failed = 'failed',
+}
+
 export interface UsersState {
   value: User[],
-  status: 'idle' | 'loading' | 'failed',
+  status: Status
   error: null | string,
 }
 
 const initialState: UsersState = {
   value: [],
-  status: 'idle',
+  status: Status.Idle,
   error: null,
 };
 
@@ -28,15 +34,15 @@ export const usersSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchUsers.pending, (state: UsersState) => {
-        state.status = 'loading';
+        state.status = Status.Loading;
       })
       .addCase(fetchUsers.fulfilled,
         (state: UsersState, action: PayloadAction<User[]>) => {
-          state.status = 'idle';
+          state.status = Status.Idle;
           state.value = action.payload;
         })
       .addCase(fetchUsers.rejected, (state: UsersState) => {
-        state.status = 'failed';
+        state.status = Status.Failed;
         state.error = 'Failed to load Users';
       });
   },

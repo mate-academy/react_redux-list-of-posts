@@ -3,11 +3,19 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { commentsSlice } from '../app/slices/commentsSlice';
 import { selectedPostSlice } from '../app/slices/selectedPostSlice';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
+
+  const handleTogglePost = (post: Post) => {
+    dispatch(selectedPostSlice
+      .actions.setSelectedPost(post.id === selectedPost?.id
+        ? null : post));
+    dispatch(commentsSlice.actions.clearComments());
+  };
 
   return (
     <div data-cy="PostsList">
@@ -38,12 +46,7 @@ export const PostsList: React.FC = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(selectedPostSlice
-                      .actions.setSelectedPost(post.id === selectedPost?.id
-                        ? null : post));
-                    dispatch(commentsSlice.actions.clearComments());
-                  }}
+                  onClick={() => handleTogglePost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
