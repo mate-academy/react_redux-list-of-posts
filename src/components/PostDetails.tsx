@@ -8,6 +8,7 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/comments/commentsSlice';
+import { commentsSelector } from '../helpers/funcState';
 
 type Props = {
   post: Post;
@@ -19,7 +20,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     comments,
     loaded,
     hasError,
-  } = useAppSelector(state => state.comments);
+  } = useAppSelector(commentsSelector);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
@@ -52,13 +53,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  const deleteComment = async (commentId: number) => {
-    await commentsApi.deleteComment(commentId);
-
-    dispatch(commentsActions.reset(commentId));
+  const handleClick = () => {
+    setVisible(true);
   };
-
-  // console.log(loaded)
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -93,33 +90,41 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+            {comments.map(comment => {
+              const deleteComment = async () => {
+                await commentsApi.deleteComment(comment.id);
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+                dispatch(commentsActions.reset(comment.id));
+              };
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
+              return (
+                <article
+                  className="message is-small"
+                  key={comment.id}
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
+                    </a>
+
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={deleteComment}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              );
+            })}
           </>
         )}
 
@@ -128,7 +133,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={handleClick}
           >
             Write a comment
           </button>

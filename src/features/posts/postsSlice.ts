@@ -7,7 +7,7 @@ export const init = createAsyncThunk(
   (userId: number) => getUserPosts(userId),
 );
 
-type PostState = {
+export type PostState = {
   items: Post[],
   loading: boolean,
   error: boolean,

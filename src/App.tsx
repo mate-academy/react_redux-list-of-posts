@@ -12,12 +12,17 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, max-len
 import * as selectedPostActions from './features/selectedPost/selectedPostSlice';
+import {
+  authorSelector,
+  postsSelector,
+  selectedPostSelector,
+} from './helpers/funcState';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { items, loading, error } = useAppSelector(state => state.posts);
-  const { author } = useAppSelector(state => state.author);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { items, loading, error } = useAppSelector(postsSelector);
+  const { author } = useAppSelector(authorSelector);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
 
   useEffect(() => {
     dispatch(selectedPostActions.add(null));

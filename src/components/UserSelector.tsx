@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/users/usersSlice';
 import * as authorActions from '../features/author/authorSlice';
+import { authorSelector, usersSelector } from '../helpers/funcState';
 
 export const UserSelector: React.FC = (
 ) => {
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector(state => state.users);
-  const { author } = useAppSelector(state => state.author);
+  const { users } = useAppSelector(usersSelector);
+  const { author } = useAppSelector(authorSelector);
 
   useEffect(() => {
     dispatch(usersActions.init());
   }, []);
-
-  const handleClick = (user: User) => {
-    dispatch(authorActions.add(user));
-  };
 
   useEffect(() => {
     if (!expanded) {
@@ -37,6 +33,10 @@ export const UserSelector: React.FC = (
     };
   }, [expanded]);
 
+  const changeClick = () => {
+    setExpanded(current => !current);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -48,9 +48,7 @@ export const UserSelector: React.FC = (
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={changeClick}
         >
           <span>
             {author?.name || 'Choose a user'}
@@ -66,14 +64,15 @@ export const UserSelector: React.FC = (
         <div className="dropdown-content">
           {users.map(user => {
             const isActive = user.id === author?.id;
+            const handleClick = () => {
+              dispatch(authorActions.add(user));
+            };
 
             return (
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                onClick={() => {
-                  handleClick(user);
-                }}
+                onClick={handleClick}
                 className={classNames('dropdown-item', {
                   'is-active': isActive,
                 })}

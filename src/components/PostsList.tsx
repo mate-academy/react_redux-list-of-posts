@@ -3,6 +3,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, max-len
 import * as selectedPostActions from '../features/selectedPost/selectedPostSlice';
+import { postsSelector } from '../helpers/funcState';
 
 type Props = {
   selectedPostId?: number,
@@ -12,7 +13,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId = 0,
 }) => {
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(postsSelector);
 
   return (
     <div data-cy="PostsList">

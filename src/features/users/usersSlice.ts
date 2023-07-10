@@ -4,7 +4,7 @@ import { getUsers } from '../../api/users';
 
 export const init = createAsyncThunk('users/fetch', () => getUsers());
 
-type UsersState = {
+export type UsersState = {
   users: User[],
 };
 

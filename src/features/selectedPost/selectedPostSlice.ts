@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
-type SelectedPostState = {
+export type SelectedPostState = {
   selectedPost: null | Post;
 };
 

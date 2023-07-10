@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 
-type CommentsState = {
+export type CommentsState = {
   comments: Comment[],
   loaded: boolean,
   hasError: boolean,
