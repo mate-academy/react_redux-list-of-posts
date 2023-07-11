@@ -11,14 +11,15 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  // const [author, setAuthor] = useState<User | null>(null);
+  const author: User = useAppSelector(state => state.author);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
@@ -32,8 +33,10 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
+
+  }, []);
+
+  useEffect(() => {
     setSelectedPost(null);
 
     if (author) {
@@ -45,15 +48,12 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
