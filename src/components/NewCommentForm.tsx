@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { NewComment } from '../api/comments';
+import { useAppSelector } from '../app/hooks';
 
 type Props = {
   onSubmit: (data: NewComment) => void;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const isSubmitting = useAppSelector(state => state.comments.isSubmitting);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -58,8 +59,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
       return;
     }
 
-    setSubmitting(true);
-
     onSubmit({
       name,
       email,
@@ -67,7 +66,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
       postId,
     });
 
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
   };
 
@@ -178,7 +176,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
