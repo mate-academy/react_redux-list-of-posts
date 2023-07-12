@@ -1,15 +1,38 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  Store,
+  AnyAction,
+  ThunkDispatch,
+} from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import counterReducer from '../features/counter/counterSlice';
+import usersReducer, { UsersState } from '../features/users/userSlice';
+import postsReducer, { PostsState } from '../features/posts/postsSlice';
+import commentsReducer,
+{ CommentsState } from '../features/comments/commentsSlice';
 
-export const store = configureStore({
+export type AppThunkDispatch = ThunkDispatch<RootState, any, AnyAction>;
+
+export type AppStore = Omit<Store<RootState, AnyAction>, 'dispatch'> & {
+  dispatch: AppThunkDispatch;
+};
+
+export interface RootState {
+  users: UsersState,
+  posts: PostsState,
+  comments: CommentsState,
+}
+
+export const store: AppStore = configureStore({
   reducer: {
-    counter: counterReducer,
+    users: usersReducer,
+    posts: postsReducer,
+    comments: commentsReducer,
   },
 });
 
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
 
 /* eslint-disable @typescript-eslint/indent */
 export type AppThunk<ReturnType = void> = ThunkAction<
