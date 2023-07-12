@@ -1,13 +1,17 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { FC, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments/commentsSlice';
+import { Post } from '../types/Post';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  post: Post,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: FC<Props> = ({ post }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector(state => state.comments);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -57,19 +61,27 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
+    setIsLoading(true);
+    await dispatch(commentsActions.addComment({
+      name, email, body, postId: post.id,
+    }));
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setIsLoading(false);
   };
 
+  if (error) {
+    return (
+      <p>{error}</p>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -175,7 +187,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isLoading,
             })}
           >
             Add
