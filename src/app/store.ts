@@ -1,6 +1,7 @@
 import {
   configureStore,
   ThunkAction,
+  Action,
   Store,
   AnyAction,
   ThunkDispatch,
