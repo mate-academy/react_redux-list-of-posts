@@ -1,18 +1,19 @@
 import {
   configureStore,
   ThunkAction,
-  Action,
   Store,
   AnyAction,
   ThunkDispatch,
 } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import usersReducer, { UsersState } from '../features/users/userSlice';
-import postsReducer, { PostsState } from '../features/posts/postsSlice';
+import usersReducer,
+{ UsersState } from '../features/users/userSlice';
+import postsReducer,
+{ PostsState } from '../features/posts/postsSlice';
 import commentsReducer,
 { CommentsState } from '../features/comments/commentsSlice';
 
-export type AppThunkDispatch = ThunkDispatch<RootState, any, AnyAction>;
+export type AppThunkDispatch = ThunkDispatch<RootState, {}, AnyAction>;
 
 export type AppStore = Omit<Store<RootState, AnyAction>, 'dispatch'> & {
   dispatch: AppThunkDispatch;

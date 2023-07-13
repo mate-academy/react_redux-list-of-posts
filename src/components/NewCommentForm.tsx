@@ -50,19 +50,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     onSubmit({
-      name,
-      email,
-      body,
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
       postId,
     });
 
