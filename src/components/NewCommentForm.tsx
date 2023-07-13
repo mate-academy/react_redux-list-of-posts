@@ -1,38 +1,35 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setErrors, setValues } from '../features/commentForm';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
+  const errors = useAppSelector(state => state.commentsForm.errors);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const { name, email, body } = useAppSelector(
+    state => state.commentsForm.values,
+  );
+  const values = { name, email, body };
 
   const clearForm = () => {
-    setValues({
+    dispatch(setValues({
       name: '',
       email: '',
       body: '',
-    });
+    }));
 
-    setErrors({
+    dispatch(setErrors({
       name: false,
       email: false,
       body: false,
-    });
+    }));
   };
 
   const handleChange = (
@@ -40,8 +37,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    const updatedValues = { ...values, [field]: value };
+
+    dispatch(setValues(updatedValues));
+    dispatch(setErrors({ ...errors, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -58,14 +57,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(setValues({ ...values, body: '' }));
   };
 
   return (

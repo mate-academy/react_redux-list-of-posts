@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -11,38 +11,40 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { useAppSelector } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setError, setItems, setLoaded } from './features/posts';
+import { setSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  // const [author, setAuthor] = useState<User | null>(null);
+  const posts: Post[] = useAppSelector(state => state.posts.items);
+  const loaded: boolean = useAppSelector(state => state.posts.loaded);
+  const hasError: boolean = useAppSelector(state => state.posts.hasError);
+
   const author: User = useAppSelector(state => state.author);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost: Post | null = useAppSelector(
+    state => state.selectedPost.selectedPost,
+  );
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(setLoaded(true));
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .then(data => {
+        dispatch(setItems(data));
+      })
+      .catch(() => dispatch(setError(true)))
+      .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(() => {
-
-  }, []);
-
-  useEffect(() => {
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setItems([]));
     }
   }, [author?.id]);
 
@@ -86,7 +88,6 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>

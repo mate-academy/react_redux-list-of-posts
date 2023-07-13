@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { getUsers } from '../api/users';
-import { setUsers } from '../features/users/users';
-import { setAuthor } from '../features/author/author';
+import { setUsers } from '../features/users';
+import { setAuthor } from '../features/author';
 
 export const UserSelector = () => {
   const users: User[] = useAppSelector(state => state.users) || [];
