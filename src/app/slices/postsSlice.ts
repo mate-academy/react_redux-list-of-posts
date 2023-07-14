@@ -13,13 +13,13 @@ export const fetchPosts = createAsyncThunk(
 );
 
 export interface PostState {
-  loaded: boolean,
+  isLoading: boolean,
   hasError: boolean,
   items: Post[],
 }
 
 const initialState: PostState = {
-  loaded: false,
+  isLoading: false,
   hasError: false,
   items: [],
 };
@@ -31,17 +31,17 @@ export const postsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchPosts.pending, (state: PostState) => {
-        state.loaded = false;
+        state.isLoading = false;
         state.hasError = false;
       })
       .addCase(fetchPosts.fulfilled, (
         state: PostState, action: PayloadAction<Post[]>,
       ) => {
-        state.loaded = true;
+        state.isLoading = true;
         state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, (state: PostState) => {
-        state.loaded = true;
+        state.isLoading = true;
         state.hasError = true;
       });
   },

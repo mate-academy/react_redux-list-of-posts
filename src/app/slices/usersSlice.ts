@@ -42,7 +42,6 @@ export const usersSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (
         state: UsersState, action: PayloadAction<User[]>,
       ) => {
-        state.status = Status.Idle;
         state.value = action.payload;
       })
       .addCase(fetchUsers.rejected, (state: UsersState) => {

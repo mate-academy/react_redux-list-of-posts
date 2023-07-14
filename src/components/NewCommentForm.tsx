@@ -3,6 +3,13 @@ import React, { FC, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createNewComment } from '../app/slices/commentSlice';
 
+const validateEmail = (email = 'no email') => {
+  return /\S+@\S+\.\S+/.test(email);
+};
+
+// eslint-disable-next-line no-console
+console.log(validateEmail('easdasdasd'));
+
 export const NewCommentForm: FC = () => {
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
@@ -48,11 +55,11 @@ export const NewCommentForm: FC = () => {
 
     setErrors({
       name: !name,
-      email: !email,
+      email: !email || !validateEmail(email),
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body || !validateEmail(email)) {
       return;
     }
 
@@ -136,7 +143,9 @@ export const NewCommentForm: FC = () => {
 
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {email && !validateEmail(email)
+              ? 'Write a correct email'
+              : 'Email is required'}
           </p>
         )}
       </div>
