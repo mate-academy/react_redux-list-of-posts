@@ -23,4 +23,4 @@ export const authorSlice = createSlice({
   },
 });
 
-export const { setAuthor } = authorSlice.actions;
+export const { setAuthor, clearAuthor } = authorSlice.actions;
