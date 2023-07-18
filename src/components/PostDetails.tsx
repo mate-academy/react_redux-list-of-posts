@@ -24,18 +24,14 @@ export const PostDetails: React.FC = () => {
   useEffect(loadComments, [selectedPost?.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: selectedPost?.id,
-      });
+    const newComment = await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: selectedPost?.id || 0,
+    });
 
-      dispatch(add(newComment));
-    } catch (error) {
-      console.error(error);
-    }
+    dispatch(add(newComment));
   };
 
   const deleteComment = async (commentId: number) => {

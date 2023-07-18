@@ -23,8 +23,6 @@ export const App: React.FC = () => {
     }
   }, [author?.id]);
 
-  console.log(loaded, author?.name);
-
   return (
     <main className="section">
       <div className="container">
