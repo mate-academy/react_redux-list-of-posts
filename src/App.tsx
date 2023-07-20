@@ -45,11 +45,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              (
+                selectedPost && selectedPost?.userId === author?.id
+                  ? 'Sidebar--open' : ''
+              ),
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost ? (
+              {selectedPost && selectedPost?.userId === author?.id ? (
                 <PostDetails />
               ) : (
                 <p>Choose a post</p>

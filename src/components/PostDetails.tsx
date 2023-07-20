@@ -146,7 +146,7 @@ export const PostDetails: React.FC = () => {
           ))}
         </>
 
-        {loaded && !hasError && !visible && (
+        {!loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"

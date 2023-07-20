@@ -69,6 +69,8 @@ export const NewCommentForm: React.FC = () => {
       ...state,
       body: '',
     }));
+
+    setIsSubmiting(false);
   };
 
   return (
