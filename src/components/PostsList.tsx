@@ -11,7 +11,7 @@ type Props = {
   author: User,
 };
 
-export const PostsList: React.FC<Props> = ({ author }) => {
+export const PostsList: React.FC<Props> = React.memo(({ author }) => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { posts, isLoading, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
@@ -93,4 +93,4 @@ export const PostsList: React.FC<Props> = ({ author }) => {
       </table>
     </div>
   );
-};
+});

@@ -16,7 +16,7 @@ const initialState: CommentsState = {
 };
 
 export const getCommentsByPostId = createAsyncThunk(
-  'posts/fetch', (postId: number) => getPostComments(postId),
+  'comments/fetch', (postId: number) => getPostComments(postId),
 );
 
 export const createNewComment = createAsyncThunk(
@@ -30,7 +30,7 @@ export const deleteCommentById = createAsyncThunk(
 );
 
 const commentsSlice = createSlice({
-  name: 'posts',
+  name: 'comments',
   initialState,
   reducers: {},
   extraReducers: builder => builder
