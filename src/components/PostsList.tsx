@@ -11,9 +11,10 @@ export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleTogglePost = (post: Post) => {
+    const newSelectedPost = post.id === selectedPost?.id ? null : post;
+
     dispatch(selectedPostSlice
-      .actions.setSelectedPost(post.id === selectedPost?.id
-        ? null : post));
+      .actions.setSelectedPost(newSelectedPost));
     dispatch(commentsSlice.actions.clearComments());
   };
 

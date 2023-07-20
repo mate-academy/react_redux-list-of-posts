@@ -15,11 +15,7 @@ export const PostDetails: React.FC = () => {
 
   function loadComments() {
     setVisible(false);
-    if (selectedPost) {
-      dispatch(fetchComments(selectedPost.id));
-    } else {
-      dispatch(fetchComments(0));
-    }
+    dispatch(fetchComments(selectedPost ? selectedPost.id : 0));
   }
 
   useEffect(loadComments, [selectedPost?.id]);

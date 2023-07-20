@@ -30,10 +30,9 @@ export const commentsSlice = createSlice({
       state.items.push(action.payload);
     },
     removeComment: (state: CommentsState, action: PayloadAction<number>) => {
-      return {
-        ...state,
-        items: state.items.filter(comment => comment.id !== action.payload),
-      };
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
     },
     clearComments: (state: CommentsState) => {
       state.items = [];
