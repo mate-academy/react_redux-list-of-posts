@@ -8,14 +8,14 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.value);
-  const posts: Post[] = useAppSelector(state => state.posts.value);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
-  const statusOfPostsLoading = useAppSelector(state => state.posts.status);
+  const {
+    value: posts, status: statusOfPostsLoading,
+  } = useAppSelector(state => state.posts);
   const statusOfUsersLoading = useAppSelector(state => state.users.status);
 
   return (

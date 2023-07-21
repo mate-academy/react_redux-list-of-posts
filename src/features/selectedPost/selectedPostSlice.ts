@@ -1,15 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
+import { SelectedStatus } from '../../types/SelectedStatus';
 
 export interface SelectedPostReducer {
   value: Post | null,
-  status: 'selected' | 'unselected'
+  status: SelectedStatus
 }
 
 const initialState: SelectedPostReducer = {
   value: null,
-  status: 'unselected',
+  status: SelectedStatus.UNSELECTED,
 };
 
 const selectedPostReducer = createSlice({
@@ -17,11 +18,11 @@ const selectedPostReducer = createSlice({
   initialState,
   reducers: {
     setPost: (state, action: PayloadAction<Post>) => {
-      state.status = 'selected';
+      state.status = SelectedStatus.SELECTED;
       state.value = action.payload;
     },
     unsetPost: (state) => {
-      state.status = 'unselected';
+      state.status = SelectedStatus.UNSELECTED;
       state.value = null;
     },
   },

@@ -9,7 +9,6 @@ export const NewCommentForm: React.FC = () => {
     state => state.selectedPost.value?.id as number,
   );
   const statusCreatingComment = useAppSelector(state => state.comments.status);
-  // const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,

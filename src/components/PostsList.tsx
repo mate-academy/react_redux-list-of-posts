@@ -3,6 +3,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setPost, unsetPost } from '../features/selectedPost/selectedPostSlice';
 import { Post } from '../types/Post';
+import { SelectedStatus } from '../types/SelectedStatus';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,11 +13,11 @@ export const PostsList: React.FC = () => {
 
   function handleSelectingPost(post: Post) {
     switch (statusSelectedPost) {
-      case 'selected':
+      case SelectedStatus.SELECTED:
         dispatch(unsetPost());
         break;
 
-      case 'unselected':
+      case SelectedStatus.UNSELECTED:
         dispatch(setPost(post));
         break;
 

@@ -1,15 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
+import { SelectedStatus } from '../../types/SelectedStatus';
 
 export interface AutorState {
   value: User | null,
-  status: 'selected' | 'unselected'
+  status: SelectedStatus
 }
 
 const initialState: AutorState = {
   value: null,
-  status: 'unselected',
+  status: SelectedStatus.UNSELECTED,
 };
 
 const authorReducer = createSlice({
@@ -17,7 +18,7 @@ const authorReducer = createSlice({
   initialState,
   reducers: {
     setAuthor: (state, action: PayloadAction<User>) => {
-      state.status = 'selected';
+      state.status = SelectedStatus.SELECTED;
       state.value = action.payload;
     },
   },

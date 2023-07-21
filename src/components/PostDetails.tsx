@@ -6,6 +6,7 @@ import { Comment } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { deleteAsync as deleteComment, incrementAsync as loadingComments }
   from '../features/comments/commemtsSlice';
+import { AsyncStatus } from '../types/AsyncStatus';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -19,6 +20,10 @@ export const PostDetails: React.FC = () => {
     visibleComments, setVisibleComments,
   ] = useState<Comment[]>([]);
 
+  const checkNoCommentsYet = commentsStatus !== AsyncStatus.LOADING
+    && commentsStatus !== AsyncStatus.FAILED
+    && !visibleComments.length;
+
   useEffect(() => {
     if (post) {
       dispatch(loadingComments(post.id));
@@ -28,11 +33,11 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     setVisibleComments([]);
-  }, [commentsStatus === 'loading']);
+  }, [commentsStatus === AsyncStatus.LOADING]);
 
   useEffect(() => {
     setVisibleComments(comments);
-  }, [commentsStatus === 'idle']);
+  }, [commentsStatus === AsyncStatus.IDLE]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -47,7 +52,7 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {commentsStatus === 'loading' && (
+        {commentsStatus === AsyncStatus.LOADING && (
           <Loader />
         )}
 
@@ -57,14 +62,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {commentsStatus === 'idle'
-          && comments.length === 0 && (
+        {checkNoCommentsYet && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {visibleComments.length > 0 && commentsStatus === 'idle' && (
+        {visibleComments.length > 0 && commentsStatus === AsyncStatus.IDLE && (
           <>
             <p className="title is-4">Comments:</p>
             {visibleComments.map((comment) => (
@@ -102,7 +106,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {commentsStatus === 'idle' && !visible && (
+        {commentsStatus === AsyncStatus.IDLE && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
