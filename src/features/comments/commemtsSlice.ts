@@ -10,7 +10,7 @@ export enum AsyncStatus {
 
 export interface CommentsState {
   value: Comment[],
-  status: 'idle' | 'loading' | 'failed',
+  status: 'idle' | 'loading' | 'failed' | 'newCommentLoading',
 }
 
 const initialState: CommentsState = {
@@ -19,7 +19,7 @@ const initialState: CommentsState = {
 };
 
 export const incrementAsync = createAsyncThunk(
-  'comments/fetchComments',
+  'comments/fetchComments-get',
   async (postId: number) => {
     const comments = await getPostComments(postId);
 
@@ -29,7 +29,7 @@ export const incrementAsync = createAsyncThunk(
 );
 
 export const deleteAsync = createAsyncThunk(
-  'comments/fetchComments/delete',
+  'comments/fetchComments-delete',
   async (commentId: number) => {
     await deleteComment(commentId);
 
@@ -38,7 +38,7 @@ export const deleteAsync = createAsyncThunk(
 );
 
 export const createCommentAsync = createAsyncThunk(
-  'comments/fetchComments/post',
+  'comments/fetchComments-post',
   async ({
     name, email, body, postId: selectedPostId,
   }: CommentData) => {
@@ -80,7 +80,7 @@ const commentsSlice = createSlice({
         state.status = 'failed';
       })
       .addCase(createCommentAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'newCommentLoading';
       })
       .addCase(createCommentAsync.fulfilled, (state, action) => {
         state.status = 'idle';

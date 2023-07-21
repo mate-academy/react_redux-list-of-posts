@@ -9,6 +9,7 @@ export const NewCommentForm: React.FC = () => {
     state => state.selectedPost.value?.id as number,
   );
   const statusCreatingComment = useAppSelector(state => state.comments.status);
+  // const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -177,7 +178,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': statusCreatingComment === 'loading',
+              'is-loading': statusCreatingComment === 'newCommentLoading',
             })}
           >
             Add

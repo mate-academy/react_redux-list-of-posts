@@ -15,6 +15,9 @@ export const PostDetails: React.FC = () => {
   const comments: Comment[] = useAppSelector(state => state.comments.value);
   const commentsStatus = useAppSelector(state => state.comments.status);
   const dispatch = useAppDispatch();
+  const [
+    visibleComments, setVisibleComments,
+  ] = useState<Comment[]>([]);
 
   useEffect(() => {
     if (post) {
@@ -22,6 +25,14 @@ export const PostDetails: React.FC = () => {
       setVisible(false);
     }
   }, [post?.id]);
+
+  useEffect(() => {
+    setVisibleComments([]);
+  }, [commentsStatus === 'loading']);
+
+  useEffect(() => {
+    setVisibleComments(comments);
+  }, [commentsStatus === 'idle']);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -46,16 +57,17 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {commentsStatus === 'idle' && comments.length === 0 && (
+        {commentsStatus === 'idle'
+          && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {comments.length > 0 && commentsStatus === 'idle' && (
+        {visibleComments.length > 0 && commentsStatus === 'idle' && (
           <>
             <p className="title is-4">Comments:</p>
-            {comments.map(comment => (
+            {visibleComments.map((comment) => (
               <article
                 className="message is-small"
                 key={comment.id}
@@ -71,7 +83,12 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteComment(comment.id))}
+                    onClick={() => {
+                      setVisibleComments(
+                        prev => prev.filter(c => c.id !== comment.id),
+                      );
+                      dispatch(deleteComment(comment.id));
+                    }}
                   >
                     delete button
                   </button>
