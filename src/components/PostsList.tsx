@@ -1,20 +1,40 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setPost, unsetPost } from '../features/selectedPost/selectedPostSlice';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const posts: Post[] = useAppSelector(state => state.posts.value);
+  const { value: posts } = useAppSelector(state => state.posts);
   const selectedPostId = useAppSelector(state => state.selectedPost.value?.id);
   const statusSelectedPost = useAppSelector(state => state.selectedPost.status);
+
+  function handleSelectingPost(post: Post) {
+    switch (statusSelectedPost) {
+      case 'selected':
+        dispatch(unsetPost());
+        break;
+
+      case 'unselected':
+        dispatch(setPost(post));
+        break;
+
+      default:
+        break;
+    }
+
+    if (selectedPostId !== post.id) {
+      dispatch(setPost(post));
+    }
+  }
 
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
 
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+
         <thead>
           <tr className="has-background-link-light">
             <th>#</th>
@@ -39,15 +59,7 @@ export const PostsList: React.FC = () => {
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
-                    if (statusSelectedPost === 'unselected') {
-                      dispatch(setPost(post));
-                    }
-
-                    if (statusSelectedPost === 'selected') {
-                      dispatch(unsetPost());
-                    }
-                  }}
+                  onClick={() => handleSelectingPost(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>

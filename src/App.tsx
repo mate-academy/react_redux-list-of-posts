@@ -9,7 +9,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
@@ -21,9 +20,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/  app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -61,6 +57,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
+                {statusOfPostsLoading === 'loading' && (<Loader />)}
+
                 {author
                   && statusOfPostsLoading === 'idle'
                   && posts.length > 0 && (
@@ -83,8 +81,10 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {selectedPost ? (
                 <PostDetails />
+              ) : (
+                <p>Choose a post</p>
               )}
             </div>
           </div>

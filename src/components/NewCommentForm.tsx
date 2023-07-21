@@ -61,6 +61,7 @@ export const NewCommentForm: React.FC = () => {
     dispatch(createCommentAsync({
       name, email, body, postId,
     }));
+
     // it is very easy to forget about `await` keyword
     // await onSubmit({ name, email, body });
 

@@ -4,6 +4,10 @@ import { createComment, deleteComment, getPostComments }
   from '../../api/comments';
 import { Comment, CommentData } from '../../types/Comment';
 
+export enum AsyncStatus {
+
+}
+
 export interface CommentsState {
   value: Comment[],
   status: 'idle' | 'loading' | 'failed',
@@ -65,9 +69,6 @@ const commentsSlice = createSlice({
       })
       .addCase(incrementAsync.rejected, (state) => {
         state.status = 'failed';
-      })
-      .addCase(deleteAsync.pending, (state) => {
-        state.status = 'loading';
       })
       .addCase(deleteAsync.fulfilled, (state, action) => {
         state.status = 'idle';

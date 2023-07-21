@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { deleteAsync as deleteComment, incrementAsync as loadingComments }
@@ -10,20 +9,25 @@ import { deleteAsync as deleteComment, incrementAsync as loadingComments }
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const post: Post = useAppSelector(state => state.selectedPost.value) as Post;
+  const {
+    value: post,
+  } = useAppSelector(state => state.selectedPost);
   const comments: Comment[] = useAppSelector(state => state.comments.value);
   const commentsStatus = useAppSelector(state => state.comments.status);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadingComments(post.id));
-  }, [post.id]);
+    if (post) {
+      dispatch(loadingComments(post.id));
+      setVisible(false);
+    }
+  }, [post?.id]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
+          {`#${post?.id}: ${post?.title}`}
         </h2>
 
         <p data-cy="PostBody">
@@ -48,10 +52,9 @@ export const PostDetails: React.FC = () => {
           </p>
         )}
 
-        {commentsStatus === 'idle' && comments.length > 0 && (
+        {comments.length > 0 && commentsStatus === 'idle' && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -82,7 +85,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {commentsStatus === 'idle' && (
+        {commentsStatus === 'idle' && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -93,7 +96,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {commentsStatus === 'idle' && visible && (
+        {visible && (
           <NewCommentForm />
         )}
       </div>
