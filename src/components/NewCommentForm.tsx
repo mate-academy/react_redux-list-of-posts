@@ -37,7 +37,12 @@ export const NewCommentForm = () => {
   const handleSubmitComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const { name, email, body } = newComment;
+    const trimmedComment = Object.keys(newComment)
+      .reduce((acc, key) => {
+        return { ...acc, [key]: newComment[key as keyof CommentData].trim() };
+      }, {} as CommentData);
+
+    const { name, email, body } = trimmedComment;
 
     setErrorForm({
       name: !name,
@@ -55,7 +60,7 @@ export const NewCommentForm = () => {
       const newId = +Date.now().toString().substring(5);
 
       const comment = {
-        ...newComment,
+        ...trimmedComment,
         id: newId,
         postId: selectedPost.id,
       };

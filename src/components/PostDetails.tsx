@@ -105,20 +105,22 @@ export const PostDetails = () => {
                   </article>
                 );
               })}
-
-              {!openForm ? (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={() => setOpenForm(true)}
-                >
-                  Write a comment
-                </button>
-              ) : (
-                <NewCommentForm />
-              )}
             </>
+          )}
+
+          {(!openForm && !loaded) && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setOpenForm(true)}
+            >
+              Write a comment
+            </button>
+          )}
+
+          {openForm && (
+            <NewCommentForm />
           )}
         </div>
       </div>
