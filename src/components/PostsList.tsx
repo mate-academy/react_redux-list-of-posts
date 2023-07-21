@@ -2,12 +2,13 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setPost } from '../features/selectedPost/selectedPostSlice';
+import { setPost, unsetPost } from '../features/selectedPost/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const posts: Post[] = useAppSelector(state => state.posts.value);
   const selectedPostId = useAppSelector(state => state.selectedPost.value?.id);
+  const statusSelectedPost = useAppSelector(state => state.selectedPost.status);
 
   return (
     <div data-cy="PostsList">
@@ -39,7 +40,13 @@ export const PostsList: React.FC = () => {
                     },
                   )}
                   onClick={() => {
-                    dispatch(setPost(post));
+                    if (statusSelectedPost === 'unselected') {
+                      dispatch(setPost(post));
+                    }
+
+                    if (statusSelectedPost === 'selected') {
+                      dispatch(unsetPost());
+                    }
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}

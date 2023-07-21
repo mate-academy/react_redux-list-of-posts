@@ -22,7 +22,7 @@ export const incrementAsync = createAsyncThunk(
   },
 );
 
-const usersReducer = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
@@ -42,4 +42,4 @@ const usersReducer = createSlice({
   },
 });
 
-export const { reducer, actions } = usersReducer;
+export const { reducer, actions } = usersSlice;

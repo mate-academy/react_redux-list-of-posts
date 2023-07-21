@@ -6,6 +6,8 @@ import { reducer as authorReducer } from '../features/author/authorSlice';
 import { reducer as postReducer } from '../features/posts/postsSlice';
 import { reducer as selectedPostReducer }
   from '../features/selectedPost/selectedPostSlice';
+import { reducer as commentsReducer }
+  from '../features/comments/commemtsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +16,7 @@ export const store = configureStore({
     author: authorReducer,
     posts: postReducer,
     selectedPost: selectedPostReducer,
+    comments: commentsReducer,
   },
 });
 
