@@ -9,6 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppSelector } from './app/hooks';
+import { AsyncStatus } from './types/AsyncStatus';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.value);
@@ -35,12 +36,12 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {statusOfUsersLoading === 'loading'
-                  && statusOfPostsLoading === 'loading' && (
+                {statusOfUsersLoading === AsyncStatus.LOADING
+                  && statusOfPostsLoading === AsyncStatus.LOADING && (
                   <Loader />
                 )}
 
-                {author && statusOfPostsLoading === 'failed' && (
+                {author && statusOfPostsLoading === AsyncStatus.FAILED && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -50,17 +51,17 @@ export const App: React.FC = () => {
                 )}
 
                 {author
-                  && statusOfPostsLoading === 'idle'
+                  && statusOfPostsLoading === AsyncStatus.IDLE
                   && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {statusOfPostsLoading === 'loading' && (<Loader />)}
+                {statusOfPostsLoading === AsyncStatus.LOADING && (<Loader />)}
 
                 {author
-                  && statusOfPostsLoading === 'idle'
+                  && statusOfPostsLoading === AsyncStatus.IDLE
                   && posts.length > 0 && (
                   <PostsList />
                 )}

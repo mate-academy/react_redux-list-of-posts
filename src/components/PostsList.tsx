@@ -54,8 +54,7 @@ export const PostsList: React.FC = () => {
                   type="button"
                   data-cy="PostButton"
                   className={classNames(
-                    'button',
-                    'is-link',
+                    'button is-link',
                     {
                       'is-light': post.id !== selectedPostId,
                     },

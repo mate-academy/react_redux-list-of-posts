@@ -6,7 +6,7 @@ import { createCommentAsync } from '../features/comments/commemtsSlice';
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const postId = useAppSelector(
-    state => state.selectedPost.value?.id as number,
+    state => state.selectedPost.value?.id || 0,
   );
   const statusCreatingComment = useAppSelector(state => state.comments.status);
 
@@ -62,12 +62,7 @@ export const NewCommentForm: React.FC = () => {
       name, email, body, postId,
     }));
 
-    // it is very easy to forget about `await` keyword
-    // await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
