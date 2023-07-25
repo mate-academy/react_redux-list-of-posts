@@ -1,8 +1,10 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createComment, deleteComment, getPostComments } from '../api/comments';
+import { createComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
+import { AppDispatch, RootState } from '../app/store';
+import * as commentsApi from '../api/comments';
 
 export interface CommentsState {
   comments: Comment[];
@@ -34,14 +36,14 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const removeComment = createAsyncThunk(
+/* export const removeComment = createAsyncThunk(
   'comments/DELETE',
   async (commentId: number) => {
     const removedComment = await deleteComment(commentId);
 
     return removedComment;
   },
-);
+); */
 
 export const commentsSlice = createSlice({
   name: 'comments',
@@ -66,26 +68,32 @@ export const commentsSlice = createSlice({
       },
     );
 
+    builder.addCase(loadComments.rejected, (state) => {
+      state.status = 'failed';
+      state.hasError = true;
+    });
+
     builder.addCase(
       addComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
       },
     );
 
-    builder.addCase(
-      removeComment.fulfilled, (state, action) => {
-        state.comments = state.comments
-          .filter(comment => comment.id !== action.payload);
-      },
-    );
-
-    builder.addCase(loadComments.rejected, (state) => {
-      state.status = 'failed';
+    builder.addCase(addComment.rejected, (state) => {
       state.hasError = true;
     });
   },
 });
 
 export const { setComments, clearComments } = commentsSlice.actions;
-
 export default commentsSlice.reducer;
+
+export const dComment = (commentId: number) => {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(setComments(
+      getState().comments.comments.filter(comment => comment.id !== commentId),
+    ));
+
+    await commentsApi.deleteComment(commentId);
+  };
+};

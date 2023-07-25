@@ -22,12 +22,8 @@ export const PostDetails: React.FC = () => {
     }
   }, [selectedPost]);
 
-  const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.removeComment(commentId));
-  };
-
   return (
-    <div className="content" data-cy="Post n n nnnnnnnnntails">
+    <div className="content" data-cy="Post">
       <div className="block">
         <h2 data-cy="PostTitle">
           {`#${id}: ${title}`}
@@ -49,13 +45,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {(status === 'loading') && !hasError && comments.length === 0 && (
+        {!hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {(status === 'loading') && !hasError && comments.length > 0 && (
+        {!hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -75,7 +71,9 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(
+                      commentsActions.dComment(comment.id),
+                    )}
                   >
                     delete button
                   </button>
@@ -89,7 +87,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {(status === 'loading') && !hasError && !visible && (
+        {!hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -100,7 +98,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {(status === 'loading') && !hasError && visible && (
+        {!hasError && visible && (
           <NewCommentForm />
         )}
       </div>
