@@ -1,20 +1,27 @@
 import ReactDOM from 'react-dom';
+// import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HashRouter as Router } from 'react-router-dom';
 
 import { store } from './app/store';
 import { App } from './App';
-import { UsersProvider } from './components/UsersContext';
+
+// const domNode = document.getElementById('root');
+// const root = createRoot(domNode);
 
 const Root = () => (
   <Provider store={store}>
-    {/* Remove UsersProvider when you move users to Redux store */}
-    <UsersProvider>
-      <Router>
-        <App />
-      </Router>
-    </UsersProvider>
+    <Router>
+      <App />
+    </Router>
   </Provider>
 );
 
 ReactDOM.render(<Root />, document.getElementById('root'));
+// root.render(
+//   <Provider store={store}>
+//     <Router>
+//       <App />
+//     </Router>
+//   </Provider>,
+// );
