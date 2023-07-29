@@ -5,16 +5,17 @@ import { createComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import { AppDispatch, RootState } from '../app/store';
 import * as commentsApi from '../api/comments';
+import { StatusType } from '../types/Status';
 
 export interface CommentsState {
   comments: Comment[];
-  status: 'idle' | 'loading' | 'failed';
+  status: StatusType;
   hasError: boolean;
 }
 
 const initialState: CommentsState = {
   comments: [],
-  status: 'idle',
+  status: StatusType.idle,
   hasError: false,
 };
 
@@ -36,15 +37,6 @@ export const addComment = createAsyncThunk(
   },
 );
 
-/* export const removeComment = createAsyncThunk(
-  'comments/DELETE',
-  async (commentId: number) => {
-    const removedComment = await deleteComment(commentId);
-
-    return removedComment;
-  },
-); */
-
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
@@ -58,18 +50,18 @@ export const commentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending, (state) => {
-      state.status = 'loading';
+      state.status = StatusType.loading;
     });
 
     builder.addCase(
       loadComments.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = StatusType.idle;
         state.comments = action.payload;
       },
     );
 
     builder.addCase(loadComments.rejected, (state) => {
-      state.status = 'failed';
+      state.status = StatusType.failed;
       state.hasError = true;
     });
 

@@ -3,6 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/commentsSlice';
+import { StatusType } from '../types/Status';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -10,7 +11,6 @@ export const PostDetails: React.FC = () => {
   const {
     hasError,
     comments,
-    status,
   } = useAppSelector(state => state.comments);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { id, title, body } = selectedPost || {};
@@ -35,11 +35,11 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {status === 'loading' && (
+        {StatusType.loading && (
           <Loader />
         )}
 
-        {(status === 'loading') && hasError && (
+        {(StatusType.loading) && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
