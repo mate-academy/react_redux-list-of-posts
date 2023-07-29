@@ -17,7 +17,7 @@ import { StatusType } from './types/Status';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, hasError } = useAppSelector(state => state.posts);
+  const { posts, hasError, status } = useAppSelector(state => state.posts);
   const author = useAppSelector(selectAuthor);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
@@ -53,11 +53,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && StatusType.loading && (
+                {author && status === StatusType.loading && (
                   <Loader />
                 )}
 
-                {author && StatusType.loading && hasError && (
+                {author && status === StatusType.failed && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,16 +67,18 @@ export const App: React.FC = () => {
                 )}
 
                 {author
-                  && !hasError && posts.length === 0 && (
+                  && !hasError
+                  && posts.length === 0
+                  && status === StatusType.idle && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
                 {author
-                  && !hasError && posts.length > 0 && (
-                  <PostsList />
-                )}
+                  && posts.length > 0
+                  && !hasError && status === StatusType.idle
+                  && <PostsList /> }
               </div>
             </div>
           </div>

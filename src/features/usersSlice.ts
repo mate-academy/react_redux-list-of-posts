@@ -4,16 +4,17 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
+import { StatusType } from '../types/Status';
 
 export interface UsersState {
   users: User[];
-  status: 'idle' | 'loading' | 'failed';
+  status: StatusType;
   hasError: boolean;
 }
 
 const initialState: UsersState = {
   users: [],
-  status: 'idle',
+  status: StatusType.idle,
   hasError: false,
 };
 
@@ -33,14 +34,14 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadUsers.pending, (state) => {
-        state.status = 'loading';
+        state.status = StatusType.loading;
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = StatusType.idle;
         state.users = action.payload;
       })
       .addCase(loadUsers.rejected, (state) => {
-        state.status = 'failed';
+        state.status = StatusType.failed;
         state.hasError = false;
       });
   },
