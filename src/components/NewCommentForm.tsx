@@ -1,75 +1,47 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  checkedValue,
+  clearValue,
+  addName,
+  addBody,
+  addEmail,
+  createFromServerPost,
+} from '../features/commentsAPI';
+import { takeSelectPost, selectComment } from '../app/store';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
-
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
-  };
+export const NewCommentForm = () => {
+  const dispatch = useAppDispatch();
+  const { newComment, errors, statusCreate } = useAppSelector(selectComment);
+  const { selectPost } = useAppSelector(takeSelectPost);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    dispatch(checkedValue());
+    const { name, email, body } = errors;
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
+    if (name || email || body) {
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    if (selectPost) {
+      dispatch(createFromServerPost({
+        name: newComment.name,
+        email: newComment.email,
+        body: newComment.body,
+        postId: selectPost.id,
+      }));
+      dispatch(clearValue());
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={() => dispatch(clearValue())}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -82,8 +54,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
-            value={name}
-            onChange={handleChange}
+            value={newComment.name}
+            onChange={(e) => dispatch(addName(e.target.value))}
           />
 
           <span className="icon is-small is-left">
@@ -119,8 +91,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
-            onChange={handleChange}
+            value={newComment.email}
+            onChange={(e) => dispatch(addEmail(e.target.value))}
           />
 
           <span className="icon is-small is-left">
@@ -155,8 +127,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
-            onChange={handleChange}
+            value={newComment.body}
+            onChange={(e) => dispatch(addBody(e.target.value))}
           />
         </div>
 
@@ -175,7 +147,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': statusCreate === 'loading',
             })}
           >
             Add
