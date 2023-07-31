@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentActions from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
-  const { selectedPost } = useAppSelector(state => state.posts);
+  const { setSelectedPost } = useAppSelector(state => state.author);
   const {
     comments,
     hasError,
@@ -16,46 +16,47 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
 
   function loadComments() {
-    if (selectedPost) {
-      dispatch(commentActions.init(selectedPost.id));
+    if (setSelectedPost) {
+      dispatch(commentActions.init(setSelectedPost.id));
     }
   }
 
-  useEffect(loadComments, [selectedPost?.id]);
+  useEffect(() => {
+    loadComments();
+  }, [setSelectedPost?.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    if (selectedPost) {
+    if (setSelectedPost) {
       const newComment = {
         name,
         email,
         body,
-        postId: selectedPost?.id,
+        postId: setSelectedPost?.id,
       };
 
       dispatch(commentActions.addComment(newComment));
-      dispatch(commentActions.actions.setComments(newComment));
     }
   };
 
   const deleteComment = (commentId: number) => {
-    dispatch(commentActions.deleteCom(commentId));
-    dispatch(commentActions.actions.delComment(commentId));
+    dispatch(commentActions.removeComment(commentId));
+    dispatch(commentActions.actions.setCommentId(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${selectedPost?.id}: ${selectedPost?.title}`}
+          {`#${setSelectedPost?.id}: ${setSelectedPost?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {selectedPost?.body}
+          {setSelectedPost?.body}
         </p>
       </div>
 
       <div className="block">
-        {!loaded && (
+        {loaded && (
           <Loader />
         )}
 
@@ -65,13 +66,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loaded && !hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -105,7 +106,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -118,7 +119,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {!loaded && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

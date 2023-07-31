@@ -1,26 +1,29 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
+import { Post } from '../types/Post';
 
 type UsersState = {
-  users: User[],
-  loaded: boolean,
-  hasError: string,
-  selectedUser: User | null,
+  users: User[];
+  isLoading: boolean;
+  errorMessage: string;
+  selectedUser: User | null;
+  setSelectedPost: Post | null;
 };
 
 const initialState: UsersState = {
   users: [],
-  loaded: false,
-  hasError: '',
+  isLoading: false,
+  errorMessage: '',
   selectedUser: null,
+  setSelectedPost: null,
 };
 
 export const init = createAsyncThunk('users/fetch', () => {
   return getUsers();
 });
 
-const usersSlice = createSlice({
+const authorSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
@@ -28,11 +31,17 @@ const usersSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.selectedUser = action.payload;
     },
+    setSelectedPost: (state, action) => {
+      return {
+        ...state,
+        setSelectedPost: action.payload,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
       // eslint-disable-next-line no-param-reassign
-      state.loaded = true;
+      state.isLoading = true;
     });
     builder.addCase(init.fulfilled, (state, action) => {
       return {
@@ -43,12 +52,12 @@ const usersSlice = createSlice({
     });
     builder.addCase(init.rejected, (state) => {
       // eslint-disable-next-line no-param-reassign
-      state.loaded = false;
+      state.isLoading = false;
       // eslint-disable-next-line no-param-reassign
-      state.hasError = 'Error';
+      state.errorMessage = 'Error';
     });
   },
 });
 
-export const { actions } = usersSlice;
-export default usersSlice.reducer;
+export const { actions } = authorSlice;
+export default authorSlice.reducer;

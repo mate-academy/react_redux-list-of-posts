@@ -8,18 +8,24 @@ import {
 
 type CommentsState = {
   comments: Comment[];
+  commentId: number | null;
   loaded: boolean;
   hasError: boolean;
   visible: boolean;
-  error: string;
+  errorMessage: string;
+  submitting: boolean;
+  submittingError: boolean;
 };
 
 const initialState: CommentsState = {
   comments: [],
-  loaded: true,
+  commentId: null,
+  loaded: false,
   hasError: false,
   visible: false,
-  error: '',
+  errorMessage: '',
+  submitting: false,
+  submittingError: false,
 };
 
 export const init = createAsyncThunk('comments/fetch', (postId: number) => {
@@ -27,14 +33,14 @@ export const init = createAsyncThunk('comments/fetch', (postId: number) => {
 });
 
 export const addComment = createAsyncThunk(
-  'commentCreate/fetch',
+  'comments/commentCreate',
   (newComment: NewCommentData) => {
     return createComment(newComment);
   },
 );
 
-export const deleteCom = createAsyncThunk(
-  'deleteComment/fetch',
+export const removeComment = createAsyncThunk(
+  'comments/deleteComment',
   (commentId: number) => {
     return deleteComment(commentId);
   },
@@ -60,6 +66,12 @@ const commentsSlice = createSlice({
         comments: filterComment,
       };
     },
+    setCommentId: (state, action) => {
+      return {
+        ...state,
+        commentId: action.payload,
+      };
+    },
     setError: (state, action) => {
       return {
         ...state,
@@ -72,27 +84,62 @@ const commentsSlice = createSlice({
         visible: action.payload,
       };
     },
+    setSubmitting: (state, action) => {
+      return {
+        ...state,
+        submitting: action.payload,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
       return {
         ...state,
-        loaded: false,
+        loaded: true,
       };
     });
     builder.addCase(init.fulfilled, (state, action) => {
       return {
         ...state,
+        loaded: false,
         comments: action.payload,
-        loaded: true,
       };
     });
     builder.addCase(init.rejected, (state) => {
       return {
         ...state,
-        loaded: true,
+        loaded: false,
         hasError: true,
         error: 'Something went wrong',
+      };
+    });
+    builder.addCase(addComment.pending, state => {
+      return {
+        ...state,
+        submitting: true,
+      };
+    });
+    builder.addCase(addComment.fulfilled, (state, action) => {
+      return {
+        ...state,
+        submitting: false,
+        comments: [...state.comments, action.payload],
+      };
+    });
+    builder.addCase(addComment.rejected, state => {
+      return {
+        ...state,
+        submitting: false,
+        submittingError: true,
+        errorMessage: 'Something went wrong',
+      };
+    });
+    builder.addCase(removeComment.fulfilled, (state) => {
+      return {
+        ...state,
+        comments: state.comments.filter(comment => {
+          return comment.id !== state.commentId;
+        }),
       };
     });
   },

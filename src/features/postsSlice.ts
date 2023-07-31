@@ -7,7 +7,7 @@ type PostsState = {
   loaded: boolean;
   hasError: boolean;
   error: string;
-  selectedPost: Post | null;
+  setSelectedPost: Post | null;
 };
 
 const initialState: PostsState = {
@@ -15,7 +15,7 @@ const initialState: PostsState = {
   loaded: false,
   hasError: false,
   error: '',
-  selectedPost: null,
+  setSelectedPost: null,
 };
 
 export const init = createAsyncThunk('posts/fetch', (userId: number) => {
@@ -30,12 +30,6 @@ const postsSlice = createSlice({
       return {
         ...state,
         posts: action.payload,
-      };
-    },
-    selectedPost: (state, action) => {
-      return {
-        ...state,
-        selectedPost: action.payload,
       };
     },
   },

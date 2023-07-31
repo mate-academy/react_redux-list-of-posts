@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions as postsActions } from '../features/postsSlice';
 import { Post } from '../types/Post';
+import { actions as authorActions } from '../features/authorSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, selectedPost } = useAppSelector(state => state.posts);
+  const { posts } = useAppSelector(state => state.posts);
+  const { setSelectedPost } = useAppSelector(state => state.author);
 
   return (
     <div data-cy="PostsList">
@@ -34,18 +35,19 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost?.id,
+                      'is-light': post.id !== setSelectedPost?.id,
                     },
                   )}
                   onClick={() => {
                     dispatch(
-                      postsActions.selectedPost(post.id === selectedPost?.id
+                      // eslint-disable-next-line max-len
+                      authorActions.setSelectedPost(post.id === setSelectedPost?.id
                         ? null
                         : post),
                     );
                   }}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {post.id === setSelectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

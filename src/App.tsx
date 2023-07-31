@@ -8,26 +8,31 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import * as usersActions from './features/usersSlice';
+import * as authorActions from './features/authorSlice';
 import * as postsActions from './features/postsSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { selectedUser } = useAppSelector(state => state.users);
+  const {
+    selectedUser,
+    setSelectedPost,
+  } = useAppSelector(state => state.author);
   const {
     posts,
     loaded,
     hasError,
-    selectedPost,
   } = useAppSelector(state => state.posts);
 
+  const isNoPostYet = selectedUser && loaded && !hasError && !posts.length;
+  const isShowPostList = selectedUser && loaded && !hasError && !!posts.length;
+
   useEffect(() => {
-    dispatch(usersActions.init());
+    dispatch(authorActions.init());
   }, []);
 
   useEffect(() => {
-    dispatch(postsActions.actions.selectedPost(null));
+    dispatch(authorActions.actions.setSelectedPost(null));
 
     if (selectedUser) {
       dispatch(postsActions.init(selectedUser.id));
@@ -66,13 +71,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && loaded && !hasError && posts.length === 0 && (
+                {isNoPostYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {selectedUser && loaded && !hasError && posts.length > 0 && (
+                {isShowPostList && (
                   <PostsList />
                 )}
               </div>
@@ -87,12 +92,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': setSelectedPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {setSelectedPost && (
                 <PostDetails />
               )}
             </div>
