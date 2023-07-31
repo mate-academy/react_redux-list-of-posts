@@ -27,6 +27,10 @@ const usersSlice = createSlice({
     builder.addCase(getAsyncUsers.fulfilled, (state, action) => {
       state.users = action.payload;
     });
+
+    builder.addCase(getAsyncUsers.rejected, (state) => {
+      state.error = 'Something went wrong while trying to load users.';
+    });
   },
 });
 

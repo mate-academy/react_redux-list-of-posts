@@ -10,12 +10,12 @@ type PostsState = {
 };
 const initialState: PostsState = {
   posts: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 
 export const getAsyncPosts = createAsyncThunk(
-  'posts/get',
+  'posts/fetchPosts',
   async (userId: number) => {
     const posts = await getUserPosts(userId);
 
@@ -27,9 +27,7 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    reset: (state) => {
-      state.posts = [];
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(getAsyncPosts.pending, (state) => {

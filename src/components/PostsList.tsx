@@ -23,7 +23,7 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => {
+          {posts.map((post) => {
             const {
               id,
               title,

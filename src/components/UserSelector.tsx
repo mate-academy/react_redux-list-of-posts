@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getAsyncUsers } from '../features/users/usersSlice';
-import { setAuthor } from '../features/author/authorSlice';
+import { getAsyncAuthor } from '../features/author/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -59,19 +59,12 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => {
-            const {
-              id,
-              name,
-            } = user;
-
+          {users.map(({ id, name }) => {
             return (
               <a
                 key={id}
                 href={`#user-${id}`}
-                onClick={() => {
-                  dispatch(setAuthor(user));
-                }}
+                onClick={() => dispatch(getAsyncAuthor(id))}
                 className={classNames('dropdown-item', {
                   'is-active': id === author?.id,
                 })}

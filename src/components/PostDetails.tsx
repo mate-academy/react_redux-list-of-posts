@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   add,
   getAsyncComments,
-  remove, removeAsyncComment,
+  removeAsyncComment,
 } from '../features/commentsSlice/commentsSlice';
 import { CommentData } from '../types/Comment';
 
@@ -73,45 +73,44 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => {
-              const {
+            {comments.map((
+              {
                 id,
                 email,
                 name,
                 body,
-              } = comment;
+              },
+            ) => (
+              <article
+                className="message is-small"
+                key={id}
+                data-cy="Comment"
+              >
+                <div className="message-header">
 
-              return (
-                <article
-                  className="message is-small"
-                  key={id}
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                      {name}
-                    </a>
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
+                  </a>
 
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => {
-                        dispatch(remove(id));
-                        dispatch(removeAsyncComment(id));
-                      }}
-                    >
-                      delete button
-                    </button>
-                  </div>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => {
+                      dispatch(removeAsyncComment(id));
+                    }}
+                  >
+                    delete button
+                  </button>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {body}
-                  </div>
-                </article>
-              );
-            })}
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {body}
+                </div>
+              </article>
+            ))}
           </>
         )}
 
