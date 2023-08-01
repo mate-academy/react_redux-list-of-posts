@@ -23,35 +23,39 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map((post: Post) => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames(
-                    'button',
-                    'is-link',
-                    {
-                      'is-light': post.id !== setSelectedPost?.id,
-                    },
-                  )}
-                  onClick={() => {
-                    dispatch(
-                      // eslint-disable-next-line max-len
-                      authorActions.setSelectedPost(post.id === setSelectedPost?.id
-                        ? null
-                        : post),
-                    );
-                  }}
-                >
-                  {post.id === setSelectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {posts.map((post: Post) => {
+            const { id, title } = post;
+
+            return (
+              <tr key={id} data-cy="Post">
+                <td data-cy="PostId">{id}</td>
+                <td data-cy="PostTitle">{title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      {
+                        'is-light': id !== setSelectedPost?.id,
+                      },
+                    )}
+                    onClick={() => {
+                      dispatch(
+                        // eslint-disable-next-line max-len
+                        authorActions.setSelectedPost(post.id === setSelectedPost?.id
+                          ? null
+                          : post),
+                      );
+                    }}
+                  >
+                    {id === setSelectedPost?.id ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

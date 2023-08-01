@@ -24,8 +24,8 @@ export const App: React.FC = () => {
     hasError,
   } = useAppSelector(state => state.posts);
 
-  const isNoPostYet = selectedUser && loaded && !hasError && !posts.length;
-  const isShowPostList = selectedUser && loaded && !hasError && !!posts.length;
+  const isNoPostYet = selectedUser && !loaded && !hasError && !posts.length;
+  const isShowPostList = selectedUser && !loaded && !hasError && !!posts.length;
 
   useEffect(() => {
     dispatch(authorActions.init());
@@ -58,11 +58,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {selectedUser && !loaded && (
+                {selectedUser && loaded && (
                   <Loader />
                 )}
 
-                {selectedUser && loaded && hasError && (
+                {selectedUser && !loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

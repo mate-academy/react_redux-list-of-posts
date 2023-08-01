@@ -130,7 +130,7 @@ const commentsSlice = createSlice({
       return {
         ...state,
         submitting: false,
-        submittingError: true,
+        hasError: true,
         errorMessage: 'Something went wrong',
       };
     });
@@ -140,6 +140,12 @@ const commentsSlice = createSlice({
         comments: state.comments.filter(comment => {
           return comment.id !== state.commentId;
         }),
+      };
+    });
+    builder.addCase(removeComment.rejected, state => {
+      return {
+        ...state,
+        hasError: true,
       };
     });
   },

@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
@@ -28,7 +30,6 @@ const authorSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      // eslint-disable-next-line no-param-reassign
       state.selectedUser = action.payload;
     },
     setSelectedPost: (state, action) => {
@@ -40,7 +41,6 @@ const authorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
-      // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
     });
     builder.addCase(init.fulfilled, (state, action) => {
@@ -51,9 +51,7 @@ const authorSlice = createSlice({
       };
     });
     builder.addCase(init.rejected, (state) => {
-      // eslint-disable-next-line no-param-reassign
       state.isLoading = false;
-      // eslint-disable-next-line no-param-reassign
       state.errorMessage = 'Error';
     });
   },

@@ -37,13 +37,13 @@ const postsSlice = createSlice({
     builder.addCase(init.pending, (state) => {
       return {
         ...state,
-        loaded: false,
+        loaded: true,
       };
     });
     builder.addCase(init.fulfilled, (state, action) => {
       return {
         ...state,
-        loaded: true,
+        loaded: false,
         posts: action.payload,
       };
     });

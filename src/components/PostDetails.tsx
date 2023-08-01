@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentActions from '../features/commentsSlice';
+import { actions as commentSliceActions } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const { setSelectedPost } = useAppSelector(state => state.author);
@@ -47,11 +48,11 @@ export const PostDetails: React.FC = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${setSelectedPost?.id}: ${setSelectedPost?.title}`}
+          {`#${setSelectedPost.id}: ${setSelectedPost.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {setSelectedPost?.body}
+          {setSelectedPost.body}
         </p>
       </div>
 
@@ -60,13 +61,13 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {!loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {!loaded && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
@@ -111,9 +112,7 @@ export const PostDetails: React.FC = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => {
-              dispatch(commentActions.actions.setVisible(true));
-            }}
+            onClick={() => dispatch(commentSliceActions.setVisible(true))}
           >
             Write a comment
           </button>
