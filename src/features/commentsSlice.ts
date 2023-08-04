@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
-import { AppDispatch, RootState } from '../app/store';
+import { RootState } from '../app/store';
 import * as commentsApi from '../api/comments';
 import { StatusType } from '../types/Status';
 
@@ -15,7 +15,7 @@ export interface CommentsState {
 
 const initialState: CommentsState = {
   comments: [],
-  status: StatusType.idle,
+  status: StatusType.Idle,
   hasError: false,
 };
 
@@ -50,18 +50,18 @@ export const commentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending, (state) => {
-      state.status = StatusType.loading;
+      state.status = StatusType.Loading;
     });
 
     builder.addCase(
       loadComments.fulfilled, (state, action) => {
-        state.status = StatusType.idle;
+        state.status = StatusType.Idle;
         state.comments = action.payload;
       },
     );
 
     builder.addCase(loadComments.rejected, (state) => {
-      state.status = StatusType.failed;
+      state.status = StatusType.Failed;
       state.hasError = true;
     });
 
@@ -80,12 +80,15 @@ export const commentsSlice = createSlice({
 export const { setComments, clearComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
 
-export const dComment = (commentId: number) => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+export const deleteComment = createAsyncThunk<void, number>(
+  'comments/DELETE',
+  async (commentId: number, { getState, dispatch }) => {
+    const state: RootState = getState() as RootState;
+
     dispatch(setComments(
-      getState().comments.comments.filter(comment => comment.id !== commentId),
+      state.comments.comments.filter(comment => comment.id !== commentId),
     ));
 
     await commentsApi.deleteComment(commentId);
-  };
-};
+  },
+);

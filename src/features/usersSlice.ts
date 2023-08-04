@@ -14,7 +14,7 @@ export interface UsersState {
 
 const initialState: UsersState = {
   users: [],
-  status: StatusType.idle,
+  status: StatusType.Idle,
   hasError: false,
 };
 
@@ -34,14 +34,14 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadUsers.pending, (state) => {
-        state.status = StatusType.loading;
+        state.status = StatusType.Loading;
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
-        state.status = StatusType.idle;
+        state.status = StatusType.Idle;
         state.users = action.payload;
       })
       .addCase(loadUsers.rejected, (state) => {
-        state.status = StatusType.failed;
+        state.status = StatusType.Failed;
         state.hasError = false;
       });
   },

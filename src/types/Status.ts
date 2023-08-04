@@ -1,5 +1,5 @@
 export enum StatusType {
-  idle = 'IDLE',
-  loading = 'LOADING',
-  failed = 'FAILED',
+  Idle = 'IDLE',
+  Loading = 'LOADING',
+  Failed = 'FAILED',
 }

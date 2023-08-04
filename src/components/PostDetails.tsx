@@ -36,11 +36,11 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {StatusType.loading && (
+        {StatusType.Loading && (
           <Loader />
         )}
 
-        {(StatusType.loading) && hasError && (
+        {(StatusType.Loading) && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
@@ -73,7 +73,7 @@ export const PostDetails: React.FC = () => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => dispatch(
-                      commentsActions.dComment(comment.id),
+                      commentsActions.deleteComment(comment.id),
                     )}
                   >
                     delete button
@@ -88,7 +88,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {(StatusType.idle) && !hasError && !visible && (
+        {(StatusType.Idle) && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -99,7 +99,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {(StatusType.idle) && !hasError && visible && (
+        {(StatusType.Idle) && !hasError && visible && (
           <NewCommentForm />
         )}
       </div>

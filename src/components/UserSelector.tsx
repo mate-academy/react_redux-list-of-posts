@@ -3,17 +3,12 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
-import { loadUsers } from '../features/usersSlice';
 
 export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
   const { author: selectedUser } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    dispatch(loadUsers());
-  }, [dispatch]);
 
   const handleSelectAuthor = (user: User) => {
     dispatch(setAuthor(user));

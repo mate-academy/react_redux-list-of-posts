@@ -12,7 +12,7 @@ export interface PostsState {
 
 const initialState: PostsState = {
   posts: [],
-  status: StatusType.idle,
+  status: StatusType.Idle,
   hasError: false,
 };
 
@@ -40,14 +40,14 @@ export const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loadPosts.pending, (state) => {
-        state.status = StatusType.loading;
+        state.status = StatusType.Loading;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
         state.posts = action.payload;
-        state.status = StatusType.idle;
+        state.status = StatusType.Idle;
       })
       .addCase(loadPosts.rejected, (state) => {
-        state.status = StatusType.failed;
+        state.status = StatusType.Failed;
         state.hasError = true;
       });
   },

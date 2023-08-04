@@ -36,6 +36,9 @@ export const App: React.FC = () => {
     }
   }, [author]);
 
+  const isNoPosts = author && !hasError
+    && posts.length === 0 && status === StatusType.Idle;
+
   return (
     <main className="section">
 
@@ -54,11 +57,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && status === StatusType.loading && (
+                {author && status === StatusType.Loading && (
                   <Loader />
                 )}
 
-                {author && status === StatusType.failed && hasError && (
+                {author && status === StatusType.Failed && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,21 +70,18 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author
-                  && !hasError
-                  && posts.length === 0
-                  && status === StatusType.idle && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {isNoPosts && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
                 {author
                   && posts.length > 0
-                  && !hasError && status === StatusType.idle
+                  && !hasError && status === StatusType.Idle
                   && <PostsList />}
               </div>
             </div>
