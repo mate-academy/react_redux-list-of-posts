@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   commentsSlice,
   fetchComments,
-  removeComment,
 } from '../app/slices/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -28,7 +27,6 @@ export const PostDetails: React.FC = () => {
 
   const deleteComment = async (commentId: number) => {
     dispatch(commentsSlice.actions.removeComment(commentId));
-    dispatch(removeComment(commentId));
   };
 
   const { id, title, body } = selectedPost || {};
