@@ -3,6 +3,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { Comment, CommentData } from '../types/Comment';
 import { getPostComments, createComment, deleteComment } from '../api/comments';
+import { Status } from '../enum/enum';
 
 export interface CounterState {
   comments: Comment[] | [];
@@ -13,8 +14,8 @@ export interface CounterState {
     body: boolean,
   };
   hasForm: boolean;
-  statusCreate: 'idle' | 'loading' | 'failed';
-  status: 'idle' | 'loading' | 'failed';
+  statusCreate: Status;
+  status: Status;
 }
 
 const initialState: CounterState = {
@@ -30,8 +31,8 @@ const initialState: CounterState = {
     body: false,
   },
   hasForm: false,
-  statusCreate: 'idle',
-  status: 'idle',
+  statusCreate: Status.idle,
+  status: Status.idle,
 };
 
 export const getFromServerCommnets = createAsyncThunk(
@@ -104,25 +105,25 @@ export const commentsSlice = createSlice({
         state.comments = [];
       })
       .addCase(createFromServerPost.pending, (state) => {
-        state.statusCreate = 'loading';
+        state.statusCreate = Status.loading;
       })
       .addCase(createFromServerPost.fulfilled, (state, action) => {
-        state.statusCreate = 'idle';
+        state.statusCreate = Status.idle;
         state.comments = [...state.comments, action.payload];
       })
       .addCase(createFromServerPost.rejected, (state) => {
-        state.statusCreate = 'failed';
+        state.statusCreate = Status.failed;
         state.comments = [];
       })
       .addCase(getFromServerCommnets.pending, (state) => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(getFromServerCommnets.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = Status.idle;
         state.comments = action.payload;
       })
       .addCase(getFromServerCommnets.rejected, (state) => {
-        state.status = 'failed';
+        state.status = Status.failed;
         state.comments = [];
       });
   },

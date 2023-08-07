@@ -11,6 +11,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { getFromServerPost } from './features/postAPI';
 import { Posts, selectCurrentUser, takeSelectPost } from './app/store';
+import { Status } from './enum/enum';
 
 export const App: React.FC = () => {
   const { selectPost } = useAppSelector(takeSelectPost);
@@ -41,11 +42,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {currentrUser && status === 'loading' && (
+                {currentrUser && status === Status.loading && (
                   <Loader />
                 )}
 
-                {currentrUser && status === 'failed' && (
+                {currentrUser && status === Status.failed && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -54,13 +55,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {currentrUser && status === 'idle' && posts.length === 0 && (
+                {currentrUser
+                && status === Status.idle
+                && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {currentrUser && status === 'idle' && posts.length > 0 && (
+                {currentrUser && status === Status.idle && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>

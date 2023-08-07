@@ -3,15 +3,16 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
+import { Status } from '../../enum/enum';
 
 export interface CounterState {
   users: User[] | [];
-  status: 'idle' | 'loading' | 'failed';
+  status: Status;
 }
 
 const initialState: CounterState = {
   users: [],
-  status: 'idle',
+  status: Status.idle,
 };
 
 export const getFromServerUsers = createAsyncThunk(
@@ -37,14 +38,14 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFromServerUsers.pending, (state) => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(getFromServerUsers.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = Status.failed;
         state.users = action.payload;
       })
       .addCase(getFromServerUsers.rejected, (state) => {
-        state.status = 'failed';
+        state.status = Status.idle;
         state.users = [];
       });
   },

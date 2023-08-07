@@ -3,15 +3,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
+import { Status } from '../enum/enum';
 
 export interface CounterState {
   posts: Post[] | [];
-  status: 'idle' | 'loading' | 'failed';
+  status: Status;
 }
 
 const initialState: CounterState = {
   posts: [],
-  status: 'idle',
+  status: Status.idle,
 };
 
 export const getFromServerPost = createAsyncThunk(
@@ -27,20 +28,20 @@ export const postSlice = createSlice({
   reducers: {
     remove: (state) => {
       state.posts = [];
-      state.status = 'idle';
+      state.status = Status.idle;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getFromServerPost.pending, (state) => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(getFromServerPost.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = Status.idle;
         state.posts = action.payload;
       })
       .addCase(getFromServerPost.rejected, (state) => {
-        state.status = 'failed';
+        state.status = Status.failed;
         state.posts = [];
       });
   },

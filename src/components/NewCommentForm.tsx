@@ -36,10 +36,14 @@ export const NewCommentForm = () => {
     }
   };
 
+  const onResetForm = () => {
+    dispatch(clearValue());
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
-      onReset={() => dispatch(clearValue())}
+      onReset={onResetForm}
       data-cy="NewCommentForm"
     >
       <div className="field" data-cy="NameField">
