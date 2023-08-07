@@ -10,12 +10,13 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init } from './features/postsSlice';
+import { authorSelector, selectedPostSelector } from './api/selectors';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector(state => state.author);
+  const { author } = useAppSelector(authorSelector);
   const { loaded, hasError, items } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
 
   useEffect(() => {
     if (author) {

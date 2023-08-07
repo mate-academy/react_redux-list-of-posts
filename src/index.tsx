@@ -13,6 +13,6 @@ if (rootElement) {
       <Router>
         <App />
       </Router>
-    </Provider>
+    </Provider>,
   );
 }

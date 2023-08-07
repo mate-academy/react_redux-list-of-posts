@@ -6,6 +6,7 @@ import { setAuthor } from '../features/authorSlice';
 import { useAppSelector, useAppDispatch, useOutsideClick } from '../app/hooks';
 import { User } from '../types/User';
 import { setSelectedPost } from '../features/selectedPostSlice';
+import { authorSelector } from '../api/selectors';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ export const UserSelector: React.FC = () => {
       });
   }, []);
   const { users } = useAppSelector(state => state.users);
-  const { author } = useAppSelector(state => state.author);
+  const { author } = useAppSelector(authorSelector);
   const [expanded, setExpanded] = useState(false);
 
   const handleClickOutside = () => {

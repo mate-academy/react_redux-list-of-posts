@@ -5,11 +5,12 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { add, remove, init } from '../features/commentsSlice';
 import { CommentData } from '../types/Comment';
 import * as commentsApi from '../api/comments';
+import { commentsSelector, selectedPostSelector } from '../api/selectors';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { loaded, hasError, items } = useAppSelector(state => state.comments);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
+  const { loaded, hasError, items } = useAppSelector(commentsSelector);
   const dispatch = useAppDispatch();
 
   function loadComments() {
@@ -21,7 +22,7 @@ export const PostDetails: React.FC = () => {
     }
   }
 
-  useEffect(loadComments, [selectedPost?.id]);
+  useEffect(() => loadComments(), [selectedPost?.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     const newComment = await commentsApi.createComment({

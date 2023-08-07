@@ -3,11 +3,12 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
+import { selectedPostSelector } from '../api/selectors';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
 
   const handlePostButton = (postActive: Post) => {
     if (selectedPost?.id !== postActive.id) {
