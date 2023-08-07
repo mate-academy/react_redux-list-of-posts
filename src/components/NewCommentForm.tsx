@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
@@ -81,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={cn('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -118,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={cn('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -154,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={cn('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
@@ -174,7 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames('button', 'is-link', {
+            className={cn('button', 'is-link', {
               'is-loading': submitting,
             })}
           >
