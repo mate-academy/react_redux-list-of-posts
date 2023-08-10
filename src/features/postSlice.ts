@@ -8,8 +8,9 @@ import { SelectedPost } from '../types/SelectedPost';
 const initialState: SelectedPost = {
   post: null,
   loaded: true,
-  submitting: false,
   hasError: false,
+  submitting: false,
+  submittingError: false,
   comments: [],
 };
 
@@ -48,6 +49,8 @@ const postSlice = createSlice({
     builder
       .addCase(init.pending, (state) => {
         state.loaded = false;
+        state.hasError = false;
+        state.submittingError = false;
       });
 
     builder
@@ -77,6 +80,7 @@ const postSlice = createSlice({
     builder
       .addCase(addComment.rejected, (state) => {
         state.submitting = false;
+        state.submittingError = true;
       });
   },
 });

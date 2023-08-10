@@ -27,6 +27,7 @@ const authorSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
       state.loaded = false;
+      state.hasError = false;
     });
 
     builder.addCase(init.fulfilled, (state, actions) => {

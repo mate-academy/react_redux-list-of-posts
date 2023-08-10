@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -20,13 +20,27 @@ export const App: React.FC = () => {
     loaded,
     hasError,
   } = useAppSelector(state => state.author);
+  const authorRef = useRef<number>(0);
 
-  const selectedPost = useAppSelector(state => state.post);
+  const selectedPostId = useAppSelector(state => state.post.post?.id);
 
   useEffect(() => {
-    dispatch(postActions.removePost());
+    const Id = () => {
+      if (authorRef.current && hasError) {
+        dispatch(init(authorRef.current));
+      }
+    };
+
+    window.addEventListener('online', Id);
+
+    return () => window.removeEventListener('online', Id);
+  }, []);
+
+  useEffect(() => {
     if (author) {
-      dispatch(init(author.id));
+      authorRef.current = author.id;
+      dispatch(postActions.removePost());
+      dispatch(init(authorRef.current));
     }
   }, [author]);
 
@@ -81,12 +95,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost.post,
+                'Sidebar--open': selectedPostId,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost.post && selectedPost.post.id !== null && (
+              {selectedPostId && (
                 <PostDetails />
               )}
             </div>

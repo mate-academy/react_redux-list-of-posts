@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
 import * as postActions from '../features/postSlice';
@@ -9,11 +10,32 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.post);
+  const selectedPost = useAppSelector(state => state.post.post?.id);
+  const selectedPostRef = useRef<number>(0);
+
+  useEffect(() => {
+    const Id = () => {
+      if (selectedPostRef.current) {
+        dispatch(postActions.init(selectedPostRef.current));
+      }
+    };
+
+    window.addEventListener('online', Id);
+
+    return () => window.removeEventListener('online', Id);
+  }, []);
 
   const handleSelectPost = (post: Post) => {
-    dispatch(postActions.init(post.id));
+    if (selectedPostRef.current === post.id) {
+      dispatch(postActions.removePost());
+      selectedPostRef.current = 0;
+
+      return;
+    }
+
+    selectedPostRef.current = post.id;
     dispatch(postActions.addPost(post));
+    dispatch(postActions.init(selectedPostRef.current));
   };
 
   return (
@@ -43,13 +65,13 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                     'is-link',
                     {
                       'is-light': selectedPost
-                      && post.id !== selectedPost.post?.id,
+                      && post.id !== selectedPost,
                     },
                   )}
                   onClick={() => handleSelectPost(post)}
                 >
-                  {selectedPost.post
-                  && post.id === selectedPost.post.id ? 'Close' : 'Open'}
+                  {selectedPost
+                  && post.id === selectedPost ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

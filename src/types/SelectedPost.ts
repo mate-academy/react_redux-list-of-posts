@@ -6,5 +6,6 @@ export type SelectedPost = {
   hasError: boolean,
   post: Post | null,
   comments: Comment[],
+  submittingError: boolean,
   submitting: boolean,
 };

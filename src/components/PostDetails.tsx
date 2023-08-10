@@ -5,9 +5,15 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { removeComment } from '../features/postSlice';
 
 export const PostDetails = () => {
-  const post = useAppSelector(state => state.post);
+  const {
+    comments,
+    loaded,
+    hasError,
+    submittingError,
+    post,
+  } = useAppSelector(state => state.post);
+
   const [visible, setVisible] = useState(false);
-  const { comments, loaded, hasError } = post;
   const dispatch = useAppDispatch();
 
   const handleRemoveComent = (id: number | undefined) => {
@@ -20,11 +26,11 @@ export const PostDetails = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.post?.id}: ${post.post?.title}`}
+          {`#${post?.id}: ${post?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post.post?.body}
+          {post?.body}
         </p>
       </div>
 
@@ -33,7 +39,7 @@ export const PostDetails = () => {
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {((loaded && hasError) || submittingError) && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
