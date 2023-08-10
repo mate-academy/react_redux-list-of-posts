@@ -1,12 +1,25 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/commentsSlice';
+import { Post } from '../types/Post';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+const emptyPost: Post = {
+  id: 0,
+  title: '',
+  body: '',
+  userId: 0,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const postFromStore: Post | null = useAppSelector(
+    (state) => state.selectedPost.selectedPost,
+  );
+  const post: Post = postFromStore !== null ? postFromStore : emptyPost;
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -33,6 +46,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: false,
       body: false,
     });
+  };
+
+  const onSubmit = async (newComment: CommentData) => {
+    await dispatch(commentsActions.add({
+      ...newComment,
+      postId: post.id,
+    }));
   };
 
   const handleChange = (
