@@ -26,7 +26,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const Id = () => {
-      if (authorRef.current && hasError) {
+      if (authorRef.current) {
         dispatch(init(authorRef.current));
       }
     };
