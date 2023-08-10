@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
 import {
-  ActionReducerMapBuilder,
   PayloadAction,
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import { Comment, CommentData } from '../../types/Comment';
+import { Comment } from '../../types/Comment';
 import {
   createComment,
   getPostComments,
@@ -15,86 +14,34 @@ import {
 type CommentsState = {
   items: Comment[];
   loaded: boolean;
-  created: boolean;
   hasError: boolean;
 };
-
-type NewComment = {
-  postId: number;
-  data: CommentData;
-};
-
-type CommentThunk = 'fetchComments' | 'addComment' | 'removeComment';
 
 const initialState: CommentsState = {
   items: [],
   loaded: false,
-  created: false,
   hasError: false,
 };
 
-export const thunks = {
-  fetchComments: createAsyncThunk(
-    'comments/fetch',
-    (postId: number) => getPostComments(postId),
-  ),
+export const fetchComments = createAsyncThunk(
+  'comments/fetch',
+  (postId: number) => getPostComments(postId),
+);
 
-  addComment: createAsyncThunk(
-    'comments/add',
-    ({ postId, data }: NewComment) => createComment(postId, data),
-  ),
+export const addComment = createAsyncThunk(
+  'comments/add',
+  (data: Omit<Comment, 'id'>) => createComment(data),
+);
 
-  removeComment: createAsyncThunk(
-    'comments/delete',
-    (commentId: number, { dispatch }) => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      dispatch(removeCommentById(commentId));
+export const removeComment = createAsyncThunk(
+  'comments/delete',
+  (commentId: number, { dispatch }) => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    dispatch(removeCommentById(commentId));
 
-      return deleteComment(commentId);
-    },
-  ),
-};
-
-const commentsExtraReducer = (
-  builder: ActionReducerMapBuilder<CommentsState>,
-  thunkType: CommentThunk,
-) => {
-  const commentThunk = thunks[thunkType];
-
-  if (!commentThunk) {
-    throw new Error('Something went wrong');
-  }
-
-  builder
-    .addCase(commentThunk.pending, (state) => {
-      state.hasError = false;
-      state.created = false;
-    })
-    .addCase(commentThunk.fulfilled, (state, action) => {
-      switch (thunkType) {
-        case 'fetchComments':
-          state.items = [...action.payload as Comment[]];
-          state.loaded = true;
-          break;
-
-        case 'addComment':
-          state.items.push(action.payload as Comment);
-          state.created = true;
-          break;
-
-        case 'removeComment':
-          break;
-
-        default:
-          throw new Error('Something went wrong');
-      }
-    })
-    .addCase(commentThunk.rejected, (state) => {
-      state.loaded = true;
-      state.created = true;
-      state.hasError = true;
-    });
-};
+    return deleteComment(commentId);
+  },
+);
 
 const commentsSlice = createSlice({
   name: 'comments',
@@ -112,12 +59,46 @@ const commentsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    commentsExtraReducer(builder, 'fetchComments');
-    commentsExtraReducer(builder, 'addComment');
-    commentsExtraReducer(builder, 'removeComment');
+    builder
+      .addCase(fetchComments.pending, (state) => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.items = action.payload;
+      })
+      .addCase(fetchComments.rejected, (state) => {
+        state.loaded = true;
+        state.hasError = true;
+      });
+
+    builder
+      .addCase(addComment.pending, (state) => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.items.push(action.payload);
+      })
+      .addCase(addComment.rejected, (state) => {
+        state.loaded = true;
+        state.hasError = true;
+      });
+
+    builder
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.hasError = false;
+        state.items = state.items.filter(item => item.id !== action.payload);
+      })
+      .addCase(removeComment.rejected, (state) => {
+        state.loaded = true;
+        state.hasError = true;
+      });
   },
 });
 
 export const { clearComments, removeCommentById } = commentsSlice.actions;
-
 export default commentsSlice.reducer;

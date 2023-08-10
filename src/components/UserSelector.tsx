@@ -4,6 +4,7 @@ import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setAuthor } from '../redux/slices/authorSlice';
 import { Loader } from './Loader';
+import { selectUsers } from '../redux/selectors';
 
 type Props = {
   selectedUser: User | null;
@@ -12,7 +13,7 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({ selectedUser }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const { users, loaded } = useAppSelector(state => state.users);
+  const { users, loaded } = useAppSelector(selectUsers);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

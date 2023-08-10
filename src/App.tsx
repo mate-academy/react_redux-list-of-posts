@@ -11,22 +11,21 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { fetchPosts, clearPosts } from './redux/slices/postsSlice';
 import { fetchUsers } from './redux/slices/usersSlice';
-import {
-  clearSelectedPost,
-  setSelectedPost,
-} from './redux/slices/selectedPostSlice';
 import { Post } from './types/Post';
 import { clearComments } from './redux/slices/commentsSlice';
+import {
+  selectAuthor, selectPosts, selectSelectedPost,
+} from './redux/selectors';
+import {
+  clearSelectedPost, setSelectedPost,
+} from './redux/slices/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author, posts, selectedPost } = useAppSelector(state => ({
-    ...state,
-    author: state.author.data,
-    selectedPost: state.selectedPost.data,
-  }));
 
-  const { items, loaded, hasError } = posts;
+  const author = useAppSelector(selectAuthor);
+  const { items, loaded, hasError } = useAppSelector(selectPosts);
+  const selectedPost = useAppSelector(selectSelectedPost);
 
   const onSelectedPost = (post: Post | null) => {
     if (!post) {

@@ -1,45 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
+import * as commentsActions from '../redux/slices/commentsSlice';
 import { Post } from '../types/Post';
-import { thunks } from '../redux/slices/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { CommentData } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
+import { selectComments } from '../redux/selectors';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const { addComment, fetchComments, removeComment } = thunks;
-
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { comments, selectedPost } = useAppSelector(state => state);
-
-  const {
-    items,
-    hasError,
-    loaded,
-    created,
-  } = comments;
+  const { items, hasError, loaded } = useAppSelector(selectComments);
 
   useEffect(() => {
-    dispatch(fetchComments(post.id));
+    dispatch(commentsActions.fetchComments(post.id));
     setVisible(false);
   }, [post.id]);
 
   const onAddComment = async (comment: CommentData) => {
-    await dispatch(addComment({
-      postId: selectedPost.data?.id as number,
-      data: comment,
-    }));
+    const newComment: Omit<Comment, 'id'> = {
+      ...comment,
+      postId: post.id,
+    };
+
+    await dispatch(commentsActions.addComment(newComment));
   };
 
-  const onDeleteComment = async (commentId: number) => {
-    await dispatch(removeComment(commentId));
+  const onDeleteComment = (commentId: number) => {
+    dispatch(commentsActions.removeComment(commentId));
   };
 
   return (
@@ -55,23 +48,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && items.length === 0 && (
+        {!loaded && !items.length && (
           <Loader />
         )}
 
-        {(loaded || created) && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {(loaded && !hasError && items.length === 0) && (
+        {(loaded && !hasError && !items.length) && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {(!hasError && loaded && items.length > 0) && (
+        {(!hasError && items.length > 0) && (
           <>
             <p className="title is-4">Comments:</p>
 
