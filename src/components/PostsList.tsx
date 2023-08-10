@@ -1,56 +1,83 @@
 import classNames from 'classnames';
-import React from 'react';
+import { useEffect, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
+import * as postActions from '../features/postSlice';
 
 type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
+  posts: Post[]
 };
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC<Props> = ({ posts }) => {
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.post.post?.id);
+  const selectedPostRef = useRef<number>(0);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  useEffect(() => {
+    const Id = () => {
+      if (selectedPostRef.current) {
+        dispatch(postActions.init(selectedPostRef.current));
+      }
+    };
 
-      <tbody>
-        {posts.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
-            <td data-cy="PostTitle">{post.title}</td>
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
-              >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
-              </button>
-            </td>
+    window.addEventListener('online', Id);
+
+    return () => window.removeEventListener('online', Id);
+  }, []);
+
+  const handleSelectPost = (post: Post) => {
+    if (selectedPostRef.current === post.id) {
+      dispatch(postActions.removePost());
+      selectedPostRef.current = 0;
+
+      return;
+    }
+
+    selectedPostRef.current = post.id;
+    dispatch(postActions.addPost(post));
+    dispatch(postActions.init(selectedPostRef.current));
+  };
+
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    {
+                      'is-light': selectedPost
+                      && post.id !== selectedPost,
+                    },
+                  )}
+                  onClick={() => handleSelectPost(post)}
+                >
+                  {selectedPost
+                  && post.id === selectedPost ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
