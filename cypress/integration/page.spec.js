@@ -61,7 +61,6 @@ const page = {
   waitForRequest: requestAlias => {
     cy.wait(requestAlias);
     
-    // To guarantee that React handled the response
     cy.wait(50);
   },
 

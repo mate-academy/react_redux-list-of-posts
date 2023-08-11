@@ -8,6 +8,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState('Email is required');
 
   const [errors, setErrors] = useState({
     name: false,
@@ -47,6 +48,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     setErrors({
       name: !name,
       email: !email,
@@ -54,18 +57,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
 
     if (!name || !email || !body) {
+      setEmailError('Email is required');
+
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setErrors(current => ({
+        ...current,
+        email: true,
+      }));
+
+      setEmailError('Enter valid email');
+
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -139,7 +152,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {emailError}
           </p>
         )}
       </div>
