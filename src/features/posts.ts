@@ -40,6 +40,7 @@ const postsSlice = createSlice({
 
     builder.addCase(initPosts.rejected, (state) => {
       state.hasError = true;
+      state.loaded = true;
     });
   },
 });
