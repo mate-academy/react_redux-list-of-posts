@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { deleteComment } from '../features/comments/commentsSlice';
-import { addComment, loadComments } from '../features/comments/commentsThunk';
+import {
+  addComment,
+  loadComments,
+  removeComment,
+} from '../features/comments/commentsThunk';
 import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
@@ -35,9 +38,8 @@ export const PostDetails: React.FC = () => {
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    dispatch(deleteComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    await dispatch(removeComment(commentId));
+    await dispatch(deleteComment(commentId));
   };
 
   return (

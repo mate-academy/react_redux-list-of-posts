@@ -15,7 +15,12 @@ import { selectPost } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector(state => state.users);
+  const {
+    author,
+    hasUsersError,
+    hasUsersLoaded,
+  } = useAppSelector(state => state.users);
+
   const {
     posts,
     hasError,
@@ -37,22 +42,30 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      {/* <Counter /> */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector />
-              </div>
+              {!hasUsersError && hasUsersLoaded && (
+                <div className="block">
+                  <UserSelector />
+                </div>
+              )}
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!author && !hasUsersError && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
+                )}
+
+                {hasUsersError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    No users found
+                  </div>
                 )}
 
                 {author && !loaded && (

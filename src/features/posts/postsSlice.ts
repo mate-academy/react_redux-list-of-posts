@@ -30,9 +30,11 @@ const posts = createSlice({
       state.loaded = true;
       state.posts = action.payload;
     });
+
     builder.addCase(postsThunk.pending, (state) => {
       state.loaded = false;
     });
+
     builder.addCase(postsThunk.rejected, (state) => {
       state.loaded = true;
       state.hasError = true;

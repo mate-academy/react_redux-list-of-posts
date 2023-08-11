@@ -1,17 +1,19 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { addComment, loadComments } from './commentsThunk';
+import { addComment, loadComments, removeComment } from './commentsThunk';
 import { Comment } from '../../types/Comment';
 
 interface Comments {
   loaded: boolean,
   hasError: boolean,
   comments: Comment[],
+  isCommentsOk: boolean,
 }
 
 const initialState: Comments = {
   loaded: false,
   hasError: false,
+  isCommentsOk: false,
   comments: [],
 };
 
@@ -20,9 +22,11 @@ const comments = createSlice({
   initialState,
   reducers: {
     deleteComment: (state, action) => {
-      state.comments = state.comments.filter(comment => (
-        comment.id !== action.payload
-      ));
+      if (state.isCommentsOk) {
+        state.comments = state.comments.filter(comment => (
+          comment.id !== action.payload
+        ));
+      }
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +50,14 @@ const comments = createSlice({
 
     builder.addCase(addComment.rejected, (state) => {
       state.hasError = true;
+    });
+
+    builder.addCase(removeComment.fulfilled, (state) => {
+      state.isCommentsOk = true;
+    });
+
+    builder.addCase(removeComment.rejected, (state) => {
+      state.isCommentsOk = false;
     });
   },
 });
