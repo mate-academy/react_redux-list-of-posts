@@ -23,8 +23,8 @@ export const commentsSlice = createSlice({
   name: 'commnets',
   initialState,
   reducers: {
-    add: (state: Comments, actions: PayloadAction<Comment[]>) => {
-      state.comments = actions.payload;
+    add: (state: Comments, actions: PayloadAction<Comment>) => {
+      state.comments = [...state.comments, actions.payload];
     },
     take: (state: Comments, actions: PayloadAction<Comment>) => {
       state.comments = state.comments

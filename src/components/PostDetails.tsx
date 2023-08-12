@@ -29,7 +29,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const onCommnetsDeleteHandle = async (comment: Comment) => {
     await deleteComment(comment.id);
     dispatch(commentsActions.take(comment));
-    getCommnetsData(post.id);
   };
 
   return (
@@ -95,7 +94,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !error && (
+        {!loading && !error && !isAddCommnet &&  (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -107,7 +106,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {!loading && !error && isAddCommnet && (
-          <NewCommentForm loadComments={getCommnetsData} />
+          <NewCommentForm/>
         )}
       </div>
     </div>

@@ -1,13 +1,11 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { createComment } from '../api/comments';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments/commnets';
 
-type Props = {
-  loadComments: (value: number) => void,
-};
-
-export const NewCommentForm: React.FC<Props> = ({ loadComments }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch()
   const { post } = useAppSelector(state => state.selectedPost);
 
   const [submitting, setSubmitting] = useState(false);
@@ -70,12 +68,15 @@ export const NewCommentForm: React.FC<Props> = ({ loadComments }) => {
         body,
       };
 
-      await createComment(newCommnet);
+      const loadedComments = await createComment(newCommnet);
+      dispatch(commentsActions.add(loadedComments))
 
-      loadComments(post?.id || 0);
+      setValues((current) => ({ ...current, body: '' }));
+
+      // loadComments(post?.id || 0);
     } finally {
       setSubmitting(false);
-      setValues((current) => ({ ...current, body: '' }));
+      // setValues((current) => ({ ...current, body: '' }));
     }
   };
 
