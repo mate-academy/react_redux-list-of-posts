@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, @typescript-eslint/no-unused-vars */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteComment } from '../../api/comments';
 import { Comment } from '../../types/Comment';
 
 type Comments = {
@@ -18,6 +18,12 @@ const initialState: Comments = {
 export const init = createAsyncThunk('comments/fetch', (postId: number) => {
   return getPostComments(postId);
 });
+
+export const remove = createAsyncThunk(
+  'comments/remove', (commentId: number) => {
+    return deleteComment(commentId);
+  },
+);
 
 export const commentsSlice = createSlice({
   name: 'commnets',

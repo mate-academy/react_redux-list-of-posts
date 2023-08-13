@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComment } from '../api/comments';
 import * as commentsActions from '../features/comments/commnets';
 import { Loader } from './Loader';
 import { Comment } from '../types/Comment';
@@ -26,8 +25,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     getCommnetsData(post.id);
   }, [post.id]);
 
-  const onCommnetsDeleteHandle = async (comment: Comment) => {
-    await deleteComment(comment.id);
+  const onCommnetsDeleteHandle = (comment: Comment) => {
+    dispatch(commentsActions.remove(comment.id));
     dispatch(commentsActions.take(comment));
   };
 
@@ -94,7 +93,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !error && !isAddCommnet &&  (
+        {!loading && !error && !isAddCommnet && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -106,7 +105,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {!loading && !error && isAddCommnet && (
-          <NewCommentForm/>
+          <NewCommentForm />
         )}
       </div>
     </div>

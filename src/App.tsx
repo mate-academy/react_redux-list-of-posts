@@ -11,7 +11,7 @@ import { Loader } from './components/Loader';
 import { Post } from './types/Post';
 // import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import * as selectedPostActions from './features/SelectedPost/SelectedPost';
+import * as selectedPostActions from './features/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -80,9 +80,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': post,
-              },
+              'Sidebar--open',
             )}
           >
             <div className="tile is-child box is-success ">

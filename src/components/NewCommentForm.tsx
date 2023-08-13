@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/comments/commnets';
 
 export const NewCommentForm: React.FC = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const { post } = useAppSelector(state => state.selectedPost);
 
   const [submitting, setSubmitting] = useState(false);
@@ -69,14 +69,12 @@ export const NewCommentForm: React.FC = () => {
       };
 
       const loadedComments = await createComment(newCommnet);
-      dispatch(commentsActions.add(loadedComments))
+
+      dispatch(commentsActions.add(loadedComments));
 
       setValues((current) => ({ ...current, body: '' }));
-
-      // loadComments(post?.id || 0);
     } finally {
       setSubmitting(false);
-      // setValues((current) => ({ ...current, body: '' }));
     }
   };
 

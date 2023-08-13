@@ -65,7 +65,13 @@ export const UserSelector: React.FC = () => {
           </span>
 
           <span className="icon is-small">
-            <i className={`fas fa-angle-${expanded ? 'up' : 'down'}`} aria-hidden="true" />
+            <i
+              className={classNames(
+                { 'fas fa-angle-up': expanded },
+                { 'fas fa-angle-down': !expanded },
+              )}
+              aria-hidden="true"
+            />
           </span>
         </button>
       </div>
