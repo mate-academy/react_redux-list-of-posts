@@ -7,7 +7,7 @@ import * as selectedPostsAction from '../features/selectedPost';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector(state => state.posts);
-  const selectedPostId = useAppSelector(state => state.selectedPost?.id);
+  const selectedPostId = useAppSelector(state => state.selectedPost.post?.id);
 
   const onPostSelected = (post: Post) => {
     return (post.id === selectedPostId)

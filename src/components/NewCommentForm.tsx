@@ -1,29 +1,38 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsAction from '../features/comments';
-import * as newCommentFormAction from '../features/newCommentForm';
-
-enum InputNames {
-  Name = 'name',
-  Email = 'email',
-  Body = 'body',
-}
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
   const submitting = useAppSelector(state => state.comments.submitting);
-  const {
-    errors,
-    name,
-    email,
-    body,
-  } = useAppSelector(state => state.newCommentForm);
+
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const clearForm = () => {
-    dispatch(newCommentFormAction.clearForm());
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   const handleChange = (
@@ -31,28 +40,18 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     const { name: field, value } = event.target;
 
-    switch (field) {
-      case InputNames.Name:
-        dispatch(newCommentFormAction.setName(value));
-        break;
-
-      case InputNames.Email:
-        dispatch(newCommentFormAction.setEmail(value));
-        break;
-
-      case InputNames.Body:
-        dispatch(newCommentFormAction.setBody(value));
-        break;
-
-      default:
-        break;
-    }
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    dispatch(newCommentFormAction.setErrors());
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
 
     if (!name || !email || !body || !selectedPost) {
       return;
@@ -66,7 +65,7 @@ export const NewCommentForm: React.FC = () => {
     };
 
     dispatch(commentsAction.addComment(dataNewComment));
-    dispatch(newCommentFormAction.clearBody());
+    setValues(current => ({ ...current, body: '' }));
   };
 
   return (
@@ -79,7 +78,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name={InputNames.Name}
+            name="name"
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
@@ -116,7 +115,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name={InputNames.Email}
+            name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
@@ -153,7 +152,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <textarea
             id="comment-body"
-            name={InputNames.Body}
+            name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}

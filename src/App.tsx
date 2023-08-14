@@ -8,16 +8,15 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsAction from './features/posts';
 import * as selectedPostsAction from './features/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author.user);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -33,8 +32,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">

@@ -15,7 +15,7 @@ export const PostDetails: React.FC = () => {
     loaded,
     hasError,
   } = useAppSelector(state => state.comments);
-  const post = useAppSelector(state => state.selectedPost);
+  const post = useAppSelector(state => state.selectedPost.post);
 
   function loadComments() {
     setVisible(false);
@@ -30,7 +30,10 @@ export const PostDetails: React.FC = () => {
   useEffect(loadComments, [post]);
 
   const onDeleteComment = (commentId: number) => {
-    return () => dispatch(commentsAction.deleteComment(commentId));
+    return () => {
+      dispatch(commentsAction.deleteComment(commentId));
+      dispatch(commentsAction.deleteCommentOnServer(commentId));
+    };
   };
 
   return (

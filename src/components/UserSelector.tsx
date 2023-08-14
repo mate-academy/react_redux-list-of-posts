@@ -7,7 +7,7 @@ import * as authorAction from '../features/author';
 
 export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
-  const author = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author.user);
   const dispatch = useAppDispatch();
 
   const [expanded, setExpanded] = useState(false);
