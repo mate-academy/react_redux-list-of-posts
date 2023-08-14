@@ -30,14 +30,6 @@ export const addComment = createAsyncThunk(
 export const deleteCommentOnServer = createAsyncThunk(
   'comments/delete',
   (commentId: number) => commentsApi.deleteComment(commentId),
-  // async (commentId: number, thunkAPI) => {
-  //   const state: RootState = thunkAPI.getState();
-  //   const currentComments: Comment[] = state.comments.comments;
-
-  //   await commentsApi.deleteComment(commentId);
-
-  //   return currentComments;
-  // },
 );
 
 const commentsSlice = createSlice({
@@ -87,12 +79,6 @@ const commentsSlice = createSlice({
     builder.addCase(deleteCommentOnServer.pending, (state) => {
       state.hasError = false;
     });
-
-    // builder.addCase(deleteComment.fulfilled, (state, action) => {
-    //   state.comments = state.comments.filter(
-    //     comment => comment.id !== action.payload,
-    //   );
-    // });
 
     builder.addCase(deleteCommentOnServer.rejected, (state) => {
       state.hasError = true;
