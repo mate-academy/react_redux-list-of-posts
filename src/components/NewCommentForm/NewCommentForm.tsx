@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import * as commentsActions from '../../features/comments/comentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
+  const hasError = useAppSelector(state => state.coments.error);
+  const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -47,25 +47,35 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
+    const normalizedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !normalizedName,
+      email: !normalizedEmail,
+      body: !normalizedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!normalizedName || !normalizedEmail || !normalizedBody) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (selectedPost) {
+      const newComment = {
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      };
 
-    // and the spinner will disappear immediately
+      await dispatch(commentsActions.addToServer(newComment));
+    }
+
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -189,6 +199,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </button>
         </div>
       </div>
+
+      {hasError && (
+        <div
+          className="notification is-danger"
+          data-cy="PostsLoadingError"
+        >
+          {hasError}
+        </div>
+      )}
+
     </form>
   );
 };
