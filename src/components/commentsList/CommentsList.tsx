@@ -16,33 +16,42 @@ export const CommentsList: React.FC = () => {
     <>
       <p className="title is-4">Comments:</p>
 
-      {comments.map(comment => (
-        <article
-          className="message is-small"
-          key={comment.id}
-          data-cy="Comment"
-        >
-          <div className="message-header">
-            <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-              {comment.name}
-            </a>
+      {comments.map(comment => {
+        const {
+          id,
+          name,
+          email,
+          body,
+        } = comment;
 
-            <button
-              data-cy="CommentDelete"
-              type="button"
-              className="delete is-small"
-              aria-label="delete"
-              onClick={() => deleteComment(comment)}
-            >
-              delete button
-            </button>
-          </div>
+        return (
+          <article
+            className="message is-small"
+            key={id}
+            data-cy="Comment"
+          >
+            <div className="message-header">
+              <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                {name}
+              </a>
 
-          <div className="message-body" data-cy="CommentBody">
-            {comment.body}
-          </div>
-        </article>
-      ))}
+              <button
+                data-cy="CommentDelete"
+                type="button"
+                className="delete is-small"
+                aria-label="delete"
+                onClick={() => deleteComment(comment)}
+              >
+                delete button
+              </button>
+            </div>
+
+            <div className="message-body" data-cy="CommentBody">
+              {body}
+            </div>
+          </article>
+        );
+      })}
     </>
   );
 };
