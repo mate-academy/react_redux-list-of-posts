@@ -21,9 +21,15 @@ export const PostDetails = () => {
     }
   }, [post?.id]);
 
-  const handleCommentDelete = (commentId: number) => {
+  const handleCommentDelete = async (commentId: number) => {
     dispatch(takeComment(commentId));
-    dispatch(removeComment(commentId));
+    try {
+      await dispatch(removeComment(commentId));
+    } catch {
+      if (post) {
+        dispatch(loadComments(post?.id));
+      }
+    }
   };
 
   return (

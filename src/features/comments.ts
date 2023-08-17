@@ -74,13 +74,19 @@ const commentsSlice = createSlice({
       });
 
     builder
+      .addCase(removeComment.pending, (state) => {
+        state.hasError = false;
+      })
       .addCase(
         removeComment.fulfilled,
         (state, action) => {
           state.comments = state.comments
             .filter(comment => comment.id !== action.payload);
         },
-      );
+      )
+      .addCase(removeComment.rejected, (state) => {
+        state.hasError = true;
+      });
   },
 });
 
