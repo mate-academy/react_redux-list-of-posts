@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as selectedPostActions from '../features/selectedPost/selectedPost';
-import { Post } from '../types/Post';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import * as selectedPostActions from '../../features/selectedPost/selectedPost';
+import { Post } from '../../types/Post';
 
 export const PostsList: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
@@ -10,14 +10,9 @@ export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const selectPost = (curentPost: Post) => {
-    // eslint-disable-next-line no-console
-    console.log('Clickes');
-
     if (curentPost.id === selectedPost?.id) {
       dispatch(selectedPostActions.clear());
     } else {
-      // eslint-disable-next-line no-console
-      console.log('Here');
       dispatch(selectedPostActions.set(curentPost));
     }
   };

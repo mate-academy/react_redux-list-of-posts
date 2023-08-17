@@ -1,17 +1,17 @@
-/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
+import { PostsList } from './components/PostList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
-// import { Counter } from './features/counter/Counter';
+import * as selectedPostActions from './features/selectedPost/selectedPost';
+import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,11 +20,8 @@ export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.user);
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
-  console.log(author);
-  console.log(selectedPost === author);
-
   useEffect(() => {
-    // dispatch(selectedPostActions.clear());
+    dispatch(selectedPostActions.clear());
 
     if (author) {
       dispatch(postsActions.init(author));
@@ -35,8 +32,7 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      {/* <Counter /> */}
+      <Counter />
 
       <div className="container">
         <div className="tile is-ancestor">

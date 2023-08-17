@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as usersActions from '../features/users/usersSlice';
-import * as authorActions from '../features/author/authorSlice';
+import { User } from '../../types/User';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import * as usersActions from '../../features/users/usersSlice';
+import * as authorActions from '../../features/author/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
