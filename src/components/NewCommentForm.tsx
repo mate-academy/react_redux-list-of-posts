@@ -1,57 +1,80 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  resetAllErrors,
+  resetAllValues,
+  setBodyError,
+  setBodyValue,
+  setEmailError,
+  setEmailValue,
+  setNameError,
+  setNameValue,
+} from '../features/posts/newCommentForm';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const {
+    value: name,
+    hasError: nameError,
+  } = useAppSelector(state => state.newComments.name);
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const {
+    value: email,
+    hasError: emailError,
+  } = useAppSelector(state => state.newComments.email);
 
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+  const {
+    value: body,
+    hasError: bodyError,
+  } = useAppSelector(state => state.newComments.body);
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+  const handleBlur = (
+    value: string,
+    callback: (action: unknown) => void,
+    actionFunction: (payload: boolean) => void,
+  ) => {
+    if (!value.trim()) {
+      callback(actionFunction(true));
+    }
   };
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    callback: (action: unknown) => void,
+    actionErrorFunction: (payload: boolean) => void,
+    actionValueFunction: (payload: string) => void,
   ) => {
-    const { name: field, value } = event.target;
+    callback(actionValueFunction(e.target.value));
+    callback(actionErrorFunction(false));
+  };
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+  const clearForm = () => {
+    dispatch(resetAllErrors());
+    dispatch(resetAllValues());
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    if (!name) {
+      dispatch(setNameError(true));
+    }
+
+    if (!email) {
+      dispatch(setEmailError(true));
+    }
+
+    if (!body) {
+      dispatch(setBodyError(true));
+    }
 
     if (!name || !email || !body) {
       return;
@@ -59,13 +82,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(setBodyValue(''));
   };
 
   return (
@@ -81,16 +101,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', {
+              'is-danger': nameError,
+            })}
             value={name}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e, dispatch, setNameError, setNameValue);
+            }}
+            onBlur={() => handleBlur(name, dispatch, setNameError)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -100,7 +125,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.name && (
+        {nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -118,16 +143,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', {
+              'is-danger': emailError,
+            })}
             value={email}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e, dispatch, setEmailError, setEmailValue);
+            }}
+            onBlur={() => handleBlur(email, dispatch, setEmailError)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -137,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.email && (
+        {emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -154,13 +184,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', {
+              'is-danger': bodyError,
+            })}
             value={body}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e, dispatch, setBodyError, setBodyValue);
+            }}
+            onBlur={() => handleBlur(body, dispatch, setBodyError)}
           />
         </div>
 
-        {errors.body && (
+        {bodyError && (
           <p
             className="help is-danger"
             data-cy="ErrorMessage"
