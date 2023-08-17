@@ -85,9 +85,7 @@ export const App = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails />
-              )}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
