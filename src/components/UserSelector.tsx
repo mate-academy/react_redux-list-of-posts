@@ -16,6 +16,10 @@ export const UserSelector: React.FC<Props> = ({ selectedUser }) => {
   const { users, loaded } = useAppSelector(selectUsers);
   const dispatch = useAppDispatch();
 
+  const onSelectAuthor = (user: User) => {
+    dispatch(setAuthor(user));
+  };
+
   useEffect(() => {
     if (!expanded) {
       return;
@@ -60,14 +64,14 @@ export const UserSelector: React.FC<Props> = ({ selectedUser }) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {!loaded && users.length === 0 ? (
+          {!loaded && !users.length ? (
             <Loader />
           ) : (
             users.map(user => (
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                onClick={() => dispatch(setAuthor(user))}
+                onClick={() => onSelectAuthor(user)}
                 className={classNames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
                 })}
