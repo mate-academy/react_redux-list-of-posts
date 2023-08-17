@@ -15,6 +15,14 @@ export const PostsList: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
 
+  const handleClick = (post: Post) => {
+    if (post.id !== selectedPostId) {
+      dispatch(setSelected(post));
+    } else {
+      dispatch(closeSelected());
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -44,13 +52,7 @@ export const PostsList: React.FC<Props> = ({
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
-                    if (post.id !== selectedPostId) {
-                      dispatch(setSelected(post));
-                    } else {
-                      dispatch(closeSelected());
-                    }
-                  }}
+                  onClick={() => handleClick(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>

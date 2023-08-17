@@ -21,6 +21,9 @@ export const App: React.FC = () => {
 
   const selectedPost = useAppSelector(state => state.selectedPost);
 
+  const showSidebarCondition = selectedPost.id > 0
+    && selectedPost.userId === author.id;
+
   const errorCondition = isAuthorSet && !loaded && hasError;
   const noPostsCondition = isAuthorSet
     && !loaded
@@ -83,18 +86,15 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar--open',
+              'Sidebar',
+              {
+                'Sidebar--open': showSidebarCondition,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
-              {(selectedPost.id !== 0 && selectedPost.userId === author.id) && (
+              {(selectedPost.id > 0) && (
                 <PostDetails post={selectedPost} />
-              )}
-
-              {(selectedPost.id === 0 || selectedPost.userId !== author.id) && (
-                <p data-cy="NoSelectedUser">
-                  Choose a post
-                </p>
               )}
             </div>
           </div>

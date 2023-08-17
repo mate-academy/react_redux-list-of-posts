@@ -26,8 +26,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const [visible, setVisible] = useState(false);
 
-  const noCommentsCondition = !isLoaded && !hasError && comments.length === 0;
-  const showCommentsCondition = !isLoaded && !hasError && comments.length > 0;
+  const noCommentsCondition = !isLoaded && !hasError && !comments.length;
+  const showCommentsCondition = !isLoaded && !hasError && comments.length;
   const buttonCondition = !isLoaded && !hasError && !visible;
   const formCondition = !isLoaded && !hasError && visible;
 
