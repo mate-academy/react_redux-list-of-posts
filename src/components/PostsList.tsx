@@ -11,8 +11,8 @@ export const PostsList = () => {
 
   const handlePostSelection = (post: Post) => {
     return post.id === selectedPostId
-      ? () => dispatch(clearSelectedPost())
-      : () => dispatch(setSelectedPost(post));
+      ? dispatch(clearSelectedPost())
+      : dispatch(setSelectedPost(post));
   };
 
   return (
@@ -44,7 +44,7 @@ export const PostsList = () => {
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={handlePostSelection(post)}
+                  onClick={() => handlePostSelection(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
