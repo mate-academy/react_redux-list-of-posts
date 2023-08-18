@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { AnyAction } from '@reduxjs/toolkit';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -38,22 +39,20 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleBlur = (
     value: string,
-    callback: (action: unknown) => void,
-    actionFunction: (payload: boolean) => void,
+    actionFunction: (payload: boolean) => AnyAction,
   ) => {
     if (!value.trim()) {
-      callback(actionFunction(true));
+      dispatch(actionFunction(true));
     }
   };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    callback: (action: unknown) => void,
-    actionErrorFunction: (payload: boolean) => void,
-    actionValueFunction: (payload: string) => void,
+    actionErrorFunction: (payload: boolean) => AnyAction,
+    actionValueFunction: (payload: string) => AnyAction,
   ) => {
-    callback(actionValueFunction(e.target.value));
-    callback(actionErrorFunction(false));
+    dispatch(actionValueFunction(e.target.value));
+    dispatch(actionErrorFunction(false));
   };
 
   const clearForm = () => {
@@ -106,9 +105,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             })}
             value={name}
             onChange={(e) => {
-              handleChange(e, dispatch, setNameError, setNameValue);
+              handleChange(e, setNameError, setNameValue);
             }}
-            onBlur={() => handleBlur(name, dispatch, setNameError)}
+            onBlur={() => handleBlur(name, setNameError)}
           />
 
           <span className="icon is-small is-left">
@@ -148,9 +147,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             })}
             value={email}
             onChange={(e) => {
-              handleChange(e, dispatch, setEmailError, setEmailValue);
+              handleChange(e, setEmailError, setEmailValue);
             }}
-            onBlur={() => handleBlur(email, dispatch, setEmailError)}
+            onBlur={() => handleBlur(email, setEmailError)}
           />
 
           <span className="icon is-small is-left">
@@ -189,9 +188,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             })}
             value={body}
             onChange={(e) => {
-              handleChange(e, dispatch, setBodyError, setBodyValue);
+              handleChange(e, setBodyError, setBodyValue);
             }}
-            onBlur={() => handleBlur(body, dispatch, setBodyError)}
+            onBlur={() => handleBlur(body, setBodyError)}
           />
         </div>
 

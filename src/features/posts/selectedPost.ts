@@ -33,18 +33,8 @@ const SelectedPostSlice = createSlice({
       state.title = title;
       state.body = body;
     },
-    closeSelected: (state) => {
-      const {
-        id,
-        userId,
-        title,
-        body,
-      } = initialState;
-
-      state.id = id;
-      state.userId = userId;
-      state.title = title;
-      state.body = body;
+    closeSelected: () => {
+      return initialState;
     },
   },
 });
