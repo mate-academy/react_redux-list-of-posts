@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadComments, removeComment, takeComment } from '../features/comments';
+import * as commentsActions from '../features/comments';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
@@ -17,18 +17,16 @@ export const PostDetails = () => {
   useEffect(() => {
     setVisible(false);
     if (post) {
-      dispatch(loadComments(post?.id));
+      dispatch(commentsActions.loadComments(post?.id));
     }
   }, [post?.id]);
 
   const handleCommentDelete = async (commentId: number) => {
-    dispatch(takeComment(commentId));
+    dispatch(commentsActions.takeComment(commentId));
     try {
-      await dispatch(removeComment(commentId));
+      dispatch(commentsActions.removeComment(commentId));
     } catch {
-      if (post) {
-        dispatch(loadComments(post?.id));
-      }
+      dispatch(commentsActions.setComments(comments));
     }
   };
 
