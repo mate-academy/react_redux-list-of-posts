@@ -7,12 +7,14 @@ import { getUsers } from '../api/users';
 
 export type UsersState = {
   users: User[],
-  status: 'idle' | 'loading' | 'failed',
+  loaded: boolean,
+  hasErrors: boolean,
 };
 
 const initialState: UsersState = {
   users: [],
-  status: 'loading',
+  loaded: false,
+  hasErrors: false,
 };
 
 export const init = createAsyncThunk(
@@ -27,14 +29,16 @@ export const usersSlice = createSlice({
   extraReducers: (builder: ActionReducerMapBuilder<UsersState>) => {
     builder
       .addCase(init.pending, (state) => {
-        state.status = 'loading';
+        state.loaded = false;
+        state.hasErrors = false;
       })
       .addCase(init.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.loaded = true;
         state.users = action.payload;
       })
       .addCase(init.rejected, (state) => {
-        state.status = 'failed';
+        state.loaded = true;
+        state.hasErrors = true;
       });
   },
 });

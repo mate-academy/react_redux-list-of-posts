@@ -4,12 +4,7 @@ import {
 } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
-
-export type CommentsState = {
-  items: Comment[],
-  loaded: boolean,
-  hasError: boolean,
-};
+import { CommentsState } from '../types/CommentsState';
 
 const initialState: CommentsState = {
   items: [],
@@ -17,12 +12,12 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
-export const get = createAsyncThunk(
+export const getComments = createAsyncThunk(
   'comments/get',
   (postId: number) => getPostComments(postId),
 );
 
-export const add = createAsyncThunk(
+export const addComments = createAsyncThunk(
   'comments/add',
   (comment: Omit<Comment, 'id'>) => createComment(comment),
 );
@@ -45,20 +40,20 @@ export const commentsSlice = createSlice({
   },
   extraReducers: (builder: ActionReducerMapBuilder<CommentsState>) => {
     builder
-      .addCase(get.pending, (state) => {
+      .addCase(getComments.pending, (state) => {
         state.loaded = false;
       })
-      .addCase(get.fulfilled, (state, action) => {
+      .addCase(getComments.fulfilled, (state, action) => {
         state.loaded = true;
         state.items = action.payload;
       })
-      .addCase(get.rejected, (state) => {
+      .addCase(getComments.rejected, (state) => {
         state.hasError = true;
         state.loaded = true;
       });
 
     builder
-      .addCase(add.fulfilled, (state, action) => {
+      .addCase(addComments.fulfilled, (state, action) => {
         state.items.push(action.payload);
       });
   },

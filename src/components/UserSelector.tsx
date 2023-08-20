@@ -12,7 +12,8 @@ export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users.users);
   const selectedUser = useAppSelector(state => state.author.author);
-  const usersStatus = useAppSelector(state => state.users.status);
+  const usersLoaded = useAppSelector(state => state.users.loaded);
+  const usersHasErrors = useAppSelector(state => state.users.hasErrors);
   const [expanded, setExpanded] = useState(false);
 
   const onChange = (user: User) => {
@@ -68,11 +69,11 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {usersStatus === 'loading' && (
+          {!usersLoaded && (
             <Loader />
           )}
 
-          {usersStatus === 'idle' && (
+          {usersLoaded && !usersHasErrors && (
             users.map(user => (
               <a
                 key={user.id}
@@ -89,7 +90,7 @@ export const UserSelector: React.FC = () => {
             ))
           )}
 
-          {usersStatus === 'failed' && (
+          {usersHasErrors && usersLoaded && (
             <div className="dropdown-item">
               <p className="has-text-danger">
                 Failed to load users

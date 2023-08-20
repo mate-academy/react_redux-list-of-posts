@@ -27,7 +27,7 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    dispatch(commentsActions.get(post.id));
+    dispatch(commentsActions.getComments(post.id));
     setVisible(false);
   }
 

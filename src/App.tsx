@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   }, []);
 
   function loadUserPosts(userId: number) {
-    dispatch(postsActions.get(userId));
+    dispatch(postsActions.getPosts(userId));
   }
 
   useEffect(() => {

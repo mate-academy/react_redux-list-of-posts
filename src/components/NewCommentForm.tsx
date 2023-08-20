@@ -49,7 +49,7 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const onSubmit = async (newComment: CommentData) => {
-    await dispatch(commentsActions.add({
+    await dispatch(commentsActions.addComments({
       ...newComment,
       postId: post.id,
     }));

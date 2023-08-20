@@ -1,10 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { User } from '../types/User';
-
-export type AuthorState = {
-  author: User | null;
-};
+import { AuthorState } from '../types/AuthorState';
 
 const initialState: AuthorState = {
   author: null,

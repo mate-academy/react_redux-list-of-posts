@@ -2,14 +2,8 @@
 import {
   ActionReducerMapBuilder, createAsyncThunk, createSlice,
 } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
-
-export type PostsState = {
-  items: Post[],
-  loaded: boolean,
-  hasError: boolean,
-};
+import { PostsState } from '../types/PostState';
 
 const initialState: PostsState = {
   items: [],
@@ -17,7 +11,7 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-export const get = createAsyncThunk(
+export const getPosts = createAsyncThunk(
   'posts/get',
   (userId: number) => getUserPosts(userId),
 );
@@ -34,14 +28,14 @@ export const postsSlice = createSlice({
   },
   extraReducers: (builder: ActionReducerMapBuilder<PostsState>) => {
     builder
-      .addCase(get.pending, (state) => {
+      .addCase(getPosts.pending, (state) => {
         state.loaded = false;
       })
-      .addCase(get.fulfilled, (state, action) => {
+      .addCase(getPosts.fulfilled, (state, action) => {
         state.loaded = true;
         state.items = action.payload;
       })
-      .addCase(get.rejected, (state) => {
+      .addCase(getPosts.rejected, (state) => {
         state.hasError = true;
         state.loaded = true;
       });
