@@ -6,7 +6,7 @@ import {
   actions as commentsSliceActions,
   fetchComments,
   removeComment,
-} from '../features/slices/coomentsSlice';
+} from '../features/slices/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);

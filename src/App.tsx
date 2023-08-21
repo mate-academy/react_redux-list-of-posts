@@ -8,10 +8,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { getUserPosts } from './api/posts';
-// import { User } from './types/User';
-// import { Post } from './types/Post';
-// import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   actions as selectedPostActions,

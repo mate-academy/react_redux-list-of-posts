@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { createNewComment } from '../features/slices/coomentsSlice';
+import { createNewComment } from '../features/slices/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
   const { isLoading } = useAppSelector(state => state.comments);
@@ -46,13 +46,15 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    const validations = {
+      name: name.trim().length === 0,
+      email: email.trim().length === 0,
+      body: body.trim().length === 0,
+    };
 
-    if (!name || !email || !body) {
+    setErrors(validations);
+
+    if (Object.values(validations)) {
       return;
     }
 
