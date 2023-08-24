@@ -10,7 +10,9 @@ export const UserSelector: React.FC = () => {
   const { author, users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
 
-  const handleSelectUser = (user: User) => dispatch(setAuthor(user));
+  const handleSelectUser = (user: User) => () => dispatch(setAuthor(user));
+
+  const handleExpanded = () => setExpanded(current => !current);
 
   useEffect(() => {
     if (!expanded) {
@@ -45,9 +47,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={handleExpanded}
         >
           <span>
             {author?.name || 'Choose a user'}
@@ -65,7 +65,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => handleSelectUser(user)}
+              onClick={handleSelectUser(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}

@@ -11,7 +11,7 @@ export const PostsList: React.FC = () => {
     selectedPost,
   } = useAppSelector(state => state.posts);
 
-  const handleSelectPost = (post: Post) => {
+  const handleSelectPost = (post: Post) => () => {
     dispatch(setSelectedPost(post.id === selectedPost?.id ? null : post));
   };
 
@@ -44,7 +44,7 @@ export const PostsList: React.FC = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => handleSelectPost(post)}
+                  onClick={handleSelectPost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

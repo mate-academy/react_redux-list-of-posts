@@ -18,6 +18,8 @@ export const PostDetails: React.FC = () => {
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
+  const handleVisible = () => setVisible(true);
+
   useEffect(() => {
     setVisible(false);
     dispatch(loadComments(post?.id as number));
@@ -57,10 +59,10 @@ export const PostDetails: React.FC = () => {
       postId: post?.id as number,
     };
 
-    dispatch(addComment(data));
+    await dispatch(addComment(data));
   };
 
-  const handleDeleteComment = (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => () => {
     dispatch(deleteComment(commentId));
 
     commentsApi.deleteComment(commentId);
@@ -115,7 +117,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -134,7 +136,7 @@ export const PostDetails: React.FC = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={handleVisible}
           >
             Write a comment
           </button>
