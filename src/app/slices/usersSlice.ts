@@ -1,11 +1,13 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { SerializedError, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
-import { usersThunk } from '../thunks/usersThunk';
+import { getUsersAction } from '../thunks/usersThunk';
 
 const initialState: UsersState = {
   users: [],
   author: null,
+  loading: false,
+  error: null,
 };
 
 const usersSlice = createSlice({
@@ -17,8 +19,15 @@ const usersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(usersThunk.fulfilled, (state, action) => {
+    builder.addCase(getUsersAction.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getUsersAction.fulfilled, (state, action) => {
       state.users = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getUsersAction.rejected, (state, action) => {
+      state.error = action.error;
     });
   },
 });
@@ -30,4 +39,6 @@ export const usersReducer = usersSlice.reducer;
 export interface UsersState {
   users: User[],
   author: User | null,
+  loading: boolean,
+  error: SerializedError | null
 }

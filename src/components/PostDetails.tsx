@@ -49,7 +49,7 @@ export const PostDetails: React.FC = () => {
   // effect can return only a function but not a Promise
   */
 
-  const handleAddComment = async ({ name, email, body }: CommentData) => {
+  const handleAddComment = ({ name, email, body }: CommentData) => {
     const data = {
       name,
       email,
@@ -57,13 +57,13 @@ export const PostDetails: React.FC = () => {
       postId: post?.id as number,
     };
 
-    await dispatch(addComment(data));
+    dispatch(addComment(data));
   };
 
-  const handleDeleteComment = async (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => {
     dispatch(deleteComment(commentId));
 
-    await commentsApi.deleteComment(commentId);
+    commentsApi.deleteComment(commentId);
   };
 
   return (

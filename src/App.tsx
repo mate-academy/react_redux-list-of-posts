@@ -6,7 +6,7 @@ import './App.scss';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { loadUserPosts } from './app/thunks/postsThunk';
-import { usersThunk } from './app/thunks/usersThunk';
+import { getUsersAction } from './app/thunks/usersThunk';
 import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
@@ -15,13 +15,13 @@ import { setSelectedPost } from './app/slices/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector(state => state.users)
+  const { author } = useAppSelector(state => state.users);
   const {
     loaded,
     hasError,
     posts,
     selectedPost,
-  } = useAppSelector(state => state.posts)
+  } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
   }, [author?.id]);
 
   useEffect(() => {
-    dispatch(usersThunk());
+    dispatch(getUsersAction());
   }, []);
 
   return (
