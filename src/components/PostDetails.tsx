@@ -49,7 +49,7 @@ export const PostDetails: React.FC = () => {
   // effect can return only a function but not a Promise
   */
 
-  const handleAddComment = ({ name, email, body }: CommentData) => {
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
     const data = {
       name,
       email,
