@@ -47,12 +47,12 @@ export const NewCommentForm: React.FC = () => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
@@ -60,7 +60,10 @@ export const NewCommentForm: React.FC = () => {
 
     if (selectedPost) {
       await dispatch(addComment({
-        name, email, body, postId: selectedPost.id,
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
+        postId: selectedPost.id,
       }));
     }
 
@@ -114,7 +117,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
