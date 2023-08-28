@@ -7,7 +7,6 @@ import classNames from 'classnames';
 
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Counter } from './features/counter/Counter';
 import { Posts } from './components/Posts';
 import { useAppSelector } from './app/hooks';
 
@@ -16,8 +15,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
