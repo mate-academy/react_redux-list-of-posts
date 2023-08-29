@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+/* eslint-disable no-unused-vars */
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
 const initialState: User[] = [];
 
-export const initUsers = createAsyncThunk('users/fetch', () => {
+export const initUsers = createAsyncThunk('users/initUsers', () => {
   return getUsers();
 });
 
@@ -15,11 +16,12 @@ const usersSlice = createSlice({
   reducers: {
   },
   extraReducers(builder) {
-    builder.addCase(initUsers.fulfilled, (state, action) => {
-      state = action.payload;
+    builder.addCase(initUsers.fulfilled,
+      (state, action: PayloadAction<User[]>) => {
+        state = action.payload;
 
-      return state;
-    });
+        return state;
+      });
   },
 });
 

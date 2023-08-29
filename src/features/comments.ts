@@ -19,24 +19,32 @@ const initialState: State = {
   submitting: false,
 };
 
-export const initComments = createAsyncThunk('comments/fetch',
-  (postId: number) => {
-    return getPostComments(postId);
-  });
+export const initComments = createAsyncThunk(
+  'comments/initComments',
+  async (postId: number) => {
+    const response = await getPostComments(postId);
 
-export const addComment = createAsyncThunk('createComment/post',
-  (data: Omit<Comment, 'id'>) => {
-    const newComment = createComment(data);
+    return response;
+  },
+);
+
+export const addComment = createAsyncThunk(
+  'comments/addComment',
+  async (data: Omit<Comment, 'id'>) => {
+    const newComment = await createComment(data);
 
     return newComment;
-  });
+  },
+);
 
-export const removeComment = createAsyncThunk('removeComment/delete',
+export const removeComment = createAsyncThunk(
+  'comments/removeComment',
   (commentId: number) => {
     deleteComment(commentId);
 
     return commentId;
-  });
+  },
+);
 
 const commentsSlice = createSlice({
   name: 'comments',
@@ -49,29 +57,21 @@ const commentsSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(initComments.pending, (state) => {
       state.loaded = false;
-
-      return state;
     });
 
     builder.addCase(initComments.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
         state.comments = action.payload;
         state.loaded = true;
-
-        return state;
       });
 
     builder.addCase(initComments.rejected, (state) => {
       state.loaded = true;
       state.hasError = true;
-
-      return state;
     });
 
     builder.addCase(addComment.pending, (state) => {
       state.submitting = true;
-
-      return state;
     });
 
     builder.addCase(addComment.fulfilled,
@@ -81,23 +81,17 @@ const commentsSlice = createSlice({
           ...state.comments,
           action.payload,
         ];
-
-        return state;
       });
 
     builder.addCase(addComment.rejected, (state) => {
       state.hasError = true;
       state.submitting = false;
-
-      return state;
     });
 
     builder.addCase(removeComment.fulfilled, (state, action) => {
       state.comments = state.comments.filter((comment) => (
         comment.id !== action.payload
       ));
-
-      return state;
     });
   },
 });

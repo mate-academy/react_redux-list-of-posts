@@ -6,7 +6,7 @@ type State = {
   author: User | null
 };
 
-const initialState: State | null = {
+const initialState: State = {
   author: null,
 };
 
@@ -16,11 +16,9 @@ const author = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<User | null>) => {
       state.author = action.payload;
-
-      return state;
     },
   },
 });
 
 export default author.reducer;
-export const { actions } = author;
+export const { setUser } = author.actions;

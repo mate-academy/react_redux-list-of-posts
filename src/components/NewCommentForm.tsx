@@ -20,6 +20,12 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const trimmedBody = body.trim();
+
+  const notValid = !trimmedName || !trimmedEmail || !trimmedBody;
+
   const clearForm = () => {
     setValues({
       name: '',
@@ -47,21 +53,21 @@ export const NewCommentForm: React.FC = () => {
     event.preventDefault();
 
     setErrors({
-      name: !name.trim(),
-      email: !email.trim(),
-      body: !body.trim(),
+      name: !trimmedName,
+      email: !trimmedEmail,
+      body: !trimmedBody,
     });
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
+    if (notValid) {
       return;
     }
 
     if (selectedPost) {
       dispatch(addComment({
-        name: name.trim(),
+        name: trimmedName,
         postId: selectedPost.id,
-        email: email.trim(),
-        body: body.trim(),
+        email: trimmedEmail,
+        body: trimmedBody,
       }));
     }
 

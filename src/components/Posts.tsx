@@ -11,6 +11,10 @@ export const Posts: React.FC = () => {
   const { posts, hasError, loaded } = useAppSelector(state => state.posts);
   const author = useAppSelector<User | null>(state => state.author.author);
 
+  const showError = author && loaded && hasError;
+  const noPosts = author && loaded && !hasError && !posts.length;
+  const showPostsList = author && loaded && !hasError && !!posts.length;
+
   useEffect(() => {
     dispatch(postsActions.setSelectedPost(null));
 
@@ -31,7 +35,7 @@ export const Posts: React.FC = () => {
         <Loader />
       )}
 
-      {author && loaded && hasError && (
+      { showError && (
         <div
           className="notification is-danger"
           data-cy="PostsLoadingError"
@@ -40,13 +44,13 @@ export const Posts: React.FC = () => {
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length === 0 && (
+      { noPosts && (
         <div className="notification is-warning" data-cy="NoPostsYet">
           No posts yet
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length > 0 && (
+      { showPostsList && (
         <PostsList />
       )}
     </div>

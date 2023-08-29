@@ -17,9 +17,14 @@ const initialState: State = {
   hasError: false,
 };
 
-export const initPosts = createAsyncThunk('posts/fetch', (userId: number) => {
-  return getUserPosts(userId);
-});
+export const initPosts = createAsyncThunk(
+  'posts/initPosts',
+  async (userId: number) => {
+    const posts = await getUserPosts(userId);
+
+    return posts;
+  },
+);
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -38,15 +43,11 @@ const postsSlice = createSlice({
       (state, action: PayloadAction<Post[]>) => {
         state.posts = action.payload;
         state.loaded = true;
-
-        return state;
       });
 
     builder.addCase(initPosts.rejected, (state) => {
       state.loaded = true;
       state.hasError = true;
-
-      return state;
     });
   },
 });

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as usersActions from '../features/UsersAPI';
-import { actions as authorActions } from '../features/author';
+import * as usersActions from '../features/UsersSlice';
+import { setUser } from '../features/author';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -63,7 +63,7 @@ export const UserSelector: React.FC = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(authorActions.setUser(user));
+                dispatch(setUser(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
