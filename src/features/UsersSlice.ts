@@ -4,7 +4,13 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-const initialState: User[] = [];
+type State = {
+  users: User[]
+};
+
+const initialState: State = {
+  users: [],
+};
 
 export const initUsers = createAsyncThunk('users/initUsers', () => {
   return getUsers();
@@ -18,9 +24,7 @@ const usersSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(initUsers.fulfilled,
       (state, action: PayloadAction<User[]>) => {
-        state = action.payload;
-
-        return state;
+        state.users = action.payload;
       });
   },
 });

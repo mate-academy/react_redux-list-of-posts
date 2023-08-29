@@ -74,8 +74,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => (
-                      dispatch(commentsActions.removeComment(comment.id)))}
+                    onClick={() => {
+                      dispatch(commentsActions.removeComment(comment.id));
+                      dispatch(commentsActions.removeCommentState(comment.id));
+                    }}
                   >
                     delete button
                   </button>
