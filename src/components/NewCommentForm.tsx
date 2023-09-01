@@ -1,18 +1,20 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import {
+  addComment as apiAddComment,
+} from '../features/commentsSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(s => s.selectedPost.selectedPost);
 
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
+    addComment: false,
   });
 
   const [{ name, email, body }, setValues] = useState({
@@ -32,6 +34,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       name: false,
       email: false,
       body: false,
+      addComment: false,
     });
   };
 
@@ -48,28 +51,41 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
+      addComment: false,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    try {
+      await dispatch(apiAddComment({
+        name,
+        email,
+        body,
+        postId: selectedPost?.id as number,
+      }));
+    } catch {
+      setErrors(current => ({ ...current, addComment: true }));
+    }
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {errors.addComment && (
+        <div className="notification is-danger" data-cy="">
+          Something went wrong
+        </div>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
