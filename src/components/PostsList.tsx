@@ -1,19 +1,18 @@
 import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadApiPosts, selectPosts } from '../features/postsSlice';
-import { selectAuthor } from '../features/authorSlice';
+import { loadApiPosts } from '../features/postsSlice';
 import { Loader } from './Loader';
 import { Post } from '../types/Post';
 import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const PostsList = () => {
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(s => s.selectedPost.selectedPost);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(s => s.posts.hasError);
-  const author = useAppSelector(selectAuthor);
-  const posts = useAppSelector(selectPosts);
+  const selectedPost = useAppSelector(store => store.selectedPost.selectedPost);
+  const loaded = useAppSelector(store => store.posts.loaded);
+  const hasError = useAppSelector(store => store.posts.hasError);
+  const author = useAppSelector(store => store.author.author);
+  const posts = useAppSelector(store => store.posts.items);
 
   useEffect(() => {
     if (!author) {
@@ -26,6 +25,8 @@ export const PostsList = () => {
   const handleSelectPost = (post: Post | null) => {
     dispatch(setSelectedPost(post));
   };
+
+  const IS_NO_ERROR = author && loaded && !hasError;
 
   return (
     <>
@@ -42,13 +43,13 @@ export const PostsList = () => {
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length === 0 && (
+      {(IS_NO_ERROR && !posts.length) && (
         <div className="notification is-warning" data-cy="NoPostsYet">
           No posts yet
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length > 0 && (
+      {IS_NO_ERROR && !!posts.length && (
         <div data-cy="PostsList">
           <p className="title">Posts:</p>
 

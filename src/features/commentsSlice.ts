@@ -1,7 +1,5 @@
-/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
 import {
   createComment,
   deleteComment as deleteFromServer,
@@ -85,7 +83,7 @@ const commentsSlice = createSlice({
       state.hasError = true;
     });
     builder.addCase(deleteComment.pending, (state, action) => {
-      oldItems = { ...state.items };
+      oldItems = [...state.items];
 
       state.items = state.items
         .filter(comment => comment.id !== action.payload);
@@ -96,11 +94,11 @@ const commentsSlice = createSlice({
         if (oldItems.length) {
           state.items = [...oldItems];
         }
+
+        state.hasError = true;
       });
   },
 });
-
-export const selectPosts = (state: RootState) => state.posts.items;
 
 export const { forceDeleteComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

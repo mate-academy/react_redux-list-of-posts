@@ -17,7 +17,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(s => s.selectedPost.selectedPost);
+  const selectedPost = useAppSelector(store => store.selectedPost.selectedPost);
 
   const {
     items: comments,

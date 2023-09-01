@@ -2,11 +2,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 
-export interface AuthorState {
+export interface SelectedPostState {
   selectedPost: Post | null;
 }
 
-const initialState: AuthorState = {
+const initialState: SelectedPostState = {
   selectedPost: null,
 };
 

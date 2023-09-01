@@ -1,9 +1,7 @@
-/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
-import { RootState } from '../app/store';
 
 type Props = {
   items: Post[],
@@ -51,8 +49,6 @@ const postsSlice = createSlice({
     });
   },
 });
-
-export const selectPosts = (state: RootState) => state.posts.items;
 
 export const { setPosts } = postsSlice.actions;
 export default postsSlice.reducer;

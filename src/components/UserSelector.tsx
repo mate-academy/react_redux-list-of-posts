@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsersAsync, selectUsers } from '../features/userSlice';
-import { selectAuthor, setAuthor } from '../features/authorSlice';
+import { getUsersAsync } from '../features/userSlice';
+import { setAuthor } from '../features/authorSlice';
 import { User } from '../types/User';
 import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const selectedUser = useAppSelector(selectAuthor);
+  const selectedUser = useAppSelector(store => store.author.author);
 
   useEffect(() => {
     dispatch(getUsersAsync());
@@ -20,7 +20,7 @@ export const UserSelector: React.FC = () => {
     dispatch(setSelectedPost(null));
   }, []);
 
-  const users = useAppSelector(selectUsers);
+  const users = useAppSelector(store => store.users.users);
 
   const [expanded, setExpanded] = useState(false);
 

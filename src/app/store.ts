@@ -1,6 +1,4 @@
-/* eslint-disable import/no-cycle */
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-
 import userReducer from '../features/userSlice';
 import authorReducer from '../features/authorSlice';
 import postsReducer from '../features/postsSlice';

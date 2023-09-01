@@ -5,11 +5,7 @@ import {
 } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
-
-};
-
-export const NewCommentForm: React.FC<Props> = () => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(s => s.selectedPost.selectedPost);
@@ -18,6 +14,7 @@ export const NewCommentForm: React.FC<Props> = () => {
     name: false,
     email: false,
     body: false,
+    addComment: false,
   });
 
   const [{ name, email, body }, setValues] = useState({
@@ -37,6 +34,7 @@ export const NewCommentForm: React.FC<Props> = () => {
       name: false,
       email: false,
       body: false,
+      addComment: false,
     });
   };
 
@@ -53,23 +51,28 @@ export const NewCommentForm: React.FC<Props> = () => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
+      addComment: false,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
-    await dispatch(apiAddComment({
-      name,
-      email,
-      body,
-      postId: selectedPost?.id as number,
-    }));
+    try {
+      await dispatch(apiAddComment({
+        name,
+        email,
+        body,
+        postId: selectedPost?.id as number,
+      }));
+    } catch {
+      setErrors(current => ({ ...current, addComment: true }));
+    }
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
@@ -77,6 +80,12 @@ export const NewCommentForm: React.FC<Props> = () => {
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {errors.addComment && (
+        <div className="notification is-danger" data-cy="">
+          Something went wrong
+        </div>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name

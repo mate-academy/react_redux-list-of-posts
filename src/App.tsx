@@ -8,10 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { useAppSelector } from './app/hooks';
-import { selectAuthor } from './features/authorSlice';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(selectAuthor);
+  const author = useAppSelector(store => store.author.author);
 
   const selectedPost = useAppSelector(s => s.selectedPost.selectedPost);
 
