@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
 import { createNewComment } from '../features/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
@@ -19,7 +18,7 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
-  const post = useAppSelector(state => state.posts.selectedPost as Post);
+  const post = useAppSelector(state => state.posts?.selectedPost);
   const { comments } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
@@ -61,11 +60,13 @@ export const NewCommentForm: React.FC = () => {
 
     setSubmitting(true);
 
-    await dispatch(createNewComment(
-      comments,
-      { name, email, body },
-      post.id,
-    ));
+    if (post !== null) {
+      dispatch(createNewComment(
+        comments,
+        { name, email, body },
+        post.id,
+      ));
+    }
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
