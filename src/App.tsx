@@ -30,10 +30,19 @@ export const App: React.FC = () => {
   function loadUserPosts(userId: number) {
     dispatch(setIsLoading(true));
 
-    getUserPosts(userId)
-      .then(data => dispatch(setPosts(data)))
-      .catch(() => dispatch(setHasError(true)))
-      .finally(() => dispatch(setIsLoading(false)));
+    async function fetchData() {
+      try {
+        const data = await getUserPosts(userId);
+
+        dispatch(setPosts(data));
+      } catch (error) {
+        dispatch(setHasError(true));
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    }
+
+    fetchData();
   }
 
   useEffect(() => {
