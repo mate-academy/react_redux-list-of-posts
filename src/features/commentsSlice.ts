@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { getPostComments } from '../api/comments';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 import { Comment } from '../types/Comment';
 
@@ -17,6 +17,24 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
+export const addComment = createAsyncThunk(
+  'comments/addComment',
+  async (data: Omit<Comment, 'id'>) => {
+    const newComment = await createComment(data);
+
+    return newComment;
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/removeComment',
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
   async (postId: number) => {
@@ -29,7 +47,16 @@ export const fetchComments = createAsyncThunk(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    removeCommentImmediatly: (
+      state: CommentsState,
+      action: PayloadAction<number>,
+    ) => {
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state: CommentsState) => {
@@ -46,8 +73,29 @@ export const commentsSlice = createSlice({
       .addCase(fetchComments.rejected, (state: CommentsState) => {
         state.loaded = true;
         state.hasError = true;
+      })
+      .addCase(addComment.fulfilled, (
+        state: CommentsState,
+        action: PayloadAction<Comment>,
+      ) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (
+        state: CommentsState,
+        action: PayloadAction<number>,
+      ) => {
+        const comments = state.items.filter(
+          comment => comment.id !== action.payload,
+        );
+
+        return {
+          ...state,
+          items: comments,
+        };
       });
   },
 });
+
+export const { removeCommentImmediatly } = commentsSlice.actions;
 
 export default commentsSlice.reducer;

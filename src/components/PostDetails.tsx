@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
 
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  fetchComments,
+  removeComment,
+  removeCommentImmediatly,
+} from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -13,41 +18,15 @@ export const PostDetails: React.FC = () => {
   const { loaded, hasError, items: comments } = useAppSelector(
     state => state.comments,
   );
+  const dispatch = useAppDispatch();
 
-  // const addComment = async ({ name, email, body }: CommentData) => {
-  //   try {
-  //     const newComment = await commentsApi.createComment({
-  //       name,
-  //       email,
-  //       body,
-  //       postId: post.id,
-  //     });
+  useEffect(() => {
+    setVisible(false);
 
-  //     setComments(
-  //       currentComments => [...currentComments, newComment],
-  //     );
-
-  //     // setComments([...comments, newComment]);
-  //     // works wrong if we wrap `addComment` with `useCallback`
-  //     // because it takes the `comments` cached during the first render
-  //     // not the actual ones
-  //   } catch (error) {
-  //     // we show an error message in case of any error
-  //     setError(true);
-  //   }
-  // };
-
-  // const deleteComment = async (commentId: number) => {
-  //   // we delete the comment immediately so as
-  //   // not to make the user wait long for the actual deletion
-  //   setComments(
-  //     currentComments => currentComments.filter(
-  //       comment => comment.id !== commentId,
-  //     ),
-  //   );
-
-  //   await commentsApi.deleteComment(commentId);
-  // };
+    if (post) {
+      dispatch(fetchComments(post.id));
+    }
+  }, [post?.id]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -98,7 +77,10 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    // onClick={() => deleteComment(comment.id)}
+                    onClick={() => {
+                      dispatch(removeComment(comment.id));
+                      dispatch(removeCommentImmediatly(comment.id));
+                    }}
                   >
                     delete button
                   </button>
