@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { deleteOldComment, loadComments } from '../features/commentsSlice';
 
@@ -14,13 +13,16 @@ export const PostDetails: React.FC = () => {
     isLoading,
     hasError,
   } = useAppSelector(state => state.comments);
-  const post = useAppSelector(state => state.posts.selectedPost as Post);
+  const post = useAppSelector(state => state.posts.selectedPost);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadComments(post.id));
-    setIsVisible(false);
-  }, [post.id]);
+    if (post) {
+      dispatch(loadComments(post.id));
+      setIsVisible(false);
+    }
+  }, [post?.id]);
 
   const handleDeleteComment = (commentId: number) => {
     dispatch(deleteOldComment(comments, commentId));
@@ -28,15 +30,17 @@ export const PostDetails: React.FC = () => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
-        </h2>
+      {post && (
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${post.id}: ${post.title}`}
+          </h2>
 
-        <p data-cy="PostBody">
-          {post.body}
-        </p>
-      </div>
+          <p data-cy="PostBody">
+            {post.body}
+          </p>
+        </div>
+      )}
 
       <div className="block">
         {isLoading && (

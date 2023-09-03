@@ -18,7 +18,7 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
-  const post = useAppSelector(state => state.posts?.selectedPost);
+  const post = useAppSelector(state => state.posts.selectedPost);
   const { comments } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
