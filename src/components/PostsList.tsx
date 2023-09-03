@@ -10,6 +10,16 @@ export const PostsList = () => {
     state => state.selectedPost,
   ) as Post | null;
 
+  const isThisPostSelected = (postId: number) => postId === selectedPost?.id;
+
+  const handleClick = (post: Post) => {
+    if (selectedPost && selectedPost.id === post.id) {
+      dispatch(setSelectedPost(null));
+    } else {
+      dispatch(setSelectedPost(post));
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -36,18 +46,12 @@ export const PostsList = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost?.id,
+                      'is-light': !isThisPostSelected(post.id),
                     },
                   )}
-                  onClick={() => {
-                    if (selectedPost && selectedPost.id === post.id) {
-                      dispatch(setSelectedPost(null));
-                    } else {
-                      dispatch(setSelectedPost(post));
-                    }
-                  }}
+                  onClick={() => handleClick(post)}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {isThisPostSelected(post.id) ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
