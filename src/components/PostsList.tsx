@@ -7,8 +7,10 @@ import * as postsActions from '../features/postsSlice';
 export const PostsList: React.FC = () => {
   const dispach = useAppDispatch();
   const { posts, selectedPost } = useAppSelector(state => state.posts);
-  // eslint-disable-next-line
-  const onPostSelected = (post: Post | null) => dispach(postsActions.setSelectedPost(post));
+  const onPostSelected = (post: Post | null) => {
+    dispach(postsActions.setSelectedPost(post));
+  };
+
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {

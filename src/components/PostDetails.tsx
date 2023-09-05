@@ -16,6 +16,8 @@ export const PostDetails: React.FC = () => {
   } = useAppSelector(state => state.comments);
 
   useEffect(() => {
+    setVisible(false);
+
     if (post) {
       dispach(commentsActions.init(post.id));
     }
