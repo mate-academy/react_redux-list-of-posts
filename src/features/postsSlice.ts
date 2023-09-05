@@ -30,13 +30,16 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPost: (state, action: PayloadAction<Post | null>) => {
-      state.selectedPost = action.payload;
-    },
     clearPosts: (state) => {
       state.posts = [];
       state.loading = false;
       state.hasError = false;
+    },
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
+    },
+    clearSelectedPost: (state) => {
+      state.selectedPost = null;
     },
   },
 
@@ -57,5 +60,9 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setPost, clearPosts } = postsSlice.actions;
+export const {
+  setSelectedPost,
+  clearPosts,
+  clearSelectedPost,
+} = postsSlice.actions;
 export default postsSlice.reducer;

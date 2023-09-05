@@ -19,6 +19,8 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.posts.selectedPost);
 
   useEffect(() => {
+    dispach(postsActions.clearSelectedPost());
+
     if (author) {
       dispach(postsActions.init(author.id));
     } else {
