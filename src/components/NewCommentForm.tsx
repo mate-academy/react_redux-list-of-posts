@@ -1,12 +1,25 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments';
 import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+const emptyPost: Post = {
+  id: 0,
+  title: '',
+  body: '',
+  userId: 0,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const postFromStore: Post | null = useAppSelector(
+    (state) => state.selectedPost.selectedPost,
+  );
+  const post: Post = postFromStore !== null ? postFromStore : emptyPost;
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -35,6 +48,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const onSubmit = async (newComment: CommentData) => {
+    await dispatch(commentsActions.addComments({
+      ...newComment,
+      postId: post.id,
+    }));
+  };
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -60,6 +80,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
+
     await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
