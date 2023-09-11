@@ -12,8 +12,7 @@ export const UsersProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers()
-      .then(setUsers);
+    getUsers().then(setUsers);
   }, []);
 
   return (
