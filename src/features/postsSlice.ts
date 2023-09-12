@@ -11,7 +11,7 @@ export type PostsState = {
 
 const initialState: PostsState = {
   posts: [],
-  status: Status.idle,
+  status: Status.IDLE,
 };
 
 export const postsFetch = createAsyncThunk(
@@ -30,14 +30,14 @@ export const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(postsFetch.pending, (state) => {
-        state.status = Status.loading;
+        state.status = Status.LOADING;
       })
       .addCase(postsFetch.fulfilled, (state, action) => {
-        state.status = Status.idle;
+        state.status = Status.IDLE;
         state.posts = action.payload;
       })
       .addCase(postsFetch.rejected, (state) => {
-        state.status = Status.failed;
+        state.status = Status.FAILED;
       });
   },
 });

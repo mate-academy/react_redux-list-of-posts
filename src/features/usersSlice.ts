@@ -11,7 +11,7 @@ export type UsersState = {
 
 const initialState: UsersState = {
   users: [],
-  status: Status.idle,
+  status: Status.IDLE,
 };
 
 export const usersFetch = createAsyncThunk(
@@ -26,14 +26,14 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(usersFetch.pending, (state) => {
-        state.status = Status.loading;
+        state.status = Status.LOADING;
       })
       .addCase(usersFetch.fulfilled, (state, action) => {
-        state.status = Status.idle;
+        state.status = Status.IDLE;
         state.users = action.payload;
       })
       .addCase(usersFetch.rejected, (state) => {
-        state.status = Status.failed;
+        state.status = Status.FAILED;
       });
   },
 });

@@ -36,21 +36,21 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {status === Status.loading && <Loader />}
+        {status === Status.LOADING && <Loader />}
 
-        {status === Status.failed && (
+        {status === Status.FAILED && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {status === Status.idle && comments.length === 0 && (
+        {status === Status.IDLE && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {status === Status.idle && comments.length > 0 && (
+        {status === Status.IDLE && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -84,7 +84,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {status === Status.idle && !visible && (
+        {status === Status.IDLE && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -95,7 +95,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {status === Status.idle && visible && <NewCommentForm />}
+        {status === Status.IDLE && visible && <NewCommentForm />}
       </div>
     </div>
   );

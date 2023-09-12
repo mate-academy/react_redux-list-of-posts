@@ -49,9 +49,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && status === Status.loading && <Loader />}
+                {author && status === Status.LOADING && <Loader />}
 
-                {author && status === Status.failed && (
+                {author && status === Status.FAILED && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -60,13 +60,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && status === Status.idle && posts.length === 0 && (
+                {author && status === Status.IDLE && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && status === Status.idle && posts.length > 0 && (
+                {author && status === Status.IDLE && posts.length > 0 && (
                   <PostsList posts={posts} />
                 )}
               </div>

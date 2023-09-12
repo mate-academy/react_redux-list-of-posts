@@ -15,7 +15,7 @@ export type CommentsState = {
 
 const initialState: CommentsState = {
   comments: [],
-  status: Status.idle,
+  status: Status.IDLE,
 };
 
 export const commentsAdd = createAsyncThunk(
@@ -50,14 +50,14 @@ export const commentsSlice = createSlice({
           .filter(comment => comment.id !== action.payload);
       })
       .addCase(commentsFetch.pending, (state) => {
-        state.status = Status.loading;
+        state.status = Status.LOADING;
       })
       .addCase(commentsFetch.fulfilled, (state, action) => {
-        state.status = Status.idle;
+        state.status = Status.IDLE;
         state.comments = action.payload;
       })
       .addCase(commentsFetch.rejected, (state) => {
-        state.status = Status.failed;
+        state.status = Status.FAILED;
       });
   },
 });

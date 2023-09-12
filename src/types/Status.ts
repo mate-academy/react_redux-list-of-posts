@@ -1,5 +1,5 @@
 export const enum Status {
-  idle,
-  loading,
-  failed,
+  IDLE,
+  LOADING,
+  FAILED,
 }
