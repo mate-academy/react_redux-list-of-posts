@@ -14,7 +14,7 @@ const initialState: PostsState = {
   status: Status.IDLE,
 };
 
-export const postsFetch = createAsyncThunk(
+export const fetchPosts = createAsyncThunk(
   'posts/fetch',
   (id: number) => getUserPosts(id),
 );
@@ -23,24 +23,24 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    postsSetEmpty: (state) => {
+    setPostsEmpty: (state) => {
       state.posts = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(postsFetch.pending, (state) => {
+      .addCase(fetchPosts.pending, (state) => {
         state.status = Status.LOADING;
       })
-      .addCase(postsFetch.fulfilled, (state, action) => {
+      .addCase(fetchPosts.fulfilled, (state, action) => {
         state.status = Status.IDLE;
         state.posts = action.payload;
       })
-      .addCase(postsFetch.rejected, (state) => {
+      .addCase(fetchPosts.rejected, (state) => {
         state.status = Status.FAILED;
       });
   },
 });
 
-export const { postsSetEmpty } = postsSlice.actions;
+export const { setPostsEmpty } = postsSlice.actions;
 export default postsSlice.reducer;

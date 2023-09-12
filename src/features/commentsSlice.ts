@@ -18,16 +18,16 @@ const initialState: CommentsState = {
   status: Status.IDLE,
 };
 
-export const commentsAdd = createAsyncThunk(
-  'comments/add',
+export const addComment = createAsyncThunk(
+  'comments/addComment',
   (data: Omit<Comment, 'id'>) => createComment(data),
 );
-export const commentsRemove = createAsyncThunk(
-  'comments/remove',
+export const removeComment = createAsyncThunk(
+  'comments/removeComment',
   (commentId: number) => deleteComment(commentId),
 );
-export const commentsFetch = createAsyncThunk(
-  'comments/fetch',
+export const fetchComments = createAsyncThunk(
+  'comments/fetchComments',
   (postId: number) => getPostComments(postId),
 );
 
@@ -35,32 +35,32 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    commentsRemoveFast: (state, action: PayloadAction<number>) => {
+    setComments: (state, action: PayloadAction<number>) => {
       state.comments = state.comments
         .filter(comment => comment.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(commentsAdd.fulfilled, (state, action) => {
+      .addCase(addComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
       })
-      .addCase(commentsRemove.fulfilled, (state, action) => {
+      .addCase(removeComment.fulfilled, (state, action) => {
         state.comments = state.comments
           .filter(comment => comment.id !== action.payload);
       })
-      .addCase(commentsFetch.pending, (state) => {
+      .addCase(fetchComments.pending, (state) => {
         state.status = Status.LOADING;
       })
-      .addCase(commentsFetch.fulfilled, (state, action) => {
+      .addCase(fetchComments.fulfilled, (state, action) => {
         state.status = Status.IDLE;
         state.comments = action.payload;
       })
-      .addCase(commentsFetch.rejected, (state) => {
+      .addCase(fetchComments.rejected, (state) => {
         state.status = Status.FAILED;
       });
   },
 });
 
-export const { commentsRemoveFast } = commentsSlice.actions;
+export const { setComments } = commentsSlice.actions;
 export default commentsSlice.reducer;

@@ -14,11 +14,11 @@ export const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
   reducers: {
-    selectedPostSet: (state, action: PayloadAction<Post | null>) => {
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
     },
   },
 });
 
-export const { selectedPostSet } = selectedPostSlice.actions;
+export const { setSelectedPost } = selectedPostSlice.actions;
 export default selectedPostSlice.reducer;

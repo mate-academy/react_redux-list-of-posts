@@ -3,9 +3,9 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  commentsFetch,
-  commentsRemove,
-  commentsRemoveFast,
+  fetchComments,
+  removeComment,
+  setComments,
 } from '../features/commentsSlice';
 import { Status } from '../types/Status';
 
@@ -15,13 +15,13 @@ export const PostDetails: React.FC = () => {
   const { comments, status } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
   const deleteComment = async (commentID: number) => {
-    dispatch(commentsRemoveFast(commentID));
-    await dispatch(commentsRemove(commentID));
+    dispatch(setComments(commentID));
+    await dispatch(removeComment(commentID));
   };
 
   useEffect(() => {
     if (selectedPost) {
-      dispatch(commentsFetch(selectedPost.id));
+      dispatch(fetchComments(selectedPost.id));
     }
   }, [selectedPost?.id]);
 

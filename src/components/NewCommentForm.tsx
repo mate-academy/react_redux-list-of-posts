@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsAdd } from '../features/commentsSlice';
+import { addComment } from '../features/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -66,7 +66,7 @@ export const NewCommentForm: React.FC = () => {
         postId: selectedPost.id,
       };
 
-      await dispatch(commentsAdd(newComment));
+      await dispatch(addComment(newComment));
     }
 
     setSubmitting(false);

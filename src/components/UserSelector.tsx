@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { usersFetch } from '../features/usersSlice';
-import { authorSet } from '../features/authorSlice';
+import { fetchUsers } from '../features/usersSlice';
+import { setAuthor } from '../features/authorSlice';
 
 type Props = {
   value: User | null;
@@ -17,7 +17,7 @@ export const UserSelector: React.FC<Props> = ({
   const { users } = useAppSelector(state => state.users);
 
   useEffect(() => {
-    dispatch(usersFetch());
+    dispatch(fetchUsers());
   }, []);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(authorSet(user))}
+              onClick={() => dispatch(setAuthor(user))}
               className={cn('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

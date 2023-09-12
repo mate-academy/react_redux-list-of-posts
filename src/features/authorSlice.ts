@@ -14,14 +14,14 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    authorSet: (state, action: PayloadAction<User>) => {
+    setAuthor: (state, action: PayloadAction<User>) => {
       state.author = action.payload;
     },
-    authorSetEmpty: (state) => {
+    setAuthorEmpty: (state) => {
       state.author = null;
     },
   },
 });
 
-export const { authorSet, authorSetEmpty } = authorSlice.actions;
+export const { setAuthor, setAuthorEmpty } = authorSlice.actions;
 export default authorSlice.reducer;

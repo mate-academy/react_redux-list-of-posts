@@ -11,8 +11,8 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 import { Counter } from './features/counter/Counter';
-import { selectedPostSet } from './features/selectedPostSlice';
-import { postsFetch, postsSetEmpty } from './features/postsSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
+import { fetchPosts, setPostsEmpty } from './features/postsSlice';
 
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Status } from './types/Status';
@@ -24,12 +24,12 @@ export const App: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
-    dispatch(selectedPostSet(null));
+    dispatch(setSelectedPost(null));
 
     if (author) {
-      dispatch(postsFetch(author.id));
+      dispatch(fetchPosts(author.id));
     } else {
-      dispatch(postsSetEmpty());
+      dispatch(setPostsEmpty());
     }
   }, [author?.id]);
 

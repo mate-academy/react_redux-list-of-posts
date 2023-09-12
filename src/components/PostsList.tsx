@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectedPostSet } from '../features/selectedPostSlice';
+import { setSelectedPost } from '../features/selectedPostSlice';
 
 type Props = {
   posts: Post[],
@@ -48,7 +48,7 @@ export const PostsList: React.FC<Props> = ({
                       ? null
                       : post;
 
-                    dispatch(selectedPostSet(newPost));
+                    dispatch(setSelectedPost(newPost));
                   }}
                 >
                   {post.id === selectedPost?.id
