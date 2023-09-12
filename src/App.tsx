@@ -4,15 +4,17 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+
 import { Counter } from './features/counter/Counter';
-import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectedPostSet } from './features/selectedPostSlice';
 import { postsFetch, postsSetEmpty } from './features/postsSlice';
+
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Status } from './types/Status';
 
 export const App: React.FC = () => {
@@ -41,23 +43,13 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                {author?.name}
-                {selectedPost?.title}
-              </div>
-              <div className="block">
                 <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && status === Status.loading && (
-                  <Loader />
-                )}
+                {author && status === Status.loading && <Loader />}
 
                 {author && status === Status.failed && (
                   <div
@@ -75,10 +67,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && status === Status.idle && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    // selectedPostId={selectedPost?.id}
-                  />
+                  <PostsList posts={posts} />
                 )}
               </div>
             </div>
@@ -86,7 +75,7 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
@@ -97,10 +86,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                // <PostDetails post={selectedPost} />
-                <PostDetails />
-              )}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
