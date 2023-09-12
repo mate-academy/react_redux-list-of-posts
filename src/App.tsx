@@ -8,87 +8,104 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
+// import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import * as actionsUsers from './features/users/usersSlice';
+import * as actionsCurrentUser from './features/currentUser/currentUserSlice';
+import * as actionsPosts from './features/posts/postsSlice';
+import * as actionsPost from './features/currentPost/currentPost';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { users, loading, error } = useAppSelector(state => state.users);
+  const { currentUser } = useAppSelector(state => state.currentUser);
+  const { currentPost } = useAppSelector(state => state.currentPost);
+  const { posts } = useAppSelector(state => state.posts);
+  const currentUserId = useAppSelector(state => state
+    .currentUser.currentUser?.id);
+  const visiblePosts = currentUserId
+    ? posts.filter(post => post.userId === currentUserId)
+    : posts;
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const loadUserPosts = (userId: number) => {
+    setError(true);
+    dispatch(actionsPost.postThunk(userId));
+    setError(false);
+  };
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const setUserId = (user: User) => {
+    dispatch(actionsCurrentUser.setUser(user));
+  };
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const setCurrentPost = (post: Post | null) => {
+    dispatch(actionsPost.setPost(post));
+  };
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(actionsUsers.usersThunk());
+    dispatch(actionsPosts.postsThunks());
 
-    if (author) {
-      loadUserPosts(author.id);
+    if (currentUser) {
+      loadUserPosts(currentUser.id);
     } else {
-      setPosts([]);
+      dispatch(actionsPosts.setPosts([]));
     }
-  }, [author?.id]);
+  }, [currentUser?.id]);
 
   return (
     <main className="section">
       {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
 
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  users={users}
+                  value={currentUser}
+                  onChange={setUserId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!currentUserId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author && !loaded && (
+                {currentUserId && loading === true && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {currentUserId && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {error}
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {currentUserId !== currentPost?.userId
+                  && loading === false && visiblePosts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {currentUser && loading === false && visiblePosts.length > 0
+                  && (
+                    <PostsList
+                      visiblePosts={visiblePosts}
+                      selectedPostId={currentPost?.id}
+                      onPostSelected={setCurrentPost}
+                    />
+                  )}
               </div>
             </div>
           </div>
@@ -101,13 +118,17 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': currentPost?.userId === currentUser?.id,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
+              {currentPost && (
+                <PostDetails
+                  post={currentPost}
+                  hasError={hasError}
+                  setError={setError}
+                />
               )}
             </div>
           </div>
