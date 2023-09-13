@@ -57,8 +57,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -92,7 +90,7 @@ export const App: React.FC = () => {
                 )}
 
                 {currentUserId !== currentPost?.userId
-                  && loading === false && visiblePosts.length === 0 && (
+                  && loading === false && !visiblePosts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
