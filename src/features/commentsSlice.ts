@@ -51,6 +51,9 @@ export const commentsSlice = createSlice({
     setComments: (state, action: PayloadAction<Comment[]>) => {
       state.items = action.payload;
     },
+    pushComment: (state, action: PayloadAction<Comment>) => {
+      state.items.push(action.payload);
+    },
     deleteCommentState: (state, action: PayloadAction<number>) => {
       state.items = [...state.items].filter(
         (comment) => comment.id !== action.payload,
@@ -86,7 +89,11 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { setComments, deleteCommentState } = commentsSlice.actions;
+export const {
+  setComments,
+  deleteCommentState,
+  pushComment,
+} = commentsSlice.actions;
 
 export const selectCommentsState = (state: RootState) => state.comments;
 

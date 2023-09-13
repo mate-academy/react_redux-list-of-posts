@@ -34,6 +34,7 @@ export const postsSlice = createSlice({
     builder
       .addCase(fetchUserPosts.pending, (state) => {
         state.loading = true;
+        state.hasError = false;
       })
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
         state.loading = false;

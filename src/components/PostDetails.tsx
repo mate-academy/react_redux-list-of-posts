@@ -4,13 +4,14 @@ import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import {
   addCommentAsync,
-  deleteCommentAsync,
   deleteCommentState,
   fetchComments,
+  pushComment,
   selectCommentsState,
 } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectSelectedPost } from '../features/selectPostSlice';
+import { deleteComment as removeComment } from '../api/comments';
 
 export const PostDetails: React.FC = () => {
   const { loading, hasError, items } = useAppSelector(selectCommentsState);
@@ -39,9 +40,17 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(deleteCommentState(commentId));
+    const deletedComment = items
+      .find(comment => comment.id === commentId);
 
-    dispatch(deleteCommentAsync(commentId));
+    dispatch(deleteCommentState(commentId));
+    try {
+      await removeComment(commentId);
+    } catch (error) {
+      if (deletedComment) {
+        dispatch(pushComment(deletedComment));
+      }
+    }
   };
 
   return (
