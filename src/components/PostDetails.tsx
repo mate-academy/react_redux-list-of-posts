@@ -7,7 +7,6 @@ import {
   deleteCommentAsync,
   deleteCommentState,
   fetchComments,
-  pushComment,
   selectCommentsState,
 } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -40,16 +39,11 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    const deletedComment = items
-      .find(comment => comment.id === commentId);
+    const deletedComment = items.find((comment) => comment.id === commentId);
 
     dispatch(deleteCommentState(commentId));
     if (deletedComment) {
-      try {
-        await dispatch(deleteCommentAsync({ commentId, deletedComment }));
-      } catch (error) {
-        dispatch(pushComment(deletedComment));
-      }
+      await dispatch(deleteCommentAsync({ commentId, deletedComment }));
     }
   };
 
