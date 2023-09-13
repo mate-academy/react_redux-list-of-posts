@@ -11,13 +11,13 @@ export const commentsThunk = createAsyncThunk('coments/getPostComments',
 
 type DetailsSlice = {
   comments: Comment[],
-  loadingComment: boolean,
+  loading: boolean,
   error: string,
 };
 
 const initialState: DetailsSlice = {
   comments: [],
-  loadingComment: false,
+  loading: false,
   error: '',
 };
 
@@ -34,20 +34,20 @@ const postsDetailsSlice = createSlice({
     builder.addCase(commentsThunk.pending, (state) => {
       const result = state;
 
-      result.loadingComment = true;
+      result.loading = false;
     });
 
     builder.addCase(commentsThunk.fulfilled, (state, action) => {
       const result = state;
 
-      result.loadingComment = false;
       result.comments = action.payload;
+      result.loading = true;
     });
 
     builder.addCase(commentsThunk.rejected, (state) => {
       const result = state;
 
-      result.loadingComment = false;
+      result.loading = false;
       result.error = 'Something went wrong!';
     });
   },

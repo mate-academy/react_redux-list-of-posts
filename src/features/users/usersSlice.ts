@@ -2,9 +2,12 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
-export const usersThunk = createAsyncThunk('users/getUsers', () => {
-  return getUsers();
-});
+export const usersThunk = createAsyncThunk('users/getUsers',
+  async () => {
+    const resolve = await getUsers();
+
+    return resolve;
+  });
 
 type UsersState = {
   users: User[],
@@ -31,23 +34,17 @@ const usersSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(usersThunk.pending, (state) => {
-      const result = state;
-
-      result.loading = true;
+      state.loading = false; // eslint-disable-line
     });
 
     builder.addCase(usersThunk.fulfilled, (state, action) => {
-      const result = state;
-
-      result.users = action.payload;
-      result.loading = false;
+      state.users = action.payload; // eslint-disable-line
+      state.loading = true; // eslint-disable-line
     });
 
     builder.addCase(usersThunk.rejected, (state) => {
-      const result = state;
-
-      result.loading = false;
-      result.error = 'Something went wrong!';
+      state.loading = false; // eslint-disable-line
+      state.error = 'Something went wrong!'; // eslint-disable-line
     });
   },
 });

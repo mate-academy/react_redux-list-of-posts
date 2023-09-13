@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const { comments, loadingComment } = useAppSelector(state => state.comments);
+  const { comments, loading } = useAppSelector(state => state.comments);
 
   const loadedComments = () => {
     dispatch(actionsComments.commentsThunk(post.id));
@@ -64,17 +64,17 @@ export const PostDetails: React.FC<Props> = ({
       </div>
 
       <div className="block">
-        {loadingComment === true && (
+        {!loading && (
           <Loader />
         )}
 
-        {loadingComment === false && !hasError && !comments.length && (
+        {loading && !hasError && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loadingComment === false && !hasError && comments.length > 0 && (
+        {loading && !hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -108,7 +108,7 @@ export const PostDetails: React.FC<Props> = ({
           </>
         )}
 
-        {loadingComment === false && !hasError && !visible && (
+        {loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -119,7 +119,7 @@ export const PostDetails: React.FC<Props> = ({
           </button>
         )}
 
-        {loadingComment === false && !hasError && visible && (
+        {loading && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

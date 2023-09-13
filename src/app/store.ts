@@ -1,4 +1,12 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+} from '@reduxjs/toolkit';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import logger from 'redux-logger';
+
 // eslint-disable-next-line import/no-cycle
 import counterReducer from '../features/counter/counterSlice';
 import userReducer from '../features/users/usersSlice';
@@ -16,6 +24,8 @@ export const store = configureStore({
     currentPost: currentPostSlice,
     comments: postsDetailsSlice,
   },
+
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 export type AppDispatch = typeof store.dispatch;

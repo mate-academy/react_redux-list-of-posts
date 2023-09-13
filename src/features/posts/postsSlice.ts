@@ -38,13 +38,13 @@ const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(postsThunks.pending, // eslint-disable-line
       (state) => {
-        state.loading = true; // eslint-disable-line
+        state.loading = false; // eslint-disable-line
       });
 
     builder.addCase(postsThunks.fulfilled, // eslint-disable-line
       (state, action) => {
         state.posts = action.payload; // eslint-disable-line
-        state.loading = false; // eslint-disable-line
+        state.loading = true; // eslint-disable-line
       });
 
     builder.addCase(postsThunks.rejected, (state) => { // eslint-disable-line

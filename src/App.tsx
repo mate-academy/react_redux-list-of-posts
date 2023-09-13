@@ -20,10 +20,10 @@ import { Post } from './types/Post';
 export const App: React.FC = () => {
   const [hasError, setError] = useState(false);
   const dispatch = useAppDispatch();
-  const { users, loading, error } = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
   const { currentUser } = useAppSelector(state => state.currentUser);
   const { currentPost } = useAppSelector(state => state.currentPost);
-  const { posts } = useAppSelector(state => state.posts);
+  const { posts, loading, error } = useAppSelector(state => state.posts);
   const currentUserId = useAppSelector(state => state
     .currentUser.currentUser?.id);
   const visiblePosts = currentUserId
@@ -70,17 +70,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!currentUserId && (
+                {!currentUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {currentUserId && loading === true && (
+                {currentUser && !loading && (
                   <Loader />
                 )}
 
-                {currentUserId && hasError && (
+                {currentUser && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -90,13 +90,13 @@ export const App: React.FC = () => {
                 )}
 
                 {currentUserId !== currentPost?.userId
-                  && loading === false && !visiblePosts.length && (
+                  && loading && !visiblePosts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {currentUser && loading === false && visiblePosts.length > 0
+                {currentUser && loading && !!visiblePosts.length
                   && (
                     <PostsList
                       visiblePosts={visiblePosts}

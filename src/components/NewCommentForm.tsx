@@ -40,7 +40,7 @@ export const NewCommentForm: FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value.trim() }));
+    setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
@@ -116,7 +116,7 @@ export const NewCommentForm: FC<Props> = ({ onSubmit }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
+            value={email.trim()}
             onChange={handleChange}
           />
 
