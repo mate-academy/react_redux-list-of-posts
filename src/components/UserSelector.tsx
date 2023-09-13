@@ -4,12 +4,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { set } from '../features/author';
 import { init as initUsers } from '../features/users';
 import { init as fetchPost } from '../features/posts';
-import { User } from '../types/User';
 
 export const UserSelector = () => {
   const users = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
-  const author = useAppSelector(state => state.author) as User | null;
+  const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

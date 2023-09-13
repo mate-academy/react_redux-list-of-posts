@@ -1,14 +1,20 @@
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
 import { set as setSelectedPost } from '../features/selectedPost';
+import { Post } from '../types/Post';
 
 export const PostsList = () => {
   const { items } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(
-    state => state.selectedPost,
-  ) as Post | null;
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+
+  const onPostClick = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      dispatch(setSelectedPost(null));
+    } else {
+      dispatch(setSelectedPost(post));
+    }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -39,13 +45,7 @@ export const PostsList = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    if (selectedPost && selectedPost.id === post.id) {
-                      dispatch(setSelectedPost(null));
-                    } else {
-                      dispatch(setSelectedPost(post));
-                    }
-                  }}
+                  onClick={() => onPostClick(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

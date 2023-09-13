@@ -8,7 +8,6 @@ import {
   remove,
   removeComment,
 } from '../features/comments';
-import { Post } from '../types/Post';
 
 export const PostDetails = () => {
   const {
@@ -18,15 +17,15 @@ export const PostDetails = () => {
   } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
-  const post = useAppSelector(state => state.selectedPost) as Post | null;
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
-    if (post) {
-      dispatch(fetchPost(post.id));
+    if (selectedPost) {
+      dispatch(fetchPost(selectedPost.id));
     }
 
     setVisible(false);
-  }, [post]);
+  }, [selectedPost]);
 
   const handleDelete = async (id: number) => {
     dispatch(remove(id));
@@ -37,11 +36,11 @@ export const PostDetails = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post?.id}: ${post?.title}`}
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post?.body}
+          {selectedPost?.body}
         </p>
       </div>
 

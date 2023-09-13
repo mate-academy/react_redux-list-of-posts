@@ -2,13 +2,11 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createNewComment } from '../features/comments';
-import { Post } from '../types/Post';
+// import { Post } from '../types/Post';
 
 export const NewCommentForm = () => {
   const [submitting, setSubmitting] = useState(false);
-  const selectedPost = useAppSelector(
-    state => state.selectedPost,
-  ) as Post | null;
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   const [errors, setErrors] = useState({

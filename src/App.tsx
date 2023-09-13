@@ -9,13 +9,12 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { User } from './types/User';
 import { set as setSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author) as User | null;
+  const { author } = useAppSelector(state => state.author);
   const { loaded, hasError, items } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
