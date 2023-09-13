@@ -1,51 +1,77 @@
-import React, { useContext, useEffect, useState } from 'react';
-import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import React, { useEffect, useState } from 'react';
+import { getUsers } from '../api/users';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { AppDispatch } from '../app/store';
+import { actions as selectedPostActions } from '../features/selectedPostSlice';
+import { actions as selectedUserActions } from '../features/selectedUserSlice';
+import { actions as usersActions } from '../features/usersSlice';
 import { User } from '../types/User';
+import { wait } from '../utils/fetchClient';
+import { UserOption } from './UserOption';
+
+const setSelectUser = (
+  user: User,
+  setIsSelectOpen: (value: boolean) => void,
+  loadPosts: (id: number) => void,
+) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(selectedPostActions.removePost());
+    await wait(0);
+    dispatch(selectedUserActions.chooseUser(user));
+    await wait(0);
+    setIsSelectOpen(false);
+    loadPosts(user.id);
+    await wait(0);
+  };
+};
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  loadPosts: (id: number) => void;
+  setIsLoading: (value: boolean) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
+  loadPosts,
+  setIsLoading,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users.users);
+  const selectedUser = useAppSelector(state => state.user.selectedUser);
+  const selectedId = selectedUser?.id || null;
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   useEffect(() => {
-    if (!expanded) {
-      return;
+    if (isSelectOpen) {
+      setIsLoading(true);
+
+      getUsers()
+        .then(data => {
+          dispatch(usersActions.setUsers(data));
+        })
+        .catch(() => {
+          dispatch(usersActions.setErrors(
+            'User can\'t be selected. Please, check internet connection',
+          ));
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
+  }, [isSelectOpen]);
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
-    };
+  const selectUserHandler = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    user: User,
+  ) => {
+    e.preventDefault();
 
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
-  }, [expanded]);
+    dispatch(setSelectUser(user, setIsSelectOpen, loadPosts));
+  };
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className="dropdown is-active"
     >
       <div className="dropdown-trigger">
         <button
@@ -53,9 +79,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={() => setIsSelectOpen(!isSelectOpen)}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -67,24 +91,19 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+      {isSelectOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {!!users?.length && users.map(user => (
+              <UserOption
+                user={user}
+                selectedId={selectedId}
+                selectUserHandler={selectUserHandler}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

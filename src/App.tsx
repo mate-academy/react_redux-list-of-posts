@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,85 +8,88 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { getPost, getPosts } from './api/posts';
+import {
+  ErrorsNotification,
+} from './components/ErrorsNotification';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { actions as postsActions } from './features/postsSlice';
+import { actions as selectedPostActions } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { error, posts } = useAppSelector(state => state.posts);
+  const selectedUser = useAppSelector(state => state.user.selectedUser);
+  const selectedPost = useAppSelector(state => state.post.selectedPost);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const loadPosts = (userId: number) => {
+    setIsLoading(true);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+    getPosts(userId)
+      .then(data => {
+        dispatch(postsActions.setPosts(data));
+      })
+      .catch(() => {
+        dispatch(postsActions.setErrors('Unable to load posts'));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+  const loadPost = (postId: number) => {
+    getPost(postId)
+      .then(data => {
+        dispatch(selectedPostActions.choosePost(data));
+      })
+      .catch(() => {
+        dispatch(postsActions.setErrors('Post detail can\'t be loaded'));
+      });
+  };
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  loadPosts={loadPosts}
+                  setIsLoading={setIsLoading}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author && !loaded && (
+                {isLoading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
+                {error && (
+                  <ErrorsNotification error={error} />
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {selectedUser && !posts?.length && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {!!posts?.length && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    loadPost={loadPost}
+                    selectedPost={selectedPost}
                   />
                 )}
               </div>
@@ -99,13 +102,12 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
+              'Sidebar', {
+                'Sidebar--open': !!selectedPost,
               },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && (
                 <PostDetails post={selectedPost} />
               )}
