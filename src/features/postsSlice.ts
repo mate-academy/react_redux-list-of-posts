@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
 import { Post } from '../types/Post';
 
 export interface PostState {
@@ -46,7 +44,5 @@ export const postsSlice = createSlice({
       });
   },
 });
-
-export const selectPosts = (state: RootState) => state.posts;
 
 export default postsSlice.reducer;

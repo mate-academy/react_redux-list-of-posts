@@ -7,16 +7,18 @@ import {
   deleteCommentAsync,
   deleteCommentState,
   fetchComments,
-  selectCommentsState,
 } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectSelectedPost } from '../features/selectPostSlice';
 
 export const PostDetails: React.FC = () => {
-  const { loading, hasError, items } = useAppSelector(selectCommentsState);
+  const {
+    loading,
+    hasError,
+    items,
+  } = useAppSelector((state) => state.comments);
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(selectSelectedPost);
+  const selectedPost = useAppSelector((state) => state.selectPost.selectedPost);
 
   function loadComments() {
     if (selectedPost) {

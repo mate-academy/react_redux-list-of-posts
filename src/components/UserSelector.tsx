@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { fetchUsers, selectUsers } from '../features/usersSlice';
+import { fetchUsers } from '../features/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectAuthor, setAuthor } from '../features/authorSlice';
+import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
-  const users = useAppSelector(selectUsers);
-  const author = useAppSelector(selectAuthor);
+  const users = useAppSelector((state) => state.users.users);
+  const author = useAppSelector((state) => state.author.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

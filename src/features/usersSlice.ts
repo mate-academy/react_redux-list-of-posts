@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
 import { User } from '../types/User';
 
 export interface UserState {
@@ -33,7 +31,5 @@ export const usersSlice = createSlice({
       });
   },
 });
-
-export const selectUsers = (state: RootState) => state.users.users;
 
 export default usersSlice.reducer;

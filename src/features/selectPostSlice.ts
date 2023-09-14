@@ -1,7 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
 import { Post } from '../types/Post';
 
 export interface SelectPostState {
@@ -23,8 +21,5 @@ export const selectPostSlice = createSlice({
 });
 
 export const { setSelectedPost } = selectPostSlice.actions;
-
-// eslint-disable-next-line max-len
-export const selectSelectedPost = (state: RootState) => state.selectPost.selectedPost;
 
 export default selectPostSlice.reducer;

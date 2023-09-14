@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../app/store';
 import { Comment } from '../types/Comment';
 
 export interface CommentState {
@@ -107,7 +105,5 @@ export const {
   deleteCommentState,
   pushComment,
 } = commentsSlice.actions;
-
-export const selectCommentsState = (state: RootState) => state.comments;
 
 export default commentsSlice.reducer;
