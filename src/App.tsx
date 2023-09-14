@@ -26,6 +26,7 @@ export const App: React.FC = () => {
     dispatch(authorActions.set(newAuthor));
 
     dispatch(postsActions.init(newAuthor.id));
+    dispatch(selectedPostActions.clear());
   };
 
   const onPostSelected = (newPost: Post | null) => {
@@ -53,11 +54,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && isLoading && (
+                {author && isLoading && !error && (
                   <Loader />
                 )}
 
-                {author && !isLoading && error && (
+                {author && isLoading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
