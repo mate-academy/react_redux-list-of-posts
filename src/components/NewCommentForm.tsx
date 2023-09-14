@@ -40,8 +40,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -66,8 +66,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(false);
 
     setValues(current => ({ ...current, body: '' }));
-
-    clearForm();
   };
 
   return (

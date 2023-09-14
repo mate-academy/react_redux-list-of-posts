@@ -28,7 +28,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id]);
 
   const addNewComment = async (comment: CommentData) => {
-    dispatch(addComment({
+    await dispatch(addComment({
       id: 0,
       postId: post.id,
       ...comment,
@@ -52,7 +52,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {loading && comments.length === 0 && (
+        {loading && (
           <Loader />
         )}
 
