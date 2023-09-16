@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getUserPosts } from '../api/posts';
 
 import { Post } from '../types/Post';
 import type { RootState } from '../app/store';
@@ -19,17 +21,24 @@ const initialPosts: InitialState = {
 const postsSlice = createSlice({
   name: 'posts',
   initialState: initialPosts,
-  reducers: {
-    setItems: (state, action: PayloadAction<Post[]>) => {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.pending, (state) => {
+      state.loaded = false;
+    });
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.items = action.payload;
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
-    },
-    setHasError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
+      state.loaded = true;
+    });
+    builder.addCase(fetchPosts.rejected, (state) => {
+      state.loaded = true;
+      state.hasError = true;
+    });
   },
+});
+
+export const fetchPosts = createAsyncThunk('posts/fetch', (auth: number) => {
+  return auth ? getUserPosts(auth) : [];
 });
 
 export default postsSlice.reducer;

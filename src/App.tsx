@@ -10,11 +10,10 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { authorStates } from './features/authorSlice';
 import {
+  fetchPosts,
   postsStates,
-  actions as actionsPosts,
 } from './features/postsSlice';
 import {
   selectedPostStates,
@@ -31,24 +30,9 @@ export const App: React.FC = () => {
     hasError,
   } = useAppSelector(postsStates);
   const selectedPost = useAppSelector(selectedPostStates);
-  const {
-    setLoading,
-    setHasError,
-    setItems,
-  } = actionsPosts;
   const { set: setUser } = actionUser;
   const { set: setSelectedPost } = actionsSelectedPost;
   const authorId = author?.id;
-
-  function loadUserPosts(userId: number) {
-    dispatch(setLoading(false));
-    dispatch(setHasError(false));
-
-    getUserPosts(userId)
-      .then(items => dispatch(setItems(items)))
-      .catch(() => dispatch(setHasError(true)))
-      .finally(() => dispatch(setLoading(true)));
-  }
 
   useEffect(() => {
     getUsers()
@@ -59,9 +43,7 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(null));
 
     if (authorId) {
-      loadUserPosts(authorId);
-    } else {
-      dispatch(setItems([]));
+      dispatch(fetchPosts(authorId));
     }
   }, [authorId]);
 
