@@ -5,7 +5,9 @@ import { getUsers } from '../../api/users';
 
 export const initUsers = createAsyncThunk('users/fetch', () => getUsers());
 
-const initialState: User[] | [] = [];
+const initialState: { users: User[] | [] } = {
+  users: [],
+};
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -16,7 +18,7 @@ export const usersSlice = createSlice({
       state,
       action: PayloadAction<User[]>,
     ) => {
-      state = action.payload;
+      state.users = action.payload;
     });
   },
 });
