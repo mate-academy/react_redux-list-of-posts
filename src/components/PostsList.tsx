@@ -17,6 +17,10 @@ export const PostsList: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
 
+  const equalityId = (postId: number, pressedPostId: number) => {
+    return postId === pressedPostId;
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -31,10 +35,12 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {posts.map(({
+            id, title, userId, body,
+          }) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">{title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
@@ -43,15 +49,21 @@ export const PostsList: React.FC<Props> = ({
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPostId,
+                      'is-light': id !== selectedPostId,
                     },
                   )}
                   onClick={() => {
                     dispatch(selectedPostActions
-                      .setPost(post.id === selectedPostId ? null : post));
+                      .setPost(equalityId(id, selectedPostId) ? (
+                        null
+                      ) : (
+                        {
+                          id, title, userId, body,
+                        }
+                      )));
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {equalityId(id, selectedPostId) ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
