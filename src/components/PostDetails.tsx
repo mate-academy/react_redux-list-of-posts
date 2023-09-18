@@ -18,6 +18,13 @@ export const PostDetails: React.FC = () => {
     comments,
   } = useAppSelector(state => state.comments);
 
+  const handleDelete = (commentId: number) => {
+   return () => {
+      dispatch(fastRemoval(commentId));
+      dispatch(removeComment(commentId));
+    }
+  }
+
   useEffect(() => {
     setVisible(false);
 
@@ -75,10 +82,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => {
-                      dispatch(fastRemoval(comment.id));
-                      dispatch(removeComment(comment.id));
-                    }}
+                    onClick={handleDelete(comment.id)}
                   >
                     delete button
                   </button>
