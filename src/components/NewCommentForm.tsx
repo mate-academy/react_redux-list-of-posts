@@ -12,6 +12,7 @@ export const NewCommentForm: React.FC = () => {
     name: false,
     email: false,
     body: false,
+    addComment: false,
   });
 
   const [{ name, email, body }, setValues] = useState({
@@ -31,6 +32,7 @@ export const NewCommentForm: React.FC = () => {
       name: false,
       email: false,
       body: false,
+      addComment: false,
     });
   };
 
@@ -50,6 +52,8 @@ export const NewCommentForm: React.FC = () => {
       name: !name.trim(),
       email: !email.trim(),
       body: !body.trim(),
+      addComment: false,
+
     });
 
     if (!name.trim() || !email.trim() || !body.trim()) {
@@ -58,18 +62,29 @@ export const NewCommentForm: React.FC = () => {
 
     setSubmitting(true);
 
-    if (selectedPost) {
+    try {
       await dispatch(addComment({
-        name, email, body, postId: selectedPost.id,
+        name,
+        email,
+        body,
+        postId: selectedPost?.id as number,
       }));
+    } catch {
+      setErrors(current => ({ ...current, addComment: true }));
     }
 
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '', email: '', name: '' }));
+    setValues(current => ({ ...current, body: '' }));
   };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {errors.addComment && (
+        <div className="notification is-danger" data-cy="">
+          Something went wrong
+        </div>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
