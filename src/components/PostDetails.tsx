@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -17,10 +17,10 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
-  const handleDeleteComment = async (commentId: number) => {
+  const handleDeleteComment = useCallback(async (commentId: number) => {
     dispatch(immediateDeleteComment(commentId));
     dispatch(removeComment(commentId));
-  };
+  }, []);
 
   useEffect(() => {
     setVisible(false);

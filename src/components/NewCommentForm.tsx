@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import classNames from 'classnames';
+import React, { useCallback, useState } from 'react';
+import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addComment } from '../features/commentsSlice';
 
@@ -20,7 +20,7 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
-  const clearForm = () => {
+  const clearForm = useCallback(() => {
     setValues({
       name: '',
       email: '',
@@ -32,16 +32,16 @@ export const NewCommentForm: React.FC = () => {
       email: false,
       body: false,
     });
-  };
+  }, []);
 
-  const handleChange = (
+  const handleChange = useCallback((
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: false }));
-  };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -84,7 +84,7 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={cn('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -121,7 +121,7 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={cn('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -157,7 +157,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={cn('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
@@ -174,7 +174,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <button
             type="submit"
-            className={classNames('button', 'is-link', {
+            className={cn('button', 'is-link', {
               'is-loading': submitting,
             })}
           >
