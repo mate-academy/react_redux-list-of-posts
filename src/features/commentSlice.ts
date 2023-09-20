@@ -56,13 +56,13 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(initComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
       state.loaded = true;
+      state.comments = action.payload;
     });
 
     builder.addCase(initComments.rejected, (state) => {
-      state.hasError = true;
       state.loaded = true;
+      state.hasError = true;
     });
 
     builder.addCase(addComment.pending, (state) => {
@@ -76,13 +76,8 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(addComment.rejected, (state) => {
-      state.hasError = true;
       state.loaded = true;
-    });
-
-    builder.addCase(removeComment.pending, (state) => {
-      state.loaded = false;
-      state.hasError = false;
+      state.hasError = true;
     });
 
     builder.addCase(removeComment.fulfilled, (state, action) => {
@@ -93,8 +88,8 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(removeComment.rejected, (state) => {
-      state.hasError = true;
       state.loaded = true;
+      state.hasError = true;
     });
   },
 });

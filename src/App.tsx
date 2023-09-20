@@ -13,6 +13,7 @@ import { clearPosts, initPosts } from './features/postSlice';
 import { clearSelectedPost, setPost } from './features/selectedPostSlice';
 import { initUsers } from './features/userSlice';
 import { Post } from './types/Post';
+import { clearComments } from './features/commentSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +41,10 @@ export const App: React.FC = () => {
 
     dispatch(setPost(postToSelect));
   };
+
+  useEffect(() => {
+    dispatch(clearComments());
+  }, [selectedPost?.id]);
 
   return (
     <main className="section">

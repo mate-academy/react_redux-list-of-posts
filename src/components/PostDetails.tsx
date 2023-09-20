@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     dispatch(initComments(post.id));
+    setVisible(false);
   }, [post.id]);
 
   const onCreateComment = async ({ name, email, body }: CommentData) => {
@@ -37,8 +38,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     await dispatch(addComment(newComment));
   };
 
-  const onRemoveComment = async (commentId: number) => {
-    await dispatch(removeComment(commentId));
+  const onRemoveComment = (commentId: number) => {
+    dispatch(removeComment(commentId));
   };
 
   return (
@@ -50,7 +51,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!comments.length && !loaded && <Loader />}
+        {!loaded && !comments.length && (
+          <Loader />
+        )}
 
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
@@ -58,13 +61,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && !comments.length && (
+        {(loaded && !hasError && !comments.length) && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length && (
+        {(!hasError && comments.length !== 0) && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -98,7 +101,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {(loaded && !hasError && !visible) && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -109,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {(visible && !hasError) && (
           <NewCommentForm onSubmit={onCreateComment} />
         )}
       </div>
