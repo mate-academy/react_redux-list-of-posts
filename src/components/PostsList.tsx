@@ -3,16 +3,22 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { set as setSelectedPost } from '../features/selectedPost';
 import { Post } from '../types/Post';
 
+const getButtonClass = (postId: number, selectedPostId: number | null) => {
+  return classNames('button', 'is-link', {
+    'is-light': postId !== selectedPostId,
+  });
+};
+
 export const PostsList = () => {
   const { items } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const onPostClick = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      dispatch(setSelectedPost(null));
-    } else {
+    if (selectedPost?.id !== post.id) {
       dispatch(setSelectedPost(post));
+    } else {
+      dispatch(setSelectedPost(null));
     }
   };
 
@@ -30,24 +36,23 @@ export const PostsList = () => {
         </thead>
 
         <tbody>
-          {items.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {items.map(({ id, title }) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">{title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className={classNames(
-                    'button',
-                    'is-link',
-                    {
-                      'is-light': post.id !== selectedPost?.id,
-                    },
-                  )}
-                  onClick={() => onPostClick(post)}
+                  className={getButtonClass(id, selectedPost?.id || 0)}
+                  onClick={() => onPostClick({
+                    id,
+                    title,
+                    userId: 0,
+                    body: '',
+                  })}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
