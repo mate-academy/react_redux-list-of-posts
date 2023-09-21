@@ -1,16 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
+import { getUserPosts } from '../api/posts';
 
 export interface PostsState {
   posts: Post[];
-  loading: boolean;
-  error: boolean;
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: PostsState = {
   posts: [],
-  loading: false,
-  error: false,
+  loaded: false,
+  hasError: false,
 };
 
 const postsSlice = createSlice({
@@ -29,20 +30,41 @@ const postsSlice = createSlice({
         posts: [],
       };
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setLoaded: (state, action: PayloadAction<boolean>) => {
       return {
         ...state,
-        loading: action.payload,
+        loaded: action.payload,
       };
     },
     setError: (state, action: PayloadAction<boolean>) => {
       return {
         ...state,
-        error: action.payload,
+        hasError: action.payload,
       };
     },
   },
 });
 
 export default postsSlice.reducer;
-export const { actions } = postsSlice;
+export const {
+  addPosts,
+  clearPosts,
+  setLoaded,
+  setError,
+} = postsSlice.actions;
+
+export const loadUserPosts = (userId: number) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(setLoaded(false));
+
+    try {
+      const response = await getUserPosts(userId);
+
+      dispatch(addPosts(response));
+    } catch {
+      dispatch(setError(true));
+    } finally {
+      dispatch(setLoaded(true));
+    }
+  };
+};

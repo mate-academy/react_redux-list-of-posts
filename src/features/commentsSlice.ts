@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
+import { Comment, CommentData } from '../types/Comment';
+import * as commentsApi from '../api/comments';
 
 export interface PostsState {
   comments: Comment[];
@@ -62,4 +63,56 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { actions } = commentsSlice;
+export const {
+  setComments,
+  addComment,
+  removeComment,
+  clearComments,
+  setError,
+  setLoaded,
+} = commentsSlice.actions;
+
+export const loadComments = (postId: number) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
+
+    try {
+      const commentsFromServer = await commentsApi.getPostComments(postId);
+
+      dispatch(setComments(commentsFromServer));
+    } catch {
+      dispatch(setError(true));
+    } finally {
+      dispatch(setLoaded(true));
+    }
+  };
+};
+
+export const addNewComment = (
+  { name, email, body }: CommentData,
+  postID: number,
+) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const newComment = await commentsApi.createComment({
+        name,
+        email,
+        body,
+        postId: postID,
+      });
+
+      dispatch(addComment(newComment));
+    } catch (error) {
+      dispatch(setError(true));
+    }
+  };
+};
+
+export const deleteComment = (comment: Comment) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(removeComment(comment));
+
+    await commentsApi.deleteComment(comment.id);
+  };
+};

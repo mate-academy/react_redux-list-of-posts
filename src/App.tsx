@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,49 +8,24 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { Counter } from './features/counter/Counter';
-import { useAppSelector } from './app/hooks';
-import { actions as postsActions } from './features/postsSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import * as postsActions from './features/postsSlice';
 import * as userActions from './features/userSlice';
 import { actions as selectedPostActions } from './features/selectedPostSlice';
-import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch();
-  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  const loadUserPosts = async (userId: number) => {
-    dispatch(postsActions.setLoading(true));
-
-    let response;
-
-    try {
-      response = await getUserPosts(userId);
-
-      dispatch(postsActions.addPosts(response));
-    } catch {
-      dispatch(postsActions.setError(true));
-    } finally {
-      dispatch(postsActions.setLoading(false));
-    }
-  };
-
-  const loadUsers = async () => {
-    const response = await getUsers();
-
-    dispatch(userActions.setUsers(response));
-  };
-
   useEffect(() => {
     dispatch(selectedPostActions.clearPost);
-    // dispatch(userActions.loadUsers())
-    loadUsers();
+    dispatch(userActions.loadUsers());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(postsActions.loadUserPosts(author.id));
     } else {
       dispatch(postsActions.clearPosts);
     }
@@ -77,11 +51,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && loading && (
+                {author && !loaded && (
                   <Loader />
                 )}
 
-                {author && !loading && error && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -90,13 +64,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}

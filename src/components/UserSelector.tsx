@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { actions as authorActions } from '../features/authorSlice';
+import { actions as selectedPostActions } from '../features/selectedPostSlice';
 import { useAppSelector } from '../app/hooks';
 
 export const UserSelector: React.FC = () => {
@@ -10,7 +11,10 @@ export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
-  const onChange = (user: User) => dispatch(authorActions.setAuthor(user));
+  const onChange = (user: User) => {
+    dispatch(authorActions.setAuthor(user));
+    dispatch(selectedPostActions.clearPost());
+  };
 
   useEffect(() => {
     if (!expanded) {

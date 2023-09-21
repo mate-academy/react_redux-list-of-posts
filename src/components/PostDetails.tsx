@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { actions as commentsActions } from '../features/commentsSlice';
-
-import * as commentsApi from '../api/comments';
+import * as commentsActions from '../features/commentsSlice';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     comments,
     loaded,
@@ -24,46 +20,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const [visible, setVisible] = useState(false);
 
-  const loadComments = async () => {
-    dispatch(commentsActions.setLoaded(false));
-    dispatch(commentsActions.setError(false));
-    setVisible(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      dispatch(commentsActions.setComments(commentsFromServer));
-    } catch {
-      dispatch(commentsActions.setError(true));
-    } finally {
-      dispatch(commentsActions.setLoaded(true));
-    }
-  };
-
   useEffect(() => {
-    loadComments();
+    setVisible(false);
+    dispatch(commentsActions.loadComments(post.id));
   }, [post.id]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      dispatch(commentsActions.addComment(newComment));
-    } catch (error) {
-      dispatch(commentsActions.setError(true));
-    }
-  };
-
-  const deleteComment = async (comment: Comment) => {
-    dispatch(commentsActions.removeComment(comment));
-
-    await commentsApi.deleteComment(comment.id);
-  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -114,7 +74,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment)}
+                    onClick={() => {
+                      dispatch(commentsActions.deleteComment(comment));
+                    }}
                   >
                     delete button
                   </button>
@@ -140,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm postID={post.id} />
         )}
       </div>
     </div>
