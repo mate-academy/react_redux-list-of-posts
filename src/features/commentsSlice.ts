@@ -1,5 +1,9 @@
-import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
-import { Comment, CommentData } from '../types/Comment';
+import {
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import { Comment, NewComment } from '../types/Comment';
 import * as commentsApi from '../api/comments';
 
 export interface PostsState {
@@ -7,6 +11,32 @@ export interface PostsState {
   loaded: boolean;
   hasError: boolean;
 }
+
+export const loadComments = createAsyncThunk(
+  'comments/fetch',
+  (postId: number) => {
+    return commentsApi.getPostComments(postId);
+  },
+);
+
+export const addNewComment = createAsyncThunk(
+  'comments/add',
+  (object: NewComment) => {
+    return commentsApi.createComment({
+      name: object.name,
+      email: object.email,
+      body: object.body,
+      postId: object.id,
+    });
+  },
+);
+
+export const deleteComment = createAsyncThunk(
+  'comments/delete',
+  (comment: Comment) => {
+    return commentsApi.deleteComment(comment.id);
+  },
+);
 
 const initialState: PostsState = {
   comments: [],
@@ -60,6 +90,55 @@ const commentsSlice = createSlice({
       };
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(loadComments.pending, (state) => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
+    });
+
+    builder.addCase(loadComments.fulfilled, (state, action) => {
+      return {
+        ...state,
+        loaded: true,
+        comments: action.payload,
+      };
+    });
+
+    builder.addCase(loadComments.rejected, (state) => {
+      return {
+        ...state,
+        loaded: true,
+        hasError: true,
+      };
+    });
+
+    builder.addCase(addNewComment.fulfilled, (state, action) => {
+      return {
+        ...state,
+        comments: [
+          ...state.comments,
+          action.payload,
+        ],
+      };
+    });
+
+    builder.addCase(addNewComment.rejected, (state) => {
+      return {
+        ...state,
+        hasError: true,
+      };
+    });
+
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      return {
+        ...state,
+        comments: action.payload,
+      };
+    });
+  },
 });
 
 export default commentsSlice.reducer;
@@ -71,48 +150,3 @@ export const {
   setError,
   setLoaded,
 } = commentsSlice.actions;
-
-export const loadComments = (postId: number) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(setLoaded(false));
-    dispatch(setError(false));
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(postId);
-
-      dispatch(setComments(commentsFromServer));
-    } catch {
-      dispatch(setError(true));
-    } finally {
-      dispatch(setLoaded(true));
-    }
-  };
-};
-
-export const addNewComment = (
-  { name, email, body }: CommentData,
-  postID: number,
-) => {
-  return async (dispatch: Dispatch) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: postID,
-      });
-
-      dispatch(addComment(newComment));
-    } catch (error) {
-      dispatch(setError(true));
-    }
-  };
-};
-
-export const deleteComment = (comment: Comment) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(removeComment(comment));
-
-    await commentsApi.deleteComment(comment.id);
-  };
-};

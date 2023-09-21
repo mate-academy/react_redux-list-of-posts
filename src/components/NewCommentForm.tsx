@@ -63,16 +63,15 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await dispatch(commentsActions.addNewComment(
-      { name, email, body },
-      postID,
-    ));
+    await dispatch(commentsActions.addNewComment({
+      name,
+      email,
+      body,
+      id: postID,
+    }));
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (

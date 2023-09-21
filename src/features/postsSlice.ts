@@ -1,4 +1,4 @@
-import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
@@ -7,6 +7,13 @@ export interface PostsState {
   loaded: boolean;
   hasError: boolean;
 }
+
+export const loadUserPosts = createAsyncThunk(
+  'posts/fetch',
+  (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
 
 const initialState: PostsState = {
   posts: [],
@@ -43,6 +50,30 @@ const postsSlice = createSlice({
       };
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(loadUserPosts.pending, (state) => {
+      return {
+        ...state,
+        loaded: false,
+      };
+    });
+
+    builder.addCase(loadUserPosts.fulfilled, (state, action) => {
+      return {
+        ...state,
+        posts: action.payload,
+        loaded: true,
+      };
+    });
+
+    builder.addCase(loadUserPosts.rejected, (state) => {
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
+    });
+  },
 });
 
 export default postsSlice.reducer;
@@ -52,19 +83,3 @@ export const {
   setLoaded,
   setError,
 } = postsSlice.actions;
-
-export const loadUserPosts = (userId: number) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(setLoaded(false));
-
-    try {
-      const response = await getUserPosts(userId);
-
-      dispatch(addPosts(response));
-    } catch {
-      dispatch(setError(true));
-    } finally {
-      dispatch(setLoaded(true));
-    }
-  };
-};
