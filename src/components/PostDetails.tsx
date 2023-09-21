@@ -17,6 +17,8 @@ export const PostDetails: React.FC = () => {
     hasError,
   } = useAppSelector(state => state.comments);
 
+  const isComments = loaded && !hasError;
+
   const deletCommentFromState = (
     id: number,
   ) => dispatch(commentsAction.remove(id));
@@ -60,13 +62,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {isComments && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {isComments && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -100,7 +102,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {isComments && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -111,7 +113,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {isComments && visible && (
           <NewCommentForm />
         )}
       </div>

@@ -25,6 +25,8 @@ export const App: React.FC = () => {
   const clearPosts = () => dispatch(postsActions.clear);
   const setSelectedPost = () => dispatch(set(null));
 
+  const isPosts = author && loaded && !hasError;
+
   useEffect(() => {
     setSelectedPost();
 
@@ -65,13 +67,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {isPosts && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {isPosts && !!posts.length && (
                   <PostsList />
                 )}
               </div>
