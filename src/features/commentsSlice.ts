@@ -132,10 +132,12 @@ const commentsSlice = createSlice({
       };
     });
 
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
+    builder.addCase(deleteComment.pending, (state, action) => {
       return {
         ...state,
-        comments: action.payload,
+        comments: state.comments.filter(comment => (
+          comment.id !== action.meta.arg.id
+        )),
       };
     });
   },
