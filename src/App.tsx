@@ -12,6 +12,8 @@ import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
+import { useAppDispatch } from './app/hooks';
+import { loadUsers } from './features/users/usersSlice';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -20,6 +22,12 @@ export const App: React.FC = () => {
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
