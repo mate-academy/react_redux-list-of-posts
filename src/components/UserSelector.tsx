@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectUsers } from '../features/users/usersSlice';
 import { selectAuthor, setAuthor } from '../features/author/authorSlice';
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
 export const UserSelector = () => {
   // `users` are loaded from the API, so for the performance reasons
@@ -67,7 +68,10 @@ export const UserSelector = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(setAuthor(user))}
+              onClick={() => {
+                dispatch(setAuthor(user));
+                dispatch(setSelectedPost(null));
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
