@@ -1,12 +1,11 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useCallback, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComment } from '../features/commentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -21,7 +20,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     body: '',
   });
 
-  const clearForm = () => {
+  const clearForm = useCallback(() => {
     setValues({
       name: '',
       email: '',
@@ -33,16 +32,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: false,
       body: false,
     });
-  };
+  }, []);
 
-  const handleChange = (
+  const handleChange = useCallback((
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));
-  };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -59,17 +58,25 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await dispatch(
+      addComment({
+        name,
+        email,
+        body,
+        postId: selectedPost?.id || 0,
+      }),
+    );
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
