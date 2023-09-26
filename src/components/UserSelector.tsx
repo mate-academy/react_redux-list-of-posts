@@ -42,7 +42,7 @@ export const UserSelector = () => {
 
   return (
     <div
-      data-cy="authorelector"
+      data-cy="UserSelector"
       className={classNames('dropdown',
         { 'is-active': expanded })}
     >
