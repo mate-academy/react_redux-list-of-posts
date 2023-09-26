@@ -14,8 +14,6 @@ import * as postsActions from './features/posts';
 import * as selectedPostActions from './features/selectedPost';
 
 export const App: React.FC = () => {
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const dispatch = useAppDispatch();
 
   const { loaded, items, hasError } = useAppSelector(state => state.posts);
@@ -62,7 +60,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length === 0 && (
+                {author && loaded && !hasError && !items.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

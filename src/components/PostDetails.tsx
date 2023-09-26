@@ -21,6 +21,12 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
   }, [selectedPost]);
 
+  const handleClickRemove = (value: number) => {
+    dispatch(commentActions
+      .removeComment(value));
+    dispatch(commentActions.remove(value));
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -44,7 +50,7 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && items.length === 0 && (
+        {loaded && !hasError && !items.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
@@ -70,11 +76,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => {
-                      dispatch(commentActions
-                        .removeComment(comment.id));
-                      dispatch(commentActions.remove(comment.id));
-                    }}
+                    onClick={() => handleClickRemove(comment.id)}
                   >
                     delete button
                   </button>
