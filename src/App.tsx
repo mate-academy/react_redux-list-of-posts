@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,52 +8,50 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setAuthor } from './features/author';
+import { cleanPosts, init } from './features/posts';
+import { setPost, unsetPost } from './features/selecredPost';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { author } = useAppSelector(state => state.author);
+  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const selectAuthorHandler = (choosenAuthor: User) => {
+    dispatch(setAuthor(choosenAuthor));
+  };
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const selectPostHandler = (choosenPost: Post | null) => {
+    if (choosenPost) {
+      dispatch(setPost(choosenPost));
+    } else {
+      dispatch(unsetPost());
+    }
+  };
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(unsetPost());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(init(author.id));
     } else {
-      setPosts([]);
+      dispatch(cleanPosts());
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={selectAuthorHandler} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -63,11 +61,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && loading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && !loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,17 +74,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !loading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !loading && !error && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={selectPostHandler}
                   />
                 )}
               </div>
