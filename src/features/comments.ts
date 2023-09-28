@@ -31,7 +31,6 @@ export const init = createAsyncThunk('comments/fetch', (postId: number) => {
 export const addComment = createAsyncThunk(
   'comments/add',
   (newComment: Omit<Comment, 'id'>) => {
-
     return createComment(newComment);
   },
 );
@@ -39,7 +38,6 @@ export const addComment = createAsyncThunk(
 export const removeComment = createAsyncThunk(
   'comments/delete',
   (commentId: number) => {
-
     return deleteComment(commentId);
   },
 );

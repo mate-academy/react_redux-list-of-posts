@@ -4,7 +4,9 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addComment, init, remove, removeComment } from '../features/comments';
+import {
+  addComment, init, remove, removeComment,
+} from '../features/comments';
 
 type Props = {
   post: Post;
@@ -61,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {!loading && error && comments.length === 0 && (
+        {!loading && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
