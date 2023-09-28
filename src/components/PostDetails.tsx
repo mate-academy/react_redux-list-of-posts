@@ -1,172 +1,127 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Comment } from '../types/Comment';
+import { getComments, removeComment } from '../api/comments';
+import { CommentCard } from './CommentCard';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { actions as commentsActions } from '../features/commentsSlice';
+import { wait } from '../utils/fetchClient';
+import { AppDispatch } from '../app/store';
 
-import * as commentsApi from '../api/comments';
-
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
-
-type Props = {
-  post: Post;
+const setSelectUser = (
+  loadComments: (id: number) => void,
+  postId: number,
+) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(commentsActions.setErrors(false));
+    await wait(0);
+    loadComments(postId);
+  };
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
+export const PostDetails = () => {
+  const dispatch = useAppDispatch();
+  const { comments, isError } = useAppSelector(state => state.comments);
+  const post = useAppSelector(state => state.post.selectedPost);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isNewCommentForm, setIsNewCommentForm] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
+  const loadComments = (postId: number) => {
+    getComments(postId)
+      .then(data => {
+        dispatch(commentsActions.setComments(data));
+      })
+      .catch(() => {
+        dispatch(commentsActions.setErrors(true));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    loadComments();
-  }, []);
+    setIsLoading(true);
 
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
+    if (post?.id) {
+      dispatch(setSelectUser(loadComments, post?.id));
     }
-  };
+  }, [post?.id]);
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
+  const deleteComment = (commentId: number) => {
+    setIsLoading(true);
 
-    await commentsApi.deleteComment(commentId);
+    removeComment(commentId)
+      .then(() => {
+        if (comments) {
+          const newComments: Comment[] = comments
+            .filter(c => c.id !== commentId);
+
+          dispatch(commentsActions.setComments(newComments));
+        }
+      })
+      .catch(() => {
+        dispatch(commentsActions.setErrors(true));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
-        </h2>
+      <div className="content" data-cy="PostDetails">
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${post?.id}: ${post?.title}`}
+          </h2>
 
-        <p data-cy="PostBody">
-          {post.body}
-        </p>
-      </div>
-
-      <div className="block">
-        {!loaded && (
-          <Loader />
-        )}
-
-        {loaded && hasError && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )}
-
-        {loaded && !hasError && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
+          <p data-cy="PostBody">
+            {post?.body}
           </p>
-        )}
+        </div>
 
-        {loaded && !hasError && comments.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
+        <div className="block">
+          {isLoading && (
+            <Loader />
+          )}
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+          {isError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+          {!comments?.length ? (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          ) : (
+            <>
+              <p className="title is-4">Comments:</p>
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
-          </>
-        )}
+              {comments.map(comment => (
+                <CommentCard
+                  comment={comment}
+                  deleteComment={deleteComment}
+                  key={comment.id}
+                />
+              ))}
+            </>
+          )}
 
-        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={() => setIsNewCommentForm(true)}
           >
             Write a comment
           </button>
-        )}
+        </div>
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {isNewCommentForm && (
+          <NewCommentForm loadComments={loadComments} />
         )}
       </div>
     </div>
