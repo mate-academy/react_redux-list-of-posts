@@ -12,7 +12,7 @@ export const PostsList: React.FC<Props> = ({ loadPost }) => {
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
-  
+
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
@@ -21,7 +21,7 @@ export const PostsList: React.FC<Props> = ({ loadPost }) => {
             <th> </th>
           </tr>
         </thead>
-  
+
         <tbody>
           {posts.map(post => (
             <PostCard
@@ -34,4 +34,4 @@ export const PostsList: React.FC<Props> = ({ loadPost }) => {
       </table>
     </div>
   );
-}
+};
