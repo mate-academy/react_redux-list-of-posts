@@ -1,14 +1,14 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { createComment } from '../api/comments';
+import { useAppSelector } from '../app/hooks';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  postId: number;
   loadComments: (postId: number) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId, loadComments }) => {
+export const NewCommentForm: React.FC<Props> = ({ loadComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [text, setText] = useState('');
@@ -16,6 +16,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, loadComments }) => {
   const [emailError, setEmailError] = useState(false);
   const [textError, setTextError] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
+  const postId = useAppSelector(state => state.post.selectedPost?.id);
 
   const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -56,14 +57,16 @@ export const NewCommentForm: React.FC<Props> = ({ postId, loadComments }) => {
       name,
       email,
       body: text,
-      postId,
+      postId: postId || 0,
     };
 
     setIsSubmiting(true);
 
     createComment(newComment)
       .then(() => {
-        loadComments(postId);
+        if (postId) {
+          loadComments(postId);
+        }
       })
       .finally(() => {
         setIsSubmiting(false);

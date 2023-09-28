@@ -86,11 +86,7 @@ export const App: React.FC = () => {
                 )}
 
                 {!!posts?.length && (
-                  <PostsList
-                    posts={posts}
-                    loadPost={loadPost}
-                    selectedPost={selectedPost}
-                  />
+                  <PostsList loadPost={loadPost} />
                 )}
               </div>
             </div>
@@ -109,7 +105,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success">
               {selectedPost && (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               )}
             </div>
           </div>

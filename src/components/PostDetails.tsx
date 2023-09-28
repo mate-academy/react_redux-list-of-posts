@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Post } from '../types/Post';
+import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
@@ -21,13 +20,10 @@ const setSelectUser = (
   };
 };
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails = () => {
   const dispatch = useAppDispatch();
   const { comments, isError } = useAppSelector(state => state.comments);
+  const post = useAppSelector(state => state.post.selectedPost);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewCommentForm, setIsNewCommentForm] = useState(false);
 
@@ -46,8 +42,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(setSelectUser(loadComments, post.id));
-  }, [post.id]);
+
+    if (post?.id) {
+      dispatch(setSelectUser(loadComments, post?.id));
+    }
+  }, [post?.id]);
 
   const deleteComment = (commentId: number) => {
     setIsLoading(true);
@@ -74,11 +73,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${post.id}: ${post.title}`}
+            {`#${post?.id}: ${post?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {post.body}
+            {post?.body}
           </p>
         </div>
 
@@ -122,10 +121,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         {isNewCommentForm && (
-          <NewCommentForm
-            postId={post.id}
-            loadComments={loadComments}
-          />
+          <NewCommentForm loadComments={loadComments} />
         )}
       </div>
     </div>

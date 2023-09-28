@@ -1,20 +1,16 @@
 import classNames from 'classnames';
 import React from 'react';
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as selectedPostActions } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
 
 type Props = {
   post: Post;
   loadPost: (id: number) => void;
-  selectedPost: Post | null,
 };
 
-export const PostCard: React.FC<Props> = ({
-  post,
-  loadPost,
-  selectedPost,
-}) => {
+export const PostCard: React.FC<Props> = ({ post, loadPost }) => {
+  const selectedPost = useAppSelector(state => state.post.selectedPost);
   const btnTitle = selectedPost?.id !== post.id ? 'Open' : 'Close';
   const dispatch = useAppDispatch();
 

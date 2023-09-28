@@ -37,7 +37,6 @@ export const UserSelector: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users.users);
   const selectedUser = useAppSelector(state => state.user.selectedUser);
-  const selectedId = selectedUser?.id || null;
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   useEffect(() => {
@@ -97,7 +96,6 @@ export const UserSelector: React.FC<Props> = ({
             {!!users?.length && users.map(user => (
               <UserOption
                 user={user}
-                selectedId={selectedId}
                 selectUserHandler={selectUserHandler}
               />
             ))}

@@ -1,9 +1,9 @@
 import classNames from 'classnames';
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
   user: User;
-  selectedId: number | null;
   selectUserHandler: (
     e: React.MouseEvent<HTMLAnchorElement>,
     user: User
@@ -12,9 +12,10 @@ type Props = {
 
 export const UserOption: React.FC<Props> = ({
   user,
-  selectedId,
   selectUserHandler,
 }) => {
+  const selectedId = useAppSelector(state => state.user.selectedUser?.id);
+
   return (
     <a
       href={`#user-${user.id}`}
