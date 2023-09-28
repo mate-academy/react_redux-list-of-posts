@@ -1,4 +1,4 @@
-import { client } from '../utils/fetchClient';
+import { client } from '../utils/axiosClient';
 import { User } from '../types/User';
 
 export const getUsers = () => {
