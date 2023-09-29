@@ -2,11 +2,6 @@ import { useEffect, useState } from 'react';
 import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-// import {
-//   init as fetchPost,
-//   remove,
-//   removeComment,
-// } from '../features/comments';
 import { Loader } from './Loader/Loader';
 import { removeComment, remove, init as fetchPost } from '../features/comments';
 
@@ -25,7 +20,7 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
   }, [selectedPost]);
 
-  const handleDelete = async (id: number) => {
+  const handleDeleteComment = async (id: number) => {
     dispatch(remove(id));
     dispatch(removeComment(id));
   };
@@ -79,7 +74,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDelete(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>

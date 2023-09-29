@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
@@ -18,7 +19,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     if (!expanded) {
-      return () => { };
+      return;
     }
 
     const handleDocumentClick = () => {
@@ -27,7 +28,6 @@ export const UserSelector: React.FC = () => {
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
