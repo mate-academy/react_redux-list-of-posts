@@ -59,6 +59,7 @@ export const App: React.FC = () => {
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList />
                 )}
+
               </div>
             </div>
           </div>

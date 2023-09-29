@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { createNewComment } from '../features/comments';
+import { makeComments } from '../features/comments';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -58,7 +58,7 @@ export const NewCommentForm: React.FC = () => {
 
     setSubmitting(true);
 
-    await dispatch(createNewComment({
+    await dispatch(makeComments({
       name,
       email,
       body,

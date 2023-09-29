@@ -3,18 +3,18 @@ import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setPost } from '../features/selectedPost';
+import { remove } from '../features/comments';
 
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  const onPostClick = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      dispatch(setPost(post));
-    } else {
-      dispatch(setPost(null));
-    }
+  const handleTogglePost = (post: Post) => {
+    dispatch(setPost(
+      post.id === selectedPost?.id ? null : post,
+    ));
+    dispatch(remove);
   };
 
   return (
@@ -46,7 +46,7 @@ export const PostsList: React.FC = () => {
                       'is-light': id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => onPostClick({
+                  onClick={() => handleTogglePost({
                     id,
                     title,
                     userId: 0,

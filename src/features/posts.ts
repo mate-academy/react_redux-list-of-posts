@@ -15,8 +15,8 @@ const initialState: InitialState = {
   posts: [],
 };
 
-export const init = createAsyncThunk('posts/fetch', (id: number) => {
-  return getUserPosts(id);
+export const fetchPosts = createAsyncThunk('posts/fetch', (userId: number) => {
+  return getUserPosts(userId);
 });
 
 export const postsSlice = createSlice({
@@ -28,14 +28,14 @@ export const postsSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(init.pending, (state) => {
-      return { ...state, loaded: false };
+    builder.addCase(fetchPosts.pending, (state) => {
+      return { ...state, loaded: false, hasError: false };
     });
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
       return { ...state, loaded: true, items: action.payload };
     });
-    builder.addCase(init.rejected, (state) => {
-      return { ...state, hasError: true };
+    builder.addCase(fetchPosts.rejected, (state) => {
+      return { ...state, hasError: true, loaded: true };
     });
   },
 });

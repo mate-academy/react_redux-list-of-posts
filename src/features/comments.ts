@@ -14,23 +14,26 @@ const initialState: InitialState = {
   items: [],
 };
 
-export const init = createAsyncThunk('comments/fetchComments', (id: number) => {
-  return getPostComments(id);
-});
+export const fetchComments = createAsyncThunk('comments/fetch',
+  async (postId: number) => {
+    const fetchedComments = await getPostComments(postId);
 
-export const createNewComment = createAsyncThunk(
-  'comments/createNewComment',
-  (data: Omit<Comment, 'id'>) => {
-    return createComment(data);
-  },
-);
+    return fetchedComments;
+  });
 
-export const removeComment = createAsyncThunk(
-  'comments/removeComment',
-  (id: number) => {
-    return deleteComment(id);
-  },
-);
+export const makeComments = createAsyncThunk('comments/create',
+  async (data: Omit<Comment, 'id'>) => {
+    const createdComment = await createComment(data);
+
+    return createdComment;
+  });
+
+export const removeComment = createAsyncThunk('comments/delete',
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
+  });
 
 export const commentsSlice = createSlice({
   name: 'commets',
@@ -45,16 +48,16 @@ export const commentsSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(init.pending, state => {
+    builder.addCase(fetchComments.pending, state => {
       return { ...state, loaded: false, hasError: false };
     });
-    builder.addCase(init.fulfilled, state => {
+    builder.addCase(fetchComments.fulfilled, state => {
       return { ...state, loaded: true, hasError: false };
     });
-    builder.addCase(init.rejected, state => {
+    builder.addCase(fetchComments.rejected, state => {
       return { ...state, loaded: true, hasError: true };
     });
-    builder.addCase(createNewComment.fulfilled, (state, action) => {
+    builder.addCase(makeComments.fulfilled, (state, action) => {
       return {
         ...state,
         loaded: true,

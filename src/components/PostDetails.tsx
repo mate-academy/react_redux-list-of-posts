@@ -3,7 +3,7 @@ import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Loader } from './Loader/Loader';
-import { removeComment, remove, init as fetchPost } from '../features/comments';
+import { removeComment, remove, fetchComments } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const { loaded, hasError, items: comments } = useAppSelector(state => (
@@ -14,7 +14,7 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     if (selectedPost) {
-      dispatch(fetchPost(selectedPost.id));
+      dispatch(fetchComments(selectedPost.id));
     }
 
     setVisible(false);

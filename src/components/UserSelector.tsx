@@ -2,10 +2,9 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { init as fetchPost } from '../features/posts';
+import { fetchPosts } from '../features/posts';
 import { init as initUsers } from '../features/users';
 import { set } from '../features/author';
-import { User } from '../types';
 
 export const UserSelector: React.FC = () => {
   const users = useAppSelector(state => state.users);
@@ -60,13 +59,13 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map((user: User) => (
+          {users.map(user => (
             <a
               key={user?.id}
               href={`#user-${user?.id}`}
               onClick={() => {
                 dispatch(set(user));
-                dispatch(fetchPost(user.id));
+                dispatch(fetchPosts(user.id));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
