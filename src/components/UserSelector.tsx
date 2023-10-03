@@ -4,12 +4,17 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
 import { fetchPosts } from '../features/postsSlisce';
+import { fetchUsers } from '../features/usersSlice';
 
 export const UserSelector = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
