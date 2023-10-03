@@ -1,7 +1,12 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { CommentData } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  onSubmit: (data: CommentData) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -22,7 +27,6 @@ export const NewCommentForm: React.FC = () => {
       email: '',
       body: '',
     });
-
     setErrors({
       name: false,
       email: false,
@@ -41,7 +45,6 @@ export const NewCommentForm: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     setErrors({
       name: !name,
       email: !email,
@@ -53,6 +56,8 @@ export const NewCommentForm: React.FC = () => {
     }
 
     setSubmitting(true);
+
+    await onSubmit({ name, email, body });
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));

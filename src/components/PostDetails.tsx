@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -6,7 +7,9 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   removeComment,
   fetchComments,
+  postComment,
 } from '../features/commentsSlice';
+import { CommentData } from '../types/Comment';
 
 export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
@@ -26,6 +29,19 @@ export const PostDetails = () => {
       dispatch(fetchComments(id));
     }
   }, [id]);
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    if (id) {
+      const newComment = {
+        name,
+        email,
+        body,
+        postId: id,
+      };
+
+      dispatch(postComment(newComment));
+    }
+  };
 
   const deleteComment = async (commentId: number) => {
     dispatch(removeComment(commentId));
@@ -106,7 +122,7 @@ export const PostDetails = () => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm />
+          <NewCommentForm onSubmit={addComment} />
         )}
       </div>
     </div>
