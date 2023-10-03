@@ -66,6 +66,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
+    clearForm();
   };
 
   return (
