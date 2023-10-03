@@ -17,10 +17,10 @@ export const selectedPostSlice = createSlice({
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
     },
-    remove: state => {
+    removePost: state => {
       state.selectedPost = null;
     },
   },
 });
 
-export const { setSelectedPost, remove } = selectedPostSlice.actions;
+export const { setSelectedPost, removePost } = selectedPostSlice.actions;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,24 +8,18 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppSelector } from './app/hooks';
-// import { fetchPosts } from './features/postsSlisce';
-// import { remove } from './features/selectedPostSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { removePost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  // useEffect(() => {
-  //   console.log(author);
-  //   if (author) {
-  //     dispatch(remove());
-  //   } else {
-  //     dispatch(fetchPosts(author?.id));
-  //   }
-  // }, [author?.id]);
+  useEffect(() => {
+    dispatch(removePost());
+  }, [author?.id]);
 
   return (
     <main className="section">
