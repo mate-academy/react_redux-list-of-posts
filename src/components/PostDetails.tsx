@@ -69,13 +69,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <Loader />
         )}
 
-        {isLoading && hasError && (
+        {!isLoading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {isLoading && !hasError && comments.length === 0 && (
+        {!isLoading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
