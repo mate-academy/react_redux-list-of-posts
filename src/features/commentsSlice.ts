@@ -77,6 +77,10 @@ const commentsSlice = createSlice({
       })
       .addCase(addCommentAsync.fulfilled, (state, action) => {
         state.comments.push(action.payload);
+        state.loaded = true;
+      })
+      .addCase(addCommentAsync.rejected, (state) => {
+        state.hasError = true;
       });
   },
 });

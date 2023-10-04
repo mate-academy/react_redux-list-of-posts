@@ -39,9 +39,9 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {!loaded && !hasError && <Loader />}
 
-        {loaded && hasError && (
+        {!loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
