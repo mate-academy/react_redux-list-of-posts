@@ -25,6 +25,7 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
   }, [selectedPost]);
 
+  //hopefully it works...
   const deleteComment = async (commentId: number) => {
     dispatch(removeComment(commentId));
   };
