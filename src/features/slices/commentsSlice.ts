@@ -57,7 +57,7 @@ export const commentsSlice = createSlice({
     },
     clearComments: (state: CommentsState) => {
       state.items = [];
-    },
+    }
   },
   extraReducers(builder) {
     builder

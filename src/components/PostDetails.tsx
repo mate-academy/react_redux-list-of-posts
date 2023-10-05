@@ -3,7 +3,6 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  commentsSlice,
   fetchComments,
   removeComment,
 } from '../features/slices/commentsSlice';
@@ -27,7 +26,6 @@ export const PostDetails: React.FC = () => {
   }, [selectedPost]);
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentsSlice.actions.removeComment(commentId));
     dispatch(removeComment(commentId));
   };
 
