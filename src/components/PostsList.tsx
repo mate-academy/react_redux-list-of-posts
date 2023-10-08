@@ -1,12 +1,19 @@
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPostSlice';
+import { Post } from '../types/Post';
 
 export const PostsList = () => {
   const { posts } = useAppSelector(store => store.posts);
   const { post: selectedPost } = useAppSelector(store => store.selectedPost);
 
   const dispatch = useAppDispatch();
+
+  const handlePostSelect = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPost?.id
+      ? null
+      : post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -37,12 +44,7 @@ export const PostsList = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(
-                      setSelectedPost(post.id === selectedPost?.id
-                        ? null : post),
-                    );
-                  }}
+                  onClick={() => handlePostSelect(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

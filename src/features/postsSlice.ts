@@ -44,6 +44,7 @@ const postsSlice = createSlice({
       })
       .addCase(getPostsAsync.rejected, (state) => {
         state.hasError = true;
+        state.loaded = true;
       });
   },
 });

@@ -10,7 +10,6 @@ import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { Counter } from './features/counter/Counter';
 import { clearPosts, getPostsAsync } from './features/postsSlice';
 import { getUsersAsync } from './features/usersSlice';
 import { clearSelectedPost } from './features/selectedPostSlice';
@@ -38,7 +37,7 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
+      {/* <Counter /> */}
 
       <div className="container">
         <div className="tile is-ancestor">
@@ -59,7 +58,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {author && !loaded && hasError && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -77,7 +76,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length && (
+                {author && loaded && !hasError && !!posts.length && (
                   <PostsList />
                 )}
               </div>
