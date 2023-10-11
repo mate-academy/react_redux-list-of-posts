@@ -18,6 +18,7 @@ export const PostDetails: React.FC = () => {
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
   const handleVisible = () => setVisible(true);
+  const isNoComments = loaded && !hasError && comments.length === 0;
 
   useEffect(() => {
     setVisible(false);
@@ -25,10 +26,18 @@ export const PostDetails: React.FC = () => {
   }, [post?.id]);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
+    if (trimmedName === '' || trimmedEmail === '' || trimmedBody === '') {
+      return;
+    }
+
     const data = {
-      name,
-      email,
-      body,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
       postId: post?.id as number,
     };
 
@@ -63,7 +72,7 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {isNoComments && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
