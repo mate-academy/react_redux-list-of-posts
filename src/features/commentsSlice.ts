@@ -1,36 +1,37 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Status } from '../types/Status';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 export interface CommentsState {
   comments: Comment[];
-  statusGet: Status;
-  statusAdd: Status;
-  statusDel: Status;
+  isLoaded: boolean;
+  isError: boolean;
 }
 
 const initialState: CommentsState = {
   comments: [],
-  statusGet: Status.Inaction,
-  statusAdd: Status.Inaction,
-  statusDel: Status.Inaction,
+  isLoaded: false,
+  isError: false,
 };
 
 export const getCommentsAsyncBy = createAsyncThunk(
   'comments/fetchComments',
-  async (postId: number) => getPostComments(postId),
+  (postId: number) => getPostComments(postId),
 );
 
 export const addCommentAsyncBy = createAsyncThunk(
   'comments/addComments',
-  async (newComment: Comment) => createComment(newComment),
+  (newComment: Omit<Comment, 'id'>) => createComment(newComment),
 );
 
 export const deleteCommentAsyncBy = createAsyncThunk(
   'comments/deleteComments',
-  async (postId: number) => deleteComment(postId),
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
+  },
 );
 
 const commentsSlice = createSlice({
@@ -40,36 +41,32 @@ const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCommentsAsyncBy.pending, (state) => {
-        state.statusGet = Status.Loading;
+        state.isLoaded = false;
       })
       .addCase(getCommentsAsyncBy.fulfilled, (state, action) => {
-        state.statusGet = Status.Inaction;
+        state.isLoaded = true;
+        state.isError = false;
         state.comments = action.payload;
       })
       .addCase(getCommentsAsyncBy.rejected, (state) => {
-        state.statusGet = Status.Failed;
+        state.isLoaded = true;
+        state.isError = true;
       })
 
-      .addCase(addCommentAsyncBy.pending, (state) => {
-        state.statusAdd = Status.Loading;
-      })
       .addCase(addCommentAsyncBy.fulfilled, (state, action) => {
-        state.statusAdd = Status.Inaction;
+        state.isError = false;
         state.comments.push(action.payload);
       })
       .addCase(addCommentAsyncBy.rejected, (state) => {
-        state.statusAdd = Status.Failed;
+        state.isError = true;
       })
 
-      .addCase(deleteCommentAsyncBy.pending, (state) => {
-        state.statusDel = Status.Loading;
-      })
       .addCase(deleteCommentAsyncBy.fulfilled, (state, action) => {
-        state.statusDel = Status.Inaction;
-        state.comments.filter(c => c.id !== action.payload);
+        state.isError = false;
+        state.comments = state.comments.filter(c => c.id !== action.payload);
       })
       .addCase(deleteCommentAsyncBy.rejected, (state) => {
-        state.statusDel = Status.Failed;
+        state.isError = true;
       });
   },
 });

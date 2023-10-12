@@ -7,25 +7,16 @@ import {
   deleteCommentAsyncBy,
   getCommentsAsyncBy,
 } from '../features/commentsSlice';
-import { Status } from '../types/Status';
 
 export const PostDetails: React.FC = () => {
   const [visibleComments, setVisibleComments] = useState<Comment[]>([]);
   const [visibleForm, setVisibleForm] = useState<boolean>(false);
 
   const {
-    comments, statusGet, statusAdd, statusDel,
+    comments, isLoaded, isError,
   } = useAppSelector(state => state.comments);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
-
-  const generalStatusFailed = statusGet === Status.Failed
-    || statusAdd === Status.Failed
-    || statusDel === Status.Failed;
-
-  const generalStatusInaction = statusGet === Status.Inaction
-    && statusAdd !== Status.Failed
-    && statusDel !== Status.Failed;
 
   useEffect(() => {
     setVisibleForm(false);
@@ -73,23 +64,23 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {statusGet === Status.Loading && (
+        {!isLoaded && (
           <Loader />
         )}
 
-        {generalStatusFailed && (
+        {isLoaded && isError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {generalStatusInaction && visibleComments.length === 0 && (
+        {isLoaded && !isError && visibleComments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {generalStatusInaction && visibleComments.length > 0 && (
+        {isLoaded && !isError && visibleComments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -123,7 +114,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {generalStatusInaction && !visibleForm && (
+        {isLoaded && !isError && !visibleForm && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -134,7 +125,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {generalStatusInaction && visibleForm && (
+        {isLoaded && !isError && visibleForm && (
           <NewCommentForm />
         )}
       </div>

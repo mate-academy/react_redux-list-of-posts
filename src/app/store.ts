@@ -16,6 +16,7 @@ export const store = configureStore({
     author: authorSlice,
     selectedPost: selectedPostSlice,
   },
+  devTools: true,
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,14 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { Comment } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addCommentAsyncBy } from '../features/commentsSlice';
-
-function getMaxId(arrayComments: Comment[]) {
-  return (arrayComments.length > 0)
-    ? Math.max(...arrayComments.map(c => c.id)) + 1
-    : 1;
-}
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +18,6 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
-  const { comments } = useAppSelector(state => state.comments);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
@@ -55,13 +47,17 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const trimedName = name.trim();
+    const trimedEmail = email.trim();
+    const trimedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimedName,
+      email: !trimedEmail,
+      body: !trimedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!trimedName || !trimedEmail || !trimedBody) {
       return;
     }
 
@@ -70,10 +66,9 @@ export const NewCommentForm: React.FC = () => {
     try {
       if (selectedPost) {
         const newComment = {
-          id: getMaxId(comments),
-          name,
-          email,
-          body,
+          name: trimedName,
+          email: trimedEmail,
+          body: trimedBody,
           postId: selectedPost.id,
         };
 
