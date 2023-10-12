@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -12,26 +11,20 @@ import {
 } from '../app/thunks/commentsThunk';
 import { removeComment } from '../app/slices/commentsSlice';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const {
     comments,
     isLoading,
     hasError,
   } = useAppSelector(state => state.comments);
+  const { postSelected: post } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (post) {
-      dispatch(loadComments(post.id));
-    }
-
     setVisible(false);
-  }, [post.id]);
+    dispatch(loadComments(post?.id as number));
+  }, [post?.id]);
 
   const handleDeleteComment = async (commentId: number) => {
     dispatch(removeComment(commentId));
@@ -44,7 +37,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       name,
       email,
       body,
-      postId: post.id as number,
+      postId: post?.id as number,
     };
 
     await dispatch(postComment(data));
@@ -54,32 +47,32 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
+          {`#${post?.id}: ${post?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post.body}
+          {post?.body}
         </p>
       </div>
 
       <div className="block">
-        {isLoading && (
+        {!isLoading && (
           <Loader />
         )}
 
-        {!isLoading && hasError && (
+        {isLoading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!isLoading && !hasError && comments.length === 0 && (
+        {isLoading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!isLoading && !hasError && comments.length > 0 && (
+        {isLoading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -113,7 +106,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!isLoading && !hasError && !visible && (
+        {isLoading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -124,7 +117,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!isLoading && !hasError && visible && (
+        {isLoading && !hasError && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>

@@ -35,20 +35,20 @@ const commentSlice = createSlice({
       .addCase(loadComments.pending, (state) => {
         return {
           ...state,
-          isLoading: true,
+          isLoading: false,
         };
       })
       .addCase(loadComments.fulfilled, (state, action) => {
         return {
           ...state,
-          isLoading: false,
+          isLoading: true,
           comments: action.payload,
         };
       })
       .addCase(loadComments.rejected, (state) => {
         return {
           ...state,
-          isLoading: false,
+          isLoading: true,
           hasError: true,
         };
       })

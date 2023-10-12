@@ -1,46 +1,55 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { fetchPosts } from '../thunks/postsThunk';
 
 export type PostState = {
-  posts: Post[] | null,
+  posts: Post[],
   isLoading: boolean,
   hasError: boolean,
+  postSelected: null | Post,
 };
 
 const initialState: PostState = {
-  posts: null,
+  posts: [],
   isLoading: false,
   hasError: false,
+  postSelected: null,
 };
 
 const postSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedPost: (state, action) => {
+      state.postSelected = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
         return {
           ...state,
-          isLoading: true,
+          isLoading: false,
         };
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         return {
           ...state,
-          isLoading: false,
+          isLoading: true,
           posts: action.payload,
         };
       })
       .addCase(fetchPosts.rejected, (state) => {
         return {
           ...state,
-          isLoading: false,
+          isLoading: true,
           hasError: true,
         };
       });
   },
 });
 
-export default postSlice.reducer;
+export const postReducer = postSlice.reducer;
+
+export const postActions = postSlice.actions;

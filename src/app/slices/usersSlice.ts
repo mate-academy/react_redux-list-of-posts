@@ -1,23 +1,30 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
 import { fetchUsers } from '../thunks/usersThunk';
+import { User } from '../../types/User';
 
 type UsersState = {
   users: User[],
   isLoading: boolean,
-  hasError: boolean
+  hasError: boolean,
+  author: User | null,
 };
 
 const initialState: UsersState = {
   users: [],
   isLoading: false,
   hasError: false,
+  author: null,
 };
 
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setAuthor: (state, action) => {
+      state.author = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -43,4 +50,6 @@ const userSlice = createSlice({
   },
 });
 
-export default userSlice.reducer;
+export const usersReducer = userSlice.reducer;
+
+export const usersActions = userSlice.actions;
