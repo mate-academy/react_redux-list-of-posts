@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAction, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
   deleteComment,
@@ -18,6 +19,8 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
+export const resetComments = createAction('comments/reset');
+
 const commentSlice = createSlice({
   name: 'comments',
   initialState,
@@ -29,9 +32,15 @@ const commentSlice = createSlice({
           .filter((comment) => comment.id !== action.payload),
       };
     },
+    clearComments: state => {
+      state.comments = [];
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(resetComments, () => {
+        return initialState;
+      })
       .addCase(loadComments.pending, (state) => {
         return {
           ...state,
@@ -75,6 +84,6 @@ const commentSlice = createSlice({
   },
 });
 
-export const { removeComment } = commentSlice.actions;
+export const { removeComment, clearComments } = commentSlice.actions;
 
 export default commentSlice.reducer;

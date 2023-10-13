@@ -29,7 +29,7 @@ export const PostDetails: React.FC = () => {
   const handleDeleteComment = async (commentId: number) => {
     dispatch(removeComment(commentId));
 
-    dispatch(deleteComment(commentId));
+    await dispatch(deleteComment(commentId));
   };
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {

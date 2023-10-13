@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { postActions } from './app/slices/postsSlice';
 import { fetchPosts } from './app/thunks/postsThunk';
 import { fetchUsers } from './app/thunks/usersThunk';
+import { resetComments } from './app/slices/commentsSlice';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.users);
@@ -27,6 +28,7 @@ export const App: React.FC = () => {
     dispatch(postActions.setSelectedPost(null));
 
     if (author) {
+      dispatch(resetComments());
       dispatch(fetchPosts(author.id));
     }
   }, [author?.id]);
