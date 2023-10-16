@@ -4,8 +4,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RootState } from '../app/store';
 import { setSelectedPost } from '../features/selectedPostSlice';
 
-export const PostsList = (
-) => {
+export const PostsList = () => {
   const { posts } = useAppSelector(
     (state: RootState) => state.posts,
   );
@@ -15,6 +14,10 @@ export const PostsList = (
   );
 
   const dispatch = useAppDispatch();
+
+  const handleSelectPost = (id: number, title: string) => {
+    return id === selectedPost?.id ? null : { id, title };
+  };
 
   return (
     <div data-cy="PostsList">
@@ -30,10 +33,10 @@ export const PostsList = (
         </thead>
 
         <tbody>
-          {posts.map((post: Post) => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {posts.map(({ id, title }: Post) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">{title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
@@ -42,16 +45,14 @@ export const PostsList = (
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost?.id,
+                      'is-light': id !== selectedPost?.id,
                     },
                   )}
                   onClick={() => {
-                    dispatch(setSelectedPost(
-                      post.id === selectedPost?.id ? null : post,
-                    ));
+                    dispatch(setSelectedPost(handleSelectPost(id, title)));
                   }}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

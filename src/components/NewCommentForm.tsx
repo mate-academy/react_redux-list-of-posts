@@ -3,7 +3,10 @@ import React from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  setValues, setSubmitting, setNewCommentFormErrors, clearForm,
+  setValues,
+  setSubmitting,
+  setNewCommentFormErrors,
+  clearForm,
 } from '../features/newCommentFormSlice';
 
 type Props = {
@@ -13,7 +16,11 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
   const {
-    submitting, newCommentFormErrors, name, email, body,
+    submitting,
+    newCommentFormErrors,
+    name,
+    email,
+    body,
   } = useAppSelector(state => state.newCommentForm);
 
   const handleChange = (
@@ -40,13 +47,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     dispatch(setSubmitting(true));
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     dispatch(setSubmitting(false));
     dispatch(setValues({ body: '' }));
-    // We keep the entered name and email
   };
 
   return (

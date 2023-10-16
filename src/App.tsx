@@ -9,7 +9,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-// import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
 import { setAuthor } from './features/authorSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
@@ -24,8 +23,6 @@ export const App: React.FC = () => {
   const author = useAppSelector(
     (state: RootState) => state.author,
   ) as User | null;
-
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const { posts, loaded, hasError } = useAppSelector(
     (state: RootState) => state.posts,
@@ -45,13 +42,10 @@ export const App: React.FC = () => {
         dispatch(setAuthor(author));
       })
       .catch(() => dispatch(setHasError(true)))
-      // We disable the spinner in any case
       .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(setSelectedPost(null));
 
     if (author) {
@@ -63,7 +57,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
       <Counter />
 
       <div className="container">
