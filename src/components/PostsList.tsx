@@ -13,6 +13,10 @@ export const PostsList: React.FC<Props> = ({
   const { posts } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
+  if (posts.length === 0) {
+    return <p data-cy="NoPosts">No posts available.</p>;
+  }
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
