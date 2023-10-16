@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { setUsers } from '../features/userSlice';
 import { User } from '../types/User';
+import { RootState } from '../app/store';
+import { getUsers } from '../api/users';
 
 type Props = {
   value: User | null;
@@ -17,7 +20,8 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const users = useSelector((state: RootState) => state.users);
+  const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -41,6 +45,14 @@ export const UserSelector: React.FC<Props> = ({
   // we don't want to listening for outside clicks
   // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    // Load users when the component mounts
+    // Assuming getUsers is a function that returns a Promise
+    getUsers().then(data => {
+      dispatch(setUsers(data));
+    });
+  }, [dispatch]);
 
   return (
     <div
@@ -69,7 +81,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
