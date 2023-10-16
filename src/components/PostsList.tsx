@@ -15,8 +15,8 @@ export const PostsList = () => {
 
   const dispatch = useAppDispatch();
 
-  const handleSelectPost = (id: number, title: string) => {
-    return id === selectedPost?.id ? null : { id, title };
+  const handleSelectPost = (id: number, title: string, body: string) => {
+    return id === selectedPost?.id ? null : { id, title, body };
   };
 
   return (
@@ -33,7 +33,7 @@ export const PostsList = () => {
         </thead>
 
         <tbody>
-          {posts.map(({ id, title }: Post) => (
+          {posts.map(({ id, title, body }: Post) => (
             <tr key={id} data-cy="Post">
               <td data-cy="PostId">{id}</td>
               <td data-cy="PostTitle">{title}</td>
@@ -49,7 +49,9 @@ export const PostsList = () => {
                     },
                   )}
                   onClick={() => {
-                    dispatch(setSelectedPost(handleSelectPost(id, title)));
+                    dispatch(setSelectedPost(
+                      handleSelectPost(id, title, body),
+                    ));
                   }}
                 >
                   {id === selectedPost?.id ? 'Close' : 'Open'}
