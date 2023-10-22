@@ -31,6 +31,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loadComments();
   }, [post.id]);
 
+  const inactiveLoaderAndError = !loader && !error;
+
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
@@ -79,13 +81,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {!loader && !error && comments.length === 0 && (
+        {inactiveLoaderAndError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loader && !error && comments.length > 0 && (
+        {inactiveLoaderAndError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -119,7 +121,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loader && !error && !visible && (
+        {inactiveLoaderAndError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -130,7 +132,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!loader && !error && visible && (
+        {inactiveLoaderAndError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
