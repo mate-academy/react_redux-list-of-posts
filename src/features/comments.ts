@@ -35,6 +35,11 @@ export const commentsSlice = createSlice({
     setCommentsError: (state) => {
       state.error = true;
     },
+    clearAllComments: (state) => {
+      state.comments = [];
+      state.error = false;
+      state.loading = false;
+    },
   },
   extraReducers(builder) {
     builder.addCase(initComments.pending, (state) => {
@@ -55,7 +60,8 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { addComments, removeComment, setCommentsError }
-= commentsSlice.actions;
+export const {
+  addComments, removeComment, setCommentsError, clearAllComments,
+} = commentsSlice.actions;
 
 export default commentsSlice.reducer;

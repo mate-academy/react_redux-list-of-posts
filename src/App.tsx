@@ -11,6 +11,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearPosts, init } from './features/posts';
 import { clearSelectedPost } from './features/selectedPost';
+import { clearAllComments } from './features/comments';
 
 export const App: React.FC = () => {
   const { posts, loading, error } = useAppSelector(state => state.posts);
@@ -26,6 +27,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(clearSelectedPost());
+    dispatch(clearAllComments());
 
     if (author) {
       loadUserPosts(author.id);
