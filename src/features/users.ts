@@ -3,9 +3,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-export const init = createAsyncThunk('users/fetch', () => {
-  return getUsers();
-});
+export const fetchUsers = createAsyncThunk('users/fetchUsers',
+  async () => {
+    const users = await getUsers();
+
+    return users;
+  });
 
 type UsersType = {
   users: User[],
@@ -24,18 +27,18 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(fetchUsers.pending, (state) => {
       state.loading = true;
       state.error = false;
     });
 
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.users = action.payload;
       state.loading = false;
       state.error = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(fetchUsers.rejected, (state) => {
       state.loading = false;
       state.error = true;
     });

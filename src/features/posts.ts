@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
-export const init = createAsyncThunk('users/fetch', (userId: number) => {
+export const init = createAsyncThunk('posts/fetch', (userId: number) => {
   return getUserPosts(userId);
 });
 

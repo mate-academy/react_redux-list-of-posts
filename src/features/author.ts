@@ -8,10 +8,9 @@ export const authorSlice = createSlice({
   initialState: null as AuthorState,
   reducers: {
     set: (_, action: PayloadAction<User>) => action.payload,
-    clearAuthor: () => null,
   },
 });
 
-export const { set, clearAuthor } = authorSlice.actions;
+export const { set } = authorSlice.actions;
 
 export default authorSlice.reducer;
