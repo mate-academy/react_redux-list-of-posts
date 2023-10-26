@@ -67,7 +67,7 @@ export const PostDetails: React.FC = () => {
           </p>
         )}
 
-        {loaded && !isError && comments.length > 0 && (
+        {loaded && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 

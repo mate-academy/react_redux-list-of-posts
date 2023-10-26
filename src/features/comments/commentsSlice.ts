@@ -54,6 +54,10 @@ const commentsSlice = createSlice({
       state.isError = true;
     });
 
+    builder.addCase(deleteComment.pending, (state) => {
+      state.isError = false;
+    });
+
     builder.addCase(deleteComment.fulfilled, (state, action) => {
       state.comments = state.comments
         .filter(comment => comment.id !== action.payload);
