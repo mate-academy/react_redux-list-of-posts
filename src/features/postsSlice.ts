@@ -14,7 +14,7 @@ const initialState: PostsState = {
 };
 
 export const loadPosts = createAsyncThunk(
-  'posts/fetch', (postId: number) => getUserPosts(postId),
+  'posts/fetch', getUserPosts,
 );
 
 export const postsSlice = createSlice({

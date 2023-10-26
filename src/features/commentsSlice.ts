@@ -14,7 +14,7 @@ const initialState: CommentsState = {
 };
 
 export const loadComments = createAsyncThunk(
-  'comments/fetch', (postId: number) => getPostComments(postId),
+  'comments/fetch', getPostComments,
 );
 
 export const commentsSlice = createSlice({
