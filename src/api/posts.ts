@@ -1,4 +1,4 @@
-import { client } from '../utils/fetchClient';
+import { client } from '../utils/axiosClient';
 import { Post } from '../types/Post';
 
 export const getUserPosts = (userId: number) => {
