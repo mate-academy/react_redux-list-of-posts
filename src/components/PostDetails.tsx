@@ -18,7 +18,7 @@ export const PostDetails: React.FC = () => {
     if (post) {
       dispatch(commentsActions.loadComments(post.id));
     }
-  }, [post?.id]);
+  }, [post, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     if (post) {

@@ -32,7 +32,7 @@ export const App: React.FC = () => {
     if (currentUser) {
       dispatch(loadUserPosts(currentUser.id));
     }
-  }, [currentUser?.id]);
+  }, [currentUser, dispatch]);
 
   return (
     <main className="section">
