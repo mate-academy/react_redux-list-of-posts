@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   deleteComment,
   fetchComments,
-  remove,
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -32,6 +31,7 @@ export const PostDetails: React.FC = () => {
 
   const isNoCommentsShown = !isLoading && !hasError && !comments.length;
   const isCommentsShown = !isLoading && !hasError && !!comments.length;
+  const isErrorShown = ((!isLoading && hasError) || hasUpdateError);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -50,7 +50,7 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {((!isLoading && hasError) || hasUpdateError) && (
+        {isErrorShown && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
@@ -110,12 +110,6 @@ export const PostDetails: React.FC = () => {
         {!isLoading && !hasError && visible && (
           <NewCommentForm />
         )}
-
-        {/* {hasUpdateError && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )} */}
       </div>
     </div>
   );
