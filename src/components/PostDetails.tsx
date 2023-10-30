@@ -6,16 +6,29 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { actions as commentsActions } from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const comments = useAppSelector(state => state.comments.items);
+  const setComments = (value: Comment[]) => dispatch(
+    commentsActions.addComments(value),
+  );
+  const hasError = useAppSelector(state => state.comments.hasError);
+  const setError = (value: boolean) => dispatch(
+    commentsActions.addError(value),
+  );
+  const loaded = useAppSelector(state => state.comments.loaded);
+  const setLoaded = (value: boolean) => dispatch(
+    commentsActions.addLoad(value),
+  );
 
   function loadComments() {
     setLoaded(false);
@@ -65,9 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      dispatch(commentsActions.addComment(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,11 +93,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
+    dispatch(commentsActions.removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };

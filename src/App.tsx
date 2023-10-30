@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -12,14 +12,25 @@ import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { addAuthor } from './features/authorSlice';
+import { addSelectedPost } from './features/selectedPostSlice';
+import { actions as postsActions } from './features/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const author = useAppSelector(state => state.author.author);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const dispatch = useAppDispatch();
+  const setAuthor = (value: User) => dispatch(addAuthor(value));
+  const setSelectedPost = (value: Post | null) => dispatch(
+    addSelectedPost(value),
+  );
+  const posts = useAppSelector(state => state.posts.items);
+  const setPosts = (value: Post[]) => dispatch(postsActions.addPosts(value));
+  const hasError = useAppSelector(state => state.posts.hasError);
+  const setError = (value: boolean) => dispatch(postsActions.addError(value));
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const setLoaded = (value: boolean) => dispatch(postsActions.addLoad(value));
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
