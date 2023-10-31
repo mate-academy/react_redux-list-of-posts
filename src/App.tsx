@@ -4,22 +4,29 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
+// import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { getUsers } from './api/users';
+import { setUsers } from './features/users';
+import { useAppSelector } from './app/hooks';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  // const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const author = useAppSelector(state => state.author);
+
+  const dispatch = useDispatch();
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -30,6 +37,10 @@ export const App: React.FC = () => {
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
+
+  useEffect(() => {
+    getUsers().then(users => dispatch(setUsers(users as never as User[])));
+  }, []);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -45,15 +56,12 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
