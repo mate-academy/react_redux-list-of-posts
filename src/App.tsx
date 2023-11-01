@@ -4,55 +4,29 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-// import { User } from './types/User';
 import { Post } from './types/Post';
-import { getUsers } from './api/users';
-import { setUsers } from './features/users';
-import { useAppSelector } from './app/hooks';
-import { User } from './types/User';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchUsers } from './features/users';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const author = useAppSelector(state => state.author);
+  const { author, posts } = useAppSelector(state => state);
 
-  const dispatch = useDispatch();
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getUsers().then(users => dispatch(setUsers(users as never as User[])));
+    dispatch(fetchUsers());
   }, []);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
     setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author?.id]);
+  }, [author.authorData?.id]);
 
   return (
     <main className="section">
@@ -65,17 +39,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
+                {!author.authorData && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author.authorData && !posts.loaded && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author.authorData && posts.loaded && posts.hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -84,19 +58,29 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {author.authorData
+                  && posts.loaded
+                  && !posts.hasError
+                  && posts.items.length === 0
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {author.authorData
+                  && posts.loaded
+                  && !posts.hasError
+                  && posts.items.length > 0
+                  && (
+                    <PostsList
+                      selectedPostId={selectedPost?.id}
+                      onPostSelected={setSelectedPost}
+                    />
+                  )}
               </div>
             </div>
           </div>

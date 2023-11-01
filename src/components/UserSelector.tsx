@@ -1,28 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { UserContext } from './UsersContext';
-// import { User } from '../types/User';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/author';
-
-// type Props = {
-//   value: User | null;
-//   onChange: (user: User) => void;
-// };
+import { fetchPosts } from '../features/posts';
 
 export const UserSelector: React.FC = (
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  // value: selectedUser,
-  // onChange,
 ) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
   const { users, author: selectedUser } = useAppSelector(state => state);
   const [expanded, setExpanded] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -62,7 +48,7 @@ export const UserSelector: React.FC = (
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {selectedUser.authorData?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -73,16 +59,16 @@ export const UserSelector: React.FC = (
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.usersList.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                // onChange(user);
                 dispatch(setAuthor(user));
+                dispatch(fetchPosts());
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === selectedUser.authorData?.id,
               })}
             >
               {user.name}

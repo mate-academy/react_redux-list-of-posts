@@ -1,13 +1,22 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
-const initialState: User | null = null;
+type State = {
+  authorData: User | null,
+};
+
+const initialState: State = {
+  authorData: null,
+};
 
 export const authorSlice = createSlice({
   name: 'authorSlice',
   initialState,
   reducers: {
-    setAuthor: (_, action: PayloadAction<User | null>) => action.payload,
+    setAuthor: (state: State, action: PayloadAction<User | null>) => {
+      // eslint-disable-next-line
+      state.authorData = action.payload;
+    },
   },
 });
 
