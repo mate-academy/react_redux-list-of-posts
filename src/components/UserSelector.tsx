@@ -3,10 +3,11 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/author';
 import { fetchPosts } from '../features/posts';
+import { setPost } from '../features/selectedPost';
 
 export const UserSelector: React.FC = (
 ) => {
-  const { users, author: selectedUser } = useAppSelector(state => state);
+  const { users, author } = useAppSelector(state => state);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -48,7 +49,7 @@ export const UserSelector: React.FC = (
           }}
         >
           <span>
-            {selectedUser.authorData?.name || 'Choose a user'}
+            {author.authorData?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -66,9 +67,10 @@ export const UserSelector: React.FC = (
               onClick={() => {
                 dispatch(setAuthor(user));
                 dispatch(fetchPosts());
+                dispatch(setPost(null));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser.authorData?.id,
+                'is-active': user.id === author.authorData?.id,
               })}
             >
               {user.name}

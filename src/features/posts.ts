@@ -4,13 +4,13 @@ import { getPosts } from '../api/posts';
 
 type State = {
   loaded: boolean,
-  hasError: string,
+  hasError: boolean,
   items: Post[],
 };
 
 const initialState: State = {
   loaded: true,
-  hasError: '',
+  hasError: false,
   items: [],
 };
 
@@ -28,7 +28,7 @@ const postsSlice = createSlice({
 
     builder.addCase(fetchPosts.rejected, (state: State) => {
       /* eslint-disable */
-      state.hasError = 'Error';
+      state.hasError = true;
       state.loaded = true;
       /* eslint-enable */
     });
