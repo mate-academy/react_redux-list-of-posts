@@ -23,12 +23,10 @@ export const fetchComments = createAsyncThunk(
   },
 );
 
-export const deleteComment = createAsyncThunk(
-  'deleteComment',
-  async (commentId: number) => {
-    await commentsApi.deleteComment(commentId);
-
-    return commentId;
+export const fetchCommentDeleting = createAsyncThunk(
+  'fetchCommentDeleting',
+  (commentId: number) => {
+    return commentsApi.deleteComment(commentId);
   },
 );
 
@@ -43,7 +41,12 @@ export const createComment = createAsyncThunk(
 const commentsSlice = createSlice({
   name: 'commentsSlice',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteComment: (state: State, action) => {
+      state.commentsList = state.commentsList
+        .filter(comment => comment.id !== action.payload);
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchComments.pending, (state: State) => {
@@ -58,10 +61,6 @@ const commentsSlice = createSlice({
         state.commentsList = action.payload;
         state.loaded = true;
       })
-      .addCase(deleteComment.fulfilled, (state: State, action) => {
-        state.commentsList = state.commentsList
-          .filter(comment => comment.id !== action.payload);
-      })
       .addCase(createComment.pending, (state: State) => {
         state.newCommentSubmiting = true;
       })
@@ -73,3 +72,4 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
+export const { deleteComment } = commentsSlice.actions;

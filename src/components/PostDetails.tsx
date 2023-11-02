@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComment, fetchComments } from '../features/comments';
+import {
+  deleteComment,
+  fetchCommentDeleting,
+  fetchComments,
+} from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -68,7 +72,10 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteComment(comment.id))}
+                    onClick={() => {
+                      dispatch(deleteComment(comment.id));
+                      dispatch(fetchCommentDeleting(comment.id));
+                    }}
                   >
                     delete button
                   </button>
