@@ -42,7 +42,7 @@ export const PostsList: React.FC = () => {
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => handleSelectedPost}
+                  onClick={() => handleSelectedPost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
