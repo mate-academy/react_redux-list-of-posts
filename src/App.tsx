@@ -20,6 +20,7 @@ import {
   selectSelectedPost,
   setPost,
 } from './features/selectedPost/selectedPostSlice';
+import * as commensAPI from './features/comments/commentsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
 
   const setUsers = () => dispatch(fetchUsers());
   const setSelectedPost = (post: Post | null) => dispatch(setPost(post));
+  const clearComments = () => dispatch(commensAPI.clear());
   const setNewAuthor = (newAuthor: User) => {
     setSelectedPost(null);
 
@@ -43,6 +45,7 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    clearComments();
     loadUserPosts();
   }, [author?.id]);
 
