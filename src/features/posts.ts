@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
-import { getPosts } from '../api/posts';
+import { getUserPosts } from '../api/posts';
 
 type State = {
   loaded: boolean,
@@ -14,32 +14,33 @@ const initialState: State = {
   items: [],
 };
 
-export const fetchPosts = createAsyncThunk('fetchPosts', getPosts);
+export const fetchUserPosts = createAsyncThunk(
+  'fetchUserPosts',
+  (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
 
+/* eslint-disable no-param-reassign */
 const postsSlice = createSlice({
   name: 'postsSlice',
   initialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(fetchPosts.pending, (state: State) => {
-      // eslint-disable-next-line
+    builder.addCase(fetchUserPosts.pending, (state: State) => {
       state.loaded = false;
     });
 
-    builder.addCase(fetchPosts.rejected, (state: State) => {
-      /* eslint-disable */
+    builder.addCase(fetchUserPosts.rejected, (state: State) => {
       state.hasError = true;
       state.loaded = true;
-      /* eslint-enable */
     });
 
     builder.addCase(
-      fetchPosts.fulfilled,
+      fetchUserPosts.fulfilled,
       (state: State, action: PayloadAction<Post[]>) => {
-        /* eslint-disable */
         state.items = action.payload;
         state.loaded = true;
-        /* eslint-enable */
       },
     );
   },

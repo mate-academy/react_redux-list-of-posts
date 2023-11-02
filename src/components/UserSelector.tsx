@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/author';
-import { fetchPosts } from '../features/posts';
+import { fetchUserPosts } from '../features/posts';
 import { setPost } from '../features/selectedPost';
 
 export const UserSelector: React.FC = (
@@ -66,7 +66,7 @@ export const UserSelector: React.FC = (
               href={`#user-${user.id}`}
               onClick={() => {
                 dispatch(setAuthor(user));
-                dispatch(fetchPosts());
+                dispatch(fetchUserPosts(user.id));
                 dispatch(setPost(null));
               }}
               className={classNames('dropdown-item', {

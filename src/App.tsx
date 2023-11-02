@@ -13,8 +13,8 @@ import { fetchUsers } from './features/users';
 
 export const App: React.FC = () => {
   const { author, posts, selectedPost } = useAppSelector(state => state);
-
   const dispatch = useAppDispatch();
+  const arePostsShown = author.authorData && posts.loaded && !posts.hasError;
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -50,26 +50,16 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author.authorData
-                  && posts.loaded
-                  && !posts.hasError
-                  && posts.items.length === 0
-                  && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {arePostsShown && posts.items.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                {author.authorData
-                  && posts.loaded
-                  && !posts.hasError
-                  && posts.items.length > 0
-                  && (
-                    <PostsList />
-                  )}
+                {arePostsShown && posts.items.length > 0 && <PostsList />}
               </div>
             </div>
           </div>
@@ -87,9 +77,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost.postData && (
-                <PostDetails post={selectedPost.postData} />
-              )}
+              {selectedPost.postData && <PostDetails />}
             </div>
           </div>
         </div>
