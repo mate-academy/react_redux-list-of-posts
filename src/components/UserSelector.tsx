@@ -70,9 +70,7 @@ export const UserSelector = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                setAuthor(user);
-              }}
+              onClick={() => setAuthor(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
