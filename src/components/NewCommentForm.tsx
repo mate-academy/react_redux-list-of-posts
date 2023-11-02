@@ -7,7 +7,7 @@ export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
     comments: { newCommentSubmiting: submitting },
-    selectedPost: { postData: post },
+    posts: { selectedPost },
   } = useAppSelector(state => state);
 
   const [errors, setErrors] = useState({
@@ -54,7 +54,7 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body || !post) {
+    if (!name || !email || !body || !selectedPost) {
       return;
     }
 
@@ -62,7 +62,7 @@ export const NewCommentForm: React.FC = () => {
       name,
       email,
       body,
-      postId: post.id,
+      postId: selectedPost.id,
     };
 
     await dispatch(createComment(commentData));

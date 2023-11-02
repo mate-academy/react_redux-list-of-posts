@@ -10,28 +10,29 @@ import {
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const { selectedPost, comments } = useAppSelector(state => state);
-  const { postData: post } = selectedPost;
-  const { loaded, hasError, commentsList } = comments;
   const dispatch = useAppDispatch();
+  const {
+    posts: { selectedPost },
+    comments: { loaded, hasError, commentsList },
+  } = useAppSelector(state => state);
 
   useEffect(() => {
-    if (post) {
-      dispatch(fetchComments(post.id));
+    if (selectedPost) {
+      dispatch(fetchComments(selectedPost.id));
     }
 
     setVisible(false);
-  }, [post?.id]);
+  }, [selectedPost?.id]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post?.id}: ${post?.title}`}
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post?.body}
+          {selectedPost?.body}
         </p>
       </div>
 

@@ -12,9 +12,9 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/users';
 
 export const App: React.FC = () => {
-  const { author, posts, selectedPost } = useAppSelector(state => state);
+  const { users: { selectedUser }, posts } = useAppSelector(state => state);
   const dispatch = useAppDispatch();
-  const arePostsShown = author.authorData && posts.loaded && !posts.hasError;
+  const arePostsShown = selectedUser && posts.loaded && !posts.hasError;
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -31,17 +31,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author.authorData && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {author.authorData && !posts.loaded && (
+                {selectedUser && !posts.loaded && (
                   <Loader />
                 )}
 
-                {author.authorData && posts.loaded && posts.hasError && (
+                {selectedUser && posts.loaded && posts.hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -72,12 +72,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost.postData,
+                'Sidebar--open': posts.selectedPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost.postData && <PostDetails />}
+              {posts.selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

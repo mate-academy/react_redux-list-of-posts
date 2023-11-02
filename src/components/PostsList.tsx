@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setPost } from '../features/selectedPost';
+import { setPost } from '../features/posts';
 
 export const PostsList: React.FC = () => {
-  const { posts, selectedPost } = useAppSelector(state => state);
+  const { posts, posts: { selectedPost } } = useAppSelector(state => state);
   const dispatch = useAppDispatch();
 
   return (
@@ -33,16 +33,16 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost.postData?.id,
+                      'is-light': post.id !== selectedPost?.id,
                     },
                   )}
                   onClick={() => {
                     dispatch(setPost(
-                      post.id === selectedPost.postData?.id ? null : post,
+                      post.id === selectedPost?.id ? null : post,
                     ));
                   }}
                 >
-                  {post.id === selectedPost.postData?.id ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
