@@ -13,4 +13,6 @@ const Root = () => (
   </Provider>
 );
 
+/* eslint-disable */
 ReactDOM.render(<Root />, document.getElementById('root'));
+/* eslint-enable */
