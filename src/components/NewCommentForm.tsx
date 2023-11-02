@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
+const emailRegEx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 type Props = {
   onSubmit: (data: Omit<CommentData, 'postId'>) => Promise<unknown>;
 };
@@ -46,20 +48,31 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const newName = name.trim();
+    const newEmail = email.trim();
+    const newBody = body.trim();
+
+    const nameError = !newName;
+    const emailError = !newEmail || !emailRegEx.test(newEmail);
+    const bodyError = !newBody;
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: nameError,
+      email: emailError,
+      body: bodyError,
     });
 
-    if (!name || !email || !body) {
+    if (nameError || emailError || bodyError) {
       return;
     }
 
     setSubmitting(true);
 
-    await onSubmit({ name, email, body });
+    await onSubmit({
+      name: newName,
+      email: newEmail,
+      body: newBody,
+    });
 
     setSubmitting(false);
     setValues((current) => ({ ...current, body: '' }));
@@ -136,7 +149,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            Email is incorrect
           </p>
         )}
       </div>
