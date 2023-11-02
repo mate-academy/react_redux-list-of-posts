@@ -15,6 +15,8 @@ export const PostDetails: React.FC = () => {
     if (post) {
       dispatch(fetchComments(post.id));
     }
+
+    setVisible(false);
   }, [post?.id]);
 
   return (
