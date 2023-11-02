@@ -3,9 +3,9 @@ import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
+  posts: Post[];
+  selectedPostId?: number;
+  onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -26,7 +26,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
+        {posts.map((post) => (
           <tr key={post.id} data-cy="Post">
             <td data-cy="PostId">{post.id}</td>
             <td data-cy="PostTitle">{post.title}</td>
@@ -34,13 +34,9 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 data-cy="PostButton"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
+                className={classNames('button', 'is-link', {
+                  'is-light': post.id !== selectedPostId,
+                })}
                 onClick={() => {
                   onPostSelected(post.id === selectedPostId ? null : post);
                 }}
