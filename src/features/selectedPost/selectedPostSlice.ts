@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 
 export interface SelectedPostState {

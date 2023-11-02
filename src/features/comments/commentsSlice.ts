@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import * as CommentsAPI from '../../api/comments';
 import { Comment, CommentData } from '../../types/Comment';
 

@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
