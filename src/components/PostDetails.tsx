@@ -8,7 +8,7 @@ import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   addComments,
-  initComments,
+  fetchComments,
   removeComment,
   setCommentsError,
 } from '../features/comments';
@@ -26,7 +26,7 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
 
     if (post) {
-      dispatch(initComments(post.id));
+      dispatch(fetchComments(post.id));
     }
   }
 

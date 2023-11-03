@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
-export const init = createAsyncThunk('posts/fetch', (userId: number) => {
+export const getPosts = createAsyncThunk('posts/fetch', (userId: number) => {
   return getUserPosts(userId);
 });
 
@@ -28,18 +28,18 @@ export const postsSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(getPosts.pending, (state) => {
       state.loading = true;
       state.error = false;
     });
 
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(getPosts.fulfilled, (state, action) => {
       state.posts = action.payload;
       state.loading = false;
       state.error = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(getPosts.rejected, (state) => {
       state.loading = false;
       state.error = true;
     });

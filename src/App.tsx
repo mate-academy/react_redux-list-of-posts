@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { clearPosts, init } from './features/posts';
+import { clearPosts, getPosts } from './features/posts';
 import { clearSelectedPost } from './features/selectedPost';
 import { clearAllComments } from './features/comments';
 
@@ -22,7 +22,7 @@ export const App: React.FC = () => {
 
   function loadUserPosts(userId: number) {
     dispatch(clearPosts);
-    dispatch(init(userId));
+    dispatch(getPosts(userId));
   }
 
   useEffect(() => {
