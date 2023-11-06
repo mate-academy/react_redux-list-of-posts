@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../../app/store';
 import * as commentsApi from '../../api/comments';
-import { Comment, CommentData } from '../../types/Comment';
+import { Comment } from '../../types/Comment';
 
 export interface CommentsState {
   value: Comment[];
@@ -26,12 +26,17 @@ export const loadComments = createAsyncThunk(
 
 export const addComment = createAsyncThunk(
   'comments/addComment',
-  async ({ name, email, body }: CommentData) => {
+  async ({
+    name,
+    email,
+    body,
+    postId,
+  }: Omit<Comment, 'id'>) => {
     const newComment = await commentsApi.createComment({
       name,
       email,
       body,
-      postId: post.id,
+      postId,
     });
 
     return newComment;
@@ -41,18 +46,16 @@ export const addComment = createAsyncThunk(
 export const deleteComment = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number) => {
-    const newComment = await commentsApi.deleteComment(commentId);
+    await commentsApi.deleteComment(commentId);
 
-    return newComment;
+    return commentId;
   },
 );
 
 export const counterSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment__: () => {},
-  },
+  reducers: {},
 
   extraReducers: (builder) => {
     builder
@@ -78,8 +81,11 @@ export const counterSlice = createSlice({
         state.status = 'failed';
       })
 
-      .addCase(deleteComment.fulfilled, (state) => {
+      .addCase(deleteComment.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.value = state.value.filter(
+          comment => comment.id !== action.payload,
+        );
       });
   },
 });
