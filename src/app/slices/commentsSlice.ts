@@ -77,7 +77,6 @@ const commentSlice = createSlice({
       .addCase(deleteComments.fulfilled, (state, action) => {
         return {
           ...state,
-          isLoaded: false,
           comments: state.comments
             .filter((comment) => comment.id !== action.payload),
         };
