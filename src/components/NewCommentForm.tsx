@@ -1,9 +1,16 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
+
 import { CommentData } from '../types/Comment';
 
+const EMAIL_REGEX = new RegExp([
+  '^(([^<>()[\\]\\.,;:\\s@"]+(\\.[^<>()[\\]\\.,;:\\s@"]+)*)|(".+"))',
+  '@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])',
+  '|([a-zA-Z\\-0-9]+\\.[a-zA-Z]{2,}))$',
+].join(''));
+
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: CommentData) => Promise<unknown>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
@@ -20,6 +27,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: '',
     body: '',
   });
+
+  const validateEmail = (userEmail: string) => {
+    return EMAIL_REGEX.test(userEmail.toLowerCase());
+  };
 
   const clearForm = () => {
     setValues({
@@ -47,29 +58,34 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const isNameValid = name.trim().length > 0;
+    const isEmailValid = validateEmail(email);
+    const isBodyValid = body.trim().length > 0;
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !isNameValid,
+      email: !isEmailValid,
+      body: !isBodyValid,
     });
 
-    if (!name || !email || !body) {
+    if (!isNameValid || !isEmailValid || !isBodyValid) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -102,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
+            Name is required and should be not empty
           </p>
         )}
       </div>
@@ -139,7 +155,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            Valid email is required
           </p>
         )}
       </div>
