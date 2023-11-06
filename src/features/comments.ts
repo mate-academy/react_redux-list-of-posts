@@ -35,6 +35,15 @@ export const removeComment = createAsyncThunk(
   },
 );
 
+export const clearComments = createAsyncThunk(
+  'comments/clearComments',
+  async (postId: number) => {
+    await clearComments(postId);
+
+    return postId;
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
@@ -67,6 +76,12 @@ export const commentsSlice = createSlice({
       return {
         ...state,
         items: state.items.filter(comment => comment.id !== action.payload),
+      };
+    });
+    builder.addCase(clearComments.fulfilled, (state) => {
+      return {
+        ...state,
+        items: [],
       };
     });
   },
