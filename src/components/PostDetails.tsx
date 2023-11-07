@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+
 import * as commentsApi from '../api/comments';
+
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  addComments, fetchComments,
-  removeComment, setCommentsError,
+  addComments,
+  fetchComments,
+  removeComment,
+  setCommentsError,
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const { comments, loading, error } = useAppSelector(state => state.comments);
+
   const post = useAppSelector(state => state.selectedPost);
+
   const dispatch = useAppDispatch();
 
   const [visible, setVisible] = useState(false);

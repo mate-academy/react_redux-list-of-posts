@@ -26,8 +26,8 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    dispatch(clearSelectedPost);
-    dispatch(clearAllComments);
+    dispatch(clearSelectedPost());
+    dispatch(clearAllComments());
 
     if (author) {
       loadUserPosts(author.id);
