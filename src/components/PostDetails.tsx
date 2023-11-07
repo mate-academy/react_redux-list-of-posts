@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -6,16 +6,33 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addComments,
+  addError,
+  addLoaded,
+  addVissible,
+  removeComment,
+  setComment,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    comments,
+    loaded,
+    hasError,
+    visible,
+  } = useAppSelector(state => state.comments);
+
+  const setLoaded = (value: boolean) => dispatch(addLoaded(value));
+  const setError = (value: boolean) => dispatch(addError(value));
+  const setVisible = (value: boolean) => dispatch(addVissible(value));
+  const setComments = (value: Comment[]) => dispatch(addComments(value));
 
   function loadComments() {
     setLoaded(false);
@@ -65,9 +82,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      dispatch(setComment(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,11 +97,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
+    dispatch(removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
