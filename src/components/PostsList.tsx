@@ -13,7 +13,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId = 0,
   onPostSelected,
 }) => (
-  <div data-cy="PostsList">
+  <div data-cy="PostsList" className="postsList">
     <p className="title">Posts:</p>
 
     <table className="table is-fullwidth is-striped is-hoverable is-narrow">
