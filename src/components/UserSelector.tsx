@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions } from '../features/author';
+import { actions as authorActions } from '../features/author';
+import { actions } from '../features/selectedPost';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -15,10 +16,7 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -28,12 +26,11 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
   }, [expanded]);
 
   const handleAuthor = (user: User) => {
-    dispatch(actions.setAuthor(user));
+    dispatch(authorActions.setAuthor(user));
+    dispatch(actions.setPost(null));
   };
 
   return (

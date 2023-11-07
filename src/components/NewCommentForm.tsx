@@ -3,6 +3,16 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addCommentToServer } from '../features/comments';
 
+function emptyField(value: string) {
+  const removeSpace = value.replaceAll(' ', '');
+
+  if (removeSpace.length === 0) {
+    return '';
+  }
+
+  return value;
+}
+
 export const NewCommentForm: React.FC = () => {
   const { submitting } = useAppSelector(state => state.comments);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
@@ -38,7 +48,7 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({ ...current, [field]: emptyField(value) }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
