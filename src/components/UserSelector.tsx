@@ -3,7 +3,8 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as authorActions } from '../features/author';
-import { actions } from '../features/selectedPost';
+import { actions as selectedPostActions } from '../features/selectedPost';
+import { actions as commentsActions } from '../features/comments';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -30,7 +31,8 @@ export const UserSelector: React.FC = () => {
 
   const handleAuthor = (user: User) => {
     dispatch(authorActions.setAuthor(user));
-    dispatch(actions.setPost(null));
+    dispatch(selectedPostActions.setPost(null));
+    dispatch(commentsActions.clearState());
   };
 
   return (
