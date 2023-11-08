@@ -53,7 +53,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    const emailValidation = new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}');
+
+    if (!emailValidation.test(email)) {
+      setErrors({
+        name: !name,
+        email: true,
+        body: !body,
+      });
+    }
+
+    if (!name || !emailValidation.test(email) || !body) {
       return;
     }
 
