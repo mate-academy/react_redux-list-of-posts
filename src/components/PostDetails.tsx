@@ -10,6 +10,7 @@ import {
   addComments,
   fetchComment,
   removeComment,
+  setCommentError,
 } from '../features/commentSlice';
 
 export const PostDetails = () => {
@@ -41,10 +42,8 @@ export const PostDetails = () => {
       });
 
       dispatch(addComments(newComment));
-    // eslint-disable-next-line
-    } catch (error) {
-      // eslint-disable-next-line
-      console.log(error);
+    } catch (isError) {
+      dispatch(setCommentError)
     }
   };
 

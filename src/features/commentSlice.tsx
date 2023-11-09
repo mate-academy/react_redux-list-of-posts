@@ -40,7 +40,7 @@ const postsSlice = createSlice({
       state.error = true;
     },
 
-    clearComment: (state) => {
+    clearAllComment: (state) => {
       state.comments = [];
       state.error = false;
       state.loading = false;
@@ -67,6 +67,6 @@ export const {
   addComments,
   removeComment,
   setCommentError,
-  clearComment,
+  clearAllComment,
 } = postsSlice.actions;
 export default postsSlice.reducer;
