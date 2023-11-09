@@ -33,7 +33,8 @@ const postsSlice = createSlice({
     },
 
     removeComment: (state, action) => {
-      state.comments.filter(comment => comment.id !== action.payload);
+      state.comments = state.comments
+        .filter(comment => comment.id !== action.payload);
     },
 
     setCommentError: (state) => {

@@ -38,12 +38,12 @@ export const PostDetails = () => {
         name,
         email,
         body,
-        postId: post ? post.id : 0,
+        postId: post?.id || 0,
       });
 
       dispatch(addComments(newComment));
     } catch (isError) {
-      dispatch(setCommentError)
+      dispatch(setCommentError);
     }
   };
 
