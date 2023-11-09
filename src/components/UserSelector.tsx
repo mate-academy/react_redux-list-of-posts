@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';

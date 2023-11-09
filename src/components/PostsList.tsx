@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPostSlice';
