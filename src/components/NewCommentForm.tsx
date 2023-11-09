@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import React, { useState } from "react";
-import { CommentData } from "../types/Comment";
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { CommentData } from '../types/Comment';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -16,16 +16,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const [{ name, email, body }, setValues] = useState({
-    name: "",
-    email: "",
-    body: "",
+    name: '',
+    email: '',
+    body: '',
   });
 
   const clearForm = () => {
     setValues({
-      name: "",
-      email: "",
-      body: "",
+      name: '',
+      email: '',
+      body: '',
     });
 
     setErrors({
@@ -36,7 +36,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
@@ -70,7 +70,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues((current) => ({ ...current, body: "" }));
+    setValues((current) => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
 
@@ -87,7 +87,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames("input", { "is-danger": errors.name })}
+            className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -124,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames("input", { "is-danger": errors.email })}
+            className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -160,7 +160,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames("textarea", { "is-danger": errors.body })}
+            className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
@@ -177,8 +177,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames("button", "is-link", {
-              "is-loading": submitting,
+            className={classNames('button', 'is-link', {
+              'is-loading': submitting,
             })}
           >
             Add

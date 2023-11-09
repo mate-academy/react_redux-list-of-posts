@@ -1,13 +1,11 @@
 /* eslint-disable import/no-cycle */
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import postReducer from '../features/post/postSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     users: usersReducer,
     author: authorReducer,
     post: postReducer,

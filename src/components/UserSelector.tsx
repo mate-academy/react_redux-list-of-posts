@@ -56,12 +56,10 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            setExpanded(current => !current);
+            setExpanded((current) => !current);
           }}
         >
-          <span>
-            {selectedUser?.name || 'Choose a user'}
-          </span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -71,20 +69,24 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                handleUserSelect(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {users.map((user) => {
+            const { id, name } = user;
+
+            return (
+              <a
+                key={id}
+                href={`#user-${id}`}
+                onClick={() => {
+                  handleUserSelect(user);
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': id === selectedUser?.id,
+                })}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
