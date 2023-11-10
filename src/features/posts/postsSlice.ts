@@ -2,29 +2,29 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as commentsApi from '../../api/comments';
 import { Comment } from '../../types/Comment';
-// import { RootState } from '../../app/store';
+import { Post } from '../../types/Post';
 
-export interface CommentsState {
-  value: Comment[];
+export interface PostsState {
+  value: Post[];
   status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: CommentsState = {
+const initialState: PostsState = {
   value: [],
   status: 'idle',
 };
 
-export const loadComments = createAsyncThunk(
-  'comments/fetchComments',
+export const loadPosts = createAsyncThunk(
+  'posts/fetchPosts',
   async (id: number) => {
-    const value = await commentsApi.getPostComments(id);
+    const value = await postsApi.getPostComments(id);
 
     return value;
   },
 );
 
-export const addComment = createAsyncThunk(
-  'comments/addComment',
+export const addPost = createAsyncThunk(
+  'posts/addPost',
   async ({
     name,
     email,
@@ -42,8 +42,8 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const deleteComment = createAsyncThunk(
-  'comments/deleteComment',
+export const deletePost = createAsyncThunk(
+  'posts/deletePost',
   async (commentId: number) => {
     await commentsApi.deleteComment(commentId);
 
@@ -51,36 +51,36 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-export const commentsSlice = createSlice({
+export const postsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {},
 
   extraReducers: (builder) => {
     builder
-      .addCase(loadComments.pending, (state) => {
+      .addCase(loadPosts.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(loadComments.fulfilled, (state, action) => {
+      .addCase(loadPosts.fulfilled, (state, action) => {
         state.status = 'idle';
         state.value = [...state.value, ...action.payload];
       })
-      .addCase(loadComments.rejected, (state) => {
+      .addCase(loadPosts.rejected, (state) => {
         state.status = 'failed';
       })
 
-      .addCase(addComment.fulfilled, (state, action) => {
+      .addCase(addPost.fulfilled, (state, action) => {
         state.status = 'idle';
         state.value.push(action.payload);
       })
-      .addCase(addComment.pending, (state) => {
+      .addCase(addPost.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(addComment.rejected, (state) => {
+      .addCase(addPost.rejected, (state) => {
         state.status = 'failed';
       })
 
-      .addCase(deleteComment.fulfilled, (state, action) => {
+      .addCase(deletePost.fulfilled, (state, action) => {
         state.status = 'idle';
         state.value = state.value.filter(
           comment => comment.id !== action.payload,
@@ -88,5 +88,3 @@ export const commentsSlice = createSlice({
       });
   },
 });
-
-// export default ;
