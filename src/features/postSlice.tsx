@@ -41,6 +41,7 @@ const postsSlice = createSlice({
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.posts = action.payload;
       state.loading = false;
+      state.error = false;
     });
 
     builder.addCase(fetchPosts.rejected, (state) => {

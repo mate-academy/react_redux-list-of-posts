@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/usersSlice';
-import { Loader } from './Loader';
 import { setAuthor } from '../features/autorSlice';
 
 export const UserSelector = () => {
-  const { users, loading, error } = useAppSelector(state => state.users);
+  const { users, error } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
   const selectedUser = useAppSelector(state => state.author);
@@ -64,28 +63,24 @@ export const UserSelector = () => {
         </button>
       </div>
 
-      { loading
-        ? (<Loader />)
-        : (
-          <div className="dropdown-menu" id="dropdown-menu" role="menu">
-            <div className="dropdown-content">
-              {users.map(user => (
-                <a
-                  key={user.id}
-                  href={`#user-${user.id}`}
-                  onClick={() => {
-                    dispatch(setAuthor(user));
-                  }}
-                  className={classNames('dropdown-item', {
-                    'is-active': user.id === selectedUser?.id,
-                  })}
-                >
-                  {user.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              onClick={() => {
+                dispatch(setAuthor(user));
+              }}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+            >
+              {user.name}
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
