@@ -75,6 +75,15 @@ export const commentsSlice = createSlice({
     builder.addCase(getCommentsAsync.pending, (state) => {
       state.status = 'loading';
     });
+    builder.addCase(deleteCommentAsync.fulfilled, (state, action) => {
+      state.comments = state.comments.filter(
+        comment => comment.id !== action.payload,
+      );
+    });
+    builder.addCase(deleteCommentAsync.rejected, () => {
+      // eslint-disable-next-line no-console
+      console.log('Error deleting comment:');
+    });
   },
 });
 
