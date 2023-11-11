@@ -82,6 +82,8 @@ export const commentsSlice = createSlice({
 
       .addCase(deleteComment.fulfilled, (state, action) => {
         state.status = 'idle';
+        // eslint-disable-next-line no-console
+        console.log(action.payload);
         state.value = state.value.filter(
           comment => comment.id !== action.payload,
         );
