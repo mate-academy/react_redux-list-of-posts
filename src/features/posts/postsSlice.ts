@@ -25,7 +25,11 @@ export const loadUserPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteUserPosts: (state) => {
+      state.value = [];
+    },
+  },
 
   extraReducers: (builder) => {
     builder
@@ -34,12 +38,14 @@ export const postsSlice = createSlice({
       })
       .addCase(loadUserPosts.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.value = [...state.value, ...action.payload];
+        state.value = [...action.payload];
       })
       .addCase(loadUserPosts.rejected, (state) => {
         state.status = 'failed';
       });
   },
 });
+
+export const { deleteUserPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

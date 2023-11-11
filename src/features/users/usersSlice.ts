@@ -2,14 +2,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as usersApi from '../../api/users';
 import { User } from '../../types/User';
-// import { RootState } from '../../app/store';
 
-export interface CommentsState {
+export interface UsersState {
   value: User[];
   status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: CommentsState = {
+const initialState: UsersState = {
   value: [],
   status: 'idle',
 };
@@ -24,7 +23,7 @@ export const loadUsers = createAsyncThunk(
 );
 
 export const usersSlice = createSlice({
-  name: 'comments',
+  name: 'users',
   initialState,
   reducers: {},
 

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-// import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-// import { Comment, CommentData } from '../types/Comment';
 
 import {
   loadComments,
@@ -22,10 +17,8 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
-  // const comments = useAppSelector<Comment[]>(state => state.comments);
   const comments = useAppSelector(state => state.comments.value);
   const status = useAppSelector(state => state.comments.status);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -91,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(deleteComment(comment.id))}
                   >
                     delete button
                   </button>
