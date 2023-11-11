@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   // const comments = useAppSelector<Comment[]>(state => state.comments);
   const comments = useAppSelector(state => state.comments.value);
+  const status = useAppSelector(state => state.comments.status);
 
   const dispatch = useAppDispatch();
 
@@ -54,23 +55,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && (
+        {status === 'loading' && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {status === 'failed' && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {status === 'idle' && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {status === 'idle' && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -104,7 +105,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {status === 'idle' && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -115,7 +116,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {status === 'idle' && visible && (
           <NewCommentForm onSubmit={handleAddingComment} />
         )}
       </div>
