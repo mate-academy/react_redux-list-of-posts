@@ -82,7 +82,7 @@ export const commentsSlice = createSlice({
     });
     builder.addCase(deleteCommentAsync.rejected, () => {
       // eslint-disable-next-line no-console
-      console.log('Error deleting');
+      console.log('Error deleting comment:');
     });
   },
 });

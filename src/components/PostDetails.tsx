@@ -9,6 +9,7 @@ import {
   addCommentAsync,
   deleteCommentAsync,
   getCommentsAsync,
+  removeComment,
 } from '../features/posts/coments';
 
 type Props = {
@@ -43,7 +44,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(deleteCommentAsync(commentId));
+    try {
+      await dispatch(deleteCommentAsync(commentId));
+      dispatch(removeComment(commentId));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error ');
+    }
   };
 
   return (
