@@ -3,21 +3,25 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setUsers } from '../features/users/usersAPI';
+import { setAuthor } from '../features/author/authorSlice';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
+  // onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
   value: selectedUser,
-  onChange,
 }) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users.users);
   const [expanded, setExpanded] = useState(false);
+
+  const handleUserSelect = (user: User) => {
+    dispatch(setAuthor(user));
+  };
 
   useEffect(() => {
     if (!expanded) {
@@ -77,7 +81,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                handleUserSelect(user);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

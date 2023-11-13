@@ -5,12 +5,14 @@ import { setPosts } from './postsAPI';
 
 export interface PostsState {
   items: Post[],
+  selected: Post | null,
   loaded: boolean,
   hasError: boolean,
 }
 
 export const initialState: PostsState = {
   items: [],
+  selected: null,
   loaded: false,
   hasError: false,
 };
@@ -19,6 +21,16 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
+    selectPost(state, { payload }) {
+      const selected = state.items.find(({ id }) => id === payload);
+
+      if (selected) {
+        state.selected = selected;
+      }
+    },
+    clearSelectedPost(state) {
+      state.selected = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -37,3 +49,5 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+
+export const { selectPost, clearSelectedPost } = postsSlice.actions;
