@@ -36,6 +36,12 @@ export const commentsSlice = createSlice({
         return comment.id !== action.payload;
       });
     },
+    setStatus: (
+      state,
+      action: PayloadAction<'idle' | 'loading' | 'failed'>,
+    ) => {
+      state.status = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPostComments.pending, (state) => {
@@ -51,10 +57,10 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const commentsSelector = (state: RootState) => state.comments.comments;
-export const commentsStatusSelector = (state: RootState) => {
-  return state.comments.status;
-};
+export const commentsSelector = (state: RootState) => state.comments;
+// export const commentsStatusSelector = (state: RootState) => {
+//   return state.comments.status;
+// };
 
-export const { addComment, deleteComment } = commentsSlice.actions;
+export const { addComment, deleteComment, setStatus } = commentsSlice.actions;
 export default commentsSlice.reducer;

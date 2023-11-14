@@ -11,8 +11,7 @@ import {
   addComment,
   deleteComment,
   commentsSelector,
-  commentsStatusSelector,
-  fetchPostComments,
+  fetchPostComments, setStatus,
 } from '../slices/comments';
 
 type Props = {
@@ -20,12 +19,9 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const comments = useAppSelector(commentsSelector);
-  const status = useAppSelector(commentsStatusSelector);
+  const { comments, status } = useAppSelector(commentsSelector);
   const dispatch = useAppDispatch();
 
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
@@ -39,7 +35,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       dispatch(addComment(newComment));
     } catch (error) {
-      setError(true);
+      dispatch(setStatus('failed'));
     }
   };
 
@@ -48,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       dispatch(deleteComment(commentId));
       await commentsApi.deleteComment(commentId);
     } catch (e) {
-      setError(true);
+      dispatch(setStatus('failed'));
     }
   };
 
@@ -56,23 +52,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(fetchPostComments(post.id));
     setVisible(false);
   }, [post.id]);
-
-  useEffect(() => {
-    switch (status) {
-      case 'failed':
-        setError(true);
-        setLoaded(true);
-        break;
-      case 'loading':
-        setError(false);
-        setLoaded(false);
-        break;
-      default:
-        setError(false);
-        setLoaded(true);
-        break;
-    }
-  }, [status]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -87,23 +66,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && !hasError && (
+        {status === 'loading' && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {status === 'failed' && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {status === 'idle' && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {status === 'idle' && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -137,7 +116,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {status === 'idle' && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -148,7 +127,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {status === 'idle' && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>

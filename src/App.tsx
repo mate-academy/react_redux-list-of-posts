@@ -10,20 +10,18 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { authorSelector, selectUser } from './slices/users';
+import { selectUser, usersSelector } from './slices/users';
 import { User } from './types/User';
 import {
   clearPost,
   fetchUserPosts,
   postsSelector,
-  postsStatusSelector, selectedPostSelector, selectPost,
+  selectPost,
 } from './slices/posts';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(authorSelector);
-  const posts = useAppSelector(postsSelector);
-  const status = useAppSelector(postsStatusSelector);
-  const selectedPost = useAppSelector(selectedPostSelector);
+  const { selectedUser: author } = useAppSelector(usersSelector);
+  const { posts, selectedPost, status } = useAppSelector(postsSelector);
 
   const dispatch = useAppDispatch();
 

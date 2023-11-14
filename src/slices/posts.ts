@@ -56,11 +56,7 @@ export const postsSlice = createSlice({
   },
 });
 
-export const postsSelector = (state: RootState) => state.posts.posts;
-export const postsStatusSelector = (state: RootState) => state.posts.status;
-export const selectedPostSelector = (state: RootState) => {
-  return state.posts.selectedPost;
-};
+export const postsSelector = (state: RootState) => state.posts;
 
 export const { selectPost, clearPost } = postsSlice.actions;
 export default postsSlice.reducer;
