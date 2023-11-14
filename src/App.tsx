@@ -9,7 +9,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setAuthor } from './features/author';
 import { fetchPosts, resetPosts } from './features/posts';
 import { resetSelectedPost, setSelectedPost } from './features/selectedPost';
 
@@ -43,7 +42,6 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   value={author}
-                  onChange={(user) => dispatch(setAuthor(user))}
                 />
               </div>
 

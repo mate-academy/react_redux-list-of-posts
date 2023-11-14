@@ -3,15 +3,15 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/users';
+import { setAuthor } from '../features/author';
+import { clearComments } from '../features/comments';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
-  onChange,
 }) => {
   const { users } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
@@ -38,6 +38,11 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
+
+  const handleUserSelect = (user: User) => {
+    dispatch(setAuthor(user));
+    dispatch(clearComments());
+  };
 
   return (
     <div
@@ -70,9 +75,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={() => handleUserSelect(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
