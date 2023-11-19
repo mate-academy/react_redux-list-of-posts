@@ -32,7 +32,7 @@ const commentsSlice = createSlice({
     addComment: (state, action) => {
       state.items.push(action.payload);
     },
-    deleteComment: (state, { payload }) => {
+    removeComment: (state, { payload }) => {
       state.items = state.items.filter(({ id }) => id !== payload);
     },
   },
@@ -54,5 +54,5 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { setComments, addComment, deleteComment } = commentsSlice.actions;
+export const { setComments, addComment, removeComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

@@ -3,11 +3,12 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  addComment, deleteComment,
+  addComment,
   fetchComments,
+  removeComment,
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -27,7 +28,7 @@ export const PostDetails: React.FC = () => {
 
   useEffect(loadComments, [post?.id]);
 
-  const addCommen = async ({ name, email, body }: CommentData) => {
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
     if (post?.id !== undefined) {
       const newComment = await commentsApi.createComment({
         name,
@@ -40,8 +41,8 @@ export const PostDetails: React.FC = () => {
     }
   };
 
-  const deleteCommen = async (commentId: number) => {
-    dispatch(deleteComment(commentId));
+  const handleDeleteComment = async (commentId: number) => {
+    dispatch(removeComment(commentId));
     await commentsApi.deleteComment(commentId);
   };
 
@@ -78,15 +79,17 @@ export const PostDetails: React.FC = () => {
           <>
             <p className="title is-4">Comments:</p>
 
-            {items.map((item: Comment) => (
+            {items.map(({
+              id, email, name, body,
+            }) => (
               <article
                 className="message is-small"
-                key={item.id}
+                key={id}
                 data-cy="Comment"
               >
                 <div className="message-header">
-                  <a href={`mailto:${item.email}`} data-cy="CommentAuthor">
-                    {item.name}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
                   </a>
 
                   <button
@@ -94,14 +97,14 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteCommen(item.id)}
+                    onClick={() => handleDeleteComment(id)}
                   >
                     delete button
                   </button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {item.body}
+                  {body}
                 </div>
               </article>
             ))}
@@ -120,7 +123,7 @@ export const PostDetails: React.FC = () => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addCommen} />
+          <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
     </div>
