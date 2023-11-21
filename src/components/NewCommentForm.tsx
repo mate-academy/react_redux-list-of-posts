@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
