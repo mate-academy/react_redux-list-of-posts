@@ -34,12 +34,12 @@ const commentsSlice = createSlice({
     },
     removeComment: (state, { payload }) => {
       state.items = state.items
-        .filter(({ commentId }) => commentId !== payload);
+        .filter(({ id }) => id !== payload);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchComments.pending, (state) => {
-      state.loaded = true;
+      state.loaded = false;
     });
 
     builder.addCase(fetchComments.fulfilled, (state, { payload }) => {
@@ -49,7 +49,7 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(fetchComments.rejected, (state) => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
   },

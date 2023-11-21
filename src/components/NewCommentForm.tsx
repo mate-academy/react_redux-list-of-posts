@@ -12,26 +12,26 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [errors, setErrors] = useState({
     name: false,
     email: false,
-    commentBody: false,
+    body: false,
   });
 
-  const [{ name, email, commentBody }, setValues] = useState({
+  const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
-    commentBody: '',
+    body: '',
   });
 
   const clearForm = () => {
     setValues({
       name: '',
       email: '',
-      commentBody: '',
+      body: '',
     });
 
     setErrors({
       name: false,
       email: false,
-      commentBody: false,
+      body: false,
     });
   };
 
@@ -50,22 +50,22 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors({
       name: !name.trim(),
       email: !email.trim(),
-      commentBody: !commentBody.trim(),
+      body: !body.trim(),
     });
 
-    if (!name.trim() || !email.trim() || !commentBody.trim()) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, commentBody });
+    await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({
-      ...current, name: '', email: '', commentBody: '',
+      ...current, body: '',
     }));
     // We keep the entered name and email
   };
@@ -157,14 +157,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="body"
             placeholder="Type comment here"
             className={
-              classNames('textarea', { 'is-danger': errors.commentBody })
+              classNames('textarea', { 'is-danger': errors.body })
             }
-            value={commentBody}
+            value={body}
             onChange={handleChange}
           />
         </div>
 
-        {errors.commentBody && (
+        {errors.body && (
           <p
             className="help is-danger"
             data-cy="ErrorMessage"

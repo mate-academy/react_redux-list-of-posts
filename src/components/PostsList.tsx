@@ -6,10 +6,10 @@ import { Post } from '../types/Post';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.items);
-  const selectedPost
-    = useAppSelector(state => state.selectedPost.selectedPost as Post);
+  const selectedPostId
+    = useAppSelector(state => state.selectedPost.selectedPost?.id);
   const handleChangeSelectedPost = (post: Post) => {
-    if (post.id !== selectedPost.id) {
+    if (post.id !== selectedPostId) {
       dispatch(setSelectedPost(post));
     } else {
       dispatch(clearSelectedPost());
@@ -42,12 +42,12 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost?.id,
+                      'is-light': post.id !== selectedPostId,
                     },
                   )}
                   onClick={() => handleChangeSelectedPost(post)}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
