@@ -6,7 +6,7 @@ export const getPostComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export const createComment = (data: Omit<Comment, 'id'>) => {
+export const createComment = (data: Omit<Comment, 'commentId'>) => {
   return client.post<Comment>('/comments', data);
 };
 

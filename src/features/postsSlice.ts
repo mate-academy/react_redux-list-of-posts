@@ -33,13 +33,13 @@ const postsSlice = createSlice({
     });
 
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.items = action.payload;
       state.loaded = true;
+      state.items = action.payload;
     });
 
     builder.addCase(fetchPosts.rejected, (state) => {
       state.loaded = true;
-      state.hasError = false;
+      state.hasError = true;
     });
   },
 });

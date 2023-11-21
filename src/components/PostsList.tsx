@@ -6,9 +6,10 @@ import { Post } from '../types/Post';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.items);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const selectedPost
+    = useAppSelector(state => state.selectedPost.selectedPost as Post);
   const handleChangeSelectedPost = (post: Post) => {
-    if (post.id !== selectedPost?.id) {
+    if (post.id !== selectedPost.id) {
       dispatch(setSelectedPost(post));
     } else {
       dispatch(clearSelectedPost());

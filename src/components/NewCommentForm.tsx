@@ -12,26 +12,26 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [errors, setErrors] = useState({
     name: false,
     email: false,
-    body: false,
+    commentBody: false,
   });
 
-  const [{ name, email, body }, setValues] = useState({
+  const [{ name, email, commentBody }, setValues] = useState({
     name: '',
     email: '',
-    body: '',
+    commentBody: '',
   });
 
   const clearForm = () => {
     setValues({
       name: '',
       email: '',
-      body: '',
+      commentBody: '',
     });
 
     setErrors({
       name: false,
       email: false,
-      body: false,
+      commentBody: false,
     });
   };
 
@@ -50,21 +50,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors({
       name: !name.trim(),
       email: !email.trim(),
-      body: !body.trim(),
+      commentBody: !commentBody.trim(),
     });
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
+    if (!name.trim() || !email.trim() || !commentBody.trim()) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit({ name, email, commentBody });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues(current => ({
+      ...current, name: '', email: '', commentBody: '',
+    }));
     // We keep the entered name and email
   };
 
@@ -154,13 +156,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
+            className={
+              classNames('textarea', { 'is-danger': errors.commentBody })
+            }
+            value={commentBody}
             onChange={handleChange}
           />
         </div>
 
-        {errors.body && (
+        {errors.commentBody && (
           <p
             className="help is-danger"
             data-cy="ErrorMessage"

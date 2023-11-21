@@ -10,31 +10,33 @@ import {
   fetchComments,
   removeComment,
 } from '../features/commentsSlice';
+import { Post } from '../types/Post';
 
 export const PostDetails: React.FC = () => {
-  const post
-    = useAppSelector(state => state.selectedPost.selectedPost);
+  const { id, title, body }
+    = useAppSelector(state => state.selectedPost.selectedPost as Post);
   const dispatch = useAppDispatch();
   const { items, loaded, hasError } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setVisible(false);
-
-    if (post?.id !== undefined) {
-      dispatch(fetchComments(post.id));
+    if (id) {
+      dispatch(fetchComments(id));
     }
+
+    setVisible(false);
   }
 
-  useEffect(loadComments, [post?.id]);
+  useEffect(loadComments, [id]);
 
-  const handleAddComment = async ({ name, email, body }: CommentData) => {
-    if (post?.id !== undefined) {
+  const handleAddComment = async ({ name, email, commentBody }
+  : CommentData) => {
+    if (id) {
       const newComment = await commentsApi.createComment({
         name,
         email,
-        body,
-        postId: post.id,
+        commentBody,
+        postId: id,
       });
 
       dispatch(addComment(newComment));
@@ -50,11 +52,11 @@ export const PostDetails: React.FC = () => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${post?.id}: ${post?.title}`}
+          {`#${id}: ${title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {post?.body}
+          {body}
         </p>
       </div>
 
@@ -80,11 +82,11 @@ export const PostDetails: React.FC = () => {
             <p className="title is-4">Comments:</p>
 
             {items.map(({
-              id, email, name, body,
+              commentId, email, name, commentBody,
             }) => (
               <article
                 className="message is-small"
-                key={id}
+                key={commentId}
                 data-cy="Comment"
               >
                 <div className="message-header">
@@ -104,7 +106,7 @@ export const PostDetails: React.FC = () => {
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {body}
+                  {commentBody}
                 </div>
               </article>
             ))}
@@ -118,7 +120,7 @@ export const PostDetails: React.FC = () => {
             className="button is-link"
             onClick={() => setVisible(true)}
           >
-            Write a item
+            Write a comment
           </button>
         )}
 

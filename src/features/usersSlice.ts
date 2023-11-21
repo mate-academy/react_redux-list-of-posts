@@ -30,11 +30,9 @@ const usersSlice = createSlice({
 
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       state.users = action.payload;
-      state.loading = true;
     });
 
     builder.addCase(fetchUsers.rejected, (state) => {
-      state.loading = true;
       state.error = true;
     });
   },
