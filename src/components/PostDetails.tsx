@@ -69,13 +69,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && currentComments.length === 0 && (
+        {loaded && !hasError && !currentComments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && currentComments.length > 0 && (
+        {loaded && !hasError && !!currentComments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
