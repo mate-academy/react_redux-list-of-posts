@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/author/authorSlice';
 import { usersAsync } from '../features/users/usersSlice';
+import { clearAllComments } from '../features/comments/commentsSlice';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
@@ -14,7 +15,9 @@ export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const onUserSelect = (currentUser: User) => {
+    dispatch(clearAllComments());
     dispatch(setAuthor(currentUser));
+
     setExpanded(false);
   };
 
