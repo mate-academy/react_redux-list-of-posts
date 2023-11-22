@@ -8,7 +8,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 import { postsAsync, clearPosts } from './features/posts/postsSlice';
@@ -30,11 +29,13 @@ export const App: React.FC = () => {
     }
   }, [author?.id]);
 
+  const isLoaderVisible = author && loading;
+  const isLoadingErrorVisible = author && !loading && hasError;
+  const isNoPostsVisible = author && !loading && !hasError && !posts.length;
+  const isPostsListVisible = author && !loading && !hasError && !!posts.length;
+
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -50,11 +51,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && loading && (
+                {isLoaderVisible && (
                   <Loader />
                 )}
 
-                {author && !loading && hasError && (
+                {isLoadingErrorVisible && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -63,13 +64,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !hasError && posts.length === 0 && (
+                {isNoPostsVisible && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !hasError && posts.length > 0 && (
+                {isPostsListVisible && (
                   <PostsList />
                 )}
               </div>

@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { CommentData } from '../types/Comment';
 import {
   getCommentsAsync,
   deleteCommentAsync,
   setComments,
   addCommentAsync,
 } from '../features/comments/commentsSlice';
-import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
-  const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
+
+  const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { comments, loading, hasError }
-    = useAppSelector(state => state.comments);
+  const {
+    comments,
+    loading,
+    hasError,
+  } = useAppSelector(state => state.comments);
 
   function loadComments() {
     if (selectedPost) {
@@ -29,7 +32,7 @@ export const PostDetails: React.FC = () => {
       name,
       email,
       body,
-      postId: selectedPost ? selectedPost.id : 0,
+      postId: selectedPost?.id || 0,
     };
 
     await dispatch(addCommentAsync(newComment));
@@ -45,6 +48,12 @@ export const PostDetails: React.FC = () => {
   };
 
   useEffect(loadComments, [selectedPost?.id]);
+
+  const isLoadingErrorVisible = !loading && hasError;
+  const isNoCommentsVisible = !loading && !hasError && !comments.length;
+  const areCommentsVisible = !loading && !hasError && !!comments.length;
+  const isWriteCommentButtonVisible = !loading && !hasError && !visible;
+  const isNewCommentFormVisible = !loading && !hasError && visible;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -63,53 +72,65 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {!loading && hasError && (
+        {isLoadingErrorVisible && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loading && !hasError && comments.length === 0 && (
+        {isNoCommentsVisible && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !hasError && comments.length > 0 && (
+        {areCommentsVisible && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+            {comments.map(comment => {
+              const {
+                id,
+                email,
+                name,
+                body,
+              } = comment;
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+              return (
+                <article
+                  className="message is-small"
+                  key={id}
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${email}`}
+                      data-cy="CommentAuthor"
+                    >
+                      {name}
+                    </a>
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => deleteComment(id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {body}
+                  </div>
+                </article>
+              );
+            })}
           </>
         )}
 
-        {!loading && !hasError && !visible && (
+        {isWriteCommentButtonVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -120,7 +141,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {!loading && !hasError && visible && (
+        {isNewCommentFormVisible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

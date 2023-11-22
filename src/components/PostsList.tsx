@@ -8,8 +8,8 @@ import { Loader } from './Loader';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loading, hasError } = useAppSelector(state => state.posts);
 
+  const { posts, loading, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const onPostSelected = (currentPost: Post) => {
@@ -20,17 +20,20 @@ export const PostsList: React.FC = () => {
     }
   };
 
+  const isErrorVisible = !loading && hasError;
+  const arePostsVisible = !loading && !hasError;
+
   return (
     <div data-cy="PostsList">
       {loading && (<Loader />)}
 
-      {!loading && hasError && (
+      {isErrorVisible && (
         <div className="notification is-danger">
           Something went wrong
         </div>
       )}
 
-      {!loading && !hasError && (
+      {arePostsVisible && (
         <>
           <p className="title">Posts:</p>
 
@@ -46,30 +49,34 @@ export const PostsList: React.FC = () => {
             </thead>
 
             <tbody>
-              {posts.map(post => (
-                <tr key={post.id} data-cy="Post">
-                  <td data-cy="PostId">{post.id}</td>
-                  <td data-cy="PostTitle">{post.title}</td>
-                  <td className="has-text-right is-vcentered">
-                    <button
-                      type="button"
-                      data-cy="PostButton"
-                      className={classNames(
-                        'button',
-                        'is-link',
-                        {
-                          'is-light': post.id !== selectedPost?.id,
-                        },
-                      )}
-                      onClick={() => {
-                        onPostSelected(post);
-                      }}
-                    >
-                      {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {posts.map(post => {
+                const { id, title } = post;
+
+                return (
+                  <tr key={id} data-cy="Post">
+                    <td data-cy="PostId">{id}</td>
+                    <td data-cy="PostTitle">{title}</td>
+                    <td className="has-text-right is-vcentered">
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className={classNames(
+                          'button',
+                          'is-link',
+                          {
+                            'is-light': id !== selectedPost?.id,
+                          },
+                        )}
+                        onClick={() => {
+                          onPostSelected(post);
+                        }}
+                      >
+                        {id === selectedPost?.id ? 'Close' : 'Open'}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </>

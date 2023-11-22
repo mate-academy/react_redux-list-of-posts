@@ -17,5 +17,3 @@ const Root = () => (
 );
 
 root.render(<Root />);
-
-// ReactDOM.render(, document.getElementById('root'));
