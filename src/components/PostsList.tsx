@@ -1,14 +1,10 @@
 import classNames from 'classnames';
-import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as selectedPostActions }
   from '../features/selectedPost/selectedPostSlice';
 
-type Props = {
-};
-
-export const PostsList: React.FC<Props> = () => {
+export const PostsList = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);

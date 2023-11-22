@@ -15,7 +15,6 @@ const initialState: PostsState = {
   error: '',
 };
 
-// prettier-ignore
 export const init = createAsyncThunk(
   'posts/fetch', (userId: number) => getUserPosts(userId),
 );

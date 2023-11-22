@@ -16,9 +16,8 @@ const initialState: InitialState = {
   error: '',
 };
 
-// prettier-ignore
 export const init = createAsyncThunk(
-  'posts/fetch', (postId: number) => getPostComments(postId),
+  'comments/fetch', (postId: number) => getPostComments(postId),
 );
 
 export const commentsSlice = createSlice({
