@@ -18,6 +18,12 @@ export const UserSelector: React.FC = () => {
     setExpanded(false);
   };
 
+  const toggleExpanded = (event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    setExpanded(current => !current);
+  };
+
   useEffect(() => {
     dispatch(usersAsync());
   }, []);
@@ -55,9 +61,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={toggleExpanded}
         >
           <span>
             {author?.name || 'Choose a user'}
