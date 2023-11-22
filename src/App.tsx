@@ -10,9 +10,10 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setUsers } from './features/usersSlice';
-import { setAuthorPosts } from './features/postsSlice';
+import { actions as postsActions, setAuthorPosts } from './features/postsSlice';
 import { actions as selectedPostActions }
   from './features/selectedPostSlice';
+import { actions as commentsActions } from './features/commentsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +27,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(selectedPostActions.remove());
+    dispatch(postsActions.clear());
+    dispatch(commentsActions.clear());
     if (author) {
       dispatch(setAuthorPosts(author.id));
     }

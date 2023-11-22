@@ -49,7 +49,11 @@ export const addComment = createAsyncThunk(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    clear: (state) => {
+      state.comments = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(setPostComments.pending, (state) => {

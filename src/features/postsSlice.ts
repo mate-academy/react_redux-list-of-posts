@@ -23,7 +23,11 @@ export const setAuthorPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    clear: (state) => {
+      state.posts = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(setAuthorPosts.pending, (state) => {
@@ -41,3 +45,4 @@ export const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+export const { actions } = postsSlice;
