@@ -59,7 +59,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setExpanded(current => !current);
           }}
         >
