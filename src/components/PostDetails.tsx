@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -6,16 +6,41 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addComments,
+  addError,
+  addLoaded,
+  addVissible,
+  removeComment,
+  setComment,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    comments,
+    loaded,
+    hasError,
+    visible,
+  } = useAppSelector(state => state.comments);
+
+  const setLoaded = useCallback(
+    (value: boolean) => dispatch(addLoaded(value)), [dispatch],
+  );
+  const setError = useCallback(
+    (value: boolean) => dispatch(addError(value)), [dispatch],
+  );
+  const setVisible = useCallback(
+    (value: boolean) => dispatch(addVissible(value)), [dispatch],
+  );
+  const setComments = useCallback(
+    (value: Comment[]) => dispatch(addComments(value)), [dispatch],
+  );
 
   function loadComments() {
     setLoaded(false);
@@ -28,7 +53,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .finally(() => setLoaded(true)); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [
+    post.id, setComments, setError, setLoaded, setVisible,
+  ]);
 
   // The same useEffect with async/await
   /*
@@ -61,13 +88,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       const newComment = await commentsApi.createComment({
         name,
         email,
-        body,
+        body: body.trim(),
         postId: post.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      dispatch(setComment(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,11 +107,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
+    dispatch(removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };

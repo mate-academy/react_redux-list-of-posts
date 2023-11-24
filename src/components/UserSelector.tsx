@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
+import { addUsers } from '../features/usersSlice';
+import { getUsers } from '../api/users';
 
 type Props = {
   value: User | null;
@@ -14,11 +16,15 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+  const users = useAppSelector(store => store.users);
+  const dispatch = useAppDispatch();
+  const setUsers = (usersNew: User[]) => dispatch(addUsers(usersNew));
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers);
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
@@ -38,8 +44,8 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
+    // we don't want to listening for outside clicks
+    // when the Dopdown is closed
   }, [expanded]);
 
   return (
@@ -53,7 +59,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setExpanded(current => !current);
           }}
         >

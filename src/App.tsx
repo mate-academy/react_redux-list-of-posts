@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -11,17 +11,47 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { addError, addLoading, addPosts } from './features/postsSlice';
+import { addSelectedPost } from './features/selectedPostSlice';
+import { addAuthor } from './features/authorSlice';
+import { clearAllComments } from './features/commentsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { author } = useAppSelector(state => state.author);
+  const [showNotification, setShowNotification] = useState(true);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const setLoaded = useCallback(
+    (value: boolean) => dispatch(addLoading(value)),
+    [dispatch],
+  );
+  const setPosts = useCallback(
+    (value: Post[]) => dispatch(addPosts(value)),
+    [dispatch],
+  );
+  const setError = useCallback(
+    (value: boolean) => {
+      dispatch(addError(value));
+    },
+    [dispatch],
+  );
+  const setSelectedPost = useCallback(
+    (value: Post | null) => dispatch(addSelectedPost(value)),
+    [dispatch],
+  );
 
-  function loadUserPosts(userId: number) {
+  const setAuthor = useCallback(
+    (value: User | null) => {
+      dispatch(addAuthor(value));
+      dispatch(clearAllComments());
+    },
+    [dispatch],
+  );
+
+  const loadUserPosts = useCallback((userId: number) => {
     setLoaded(false);
 
     getUserPosts(userId)
@@ -29,7 +59,7 @@ export const App: React.FC = () => {
       .catch(() => setError(true))
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
-  }
+  }, [setPosts, setError, setLoaded]);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -41,13 +71,22 @@ export const App: React.FC = () => {
     } else {
       setPosts([]);
     }
-  }, [author?.id]);
+  }, [author?.id, author, loadUserPosts, setPosts, setSelectedPost]);
+
+  useEffect(() => {
+    if (!showNotification) {
+      setShowNotification(true);
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [author]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -76,11 +115,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {author
+                  && loaded
+                  && !hasError
+                  && posts.length === 0
+                  && showNotification
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
