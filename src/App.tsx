@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { addError, addLoading, addPosts } from './features/postsSlice';
 import { addSelectedPost } from './features/selectedPostSlice';
 import { addAuthor } from './features/authorSlice';
+import { clearAllComments } from './features/commentsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -43,7 +44,10 @@ export const App: React.FC = () => {
   );
 
   const setAuthor = useCallback(
-    (value: User | null) => dispatch(addAuthor(value)),
+    (value: User | null) => {
+      dispatch(addAuthor(value));
+      dispatch(clearAllComments());
+    },
     [dispatch],
   );
 

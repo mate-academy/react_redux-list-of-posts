@@ -65,6 +65,12 @@ export const commentsSlice = createSlice({
           .filter(comment => comment.id !== action.payload),
       };
     },
+    clearAllComments: (state) => {
+      return {
+        ...state,
+        comments: [],
+      };
+    },
   },
 });
 
@@ -75,5 +81,6 @@ export const {
   addVissible,
   setComment,
   removeComment,
+  clearAllComments,
 } = commentsSlice.actions;
 export default commentsSlice.reducer;
