@@ -10,6 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearPosts, fetchPosts, selectPost } from './features/postsSlice';
+import { clearComments } from './features/commentsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(selectPost(null));
+    dispatch(clearComments());
 
     if (author) {
       dispatch(fetchPosts(author.id));

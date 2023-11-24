@@ -46,13 +46,17 @@ export const NewCommentForm = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const preparedName = name.trim();
+    const preparedEmail = email.trim();
+    const preparedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !preparedName,
+      email: !preparedEmail,
+      body: !preparedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!preparedName || !preparedEmail || !preparedBody) {
       return;
     }
 
