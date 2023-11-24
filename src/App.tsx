@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -21,6 +21,7 @@ export const App: React.FC = () => {
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { author } = useAppSelector(state => state.author);
+  const [showNotification, setShowNotification] = useState(true);
 
   const setLoaded = useCallback(
     (value: boolean) => dispatch(addLoading(value)),
@@ -31,7 +32,9 @@ export const App: React.FC = () => {
     [dispatch],
   );
   const setError = useCallback(
-    (value: boolean) => dispatch(addError(value)),
+    (value: boolean) => {
+      dispatch(addError(value));
+    },
     [dispatch],
   );
   const setSelectedPost = useCallback(
@@ -66,6 +69,18 @@ export const App: React.FC = () => {
     }
   }, [author?.id, author, loadUserPosts, setPosts, setSelectedPost]);
 
+  useEffect(() => {
+    if (!showNotification) {
+      setShowNotification(true);
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [author]);
+
   return (
     <main className="section">
       <div className="container">
@@ -96,11 +111,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {author
+                  && loaded
+                  && !hasError
+                  && posts.length === 0
+                  && showNotification
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
