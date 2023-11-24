@@ -88,7 +88,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       const newComment = await commentsApi.createComment({
         name,
         email,
-        body,
+        body: body.trim(),
         postId: post.id,
       });
 
