@@ -40,31 +40,39 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedName,
+      email: !trimmedEmail,
+      body: !trimmedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit({
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedEmail,
+    });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues((current) => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
 
@@ -161,10 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.body && (
-          <p
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+          <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
