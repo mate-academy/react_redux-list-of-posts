@@ -1,43 +1,56 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/users/userS';
+import { User } from '../types/User';
 
 export const UserSelector = () => {
-  const [expanded, setExpanded] = useState(false);
+  const [focus, setFocus] = useState(false);
+  const dropdown = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { users, useR } = useAppSelector(state => state.users);
 
   useEffect(() => {
-    if (!expanded) {
-      return;
-    }
-
-    const handleDocumentClick = () => {
-      setExpanded(false);
+    const closeDropdown = (e: MouseEvent) => {
+      if (dropdown.current
+        && focus
+        && !dropdown.current.contains(e.target as Node)) {
+        setFocus(false);
+      }
     };
 
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', closeDropdown);
 
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('click', closeDropdown);
     };
-  }, [expanded]);
+  }, [focus]);
+
+  const handleFocus = () => {
+    if (focus) {
+      setFocus(false);
+    } else {
+      setFocus(true);
+    }
+  };
+
+  const handleChooseUser = (user: User) => {
+    dispatch(usersActions.selectUser(user));
+    setFocus(false);
+  };
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={focus ? 'dropdown is-active' : 'dropdown'}
     >
-      <div className="dropdown-trigger">
+      <div className="dropdown-trigger" ref={dropdown}>
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setExpanded(current => !current);
-          }}
+          onClick={handleFocus}
         >
           <span>
             {useR?.name || 'Choose a user'}
@@ -55,9 +68,7 @@ export const UserSelector = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(usersActions.selectUser(user))
-              }}
+              onClick={() => handleChooseUser(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === useR?.id,
               })}
