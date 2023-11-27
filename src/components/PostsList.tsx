@@ -12,10 +12,9 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
   const selectedPost = useAppSelector((state) => state.selectedPost);
   const dispatch = useAppDispatch();
 
-  const openPostDetails = (post: Post) =>
-    post.id !== selectedPost?.id
-      ? dispatch(selectedPostActions.set(post))
-      : dispatch(selectedPostActions.clear());
+  const openPostDetails = (post: Post) => (post.id !== selectedPost?.id
+    ? dispatch(selectedPostActions.set(post))
+    : dispatch(selectedPostActions.clear()));
 
   return (
     <div data-cy="PostsList">

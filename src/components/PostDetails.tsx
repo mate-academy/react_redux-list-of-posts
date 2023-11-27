@@ -23,37 +23,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(postCommentsActions.loadComments(post.id));
   }, [post]);
 
-  // const addComment = async ({ name, email, body }: CommentData) => {
-  //   try {
-  //     const newComment = await commentsApi.createComment({
-  //       name,
-  //       email,
-  //       body,
-  //       postId: post.id,
-  //     });
-
-  //     setComments((currentComments) => [...currentComments, newComment]);
-
-  //     // setComments([...comments, newComment]);
-  //     // works wrong if we wrap `addComment` with `useCallback`
-  //     // because it takes the `comments` cached during the first render
-  //     // not the actual ones
-  //   } catch (error) {
-  //     // we show an error message in case of any error
-  //     setError(true);
-  //   }
-  // };
-
-  // const deleteComment = async (commentId: number) => {
-  //   // we delete the comment immediately so as
-  //   // not to make the user wait long for the actual deletion
-  //   setComments((currentComments) =>
-  //     currentComments.filter((comment) => comment.id !== commentId),
-  //   );
-
-  //   await commentsApi.deleteComment(commentId);
-  // };
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
