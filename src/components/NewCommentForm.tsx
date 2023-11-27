@@ -61,7 +61,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body }).then(() => {
-      setSubmitting(false);
+      setTimeout(() => setSubmitting(false), 1000);
+
       setValues(current => ({ ...current, body: '' }));
     });
   };
