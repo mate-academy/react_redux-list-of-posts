@@ -8,12 +8,14 @@ export interface CommentState {
   items: Comment[],
   loaded: boolean,
   hasError: boolean,
+  newCommentLoaded: boolean,
 }
 
 const initialState: CommentState = {
   items: [],
   loaded: false,
   hasError: false,
+  newCommentLoaded: false,
 };
 
 export const fetchCommets = createAsyncThunk(
@@ -73,7 +75,11 @@ const commentsSlice = createSlice({
         state.hasError = true;
       });
     builder
+      .addCase(addComment.pending, state => {
+        state.newCommentLoaded = true;
+      })
       .addCase(addComment.fulfilled, (state, action) => {
+        state.newCommentLoaded = false;
         state.items.push(action.payload);
       });
   },

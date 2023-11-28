@@ -23,9 +23,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     dispatch(commentsAction.fetchCommets(post.id));
+    setVisible(false);
   }, [post.id]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const addComment = ({ name, email, body }: CommentData) => {
     dispatch(commentsAction.addComment({
       name,
       email,
