@@ -1,11 +1,13 @@
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { fetchUsers } from '../../services/users';
-import { User } from '../../types/User';
+// import { fetchPosts } from '../../services/posts';
+import { Post } from '../../types/Post';
+import { fetchUserPosts } from '../../services/userPosts';
 
 type State = {
-  value: User[]
+  value: Post[]
   isLoading: boolean;
   error: null | string;
 };
@@ -16,39 +18,48 @@ const initialState: State = {
   error: null,
 };
 
-export const init = createAsyncThunk('users/fetch', () => {
-  return fetchUsers();
-});
+export const loadUserPosts = createAsyncThunk<Post[], number>(
+  'posts/fetch',
+  async (userId: number) => {
+    const response = await fetchUserPosts(userId);
 
-export const usersSlice = createSlice({
-  name: 'users',
+    return response;
+  },
+);
+
+export const postsSlice = createSlice({
+  name: 'posts',
   initialState,
   reducers: {
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+    clear: (state) => {
+      state.value = [];
+    },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
-    set: (state, action: PayloadAction<User[]>) => {
+    set: (state, action: PayloadAction<Post[]>) => {
       state.value = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(init.pending, (state) => {
+    builder.addCase(loadUserPosts.pending, (state) => {
       state.isLoading = true;
     });
 
-    builder.addCase(init.fulfilled, (state, action) => {
+    builder.addCase(loadUserPosts.fulfilled, (state, action) => {
       state.value = action.payload;
       state.isLoading = false;
     });
 
-    builder.addCase(init.rejected, (state) => {
+    builder.addCase(loadUserPosts.rejected, (state) => {
       state.error = 'Something went wrong';
       state.isLoading = false;
     });
   },
 });
 
-export default usersSlice.reducer;
+export default postsSlice.reducer;
+export const { clear } = postsSlice.actions;
