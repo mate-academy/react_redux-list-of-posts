@@ -1,6 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable max-len */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+// import { UserContext } from './UsersContext';
+import { init } from '../features/users/usersSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
@@ -17,8 +20,11 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+
+  const { value: users, isLoading, error } = useAppSelector((state: { users: { value: User[], isLoading: boolean, error: any } }) => state.users);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -42,6 +48,10 @@ export const UserSelector: React.FC<Props> = ({
   // when the Dopdown is closed
   }, [expanded]);
 
+  useEffect(() => {
+    dispatch(init());
+  }, [dispatch]);
+
   return (
     <div
       data-cy="UserSelector"
@@ -58,7 +68,8 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {isLoading ? 'Loading...' : (selectedUser?.name || 'Choose a user')}
+            {error && ('Error')}
           </span>
 
           <span className="icon is-small">
@@ -69,7 +80,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
