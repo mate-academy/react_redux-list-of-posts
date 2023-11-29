@@ -6,20 +6,14 @@ import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import userPostsReducer from '../features/posts/userPostsSlice';
-
-// export const store = configureStore({
-//   reducer: {
-//     counter: counterReducer,
-//     users: usersReducer,
-//     author: authorReducer,
-//   },
-// });
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
 
 const reducer = combineReducers({
   counter: counterReducer,
   users: usersReducer,
   author: authorReducer,
   userPosts: userPostsReducer,
+  selectedPost: selectedPostReducer,
 });
 
 export const store = configureStore({
