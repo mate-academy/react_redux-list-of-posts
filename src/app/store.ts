@@ -1,11 +1,25 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore, ThunkAction, Action, combineReducers,
+} from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import counterReducer from '../features/counter/counterSlice';
+import usersReducer from '../features/users/usersSlice';
+import authorReducer from '../features/author/authorSlice';
+import userPostsReducer from '../features/posts/userPostsSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+import commentsReducer from '../features/comment/commentSlice';
+
+const reducer = combineReducers({
+  counter: counterReducer,
+  users: usersReducer,
+  author: authorReducer,
+  userPosts: userPostsReducer,
+  selectedPost: selectedPostReducer,
+  comments: commentsReducer,
+});
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
+  reducer,
 });
 
 export type AppDispatch = typeof store.dispatch;
