@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
-import { fetchComments, postComment, deleteComment } from '../utils/thunks';
+import { fetchComments, postComment } from '../utils/thunks';
 
 type Comments = {
   comments: Comment[],
@@ -61,14 +61,6 @@ const postCommentsSlice = createSlice({
         ...state,
         isSubmititng: false,
         comments: [...state.comments, action.payload],
-        hasError: false,
-      };
-    });
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
-      return {
-        ...state,
-        comments: state.comments
-          .filter(comment => comment.id !== action.payload),
         hasError: false,
       };
     });

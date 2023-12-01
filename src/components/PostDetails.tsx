@@ -24,9 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   function loadComments() {
     setVisible(false);
 
-    if (post) {
-      dispatch(fetchComments(post.id));
-    }
+    dispatch(fetchComments(post.id));
   }
 
   useEffect(() => {
@@ -38,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       name,
       email,
       body,
-      postId: post?.id as number,
+      postId: post.id,
     };
 
     await dispatch(postComment(data));
