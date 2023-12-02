@@ -14,13 +14,13 @@ import { fetchPosts, setPost, setPosts } from './features/postSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const posts = useAppSelector(state => state.posts.posts);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(state => state.posts.error);
-
+  const {
+    posts,
+    loaded,
+    error,
+    post,
+  } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.users.author);
-
-  const selectedPost = useAppSelector(state => state.posts.post);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -57,7 +57,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && loaded && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -66,13 +66,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !error && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>
@@ -87,12 +87,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': post,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {post && (
                 <PostDetails />
               )}
             </div>
