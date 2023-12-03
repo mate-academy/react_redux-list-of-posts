@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const dicpatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     name: false,
@@ -25,7 +25,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const clearForm = () => {
-    dicpatch(newCommentActions.clear());
+    dispatch(newCommentActions.clear());
 
     setValues({
       name: '',
@@ -68,7 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    dicpatch(newCommentActions.clearBody());
+    dispatch(newCommentActions.clearBody());
   };
 
   return (
