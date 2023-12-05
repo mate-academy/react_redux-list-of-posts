@@ -19,7 +19,7 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     setVisible(false);
-    dispatch(fetchComments(post?.id as number));
+    dispatch(fetchComments(post?.id));
   }, [post?.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
@@ -27,7 +27,7 @@ export const PostDetails: React.FC = () => {
       name,
       email,
       body,
-      postId: post?.id as number,
+      postId: post?.id,
     };
 
     await dispatch(addComments(data));
