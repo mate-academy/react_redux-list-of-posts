@@ -1,12 +1,11 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as postCommentsActions from '../features/postCommentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector((state) => state.selectedPost);
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -40,8 +39,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -59,13 +58,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (selectedPost) {
+      await dispatch(
+        postCommentsActions.createComment({
+          name,
+          email,
+          body,
+          postId: selectedPost.id,
+        }),
+      );
+    }
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setValues((current) => ({ ...current, body: '' }));
   };
 
   return (
@@ -114,7 +119,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -161,10 +166,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.body && (
-          <p
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+          <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
