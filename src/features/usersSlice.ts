@@ -1,39 +1,49 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { User } from '../types/User';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
+import { User } from '../types/User';
 
-type UsersState = {
-  users: User[];
-  status: 'completed' | 'loading' | 'failed';
-};
-
-const initialState: UsersState = {
-  users: [],
-  status: 'completed',
-};
-
-export const fetchUsers = createAsyncThunk('users/fetch', () => {
+export const fetchUsers = createAsyncThunk('users/fetchUsers', () => {
   return getUsers();
 });
+type State = {
+  users: User[],
+  author: User | null,
+  loaded: boolean,
+  error: string | null,
+};
+
+const initialState: State = {
+  users: [],
+  author: null,
+  loaded: false,
+  error: null,
+};
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setAuthor: (state, action: PayloadAction<User>) => {
+      state.author = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
-        state.status = 'loading';
+        state.loaded = false;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.status = 'completed';
+        state.loaded = true;
         state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state) => {
-        state.status = 'failed';
+        state.loaded = true;
+        state.error = 'error';
       });
   },
 });
+
+export const { setAuthor } = usersSlice.actions;
 
 export default usersSlice.reducer;

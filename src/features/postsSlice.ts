@@ -1,35 +1,35 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
+import { Post } from '../types/Post';
 
-type PostsState = {
-  posts: Post[];
-  loaded: boolean;
-  hasError: boolean;
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', (id: number) => {
+  return getUserPosts(id);
+});
+type State = {
+  posts: Post[],
+  post: Post | null,
+  loaded: boolean,
+  error: string | null,
 };
 
-const initialState: PostsState = {
+const initialState: State = {
   posts: [],
+  post: null,
   loaded: false,
-  hasError: false,
+  error: null,
 };
-
-export const fetchPosts = createAsyncThunk(
-  'userPosts/fetch',
-  async (userId: number) => {
-    const userPosts = await getUserPosts(userId);
-
-    return userPosts;
-  },
-);
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clearPosts: (state) => {
-      state.posts = [];
+    setPost: (state, action: PayloadAction<Post | null>) => {
+      state.post = action.payload;
+    },
+
+    setPosts: (state, action: PayloadAction<Post[]>) => {
+      state.posts = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -43,11 +43,11 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.rejected, (state) => {
         state.loaded = true;
-        state.hasError = true;
+        state.error = 'error';
       });
   },
 });
 
-export default postsSlice.reducer;
+export const { setPost, setPosts } = postsSlice.actions;
 
-export const { clearPosts } = postsSlice.actions;
+export default postsSlice.reducer;

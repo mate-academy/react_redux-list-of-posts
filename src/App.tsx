@@ -8,38 +8,41 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPosts, clearPosts } from './features/postsSlice';
-import { setSelectedPost } from './features/selectedPost';
+import { fetchUsers } from './features/usersSlice';
+import { fetchPosts, setPost, setPosts } from './features/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, hasError, loaded } = useAppSelector(state => state.posts);
-  const { author } = useAppSelector(state => state.author);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-
-  function loadUserPosts(userId: number) {
-    dispatch(fetchPosts(userId));
-  }
+  const {
+    posts,
+    loaded,
+    error,
+    post,
+  } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.users.author);
 
   useEffect(() => {
-    dispatch(setSelectedPost(null));
+    dispatch(fetchUsers());
+  }, []);
+
+  useEffect(() => {
+    setPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPosts(author.id));
     } else {
-      dispatch(clearPosts());
+      setPosts([]);
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -51,7 +54,8 @@ export const App: React.FC = () => {
                 {author && !loaded && (
                   <Loader />
                 )}
-                {author && loaded && hasError && (
+
+                {author && loaded && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -59,17 +63,15 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {author && loaded && !hasError && posts.length && (
+
+                {author && loaded && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={(post) => dispatch(setSelectedPost(post))}
-                  />
+
+                {author && loaded && !error && posts.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -82,13 +84,13 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': post,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
+              {post && (
+                <PostDetails />
               )}
             </div>
           </div>

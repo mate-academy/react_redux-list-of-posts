@@ -1,25 +1,21 @@
 /* eslint-disable consistent-return */
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsers } from '../features/usersSlice';
-import { setAuthor } from '../features/authorSlice';
+import { setAuthor } from '../features/usersSlice';
+import { User } from '../types/User';
+import { setPost } from '../features/postsSlice';
 
-type Props = {
-  value: User | null;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-}) => {
-  const { users } = useAppSelector(state => state.users);
+export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users.users);
+  const selectedUser = useAppSelector(state => state.users.author);
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, []);
+  const onChange = (value: User) => {
+    dispatch(setPost(null));
+    dispatch(setAuthor(value));
+  };
 
   useEffect(() => {
     if (!expanded) {
@@ -31,15 +27,12 @@ export const UserSelector: React.FC<Props> = ({
     };
 
     document.addEventListener('click', handleDocumentClick);
+    // eslint-disable-next-line consistent-return
 
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
-
-  const handleUserSelect = (user: User) => {
-    dispatch(setAuthor(user));
-  };
 
   return (
     <div
@@ -70,7 +63,9 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => handleUserSelect(user)}
+              onClick={() => {
+                onChange(user);
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

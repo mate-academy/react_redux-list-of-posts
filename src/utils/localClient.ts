@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // function wait(delay: number) {
 //   return new Promise(done => setTimeout(done, delay));
 // }
@@ -12,12 +13,10 @@ function read(key: string) {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 function write(key: string, data: any) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function init(key: string, initialData: any) {
   if (!read(key)) {
     write(key, initialData);
