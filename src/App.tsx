@@ -41,7 +41,7 @@ export const App: React.FC = () => {
     } else {
       setPosts([]);
     }
-  }, [author?.id]);
+  }, [author, author?.id]);
 
   return (
     <main className="section">
