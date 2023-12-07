@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -11,7 +12,6 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-// import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -41,7 +41,6 @@ export const App: React.FC = () => {
     } else {
       setPosts([]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [author?.id]);
 
   return (
