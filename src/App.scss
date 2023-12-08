@@ -2,11 +2,18 @@ iframe {
   display: none;
 }
 
+.is-ancestor {
+  position: relative;
+}
+
 .Sidebar {
+  position: sticky;
+  top: 0;
   overflow: hidden;
   opacity: 0;
+  height: 100%;
   transition-property: max-width, opacity;
-  transition-duration: 0.5s;
+  transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
 
   @media (min-width: 769px) {

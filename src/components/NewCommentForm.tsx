@@ -2,8 +2,10 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
+const emailRegEx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: Omit<CommentData, 'postId'>) => Promise<unknown>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
@@ -40,32 +42,40 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const newName = name.trim();
+    const newEmail = email.trim();
+    const newBody = body.trim();
+
+    const nameError = !newName;
+    const emailError = !newEmail || !emailRegEx.test(newEmail);
+    const bodyError = !newBody;
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: nameError,
+      email: emailError,
+      body: bodyError,
     });
 
-    if (!name || !email || !body) {
+    if (nameError || emailError || bodyError) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit({
+      name: newName,
+      email: newEmail,
+      body: newBody,
+    });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setValues((current) => ({ ...current, body: '' }));
   };
 
   return (
@@ -139,7 +149,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            Email is incorrect
           </p>
         )}
       </div>
@@ -161,10 +171,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.body && (
-          <p
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+          <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
