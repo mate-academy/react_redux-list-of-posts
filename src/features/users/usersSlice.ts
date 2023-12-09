@@ -1,0 +1,52 @@
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import * as users from '../../api/users';
+import { User } from '../../types/User';
+
+type UsersState = {
+  users: User[],
+  isLoading: boolean,
+  hasError: boolean,
+};
+
+const initialState: UsersState = {
+  users: [],
+  isLoading: false,
+  hasError: false,
+};
+
+export const fetchUsers = createAsyncThunk('users/fetch', () => {
+  return users.getUsers();
+});
+
+export const usersSlice = createSlice({
+  name: 'users',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.pending, (state) => {
+      return {
+        ...state,
+        isLoading: true,
+        hasError: false,
+      };
+    });
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      return {
+        ...state,
+        isLoading: true,
+        users: action.payload,
+        hasError: false,
+      };
+    });
+    builder.addCase(fetchUsers.rejected, (state) => {
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+      };
+    });
+  },
+});
+
+export default usersSlice.reducer;

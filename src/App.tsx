@@ -11,7 +11,6 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -46,7 +45,6 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
 
       <div className="container">
         <div className="tile is-ancestor">
