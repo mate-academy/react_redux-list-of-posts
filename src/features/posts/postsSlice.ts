@@ -3,13 +3,13 @@ import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
 type Posts = {
-  posts: Post[] | null;
+  posts: Post[];
   isLoading: boolean;
   hasError: boolean;
 };
 
 const initialState: Posts = {
-  posts: null,
+  posts: [],
   isLoading: false,
   hasError: false,
 };

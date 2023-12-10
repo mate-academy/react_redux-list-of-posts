@@ -34,7 +34,7 @@ export const delComment = createAsyncThunk(
   },
 );
 
-const postSlice = createSlice({
+const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
@@ -95,5 +95,5 @@ const postSlice = createSlice({
   },
 });
 
-export default postSlice.reducer;
-export const { removeComment } = postSlice.actions;
+export default commentsSlice.reducer;
+export const { removeComment } = commentsSlice.actions;

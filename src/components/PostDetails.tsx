@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 // import * as commentsApi from '../api/comments';
@@ -23,17 +23,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
+  const loadComments = useCallback(() => {
     setVisible(false);
-
     if (post) {
       dispatch(fetchComments(post.id));
     }
-  }
+  }, [dispatch, post]);
 
   useEffect(() => {
     loadComments();
-  }, [post.id]);
+  }, [loadComments, post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     const newComment = {

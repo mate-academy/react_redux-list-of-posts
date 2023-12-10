@@ -8,44 +8,34 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchPosts } from './features/posts/postsSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { posts, isLoading, hasError }
+  = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
 
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost
+  = useAppSelector((state) => state.selectedPost.selectedPost);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+    dispatch(fetchPosts(userId));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
       loadUserPosts(author.id);
-    } else {
-      setPosts([]);
     }
   }, [author?.id]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -61,11 +51,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && isLoading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && !isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -74,17 +64,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !isLoading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !isLoading && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
