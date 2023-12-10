@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
-  createComment, deleteComment, getPostComments,
+  createComment, deleteComment as delComment, getPostComments,
 } from '../../api/comments';
 
 type Comments = {
@@ -28,9 +28,9 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const delComment = createAsyncThunk(
+export const deleteComment = createAsyncThunk(
   'comments/delete', (id: number) => {
-    return deleteComment(id);
+    return delComment(id);
   },
 );
 
@@ -84,7 +84,7 @@ const commentsSlice = createSlice({
         hasError: false,
       };
     });
-    builder.addCase(delComment.fulfilled, (state, action) => {
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
       return {
         ...state,
         comments: state.comments

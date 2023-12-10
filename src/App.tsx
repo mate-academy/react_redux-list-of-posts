@@ -22,17 +22,24 @@ export const App: React.FC = () => {
   const selectedPost
   = useAppSelector((state) => state.selectedPost.selectedPost);
 
-  function loadUserPosts(userId: number) {
-    dispatch(fetchPosts(userId));
-  }
+  const handleUserSelect = (selectedUser: User | null) => {
+    setAuthor(selectedUser);
+    dispatch(setSelectedPost(null));
+  };
 
   useEffect(() => {
+    function loadUserPosts(userId: number) {
+      dispatch(fetchPosts(userId));
+    }
+
     setSelectedPost(null);
 
     if (author) {
       loadUserPosts(author.id);
+    } else {
+      //
     }
-  }, [author?.id]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -41,7 +48,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={handleUserSelect} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -79,24 +86,26 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
+          {author?.id === selectedPost?.userId && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                {
+                  'Sidebar--open': selectedPost,
+                },
               )}
+            >
+              <div className="tile is-child box is-success ">
+                {selectedPost && (
+                  <PostDetails post={selectedPost} />
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

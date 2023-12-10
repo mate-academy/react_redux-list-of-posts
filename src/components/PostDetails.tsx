@@ -10,7 +10,7 @@ import {
   fetchComments,
   addComment as createComment,
   removeComment,
-  delComment,
+  deleteComment,
 } from '../features/comments/commentsSlice';
 
 type Props = {
@@ -45,9 +45,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     await dispatch(createComment(newComment));
   };
 
-  const deleteComment = async (commentId: number) => {
+  const deleterComment = async (commentId: number) => {
     dispatch(removeComment(commentId));
-    dispatch(delComment(commentId));
+    dispatch(deleteComment(commentId));
   };
 
   return (
@@ -99,7 +99,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => deleterComment(comment.id)}
                   >
                     delete button
                   </button>
