@@ -15,6 +15,14 @@ export const PostsList: React.FC<Props> = ({
   const selectedPost
   = useAppSelector((state) => state.selectedPost.selectedPost);
 
+  const handleOpenButton = (post: Post | null) => {
+    dispatch(setSelectedPost(
+      post?.id === (selectedPost?.id || null)
+        ? null
+        : post,
+    ));
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -44,13 +52,7 @@ export const PostsList: React.FC<Props> = ({
                       'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(setSelectedPost(
-                      post.id === (selectedPost?.id || null)
-                        ? null
-                        : post,
-                    ));
-                  }}
+                  onClick={() => handleOpenButton(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

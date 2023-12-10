@@ -1,13 +1,15 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
-  createComment, deleteComment as delComment, getPostComments,
+  createComment,
+  deleteComment as delComment,
+  getPostComments,
 } from '../../api/comments';
 
 type Comments = {
-  comments: Comment[],
-  isLoading: boolean,
-  hasError: boolean,
+  comments: Comment[];
+  isLoading: boolean;
+  hasError: boolean;
 };
 
 const initialState: Comments = {
@@ -17,20 +19,43 @@ const initialState: Comments = {
 };
 
 export const fetchComments = createAsyncThunk(
-  'comments/fetch', (id: number) => {
+  'comments/fetch',
+  (id: number) => {
     return getPostComments(id);
   },
 );
 
+// Define removeComment here
+export const removeComment = createSlice({
+  name: 'comments',
+  initialState,
+  reducers: {
+    removeComment: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        comments: state.comments.filter(
+          (comment) => comment.id !== action.payload,
+        ),
+      };
+    },
+  },
+});
+
 export const addComment = createAsyncThunk(
-  'comments/add', (data: Omit<Comment, 'id'>) => {
+  'comments/add',
+  (data: Omit<Comment, 'id'>) => {
     return createComment(data);
   },
 );
 
-export const deleteComment = createAsyncThunk(
-  'comments/delete', (id: number) => {
-    return delComment(id);
+export const deleteAndRemoveComment = createAsyncThunk(
+  'comments/deleteAndRemove',
+  async (id: number, { dispatch }) => {
+    dispatch(removeComment.actions.removeComment(id));
+
+    await delComment(id);
+
+    return id;
   },
 );
 
@@ -38,11 +63,12 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    removeComment: (state, action) => {
+    removeComment: (state, action: PayloadAction<number>) => {
       return {
         ...state,
-        comments: state.comments
-          .filter(comment => comment.id !== action.payload),
+        comments: state.comments.filter(
+          (comment) => comment.id !== action.payload,
+        ),
       };
     },
   },
@@ -69,7 +95,7 @@ const commentsSlice = createSlice({
         hasError: true,
       };
     });
-    builder.addCase(addComment.pending, state => {
+    builder.addCase(addComment.pending, (state) => {
       return {
         ...state,
         isSubmitting: true,
@@ -84,11 +110,12 @@ const commentsSlice = createSlice({
         hasError: false,
       };
     });
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
+    builder.addCase(deleteAndRemoveComment.fulfilled, (state, action) => {
       return {
         ...state,
-        comments: state.comments
-          .filter(comment => comment.id !== action.payload),
+        comments: state.comments.filter(
+          (comment) => comment.id !== action.payload,
+        ),
         hasError: false,
       };
     });
@@ -96,4 +123,3 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { removeComment } = commentsSlice.actions;

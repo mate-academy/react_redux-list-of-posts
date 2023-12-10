@@ -10,8 +10,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   fetchComments,
   addComment as createComment,
-  removeComment,
-  deleteComment,
+  deleteAndRemoveComment,
 } from '../features/comments/commentsSlice';
 
 type Props = {
@@ -52,8 +51,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleterComment = async (commentId: number) => {
-    dispatch(removeComment(commentId));
-    dispatch(deleteComment(commentId));
+    await dispatch(deleteAndRemoveComment(commentId));
   };
 
   return (
