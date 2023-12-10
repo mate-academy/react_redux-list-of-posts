@@ -12,6 +12,7 @@ import { User } from './types/User';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchPosts } from './features/posts/postsSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { clearUsers } from './features/users/usersSlice';
 
 export const App: React.FC = () => {
   const { posts, isLoading, hasError }
@@ -40,6 +41,10 @@ export const App: React.FC = () => {
       //
     }
   }, [author, dispatch]);
+
+  useEffect(() => {
+    clearUsers();
+  }, [author]);
 
   return (
     <main className="section">

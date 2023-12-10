@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -41,6 +42,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       body,
       postId: post.id,
     };
+
+    if (name.trim().length === 0
+    || email.trim().length === 0 || body.trim().length === 0) {
+      return;
+    }
 
     await dispatch(createComment(newComment));
   };
