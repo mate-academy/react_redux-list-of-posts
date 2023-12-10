@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useDispatch } from 'react-redux';
 import { User } from '../types/User';
+import { useAppSelector } from '../app/hooks';
+import { fetchUsers } from '../features/users/usersSlice';
+import { AppDispatch } from '../app/store';
 
 type Props = {
   value: User | null;
@@ -17,8 +20,13 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const dispatch: AppDispatch = useDispatch();
+  const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
