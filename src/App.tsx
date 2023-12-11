@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -19,9 +19,9 @@ export const App: React.FC = () => {
   const { items, loaded, hasError } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
-  function loadUserPosts(userId: number) {
+  const loadUserPosts = useCallback((userId: number) => {
     dispatch(fetchPosts(userId));
-  }
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(clearSelectedPost());
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author?.id]);
+  }, [author, author?.id, dispatch, loadUserPosts]);
 
   return (
     <main className="section">

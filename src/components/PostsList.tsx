@@ -25,7 +25,7 @@ export const PostsList: React.FC = () => {
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            <th> </th>
+            <th aria-label="title"> </th>
           </tr>
         </thead>
 

@@ -12,7 +12,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, []);
+  }, [dispatch]);
 
   const [expanded, setExpanded] = useState(false);
 

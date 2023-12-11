@@ -26,6 +26,7 @@ export const PostDetails: React.FC = () => {
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(loadComments, [post?.id]);
 
   const handleAddComment = async ({ name, email, body }
