@@ -34,10 +34,8 @@ export const fetchComments = createAsyncThunk(
 
 export const postComment = createAsyncThunk(
   'comments/add',
-  async (comment: Omit<Comment, 'id'>) => {
-    const newComment = await createComment(comment);
-
-    return newComment;
+  (comment: Omit<Comment, 'id'>) => {
+    return createComment(comment);
   },
 );
 
@@ -79,11 +77,7 @@ const commentsSlice = createSlice({
         state.comments = state.comments
           .filter(comment => comment.id !== action.payload);
       })
-      .addCase(postComment.pending, state => {
-        state.isLoaded = false;
-      })
       .addCase(postComment.fulfilled, (state, action) => {
-        state.isLoaded = true;
         state.comments.push(action.payload);
       });
   },

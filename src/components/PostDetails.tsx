@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { CommentData } from '../types/Comment';
 import {
   useAppDispatch,
   useAppSelector,
@@ -13,7 +12,6 @@ import {
   fetchComments,
   removeComment,
   actions as commentsActions,
-  postComment,
 } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
@@ -32,17 +30,6 @@ export const PostDetails: React.FC = () => {
     dispatch(fetchComments(post?.id as number));
   },
   [post?.id, dispatch]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: post?.id as number,
-    };
-
-    dispatch(postComment(newComment));
-  };
 
   const deleteComment = (commentId: number) => {
     dispatch(commentsActions.deleteComment(commentId));
@@ -124,7 +111,7 @@ export const PostDetails: React.FC = () => {
         )}
 
         {isLoaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm />
         )}
       </div>
     </div>

@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { postComment } from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const { selectedPost } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     name: false,
@@ -62,7 +62,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    await onSubmit({ name: nameInput, email: emailInput, body: bodyInput });
+    await dispatch(postComment({
+      name: nameInput,
+      email: emailInput,
+      body: bodyInput,
+      postId: selectedPost?.id || 0,
+    }));
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
