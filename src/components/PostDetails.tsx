@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-// import * as commentsApi from '../api/comments';
 import { Post } from '../types/Post';
 
 import { CommentData } from '../types/Comment';
@@ -24,8 +23,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   function loadComments() {
-    // setLoaded(false);
-    // setError(false);
     setVisible(false);
 
     if (post) {
@@ -36,28 +33,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     loadComments();
   }, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-  useEffect(() => {
-    loadComments();
-  }, []);
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
 
   const addComment = async ({ name, email, body }: CommentData) => {
     const data = {
@@ -71,9 +46,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const doDeleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-
     dispatch(removeComment(commentId));
     dispatch(deleteComment(commentId));
   };
