@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -48,12 +48,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
@@ -64,7 +64,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues(current => ({
+      ...current, body: '',
+    }));
     // We keep the entered name and email
   };
 
@@ -154,7 +156,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={
+              classNames('textarea', { 'is-danger': errors.body })
+            }
             value={body}
             onChange={handleChange}
           />
