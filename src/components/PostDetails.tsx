@@ -11,7 +11,9 @@ import {
 } from '../app/hooks';
 import {
   fetchComments,
+  removeComment,
   actions as commentsActions,
+  postComment,
 } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
@@ -29,21 +31,22 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
     dispatch(fetchComments(post?.id as number));
   },
-  [post?.id]);
+  [post?.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     const newComment = {
       name,
       email,
       body,
-      postId: post?.id,
+      postId: post?.id as number,
     };
 
-    await dispatch(commentsActions.addComment(newComment));
+    dispatch(postComment(newComment));
   };
 
-  const deleteComment = async (commentId: number) => {
-    await dispatch(commentsActions.deleteComment(commentId));
+  const deleteComment = (commentId: number) => {
+    dispatch(commentsActions.deleteComment(commentId));
+    dispatch(removeComment(commentId));
   };
 
   return (

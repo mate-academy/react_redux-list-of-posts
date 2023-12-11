@@ -4,7 +4,11 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
+import {
+  createComment,
+  deleteComment,
+  getPostComments,
+} from '../api/comments';
 import { Comment } from '../types/Comment';
 
 export interface CommentsState {
@@ -28,19 +32,32 @@ export const fetchComments = createAsyncThunk(
   },
 );
 
+export const postComment = createAsyncThunk(
+  'comments/add',
+  async (comment: Omit<Comment, 'id'>) => {
+    const newComment = await createComment(comment);
+
+    return newComment;
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/delete',
+  (commentId: number) => {
+    return deleteComment(commentId);
+  },
+);
+
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    addComment: (state, action) => {
-      state.comments.push(action.payload);
-    },
     deleteComment: (state, action: PayloadAction<number>) => {
       state.comments = state.comments
         .filter(comment => comment.id !== action.payload);
     },
-    setError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
+    clearComments: (state) => {
+      state.comments = [];
     },
   },
 
@@ -57,6 +74,17 @@ const commentsSlice = createSlice({
       .addCase(fetchComments.rejected, (state) => {
         state.hasError = true;
         state.isLoaded = true;
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.comments = state.comments
+          .filter(comment => comment.id !== action.payload);
+      })
+      .addCase(postComment.pending, state => {
+        state.isLoaded = false;
+      })
+      .addCase(postComment.fulfilled, (state, action) => {
+        state.isLoaded = true;
+        state.comments.push(action.payload);
       });
   },
 });

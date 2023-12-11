@@ -15,6 +15,7 @@ import {
 } from './app/hooks';
 import { fetchUsers } from './features/users';
 import { fetchPosts, actions as postsActions } from './features/posts';
+import { actions as commentsActions } from './features/comments';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.users);
@@ -29,15 +30,16 @@ export const App: React.FC = () => {
   useEffect(() => {
     dispatch(fetchUsers());
   },
-  []);
+  [dispatch]);
 
   useEffect(() => {
     dispatch(postsActions.setSelectedPost(null));
+    dispatch(commentsActions.clearComments());
 
     if (author) {
       dispatch(fetchPosts(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
