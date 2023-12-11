@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -11,19 +10,16 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
-
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
@@ -35,7 +31,6 @@ export const App: React.FC = () => {
     // we clear the post when an author is changed
     // not to confuse the user
     setSelectedPost(null);
-
     if (author) {
       loadUserPosts(author.id);
     } else {
@@ -46,7 +41,8 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
+
+      {/* <Counter /> */}
 
       <div className="container">
         <div className="tile is-ancestor">
@@ -55,18 +51,15 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector value={author} onChange={setAuthor} />
               </div>
-
               <div className="block" data-cy="MainContent">
                 {!author && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
-
                 {author && !loaded && (
                   <Loader />
                 )}
-
                 {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
@@ -75,13 +68,11 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-
                 {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
@@ -92,7 +83,6 @@ export const App: React.FC = () => {
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(
