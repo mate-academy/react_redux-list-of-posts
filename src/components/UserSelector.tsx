@@ -22,7 +22,7 @@ export const UserSelector: React.FC = () => {
     }
 
     const handleDocumentClick = () => {
-      setExpanded(false);
+      setExpanded(expanded);
     };
 
     document.addEventListener('click', handleDocumentClick);
