@@ -10,6 +10,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as authorActions from './features/AuthorSlicer';
 import * as postsActions from './features/postsSlicer';
+import * as selectedPostActions from './features/selectedPostSlicer';
 
 export const App: React.FC = () => {
   const { items: posts, loaded, hasError } = useAppSelector(
@@ -22,6 +23,10 @@ export const App: React.FC = () => {
   const loadUserPosts = useCallback((userId: number) => {
     dispatch(postsActions.postInit(userId));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(selectedPostActions.setSelectedPost(null));
+  }, [dispatch, author])
 
   useEffect(() => {
     if (author) {
