@@ -54,13 +54,13 @@ const commentsSlice = createSlice({
       );
     },
   },
-  extraReducers: (buider) => {
-    buider
+  extraReducers: (builder) => {
+    builder
       .addCase(fetchComments.pending, (state) => {
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading = true;
         state.comments = action.payload;
       })
       .addCase(fetchComments.rejected, (state) => {
@@ -68,12 +68,12 @@ const commentsSlice = createSlice({
         state.error = 'Error';
       });
 
-    buider
+    builder
       .addCase(fetchAddComment.pending, (state) => {
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(fetchAddComment.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading = true;
         state.comments = [...state.comments, action.payload];
       })
       .addCase(fetchAddComment.rejected, (state) => {

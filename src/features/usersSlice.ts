@@ -30,17 +30,17 @@ const usersSlice = createSlice({
       state.author = action.payload;
     },
   },
-  extraReducers: (buider) => {
-    buider
+  extraReducers: (builder) => {
+    builder
       .addCase(fetchUsers.pending, (state) => {
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading = true;
         state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state) => {
-        state.loading = false;
+        state.loading = true;
         state.error = 'Error';
       });
   },

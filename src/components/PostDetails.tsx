@@ -21,9 +21,13 @@ export const PostDetails: React.FC = () => {
     }
   }, [post, dispatch]);
 
-  const deleteComment = (commentId: number) => {
-    dispatch(fetchRemoveComment(commentId));
-    removeComment(commentId);
+  const deleteComment = async (commentId: number) => {
+    try {
+      await dispatch(fetchRemoveComment(commentId));
+      dispatch(removeComment(commentId));
+    } catch (e) {
+      throw new Error('Error with deleting comment');
+    }
   };
 
   return (

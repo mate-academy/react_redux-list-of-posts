@@ -12,8 +12,8 @@ export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const onChange = (value: User) => {
-    dispatch(setPost(null));
     dispatch(setAuthor(value));
+    dispatch(setPost(null));
   };
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const UserSelector: React.FC = () => {
     }
 
     const handleDocumentClick = () => {
-      setExpanded(false);
+      setExpanded(true);
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -66,6 +66,7 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 onChange(user);
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
