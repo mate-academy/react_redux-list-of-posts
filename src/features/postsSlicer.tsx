@@ -10,7 +10,7 @@ type PostsState = {
 
 const postsState: PostsState = {
   items: [],
-  loaded: false,
+  loaded: true,
   hasError: false,
 };
 
