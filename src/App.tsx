@@ -37,10 +37,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-
-      {/* <Counter /> */}
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
