@@ -14,6 +14,9 @@ export const PostDetails: React.FC = () => {
   const { comments, loading, error } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
+  const shouldShowComments = loading && !error && !!comments.length;
+  const shouldShowWitoutComments = loading && !error && !comments.length;
+
   useEffect(() => {
     if (post) {
       setVisible(true);
@@ -53,13 +56,13 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loading && !error && comments.length === 0 && (
+        {shouldShowWitoutComments && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loading && !error && comments.length > 0 && (
+        {shouldShowComments && (
           <>
             <p className="title is-4">Comments:</p>
 

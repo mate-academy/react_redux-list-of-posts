@@ -14,6 +14,7 @@ export const UserSelector: React.FC = () => {
   const onChange = (value: User) => {
     dispatch(setAuthor(value));
     dispatch(setPost(null));
+    setExpanded(false);
   };
 
   useEffect(() => {
@@ -66,7 +67,6 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 onChange(user);
-                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

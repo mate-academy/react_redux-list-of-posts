@@ -3,10 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  setPost,
-  // setPosts,
-} from '../features/postsSlice';
+import { setPost } from '../features/postsSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();

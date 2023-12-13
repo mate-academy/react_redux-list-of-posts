@@ -21,6 +21,9 @@ export const App: React.FC = () => {
   } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.users.author);
 
+  const shouldShowPosts = author && loading && !error && !!posts.length;
+  const shouldShowWitoutPosts = author && loading && !error && !posts.length;
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -66,13 +69,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !error && posts.length === 0 && (
+                {shouldShowWitoutPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loading && !error && posts.length > 0 && (
+                {shouldShowPosts && (
                   <PostsList />
                 )}
               </div>
