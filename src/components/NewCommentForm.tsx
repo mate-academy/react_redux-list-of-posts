@@ -53,13 +53,42 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
-      return;
+    const bodyShort = body.trim() === '';
+    const nameShort = name.trim() === '';
+    const emailShort = email.trim() === '';
+
+    if (nameShort && email.trim() && body.trim() && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: true,
+        email: false,
+        body: false,
+      });
     }
 
-    setSubmitting(true);
+    if (name.trim() && emailShort && body.trim() && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: false,
+        email: true,
+        body: false,
+      });
+    }
+
+    if (name.trim() && email.trim() && bodyShort && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: false,
+        email: false,
+        body: true,
+      });
+    }
 
     if (name.trim() && email.trim() && body.trim() && post?.id) {
+      setSubmitting(true);
       dispatch(fetchAddComment({
         postId: +post.id,
         name,
@@ -168,7 +197,7 @@ export const NewCommentForm: React.FC = () => {
             className="help is-danger"
             data-cy="ErrorMessage"
           >
-            Enter some text
+            Enter some text (don&apos;t use only empty spaces)
           </p>
         )}
       </div>

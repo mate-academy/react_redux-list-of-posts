@@ -70,15 +70,14 @@ const commentsSlice = createSlice({
 
     builder
       .addCase(fetchAddComment.pending, (state) => {
-        state.loading = false;
+        state.error = null;
       })
       .addCase(fetchAddComment.fulfilled, (state, action) => {
-        state.loading = true;
         state.comments = [...state.comments, action.payload];
       })
       .addCase(fetchAddComment.rejected, (state) => {
-        state.loading = true;
         state.error = 'Something went wrong';
+        state.loading = false;
       })
       .addCase(fetchRemoveComment.fulfilled, (state, action) => {
         state.comments = state.comments.filter(
