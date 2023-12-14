@@ -32,6 +32,9 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
+    clearPost: () => {
+      return initialState;
+    },
     setPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
     },
@@ -70,7 +73,7 @@ const postSlice = createSlice({
 });
 
 export const {
-  setPost, addComment, deleteComment, setError,
+  setPost, addComment, deleteComment, setError, clearPost,
 }
   = postSlice.actions;
 

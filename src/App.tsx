@@ -10,7 +10,6 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/users/usersSlice';
-import { setAuthor } from './features/author/authorSlice';
 import { setPost } from './features/post/postSlice';
 
 export const App = () => {
@@ -31,10 +30,7 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  value={author}
-                  onChange={(user) => dispatch(setAuthor(user))}
-                />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">

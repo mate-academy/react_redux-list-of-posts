@@ -3,17 +3,14 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectUsers } from '../features/users/usersSlice';
-import { loadPosts } from '../features/author/authorSlice';
+import { loadPosts, setAuthor } from '../features/author/authorSlice';
+import { clearPost } from '../features/post/postSlice';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(selectUsers);
   const [expanded, setExpanded] = useState(false);
@@ -23,8 +20,9 @@ export const UserSelector: React.FC<Props> = ({
       return;
     }
 
-    onChange(user);
+    dispatch(setAuthor(user));
     dispatch(loadPosts(user.id));
+    dispatch(clearPost());
   };
 
   useEffect(() => {
