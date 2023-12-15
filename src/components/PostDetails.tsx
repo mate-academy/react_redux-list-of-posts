@@ -4,12 +4,10 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import {
   fetchComments,
-  addNewComment,
   deleteComment,
 } from '../slices/commentsSlice';
 
@@ -28,17 +26,6 @@ export const PostDetails: React.FC = () => {
       dispatch(fetchComments(selectedPost.id));
     }
   }, [selectedPost?.id]);
-
-  const handleAddComment = async ({ name, email, body }: CommentData) => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: selectedPost?.id as number,
-    };
-
-    dispatch(addNewComment(newComment));
-  };
 
   const handleDeleteComment = async (commentId: number) => {
     await commentsApi.deleteComment(commentId);
@@ -121,7 +108,7 @@ export const PostDetails: React.FC = () => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={handleAddComment} />
+          <NewCommentForm />
         )}
       </div>
     </div>

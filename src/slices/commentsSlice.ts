@@ -55,8 +55,8 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(addNewComment.pending, (state) => {
-      state.loaded = false;
-      state.hasError = true;
+      state.loaded = true;
+      state.hasError = false;
     });
 
     builder.addCase(addNewComment.fulfilled, (state, action) => {
