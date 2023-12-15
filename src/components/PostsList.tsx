@@ -10,8 +10,18 @@ export const PostsList: React.FC = () => {
   const posts = useAppSelector(state => state.posts.posts);
   const selectedPostId = useAppSelector(state => state.posts.post?.id);
 
-  const onPostSelected = (post: Post | null) => {
-    dispatch(setPost(post));
+  const onPostSelected = (post: Post) => {
+    const newSelectedPostId = post?.id === selectedPostId ? null : post;
+
+    dispatch(setPost(newSelectedPostId));
+  };
+
+  const handlePostClick = (postId: number) => {
+    const selectedPost = posts.find(post => post.id === postId);
+
+    if (selectedPost) {
+      onPostSelected(selectedPost);
+    }
   };
 
   return (
@@ -28,10 +38,10 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {posts.map(({ id, title }) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">{title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
@@ -40,14 +50,14 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPostId,
+                      'is-light': id !== selectedPostId,
                     },
                   )}
                   onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
+                    handlePostClick(id);
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
