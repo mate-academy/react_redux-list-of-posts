@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchAddComment } from '../features/commentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const post = useAppSelector(state => state.posts.post);
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -53,19 +53,51 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
-      return;
+    const bodyShort = body.trim() === '';
+    const nameShort = name.trim() === '';
+    const emailShort = email.trim() === '';
+
+    if (nameShort && email.trim() && body.trim() && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: true,
+        email: false,
+        body: false,
+      });
     }
 
-    setSubmitting(true);
+    if (name.trim() && emailShort && body.trim() && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: false,
+        email: true,
+        body: false,
+      });
+    }
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (name.trim() && email.trim() && bodyShort && post?.id) {
+      dispatch(fetchAddComment.rejected);
+      setSubmitting(false);
+      setErrors({
+        name: false,
+        email: false,
+        body: true,
+      });
+    }
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    if (name.trim() && email.trim() && body.trim() && post?.id) {
+      setSubmitting(true);
+      dispatch(fetchAddComment({
+        postId: +post.id,
+        name,
+        email,
+        body,
+      }));
+      setValues(current => ({ ...current, body: '' }));
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -165,7 +197,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className="help is-danger"
             data-cy="ErrorMessage"
           >
-            Enter some text
+            Enter some text (don&apos;t use only empty spaces)
           </p>
         )}
       </div>
