@@ -23,3 +23,5 @@ Learn the implemented App and the example and reimplement it with Redux having t
 - Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
 - This task does not have tests yet!
 - Replace `<your_account>` with your Github username in the [DEMO LINK](https://Mar4enkofff.github.io/react_redux-list-of-posts/) and add it to the PR description.
+
+<!-- just need to write something to fix bug with pull request -->
