@@ -30,8 +30,6 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // dispatch(setSelectedPost(null));
-
     // we save a link to remove the listener later
 
     const handleDocumentClick = () => {
@@ -61,9 +59,8 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={(e) => {
+          onClick={() => {
             setExpanded(current => !current);
-            e.stopPropagation();
           }}
         >
           <span>
