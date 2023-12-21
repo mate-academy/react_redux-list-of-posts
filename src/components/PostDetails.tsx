@@ -1,94 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentActions from '../features/comments/commentsSlice';
+import { actions as newCommentActions }
+  from '../features/newCommentForm/newCommentFormSlice';
+import { CommentData } from '../types/Comment';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    items: comments, loaded, hasError,
+  } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
   useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
+    setVisible(false);
+    dispatch(commentActions.init(post.id));
+  }, [post]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+    dispatch(newCommentActions.add({ name, email, body }));
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+    await dispatch(commentActions.addComment({
+      name,
+      email,
+      body,
+      postId: post.id,
+    }));
   };
 
   return (
@@ -140,7 +84,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(
+                      commentActions.deleteComment(comment.id),
+                    )}
                   >
                     delete button
                   </button>
