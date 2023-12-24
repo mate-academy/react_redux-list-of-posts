@@ -31,8 +31,6 @@ export const PostsList: React.FC<Props> = ({ user }) => {
   const handleClickPost = (postId: number, post: Post) => {
     if (postId === selectedPost?.id) {
       dispatch(removePost());
-      // eslint-disable-next-line no-console
-      console.log(postId === selectedPost?.id);
       dispatch(removeComments());
     } else {
       dispatch(setPost(post));

@@ -8,6 +8,7 @@ import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   initComments,
+  removeComment,
   setComments,
   setErrorComment,
 } from '../features/commentsSlice';
@@ -44,17 +45,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  // const deleteComment = async (commentId: number) => {
-  //   // we delete the comment immediately so as
-  //   // not to make the user wait long for the actual deletion
-  //   setComments(
-  //     currentComments => currentComments.filter(
-  //       comment => comment.id !== commentId,
-  //     ),
-  //   );
+  const deleteComment = async (commentId: number) => {
+    dispatch(removeComment(commentId));
 
-  //   await commentsApi.deleteComment(commentId);
-  // };
+    await commentsApi.deleteComment(commentId);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -105,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                  // onClick={() => deleteComment(comment.id)}
+                    onClick={() => deleteComment(comment.id)}
                   >
                     delete button
                   </button>

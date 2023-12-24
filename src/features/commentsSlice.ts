@@ -28,6 +28,11 @@ export const commentsSlice = createSlice({
       state.comments.push(action.payload);
     },
 
+    removeComment: (state, action) => {
+      state.comments = state.comments
+        .filter(comment => comment.id !== action.payload);
+    },
+
     removeComments: (state) => {
       state.comments = [];
     },
@@ -58,6 +63,7 @@ export const commentsSlice = createSlice({
 export const {
   setComments,
   removeComments,
+  removeComment,
   setErrorComment,
 } = commentsSlice.actions;
 
