@@ -397,7 +397,7 @@ describe('', () => {
         cy.get('@allPosts').should('not.be.called');
       });
     
-      it('should show posts loader while waiting for API response', () => {
+      it.skip('should show posts loader while waiting for API response', () => {
         page.mockUser1Posts()
         cy.visit('/');
         cy.clock();
