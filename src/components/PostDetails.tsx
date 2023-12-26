@@ -12,7 +12,7 @@ export const PostDetails = () => {
   const {
     comments,
     isLoading,
-    error,
+    isError,
   } = useAppSelector(state => state.comments);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [visible, setVisible] = useState(false);
@@ -107,19 +107,19 @@ export const PostDetails = () => {
           <Loader />
         )}
 
-        {isLoading && error && (
+        {isLoading && isError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {isLoading && !error && comments.length === 0 && (
+        {isLoading && !isError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {isLoading && !error && comments.length > 0 && (
+        {isLoading && !isError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -153,7 +153,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {isLoading && !error && !visible && (
+        {isLoading && !isError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -164,7 +164,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {isLoading && !error && visible && (
+        {isLoading && !isError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
