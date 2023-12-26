@@ -36,6 +36,10 @@ const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
     },
+
+    clearComments: (state) => {
+      state.comments = [];
+    },
   },
 });
 

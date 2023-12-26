@@ -18,24 +18,27 @@ export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
   const post = selectedPost;
 
-  function loadComments() {
-    dispatch(commentsActions.setIsLoading(false));
-    dispatch(commentsActions.setError(false));
-    setVisible(false);
+  useEffect(() => {
+    const loadComments = () => {
+      dispatch(commentsActions.setIsLoading(false));
+      dispatch(commentsActions.setError(false));
+      setVisible(false);
 
-    commentsApi.getPostComments(selectedPost?.id || 0)
-      .then(commentsFromServer => {
-        dispatch(commentsActions.set(commentsFromServer));
-      })
-      .catch(() => {
-        dispatch(commentsActions.setError(true));
-      })
-      .finally(() => {
-        dispatch(commentsActions.setIsLoading(true));
-      });
-  }
+      commentsApi.getPostComments(selectedPost?.id || 0)
+        .then(commentsFromServer => {
+          dispatch(commentsActions.set(commentsFromServer));
+        })
+        .catch(() => {
+          dispatch(commentsActions.setError(true));
+        })
+        .finally(() => {
+          dispatch(commentsActions.setIsLoading(true));
+        });
+    };
 
-  useEffect(loadComments, [selectedPost?.id, dispatch]);
+    loadComments();
+    dispatch(commentsActions.clearComments());
+  }, [selectedPost?.id, dispatch]);
 
   // The same useEffect with async/await
   /*
@@ -65,7 +68,7 @@ export const PostDetails = () => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
-      const postId = post?.id;
+      const postId = post?.id || 0;
 
       if (postId !== undefined) {
         const newComment = await commentsApi.createComment({
