@@ -1,15 +1,13 @@
-/* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
-import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
+import { actions as selectedPostActions } from
+  './features/selectedPost/selectedPostSlice';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -38,9 +36,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
