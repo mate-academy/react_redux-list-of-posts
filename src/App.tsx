@@ -34,6 +34,10 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
+  const isSomethingWentWrong = author && loading && error;
+  const isNoPostsYet = author && loading && !error && posts.length === 0;
+  const isPostsList = author && loading && !error && posts.length > 0;
+
   return (
     <main className="section">
       <div className="container">
@@ -49,7 +53,7 @@ export const App: React.FC = () => {
 
                 {author && !loading && <Loader />}
 
-                {author && loading && error && (
+                {isSomethingWentWrong && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -58,15 +62,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !error && posts.length === 0 && (
+                {isNoPostsYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loading && !error && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {isPostsList && <PostsList />}
               </div>
             </div>
           </div>
