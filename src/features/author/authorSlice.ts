@@ -3,20 +3,11 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 
 type AuthorState = {
-  author: User;
-  loading: boolean;
-  error: string;
+  author: User | null;
 };
 
 const initialState: AuthorState = {
-  author: {
-    id: 0,
-    name: '',
-    email: '',
-    phone: '',
-  },
-  loading: false,
-  error: '',
+  author: null,
 };
 
 const authorSlice = createSlice({

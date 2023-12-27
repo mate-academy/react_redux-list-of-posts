@@ -15,28 +15,30 @@ const initialState: PostsState = {
   error: '',
 };
 
-export const init = createAsyncThunk('posts/fetch', (userId: number) => {
-  return getUserPosts(userId);
+export const init = createAsyncThunk('posts/fetch', async (userId: number) => {
+  const value = await getUserPosts(userId);
+
+  return value;
 });
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clear: (state) => {
-      state.posts = [];
+    set: (state, action) => {
+      state.posts = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
-      state.loading = true;
+      state.loading = false;
     });
     builder.addCase(init.fulfilled, (state, action) => {
-      state.loading = false;
+      state.loading = true;
       state.posts = action.payload;
     });
     builder.addCase(init.rejected, (state, action) => {
-      state.loading = false;
+      state.loading = true;
       state.error = action.error.message || 'Something went wrong';
     });
   },
