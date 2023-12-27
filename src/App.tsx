@@ -1,118 +1,85 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchUsers } from './features/usersSlice';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import Sidebar from './components/Sidebar';
+import Wrapper from './components/Wrapper';
+import { fetchUserPosts, setPosts } from './features/postsSlice';
+import { changeSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const author = useAppSelector(state => state.author.author);
+  const posts = useAppSelector(state => state.posts.items);
+  const isLoading = useAppSelector(state => state.posts.isLoading);
+  const hasError = useAppSelector(state => state.posts.hasError);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+    dispatch(fetchUserPosts(userId));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(changeSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPosts(null));
     }
   }, [author]);
 
   return (
-    <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
-      <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
-              </div>
-
-              <div className="block" data-cy="MainContent">
-                {!author && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
-
-                {author && !loaded && (
-                  <Loader />
-                )}
-
-                {author && loaded && hasError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
-              </div>
-            </div>
+    <Wrapper>
+      <div className="tile is-parent">
+        <div className="tile is-child box is-success">
+          <div className="block">
+            <UserSelector />
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
+          <div className="block" data-cy="MainContent">
+            {!author && (
+              <p data-cy="NoSelectedUser">
+                No user selected
+              </p>
             )}
-          >
-            <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
-            </div>
+
+            {author && isLoading && (
+              <Loader />
+            )}
+
+            {author && !isLoading && hasError && (
+              <div
+                className="notification is-danger"
+                data-cy="PostsLoadingError"
+              >
+                Something went wrong!
+              </div>
+            )}
+
+            {author && !isLoading && !hasError && posts?.length === 0 && (
+              <div className="notification is-warning" data-cy="NoPostsYet">
+                No posts yet
+              </div>
+            )}
+
+            {author && !isLoading && !hasError && Boolean(posts?.length) && (
+              <PostsList />
+            )}
           </div>
         </div>
       </div>
-    </main>
+      <Sidebar />
+    </Wrapper>
   );
 };
