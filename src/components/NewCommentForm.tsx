@@ -1,75 +1,56 @@
+/* eslint-disable max-len */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+// import { FormField, resetForm, resetFormPartly, updateValue, validateFields } from '../features/newCommentFormSlice';
+import * as newCommentApi from '../features/newCommentFormSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: ({ name, email, body }: CommentData) => void
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const dispatch = useAppDispatch();
+  const { isValid, values, errors } = useAppSelector(state => state.newCommentForm);
+  const { name, email, body } = values;
   const [submitting, setSubmitting] = useState(false);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+  // const clearForm = () => {
+  //   onSubmit({
+  //     name: '',
+  //     email: '',
+  //     body: '',
+  //   });
+  // };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(newCommentApi.updateValue({ name: field as newCommentApi.FormField, value }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    dispatch(newCommentApi.validateFields());
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
+    if (!isValid) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit(values);
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    // await dispatch(updateValue({ name: body as FormField, value: '' }));
+    dispatch(newCommentApi.resetFormPartly());
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} onReset={() => dispatch(newCommentApi.resetForm())} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
