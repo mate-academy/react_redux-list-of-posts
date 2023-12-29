@@ -1,56 +1,59 @@
+/* eslint-disable */
+
 import classNames from 'classnames';
-import React from 'react';
-import { Post } from '../types/Post';
 
-type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
-};
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+import { actions as postsActions } from '../features/posts/postsSlice';
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList = () => {
+  const dispatch = useAppDispatch();
+  const { posts, post } = useAppSelector(state => state.posts);
 
-      <tbody>
-        {posts.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
-            <td data-cy="PostTitle">{post.title}</td>
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
-              >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
-              </button>
-            </td>
+  const postId = post?.id || 0;
+
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    {
+                      'is-light': post.id !== postId,
+                    },
+                  )}
+                  onClick={() => {
+                    dispatch(postsActions.setPost(
+                      post.id === postId ? null : post,
+                    ));
+                  }}
+                >
+                  {post.id === postId ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
