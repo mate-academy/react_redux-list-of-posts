@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: ({ name, email, body }: CommentData) => void
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
@@ -14,7 +15,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: false,
     body: false,
   });
-
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
@@ -27,7 +27,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: '',
       body: '',
     });
-
     setErrors({
       name: false,
       email: false,
@@ -47,29 +46,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const preparedName = name.trim();
+    const preparedEmail = email.trim();
+    const preparedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !preparedName,
+      email: !preparedEmail,
+      body: !preparedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!preparedName || !preparedEmail || !preparedBody) {
       return;
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
+    onSubmit({ name, email, body });
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} onReset={() => clearForm()} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
