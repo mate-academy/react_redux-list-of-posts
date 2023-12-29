@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
 import postsReducer from '../features/posts';
 import usersReducer from '../features/users';
 import authorReducer from '../features/author';

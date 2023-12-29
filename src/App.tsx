@@ -23,6 +23,11 @@ export const App: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { posts, loading, error } = useAppSelector(state => state.posts);
 
+  const showLoader = author && loading;
+  const showError = author && !loading && error;
+  const showMessage = author && !loading && !error && !posts.length;
+  const showContent = author && !loading && !error && !!posts.length;
+
   function loadUserPosts(userId: number) {
     dispatch(postsAction.setLoading(true));
 
@@ -61,11 +66,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && loading && (
+                {showLoader && (
                   <Loader />
                 )}
 
-                {author && !loading && error && (
+                {showError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -74,13 +79,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {showMessage && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {showContent && (
                   <PostsList />
                 )}
               </div>

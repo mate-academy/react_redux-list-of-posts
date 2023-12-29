@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { actions as usersActions } from '../features/users';
-// import { User } from '../types/User';
 import { getUsers } from '../api/users';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as authorActions } from '../features/author';

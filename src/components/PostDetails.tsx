@@ -15,6 +15,12 @@ export const PostDetails: React.FC = () => {
   const { comments, loading, error } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
+  const showError = !loading && error;
+  const showMessage = !loading && !error && !comments.length;
+  const showContent = !loading && !error && !!comments.length;
+  const showButton = !loading && !error && !visible;
+  const showForm = !loading && !error && visible;
+
   function loadComments() {
     if (selectedPost) {
       dispatch(commentsAction.setLoading(true));
@@ -32,32 +38,6 @@ export const PostDetails: React.FC = () => {
 
   useEffect(loadComments, [selectedPost]);
 
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setloading(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setloading(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
@@ -68,19 +48,12 @@ export const PostDetails: React.FC = () => {
       });
 
       dispatch(commentsAction.set([...comments, newComment]));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
     } catch (err) {
       dispatch(commentsAction.setError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
     dispatch(commentsAction.set(comments.filter(
       comment => comment.id !== commentId,
     )));
@@ -109,19 +82,19 @@ export const PostDetails: React.FC = () => {
           <Loader />
         )}
 
-        {!loading && error && (
+        {showError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loading && !error && comments.length === 0 && (
+        {showMessage && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !error && comments.length > 0 && (
+        {showContent && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -155,7 +128,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {!loading && !error && !visible && (
+        {showButton && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -166,7 +139,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {!loading && !error && visible && (
+        {showForm && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

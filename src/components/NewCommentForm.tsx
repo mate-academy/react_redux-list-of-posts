@@ -46,12 +46,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !newComment.name,
-      email: !newComment.email,
-      body: !newComment.body,
+      name: !newComment.name.trim(),
+      email: !newComment.email.trim(),
+      body: !newComment.body.trim(),
     });
 
-    if (!newComment.name || !newComment.email || !newComment.body) {
+    if (!newComment.name.trim()
+    || !newComment.email.trim()
+    || !newComment.body.trim()) {
       return;
     }
 
