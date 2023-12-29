@@ -2,55 +2,72 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-// import { FormField, resetForm, resetFormPartly, updateValue, validateFields } from '../features/newCommentFormSlice';
-import * as newCommentApi from '../features/newCommentFormSlice';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   onSubmit: ({ name, email, body }: CommentData) => void
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const dispatch = useAppDispatch();
-  const { isValid, values, errors } = useAppSelector(state => state.newCommentForm);
-  const { name, email, body } = values;
   const [submitting, setSubmitting] = useState(false);
 
-  // const clearForm = () => {
-  //   onSubmit({
-  //     name: '',
-  //     email: '',
-  //     body: '',
-  //   });
-  // };
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const clearForm = () => {
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    dispatch(newCommentApi.updateValue({ name: field as newCommentApi.FormField, value }));
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    dispatch(newCommentApi.validateFields());
 
-    if (!isValid) {
+    const preparedName = name.trim();
+    const preparedEmail = email.trim();
+    const preparedBody = body.trim();
+
+    setErrors({
+      name: !preparedName,
+      email: !preparedEmail,
+      body: !preparedBody,
+    });
+
+    if (!preparedName || !preparedEmail || !preparedBody) {
       return;
     }
 
     setSubmitting(true);
-
-    await onSubmit(values);
-
+    onSubmit({ name, email, body });
     setSubmitting(false);
-    // await dispatch(updateValue({ name: body as FormField, value: '' }));
-    dispatch(newCommentApi.resetFormPartly());
+    setValues(current => ({ ...current, body: '' }));
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={() => dispatch(newCommentApi.resetForm())} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} onReset={() => clearForm()} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
