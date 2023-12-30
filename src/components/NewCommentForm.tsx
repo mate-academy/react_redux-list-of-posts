@@ -1,13 +1,16 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComment } from '../features/comments/commentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.posts);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -44,6 +47,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
+  const onSubmit = async (comment: CommentData) => {
+    try {
+      const newComment = await commentsApi.createComment({
+        name: comment.name,
+        email: comment.email,
+        body: comment.body,
+        postId: selectedPost?.id || 0,
+      });
+
+      dispatch(addComment(newComment));
+    } catch {
+      setIsError(true);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -59,13 +77,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -189,6 +204,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </button>
         </div>
       </div>
+
+      {isError && (
+        <p>Cannot add new comment</p>
+      )}
     </form>
   );
 };
