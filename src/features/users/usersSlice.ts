@@ -16,9 +16,7 @@ const userSlice = createSlice({
     addUser: (state, action: PayloadAction<User[]>) => {
       return {
         ...state,
-        users: [...state.users, ...action.payload
-          .slice(0, 9),
-        ],
+        users: [...state.users, ...action.payload],
       };
     },
   },
