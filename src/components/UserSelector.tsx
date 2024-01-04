@@ -1,40 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsers } from '../api/users';
-import { actions as usersActions } from '../features/usersSlice';
-import { actions as authorActions } from '../features/authorSlice';
+import { fetchUsers, setAuthor } from '../features/usersSlice';
 
 export const UserSelector = () => {
-  const { author } = useAppSelector(state => state.author);
-  const { users } = useAppSelector(state => state.users);
+  const { users, author: selectedUser } = useAppSelector(state => state.users);
+  const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
-  const [expanded, setExpanded] = useState(false);
-
   useEffect(() => {
-    getUsers()
-      .then(usersFromServer => {
-        dispatch(usersActions.set(usersFromServer));
-      });
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!expanded) {
-      return;
-    }
-
-    const handleDocumentClick = () => {
-      setExpanded(false);
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [expanded]);
+    dispatch(fetchUsers());
+  }, []);
 
   return (
     <div
@@ -47,15 +24,13 @@ export const UserSelector = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={(e) => {
-            e.stopPropagation();
-            setExpanded(current => !current);
+          onClick={() => {
+            setExpanded(!expanded);
           }}
         >
           <span>
-            {author?.name || 'Choose a user'}
+            {selectedUser?.name || 'Choose a user'}
           </span>
-
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
@@ -68,10 +43,11 @@ export const UserSelector = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(authorActions.set(user));
+                dispatch(setAuthor(user));
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === author?.id,
+                'is-active': user.id === selectedUser?.id,
               })}
             >
               {user.name}

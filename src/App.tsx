@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -7,41 +8,33 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { actions as postsActions } from './features/postsSlice';
-import { actions as selectedPostActions } from './features/selectedPostSlice';
+import { clearPosts, fetchPosts, selectPost } from './features/postsSlice';
+import { clearComments } from './features/commentsSlice';
 
 export const App: React.FC = () => {
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-  const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { author } = useAppSelector(state => state.users);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+    selectedPost,
+  } = useAppSelector(state => state.posts);
+  const hasErrorCondition = author && loaded && hasError;
+  const hasNoPostsCondition = author && loaded && !hasError && !posts.length;
+  const hasPostsCondition = author && loaded && !hasError && !!posts.length;
 
   useEffect(() => {
-    function loadUserPosts(userId: number) {
-      dispatch(postsActions.setLoaded(false));
-
-      getUserPosts(userId)
-        .then(postsFromServer => {
-          dispatch(postsActions.set(postsFromServer));
-        })
-        .catch(() => {
-          dispatch(postsActions.setHasError(true));
-        })
-        .finally(() => {
-          dispatch(postsActions.setLoaded(true));
-        });
-    }
-
-    dispatch(selectedPostActions.set(null));
+    dispatch(selectPost(null));
+    dispatch(clearComments());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPosts(author.id));
     } else {
-      dispatch(postsActions.set([]));
+      dispatch(clearPosts());
     }
-  }, [author, dispatch]);
+  }, [author?.id]);
 
   return (
     <main className="section">
@@ -62,7 +55,7 @@ export const App: React.FC = () => {
                 {author && !loaded && (
                   <Loader />
                 )}
-                {author && loaded && hasError && (
+                {hasErrorCondition && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -70,13 +63,12 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {author && loaded && !hasError && posts.length === 0 && (
+                {hasNoPostsCondition && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-
-                {author && loaded && !hasError && posts.length > 0 && (
+                {hasPostsCondition && (
                   <PostsList />
                 )}
               </div>
@@ -96,7 +88,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails />
+                <PostDetails post={selectedPost} />
               )}
             </div>
           </div>

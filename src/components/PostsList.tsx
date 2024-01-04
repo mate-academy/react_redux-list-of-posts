@@ -1,12 +1,21 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
+import { Post } from '../types/Post';
+import { selectPost } from '../features/postsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions as selectedPostActions } from '../features/selectedPostSlice';
 
 export const PostsList = () => {
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { posts } = useAppSelector(state => state.posts);
-
   const dispatch = useAppDispatch();
+  const {
+    items: posts,
+    selectedPost,
+  } = useAppSelector(state => state.posts);
+
+  const selectedPostId = selectedPost?.id || 0;
+
+  const handlePostSelection = (post: Post) => {
+    return dispatch(selectPost(post.id === selectedPostId ? null : post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -17,7 +26,7 @@ export const PostsList = () => {
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            <th aria-label="Actions"> </th>
+            <th> </th>
           </tr>
         </thead>
 
@@ -34,20 +43,17 @@ export const PostsList = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPost?.id,
+                      'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
-                    dispatch(selectedPostActions.set(
-                      post.id === selectedPost?.id ? null : post,
-                    ));
-                  }}
+                  onClick={() => handlePostSelection(post)}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
           ))}
+
         </tbody>
       </table>
     </div>

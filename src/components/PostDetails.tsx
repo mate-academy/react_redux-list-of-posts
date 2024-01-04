@@ -1,87 +1,76 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions as commentsActions } from '../features/commentsSlice';
+import {
+  deleteComment,
+  fetchComments,
+  removeComment,
+} from '../features/commentsSlice';
 
-export const PostDetails = () => {
-  const { items, loaded, hasError }
-    = useAppSelector(state => state.comments);
-  const comments = items;
+type Props = {
+  post: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
+  const {
+    items: comments,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.comments);
+
   const [visible, setVisible] = useState(false);
 
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const post = selectedPost;
+  const hasErrorCondition = loaded && hasError;
+  const hasCommentsCondition = loaded && !hasError && !!comments.length;
+  const hasNoCommentsCondition = loaded && !hasError && !comments.length;
+  const isButtonVisible = loaded && !hasError && !visible;
+  const isFormVisible = loaded && !hasError && visible;
 
-  function loadComments() {
-    dispatch(commentsActions.setLoaded(false));
-    dispatch(commentsActions.setHasError(false));
+  useEffect(() => {
+    dispatch(fetchComments(post.id));
     setVisible(false);
+  }, [post.id]);
 
-    commentsApi.getPostComments(post?.id || 0)
-      .then(commentsFromServer => {
-        dispatch(commentsActions.set(commentsFromServer));
-      })
-      .catch(() => dispatch(commentsActions.setHasError(true)))
-      .finally(() => dispatch(commentsActions.setLoaded(true)));
-  }
-
-  useEffect(loadComments, [post?.id, dispatch]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post?.id || 0,
-      });
-
-      dispatch(commentsActions.addComment(newComment));
-    } catch (error) {
-      dispatch(commentsActions.setHasError(true));
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.deleteComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+  const handleDeleteComment = (commentId: number) => {
+    dispatch(removeComment(commentId));
+    dispatch(deleteComment(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {post ? `#${post.id}: ${post.title}` : 'Loading...'}
+          {`#${post.id}: ${post.title}`}
         </h2>
-
         <p data-cy="PostBody">
-          {post?.body}
+          {post.body}
         </p>
       </div>
-
       <div className="block">
         {!loaded && (
           <Loader />
         )}
-        {loaded && hasError && (
+
+        {hasErrorCondition && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
-        {loaded && !hasError && comments.length === 0 && (
+
+        {hasNoCommentsCondition && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
-        {loaded && !hasError && comments.length > 0 && (
+
+        {hasCommentsCondition && (
           <>
             <p className="title is-4">Comments:</p>
+
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -97,7 +86,7 @@ export const PostDetails = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -109,7 +98,8 @@ export const PostDetails = () => {
             ))}
           </>
         )}
-        {loaded && !hasError && !visible && (
+
+        {isButtonVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -119,8 +109,9 @@ export const PostDetails = () => {
             Write a comment
           </button>
         )}
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+
+        {isFormVisible && (
+          <NewCommentForm />
         )}
       </div>
     </div>
