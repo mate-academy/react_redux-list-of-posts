@@ -10,44 +10,56 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { getUsers } from './api/users';
+import { addUser } from './features/users/usersSlice';
+import {
+  setPosts,
+  setError,
+  setLoaded,
+} from './features/posts/postsSlice';
+import {
+  setSelectPost,
+} from './features/selectedpost/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { posts, loaded, hasError } = useAppSelector(state => state.post);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const dispatch = useAppDispatch();
+
+  const loadUserPosts = React.useCallback((userId: number) => {
+    dispatch(setLoaded(false));
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+      .then((postsData) => {
+        dispatch(setPosts(postsData));
+      })
+      .catch(() => dispatch(setError(true)))
+      .finally(() => dispatch(setLoaded(true)));
+  }, [dispatch]);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
       setPosts([]);
     }
-  }, [author]);
+  }, [author, dispatch, loadUserPosts]);
+
+  useEffect(() => {
+    getUsers()
+      .then((usersData) => {
+        dispatch(addUser(usersData));
+      });
+  }, [dispatch]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -82,11 +94,12 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author
+                && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={(post) => dispatch(setSelectPost(post))}
                   />
                 )}
               </div>
