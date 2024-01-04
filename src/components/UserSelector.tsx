@@ -13,6 +13,23 @@ export const UserSelector = () => {
     dispatch(fetchUsers());
   }, []);
 
+  useEffect(() => {
+    if (expanded) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setExpanded(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [expanded]);
+
   return (
     <div
       data-cy="UserSelector"
@@ -25,7 +42,8 @@ export const UserSelector = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            setExpanded(!expanded);
+            // e.stopPropagation();
+            setExpanded(true);
           }}
         >
           <span>
