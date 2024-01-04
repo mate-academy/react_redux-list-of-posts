@@ -153,6 +153,6 @@ const commentsSlice: Slice<CommentsState, any, 'comments'> = createSlice({
   },
 });
 
-export const { setComments, isHasError } = commentsSlice.actions;
+export const { setComments, isHasError, isLoaded } = commentsSlice.actions;
 
 export default commentsSlice.reducer;

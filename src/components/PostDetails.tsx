@@ -10,6 +10,7 @@ import {
   deleteComment as deleteCommentReduce,
 } from '../features/commentsSlice/commentsSlice';
 import { RootState } from '../app/store';
+import { isValidCommentData } from './function/isValidCommentData';
 
 type Props = {
   post: Post;
@@ -33,7 +34,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   function addComment(data: CommentData) {
     const newComment = { ...data, postId: post.id };
 
-    dispatch(addComments(newComment));
+    if (isValidCommentData(data)) {
+      dispatch(addComments(newComment));
+    }
   }
 
   function deleteComment(id: number) {
