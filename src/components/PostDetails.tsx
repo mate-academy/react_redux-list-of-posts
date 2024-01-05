@@ -2,33 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsSlice from '../features/comments/commentsSlice';
 
+import { CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
+  const dispatch = useAppDispatch();
+  const {
+    items: comments, loaded, hasError,
+  } = useAppSelector(state => state.comments);
 
-    commentsApi.getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+  function loadComments() {
+    dispatch(commentsSlice.fetchPostComments(post.id));
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post.id, dispatch]);
 
   // The same useEffect with async/await
   /*
@@ -57,38 +53,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   */
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
+    dispatch(commentsSlice.addComment({
+      name, email, body, id: post.id,
+    }));
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+  const deleteComment = (commentId: number) => {
+    dispatch(commentsSlice.deleteComment(commentId));
   };
 
   return (
