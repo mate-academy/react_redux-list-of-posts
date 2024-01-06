@@ -1,10 +1,14 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import counterReducer from '../features/counter/counterSlice';
+import { usersReducer } from '../features/slices/usersSlice';
+import { commentsReducer } from '../features/slices/commentsSlice';
+import { postsReducer } from '../features/slices/postsSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    users: usersReducer,
+    comments: commentsReducer,
+    posts: postsReducer,
   },
 });
 
