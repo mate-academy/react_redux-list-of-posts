@@ -40,8 +40,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      {/* <Counter /> */}
 
       <div className="container">
         <div className="tile is-ancestor">
@@ -58,11 +56,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loading && (
+                {author && loading && (
                   <Loader />
                 )}
 
-                {author && loading && error && (
+                {author && !loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -71,13 +69,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !error && posts.length === 0 && (
+                {author && !loading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loading && !error && posts.length > 0 && (
+                {author && !loading && !error && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>

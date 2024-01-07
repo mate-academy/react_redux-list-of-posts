@@ -53,23 +53,23 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loading && (
+        {loading && (
           <Loader />
         )}
 
-        {loading && error && (
+        {!loading && error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loading && !error && comments.length === 0 && (
+        {!loading && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loading && !error && comments.length > 0 && (
+        {!loading && !error && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -103,7 +103,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loading && !error && !visible && (
+        {!loading && !error && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -114,7 +114,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loading && !error && visible && (
+        {!loading && !error && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
