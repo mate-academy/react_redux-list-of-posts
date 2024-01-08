@@ -9,21 +9,22 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Counter } from './features/counter/Counter';
-import { useAppDispatch, useAppSelector } from './app/hooks';
+import { useAppDispatch } from './app/hooks';
 import { fetchUsers } from './features/users/usersSlice';
 import { setAuthor } from './features/author/authorSlice';
 import { fetchUserPosts, setPosts } from './features/posts/postsSlice';
 import { Post } from './types/Post';
 import { setSelectedPost as setSelectedPostAction }
   from './features/selectedPost/selectedPostSlice';
+import { usePosts } from './hooks/usePosts';
+import { useSelectedPost } from './hooks/useSelectedPost';
+import { useAuthor } from './hooks/useAuthor';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector((store) => store.author);
-  const { value: selectedPost } = useAppSelector((store) => store.selectedPost);
-
-  const { items: posts, loaded, hasError }
-    = useAppSelector((store) => store.posts);
+  const { author } = useAuthor();
+  const { value: selectedPost } = useSelectedPost();
+  const { items: posts, loaded, hasError } = usePosts();
 
   const loadUserPosts = useCallback(
     (userId: number) => {

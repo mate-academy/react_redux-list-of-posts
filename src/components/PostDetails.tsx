@@ -6,13 +6,14 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import {
   fetchComments,
   addComment as addCommentAction,
   deleteComment as deleteCommentAction,
   setError,
 } from '../features/comments/commentsSlice';
+import { useComments } from '../hooks/useComments';
 
 type Props = {
   post: Post;
@@ -20,8 +21,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
-  const { items: comments, hasError, loaded }
-    = useAppSelector(store => store.comments);
+  const { items: comments, hasError, loaded } = useComments();
   const [visible, setVisible] = useState(false);
 
   function loadComments() {

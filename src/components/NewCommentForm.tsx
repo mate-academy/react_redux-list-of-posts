@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import {
   clearForm,
   setErrors,
   setValues,
 } from '../features/newCommentForm/newCommentFormSlice';
+import { useNewCommentForm } from '../hooks/useNewCommentForm';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -14,7 +15,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
-  const { values, errors } = useAppSelector(store => store.newCommentForm);
+  const { values, errors } = useNewCommentForm();
 
   const { name, email, body } = values;
 

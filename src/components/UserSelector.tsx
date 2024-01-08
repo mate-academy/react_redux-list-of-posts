@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useAppSelector } from '../app/hooks';
+import { useUsers } from '../hooks/useUsers';
 
 type Props = {
   value: User | null;
@@ -12,7 +12,7 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  const { users } = useAppSelector(store => store.users);
+  const { users } = useUsers();
 
   const [expanded, setExpanded] = useState(false);
 
