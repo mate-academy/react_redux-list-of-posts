@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
+import { User } from '../types/User';
 
 export const UserSelector = () => {
   const { users } = useAppSelector(state => state.users);
@@ -31,6 +32,14 @@ export const UserSelector = () => {
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
+
+  const handleAuthorSelect = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    selectedAuthor: User,
+  ) => {
+    e.preventDefault();
+    dispatch(authorActions.setAuthor(selectedAuthor));
+  };
 
   return (
     <div
@@ -64,9 +73,8 @@ export const UserSelector = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(authorActions.setAuthor(user));
-              }}
+              // eslint-disable-next-line @typescript-eslint/no-shadow, max-len
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleAuthorSelect(e, user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}

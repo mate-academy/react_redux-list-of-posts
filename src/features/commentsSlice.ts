@@ -7,12 +7,14 @@ type InitialState = {
   comments: Comment[],
   loaded: boolean,
   hasError: string,
+  addCommentError: boolean,
 };
 
 const initialState: InitialState = {
   comments: [],
   loaded: false,
   hasError: '',
+  addCommentError: false,
 };
 
 export const fetchComments = createAsyncThunk('comments/fetch',
@@ -32,6 +34,9 @@ const commentsSlice = createSlice({
     },
     setError: (state, action) => {
       state.hasError = action.payload;
+    },
+    addCommentError: (state, action) => {
+      state.addCommentError = action.payload;
     },
   },
   extraReducers: builder => {
