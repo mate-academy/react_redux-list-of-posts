@@ -21,7 +21,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     comments,
     loaded,
     hasError,
-    // addCommentError,
   } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
