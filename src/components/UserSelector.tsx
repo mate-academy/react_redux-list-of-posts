@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsers } from '../utils/thunks';
+import { fetchUsers, setAuthor } from '../features/usersSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
-  const { users } = useAppSelector(state => state.users);
-  const dispatch = useAppDispatch();
+export const UserSelector = () => {
+  const { users, author: selectedUser } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -24,17 +17,23 @@ export const UserSelector: React.FC<Props> = ({
     if (!expanded) {
       return;
     }
+    // we save a link to remove the listener later
 
     const handleDocumentClick = () => {
+      // we close the Dropdown on any click (inside or outside)
+      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', handleDocumentClick);
+    /* eslint-disable consistent-return */
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
+  // we don't want to listening for outside clicks
+  // when the Dropdown is closed
   }, [expanded]);
 
   return (
@@ -67,7 +66,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setAuthor(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

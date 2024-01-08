@@ -1,79 +1,100 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
-import { fetchComments, postComment, deleteComment } from '../utils/thunks';
+import { getPostComments } from '../api/comments';
+import * as commentsApi from '../api/comments';
 
-type Comments = {
-  comments: Comment[],
-  isLoading: boolean,
+export interface CommentsState {
+  items: Comment[],
+  loaded: boolean,
   hasError: boolean,
-};
-
-const startState: Comments = {
-  comments: [],
-  isLoading: false,
+}
+const initialState: CommentsState = {
+  items: [],
+  loaded: false,
   hasError: false,
 };
 
-const postCommentsSlice = createSlice({
+export const fetchComments = createAsyncThunk(
+  'comments/fetchComments',
+  async (postId: number) => {
+    const value = await getPostComments(postId);
+
+    return value;
+  },
+);
+export const addComment = createAsyncThunk(
+  'comments/add', (data: Omit<Comment, 'id'>) => {
+    return commentsApi.createComment(data);
+  },
+);
+export const deleteComment = createAsyncThunk(
+  'commetns/delete', (commentId: number) => {
+    return commentsApi.deleteComment(commentId);
+  },
+);
+export const commentsSlice = createSlice({
   name: 'comments',
-  initialState: startState,
+  initialState,
   reducers: {
     removeComment: (state, action) => {
       return {
         ...state,
-        comments: state.comments
+        items: state.items
           .filter(comment => comment.id !== action.payload),
+      };
+    },
+    clearComments: (state) => {
+      return {
+        ...state,
+        items: [],
       };
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchComments.pending, (state) => {
-      return {
-        ...state,
-        isLoading: true,
-        hasError: false,
-      };
-    });
-    builder.addCase(fetchComments.fulfilled, (state, action) => {
-      return {
-        ...state,
-        isLoading: false,
-        comments: action.payload,
-        hasError: false,
-      };
-    });
-    builder.addCase(fetchComments.rejected, (state) => {
-      return {
-        ...state,
-        isLoading: false,
-        hasError: true,
-      };
-    });
-    builder.addCase(postComment.pending, (state) => {
-      return {
-        ...state,
-        isSubmititng: true,
-        hasError: false,
-      };
-    });
-    builder.addCase(postComment.fulfilled, (state, action) => {
-      return {
-        ...state,
-        isSubmititng: false,
-        comments: [...state.comments, action.payload],
-        hasError: false,
-      };
-    });
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
-      return {
-        ...state,
-        comments: state.comments
-          .filter(comment => comment.id !== action.payload),
-        hasError: false,
-      };
-    });
+    builder
+      .addCase(fetchComments.pending, (state) => {
+        return {
+          ...state,
+          loaded: false,
+          hasError: false,
+        };
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        return {
+          ...state,
+          items: action.payload,
+          loaded: true,
+          hasError: false,
+        };
+      })
+      .addCase(fetchComments.rejected, (state) => {
+        return {
+          ...state,
+          loaded: true,
+          hasError: true,
+        };
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        return {
+          ...state,
+          items: [...state.items, action.payload],
+        };
+      })
+      .addCase(addComment.rejected, (state) => {
+        return {
+          ...state,
+          hasError: true,
+        };
+      })
+      .addCase(deleteComment.fulfilled, (state) => {
+        return {
+          ...state,
+          hasError: false,
+        };
+      });
   },
 });
 
-export default postCommentsSlice.reducer;
-export const { removeComment } = postCommentsSlice.actions;
+export const { removeComment, clearComments } = commentsSlice.actions;
+
+export default commentsSlice.reducer;

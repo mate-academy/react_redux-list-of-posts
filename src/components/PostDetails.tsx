@@ -1,51 +1,41 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import { Post } from '../types/Post';
-
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchComments, postComment, deleteComment } from '../utils/thunks';
-import { removeComment } from '../features/commentsSlice';
+import {
+  deleteComment,
+  fetchComments,
+  removeComment,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [visible, setVisible] = useState(false);
-  const {
-    comments,
-    isLoading,
-    hasError,
-  } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
+  const {
+    items: comments,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.comments);
 
-  function loadComments() {
-    setVisible(false);
+  const [visible, setVisible] = useState(false);
 
-    if (post) {
-      dispatch(fetchComments(post.id));
-    }
-  }
+  const hasErrorCondition = loaded && hasError;
+  const hasCommentsCondition = loaded && !hasError && !!comments.length;
+  const hasNoCommentsCondition = loaded && !hasError && !comments.length;
+  const isButtonVisible = loaded && !hasError && !visible;
+  const isFormVisible = loaded && !hasError && visible;
 
   useEffect(() => {
-    loadComments();
+    dispatch(fetchComments(post.id));
+    setVisible(false);
   }, [post.id]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    const data = {
-      name,
-      email,
-      body,
-      postId: post?.id as number,
-    };
-
-    await dispatch(postComment(data));
-  };
-
-  const doDeleteComment = async (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => {
     dispatch(removeComment(commentId));
     dispatch(deleteComment(commentId));
   };
@@ -60,25 +50,24 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           {post.body}
         </p>
       </div>
-
       <div className="block">
-        {isLoading && (
+        {!loaded && (
           <Loader />
         )}
 
-        {!isLoading && hasError && (
+        {hasErrorCondition && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!isLoading && !hasError && comments.length === 0 && (
+        {hasNoCommentsCondition && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!isLoading && !hasError && comments.length > 0 && (
+        {hasCommentsCondition && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -97,7 +86,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => doDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -110,7 +99,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!isLoading && !hasError && !visible && (
+        {isButtonVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -121,8 +110,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!isLoading && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {isFormVisible && (
+          <NewCommentForm />
         )}
       </div>
     </div>

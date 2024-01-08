@@ -12,6 +12,7 @@ const Root = () => (
     <Router>
       <App />
     </Router>
+
   </Provider>
 );
 
