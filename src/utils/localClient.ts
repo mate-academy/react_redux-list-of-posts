@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // function wait(delay: number) {
 //   return new Promise(done => setTimeout(done, delay));
 // }
-
 function read(key: string) {
   const data = window.localStorage.getItem(key);
 
