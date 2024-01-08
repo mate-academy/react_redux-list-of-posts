@@ -12,11 +12,11 @@ function read(key: string) {
   }
 }
 
-function write(key: string, data: unknown) {
+function write<T>(key: string, data: T) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 
-export function init(key: string, initialData: unknown) {
+export function init<T>(key: string, initialData: T) {
   if (!read(key)) {
     write(key, initialData);
   }

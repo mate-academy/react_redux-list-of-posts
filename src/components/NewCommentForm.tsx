@@ -19,7 +19,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const { name, email, body } = values;
 
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -43,11 +43,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     await onSubmit({ name, email, body });
 
-    setSubmitting(false);
+    setIsSubmitting(false);
     dispatch(setValues({ ...values, body: '' }));
   };
 
@@ -162,7 +162,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
