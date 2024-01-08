@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,44 +8,54 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
 import { Counter } from './features/counter/Counter';
+import { useAppDispatch } from './app/hooks';
+import { fetchUsers } from './features/users/usersSlice';
+import { setAuthor } from './features/author/authorSlice';
+import { fetchUserPosts, setPosts } from './features/posts/postsSlice';
+import { Post } from './types/Post';
+import { setSelectedPost as setSelectedPostAction }
+  from './features/selectedPost/selectedPostSlice';
+import { usePosts } from './hooks/usePosts';
+import { useSelectedPost } from './hooks/useSelectedPost';
+import { useAuthor } from './hooks/useAuthor';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { author } = useAuthor();
+  const { value: selectedPost } = useSelectedPost();
+  const { items: posts, loaded, hasError } = usePosts();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const loadUserPosts = useCallback(
+    (userId: number) => {
+      dispatch(fetchUserPosts(userId));
+    },
+    [dispatch],
+  );
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const setSelectedPost = useCallback(
+    (value: Post | null) => {
+      dispatch(setSelectedPostAction(value));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch, loadUserPosts, setSelectedPost]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
       <Counter />
 
       <div className="container">
@@ -53,7 +63,10 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={value => dispatch(setAuthor(value))}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
