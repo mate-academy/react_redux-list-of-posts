@@ -21,18 +21,12 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    // setUser: (state, action) => {
-    //   return { ...state, users: action.payload };
-    // },
   },
   /* eslint-disable no-param-reassign */
   extraReducers: (builder) => {
     builder.addCase(init.fulfilled, (state, action) => {
       state.users = action.payload;
     });
-    // builder.addCase(init.fulfilled, (state, action) => {
-    //   return { ...state, users: action.payload };
-    // });
   },
 });
 

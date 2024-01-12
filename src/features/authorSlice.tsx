@@ -5,9 +5,6 @@ const initialState = {
   author: {} as User,
 };
 
-// export const init = createAsyncThunk('user/loadUser',
-//   async () => getUsers());
-
 const authorSlice = createSlice({
   name: 'author',
   initialState,
@@ -16,11 +13,6 @@ const authorSlice = createSlice({
       return { ...state, author: action.payload };
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(init.fulfilled, (state, action) => {
-  //     return { ...state, users: action.payload };
-  //   });
-  // },
 });
 
 export default authorSlice.reducer;

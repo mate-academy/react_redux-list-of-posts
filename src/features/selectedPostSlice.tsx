@@ -9,9 +9,6 @@ const initialState: SelectedPostState = {
   selectedPost: null,
 };
 
-// export const init = createAsyncThunk('user/loadUser',
-//   async () => getUsers());
-
 const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
@@ -20,11 +17,6 @@ const selectedPostSlice = createSlice({
       return { ...state, selectedPost: action.payload };
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(init.fulfilled, (state, action) => {
-  //     return { ...state, users: action.payload };
-  //   });
-  // },
 });
 
 export default selectedPostSlice.reducer;

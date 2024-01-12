@@ -29,21 +29,6 @@ const postsSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
-    // builder.addCase(init.pending, (state) => {
-    //   return { ...state, loaded: true };
-    // });
-    // builder.addCase(init.fulfilled, (state, action) => {
-    //   return { ...state, loaded: false, items: action.payload };
-    // });
-    // builder.addCase(init.rejected, (state) => {
-    //   return { ...state, loaded: false, hasError: true };
-    // });
-
-    // builder.addCase(init.rejected, (state) => ({
-    //   state.loaded = false;
-    //   state.hasError = true;
-    // }));
-
     /* eslint-disable no-param-reassign */
     builder.addCase(init.pending, (state) => {
       state.loaded = true;
