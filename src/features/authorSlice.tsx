@@ -1,13 +1,12 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUsers } from '../api/users';
+import { createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
 const initialState = {
   author: {} as User,
 };
 
-export const init = createAsyncThunk('user/loadUser',
-  async () => getUsers());
+// export const init = createAsyncThunk('user/loadUser',
+//   async () => getUsers());
 
 const authorSlice = createSlice({
   name: 'author',
@@ -25,3 +24,4 @@ const authorSlice = createSlice({
 });
 
 export default authorSlice.reducer;
+export const { setAuthor } = authorSlice.actions;

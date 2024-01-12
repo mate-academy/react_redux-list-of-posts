@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
-import { getPostComments } from '../api/comments';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 const initialState = {
   loaded: false,
@@ -10,7 +10,29 @@ const initialState = {
 
 export const init = createAsyncThunk(
   'comments/loadPostComments',
-  async (postId: number) => getPostComments(postId),
+  async (postId: number) => {
+    const comments = getPostComments(postId);
+
+    return comments;
+  },
+);
+
+export const createNewComment = createAsyncThunk(
+  'comments/createNewComment',
+  async (commentData: Omit<Comment, 'id'>) => {
+    const newComment = await createComment(commentData);
+
+    return newComment;
+  },
+);
+
+export const deletedComment = createAsyncThunk(
+  'comments/createNewComment',
+  async (commentData: number) => {
+    const deleteThisComment = await deleteComment(commentData);
+
+    return deleteThisComment;
+  },
 );
 
 const commentsSlice = createSlice({

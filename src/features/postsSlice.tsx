@@ -8,21 +8,18 @@ export interface T {
   items: Post[],
 }
 
-const initialState: T = {
+export const initialState: T = {
   loaded: false,
   hasError: false,
   items: [] as Post[],
 };
 
-// export const init = createAsyncThunk(
-//   'posts/loadUserPosts',
-//   async (userId: number) => getUserPosts(userId),
-// );
-
 export const init = createAsyncThunk(
   'posts/loadUserPosts',
   async (userId: number) => {
-    return await getUserPosts(userId);
+    const post = await getUserPosts(userId);
+
+    return post;
   },
 );
 
@@ -32,20 +29,34 @@ const postsSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
-    builder.addCase(init.pending, (state) => {
-      return { ...state, loaded: true };
-    });
-    builder.addCase(init.fulfilled, (state, action) => {
-      return { ...state, loaded: false, items: action.payload };
-    });
+    // builder.addCase(init.pending, (state) => {
+    //   return { ...state, loaded: true };
+    // });
+    // builder.addCase(init.fulfilled, (state, action) => {
+    //   return { ...state, loaded: false, items: action.payload };
+    // });
     // builder.addCase(init.rejected, (state) => {
     //   return { ...state, loaded: false, hasError: true };
     // });
 
-    builder.addCase(init.rejected, (state) => ({
-      state.loaded: false;
-      state.hasError: true;
-    }));
+    // builder.addCase(init.rejected, (state) => ({
+    //   state.loaded = false;
+    //   state.hasError = true;
+    // }));
+
+    /* eslint-disable no-param-reassign */
+    builder.addCase(init.pending, (state) => {
+      state.loaded = true;
+      state.hasError = false;
+    });
+    builder.addCase(init.fulfilled, (state, action) => {
+      state.loaded = false;
+      state.items = action.payload;
+    });
+    builder.addCase(init.rejected, (state) => {
+      state.loaded = false;
+      state.hasError = true;
+    });
   },
 });
 
