@@ -46,7 +46,11 @@ export const PostsList: React.FC<Props> = ({
                     },
                   )}
                   onClick={() => {
-                    dispatch(select(post));
+                    const currentPost = post.id === selectedPostId
+                      ? null
+                      : post;
+
+                    dispatch(select(currentPost));
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}

@@ -26,7 +26,7 @@ export const commentsSlice = createSlice({
       state.items.push(action.payload as Comment);
     },
     remove: (state, action: PayloadAction<Comment>) => {
-      state.items.filter(item => item !== action.payload);
+      state.items = state.items.filter(item => item.id !== action.payload.id);
     },
   },
   extraReducers: (builder) => {
