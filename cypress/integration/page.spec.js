@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 /// <reference types="../support" />
 
-const { cwd } = require('process');
-
 const page = {
   mockUsers: () => cy.intercept('**/users', { fixture: 'users' }).as('usersRequest'),
   mockUser1Posts: () => cy.intercept('**/posts?userId=1', { fixture: 'user1Posts' }).as('user1PostsRequest'),
@@ -1222,8 +1220,8 @@ describe('', () => {
       postDetails.comments().should('have.length', 4);
 
       postDetails.comments().eq(0).byDataCy('CommentAuthor')
-          .should('have.text', 'quo vero reiciendis velit similique earum')
-          .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
+        .should('have.text', 'quo vero reiciendis velit similique earum')
+        .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
     });
 
     it('should send delete request with a deleted comment id', () => {
