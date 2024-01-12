@@ -8,7 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Counter } from './features/counter/Counter';
+import { getUserPosts } from './api/posts';
+import { User } from './types/User';
+import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { select } from './app/slices/selectedPost.slice';
 import { init } from './app/slices/posts.slice';
@@ -33,8 +35,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
