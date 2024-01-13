@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearPosts, fetchPosts, selectPost } from './features/postsSlice';
 import { clearComments } from './features/commentsSlice';
 
+
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.users);
