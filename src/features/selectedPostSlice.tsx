@@ -9,7 +9,7 @@ const initialState: SelectedPostState = {
   selectedPost: null,
 };
 
-const selectedPostSlice = createSlice({
+export const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
   reducers: {
@@ -20,3 +20,4 @@ const selectedPostSlice = createSlice({
 });
 
 export default selectedPostSlice.reducer;
+export const { setSelectedPost } = selectedPostSlice.actions;
