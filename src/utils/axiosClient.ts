@@ -1,5 +1,11 @@
 // axios docs https://axios-http.com/docs/intro
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+
+interface ApiData {
+  id: number;
+  name: string;
+  // описати типи даних для ApiData
+}
 
 const instance = axios.create({
   baseURL: 'https://mate.academy/students-api',
@@ -7,27 +13,27 @@ const instance = axios.create({
 });
 
 export const client = {
-  async get<T>(url: string) {
-    const response = await instance.get<T>(url);
+  async get<T>(url: string): Promise<T> {
+    const response: AxiosResponse<T> = await instance.get(url);
 
     // no need to run `response.json()` data is already prepared
     return response.data;
   },
 
-  async post<T>(url: string, data: any) {
-    const response = await instance.post<T>(url, data);
+  async post<T>(url: string, data: ApiData): Promise<T> {
+    const response: AxiosResponse<T> = await instance.post(url, data);
 
     return response.data;
   },
 
-  async patch<T>(url: string, data: any) {
-    const response = await instance.patch<T>(url, data);
+  async patch<T>(url: string, data: ApiData): Promise<T> {
+    const response: AxiosResponse<T> = await instance.patch(url, data);
 
     return response.data;
   },
 
-  async delete(url: string) {
+  async delete(url: string): Promise<void> {
     // if we don't need the response data
-    return instance.delete(url);
+    await instance.delete(url);
   },
 };
