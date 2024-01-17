@@ -8,38 +8,40 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import { setSelectedPost } from './features/selectedPostSlice';
+import { getPosts } from './features/postsSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { clearUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { posts, isLoading, hasError }
+  = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
 
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost
+  = useAppSelector((state) => state.selectedPost.selectedPost);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const handleUserSelect = (selectedUser: User | null) => {
+    setAuthor(selectedUser);
+    dispatch(setSelectedPost(null));
+  };
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
+    function loadUserPosts(userId: number) {
+      dispatch(getPosts(userId));
+    }
+
     setSelectedPost(null);
 
     if (author) {
       loadUserPosts(author.id);
-    } else {
-      setPosts([]);
     }
+  }, [author, dispatch]);
+
+  useEffect(() => {
+    clearUsers();
   }, [author]);
 
   return (
@@ -49,7 +51,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={handleUserSelect} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -59,11 +61,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && isLoading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && !isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -72,17 +74,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !isLoading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !isLoading && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
