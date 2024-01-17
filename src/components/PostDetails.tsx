@@ -31,7 +31,9 @@ export const PostDetails: React.FC = () => {
 
     if (selectedPost) {
       commentsApi.getPostComments(selectedPost.id)
-        .then(setComments)
+        .then((commentsFromServer) => {
+          dispatch(setComments(commentsFromServer));
+        })
         .catch(() => dispatch(setHasError(true)))
         .finally(() => dispatch(setLoading(false)));
     }

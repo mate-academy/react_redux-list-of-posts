@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import cn from 'classnames';
 import './App.scss';
 
 import { PostsList } from './components/PostsList';
@@ -84,13 +85,13 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className="tile is-parent is-8-desktop Sidebar Sidebar--open"
+            className={cn('tile is-parent is-8-desktop Sidebar', {
+              'Sidebar--open': selectedPost,
+            })}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost ? (
+              {selectedPost && (
                 <PostDetails />
-              ) : (
-                <p>Choose a post</p>
               )}
             </div>
           </div>
