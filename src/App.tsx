@@ -20,7 +20,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     dispatch(postsActions.init(author));
     dispatch(selectedPostActions.set(null));
-  }, [author, dispatch]);
+  }, [author]);
 
   return (
     <main className="section">
