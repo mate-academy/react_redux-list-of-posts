@@ -8,6 +8,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import * as postsActions from './features/postsSlice';
+import * as selectedPostActions from './features/postSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
@@ -18,7 +19,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(postsActions.init(author));
-  }, [author]);
+    dispatch(selectedPostActions.set(null));
+  }, [author, dispatch]);
 
   return (
     <main className="section">

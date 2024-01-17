@@ -21,7 +21,7 @@ export const PostDetails: React.FC = () => {
       setVisible(false);
       dispatch(commentsActions.init(post));
     }
-  }, [post]);
+  }, [post, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
