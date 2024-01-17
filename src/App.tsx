@@ -26,13 +26,10 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
-      // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
