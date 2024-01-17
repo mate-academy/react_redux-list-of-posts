@@ -25,9 +25,9 @@ const addComment = createAsyncThunk('comments/add',
 const removeComment = createAsyncThunk('comments/remove',
   async (commentId: number, { dispatch }) => {
     try {
-      await dispatch(commentsActions.localeRemoveComment(commentId));
+      dispatch(commentsActions.localeRemoveComment(commentId));
 
-      return await deleteComment(commentId);
+      return deleteComment(commentId);
     } catch {
       throw new Error();
     }

@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     getUsers()
       .then(usersFromServer => dispatch(usersActions.set(usersFromServer)));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(selectedPostActions.remove());
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(postsActions.clear());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   const showLoader = author && loading;
   const showError = author && !loading && hasError;
@@ -45,12 +45,12 @@ export const App: React.FC = () => {
 
   const setAutor = useCallback(
     (currAuthor: User) => dispatch(authorActions.set(currAuthor)),
-    [],
+    [dispatch],
   );
 
   const setSelectedPost = useCallback(
     (post: Post | null) => dispatch(selectedPostActions.set(post)),
-    [],
+    [dispatch],
   );
 
   return (

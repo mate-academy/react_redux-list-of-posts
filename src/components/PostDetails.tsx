@@ -24,14 +24,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     setVisible(false);
     dispatch(commentsActions.loadComments(post.id));
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   const addComment = useCallback(async (commentData: CommentData) => {
-    await dispatch(commentsActions.addComment({
+    dispatch(commentsActions.addComment({
       ...commentData,
       postId: post.id,
     }));
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   const deleteComment = (commentId: number) => {
     dispatch(commentsActions.removeComment(commentId));
