@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
-export interface T {
+export interface State {
   users: User[],
 }
 
-const initialState: T = {
+const initialState: State = {
   users: [],
 };
 
@@ -20,8 +20,7 @@ export const init = createAsyncThunk('users/loadUser',
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   /* eslint-disable no-param-reassign */
   extraReducers: (builder) => {
     builder.addCase(init.fulfilled, (state, action) => {
