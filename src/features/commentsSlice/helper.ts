@@ -26,3 +26,7 @@ export const setComments = (
   state.comments = action.payload;
   state.loading = false;
 };
+
+export const clearComments = (state: CommentsState) => {
+  state.comments = [];
+}
