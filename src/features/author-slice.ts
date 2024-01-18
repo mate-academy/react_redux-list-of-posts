@@ -2,11 +2,11 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
 export interface State {
-  author: User | null;
+  author: User;
 }
 
 const initialState: State = {
-  author: null,
+  author: {} as User,
 };
 
 const authorSlice = createSlice({

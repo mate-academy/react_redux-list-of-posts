@@ -8,7 +8,7 @@ import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 
 type Props = {
-  post: Post;
+  post: Post | null;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {

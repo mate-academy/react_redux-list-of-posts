@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { init } from '../features/users-slice';
 import { setAuthor } from '../features/author-slice';
 
 type Props = {
@@ -15,10 +14,6 @@ export const UserSelector: React.FC<Props> = ({
   const users = useAppSelector(state => state.users.users);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(init());
-  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {

@@ -3,12 +3,16 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersSliceReducer from '../features/users-slice';
 import authorSliceReducer from '../features/author-slice';
+import postsSliceReducer from '../features/posts-slice';
+import selectedPostSliceReducer from '../features/selectedPost-slice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     users: usersSliceReducer,
     author: authorSliceReducer,
+    posts: postsSliceReducer,
+    selectedPost: selectedPostSliceReducer,
   },
 });
 
