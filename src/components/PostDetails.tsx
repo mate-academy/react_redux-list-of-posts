@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id, dispatch]);
 
   const addComment = useCallback(async (commentData: CommentData) => {
-    dispatch(commentsActions.addComment({
+    await dispatch(commentsActions.addComment({
       ...commentData,
       postId: post.id,
     }));
