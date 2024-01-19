@@ -43,10 +43,14 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch({ type: 'comments/deleteComments', payload: commentId });
-    dispatch(deletedComment(commentId));
+    try {
+      await commentsApi.deleteComment(commentId);
 
-    await commentsApi.deleteComment(commentId);
+      dispatch({ type: 'comments/deleteComments', payload: commentId });
+      dispatch(deletedComment(commentId));
+    } catch (error) {
+      dispatch({ type: 'comments/setError' });
+    }
   };
 
   return (
