@@ -1,21 +1,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
-// import { Post } from '../types/Post';
 import { set as selectPost } from '../features/selectedPost/selectedPost';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-/* type Props = {
-  // posts: Post[],
-  // selectedPostId?: number,
-  // onPostSelected: (post: Post | null) => void,
-}; */
-
-export const PostsList: React.FC = (/* {
-  // posts,
-  // selectedPostId = 0,
-  // onPostSelected,
-} */) => {
+export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedPostId = useAppSelector(state => state
     .selectedPost.post?.id) || 0;
@@ -50,14 +39,6 @@ export const PostsList: React.FC = (/* {
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  /* onClick={() => {
-                    // onPostSelected(post.id === selectedPostId ? null : post);
-                    if (post.id === selectedPostId) {
-                      dispatch(selectPost(null));
-                    } else {
-                      dispatch(selectPost(post));
-                    }
-                  }} */
                   onClick={() => dispatch(selectPost(post.id === selectedPostId
                     ? null : post))}
                 >
