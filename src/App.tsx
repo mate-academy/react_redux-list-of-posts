@@ -19,7 +19,10 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(initPosts(+author?.id));
+    if (author) {
+      dispatch(initPosts(+author?.id));
+    }
+
     dispatch(init());
   }, [dispatch, author]);
 
@@ -80,7 +83,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails post={selectedPost} />
+                <PostDetails />
               )}
             </div>
           </div>

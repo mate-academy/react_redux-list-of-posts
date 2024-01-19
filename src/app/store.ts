@@ -5,6 +5,7 @@ import usersSliceReducer from '../features/users-slice';
 import authorSliceReducer from '../features/author-slice';
 import postsSliceReducer from '../features/posts-slice';
 import selectedPostSliceReducer from '../features/selectedPost-slice';
+import commentsSliceReducer from '../features/comments-slice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     author: authorSliceReducer,
     posts: postsSliceReducer,
     selectedPost: selectedPostSliceReducer,
+    comments: commentsSliceReducer,
   },
 });
 
