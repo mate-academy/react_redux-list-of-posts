@@ -4,14 +4,16 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
+// import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
 
-type Props = {
+/* type Props = {
   post: Post;
-};
+}; */
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
+  const post = useAppSelector(state => state.selectedPost.post);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);

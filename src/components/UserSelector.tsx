@@ -4,7 +4,7 @@ import classNames from 'classnames';
 // import { UserContext } from './UsersContext';
 // import { User } from '../types/User';
 import { useAppSelector } from '../app/hooks';
-import { actions as auhtorActions } from '../features/author/authorSlice';
+import { actions as authorActions } from '../features/author/authorSlice';
 
 /* type Props = {
   value: User | null;
@@ -83,7 +83,7 @@ export const UserSelector: React.FC = (/* {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(auhtorActions.set(user));
+                dispatch(authorActions.set(user));
                 // onChange(user);
               }}
               className={classNames('dropdown-item', {

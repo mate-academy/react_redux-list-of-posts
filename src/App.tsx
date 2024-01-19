@@ -10,8 +10,9 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 // import { getUserPosts } from './api/posts';
 // import { User } from './types/User';
-import { Post } from './types/Post';
+// import { Post } from './types/Post';
 import { getUsers } from './api/users';
+import { set as selectPost } from './features/selectedPost/selectedPost';
 
 import { actions as usersActions } from './features/users/usersSlice';
 import {
@@ -28,15 +29,16 @@ export const App: React.FC = () => {
   // const [hasError, setError] = useState(false);
 
   // const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const author = useAppSelector(state => state.author.author);
   const posts = useAppSelector(state => state.posts.posts);
   const error = useAppSelector(state => state.posts.hasError);
   const loaded = useAppSelector(state => state.posts
     .loaded === loadingStatus.succeeded);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
-/*   function loadUserPosts1(userId: number) {
+  /*   function loadUserPosts1(userId: number) {
     setLoaded(false);
     fetchUserPosts(userId);
 
@@ -60,7 +62,8 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    // setSelectedPost(null);
+    dispatch(selectPost(undefined));
 
     if (author) {
       loadUserPosts(author.id);
@@ -108,11 +111,10 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !error && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
+                  // posts={posts}
+                  // selectedPostId={selectedPost?.id}
+                  // onPostSelected={setSelectedPost}
                 )}
               </div>
             </div>
@@ -132,7 +134,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails post={selectedPost} />
+                <PostDetails /* post={selectedPost} */ />
               )}
             </div>
           </div>

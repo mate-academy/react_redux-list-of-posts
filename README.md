@@ -7,10 +7,10 @@ and the `Counter` example of Redux Toolkit usage.
 > Here is the [working DEMO](https://mate-academy.github.io/react_redux-list-of-posts/)
 
 Learn the implemented App and the example and reimplement it with Redux having the next slice:
-- `users` and remove `UsersContext`;
-- `author` that is currently in the `App`;
-- `posts` having 3 props `loaded`, `hasError` and `items`;
-- `selectedPost`;
+- ~~`users` and remove `UsersContext`;~~
+- ~~`author` that is currently in the `App`;~~
+- ~~`posts` having 3 props `loaded`, `hasError` and `items`;~~
+- ~~`selectedPost`;~~
 - `comments` with `loaded`, `hasError` and `items` props (keep the `visible` in the `PostDetails`);
 - `NewCommentForm` should keep its state.
 

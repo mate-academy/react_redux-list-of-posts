@@ -33,7 +33,7 @@ export type PostsState = {
 
 const initialState: PostsState = {
   posts: [],
-  loaded: 'idle',
+  loaded: loadingStatus.idle,
   hasError: null,
 };
 
