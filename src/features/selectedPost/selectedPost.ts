@@ -2,18 +2,18 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
 type SelectedPostState = {
-  post: Post | undefined
+  post: Post | null
 };
 
 const initialState: SelectedPostState = {
-  post: undefined,
+  post: null,
 };
 
 export const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
   reducers: {
-    set: (_state, action: PayloadAction<Post | undefined>) => {
+    set: (_state, action: PayloadAction<Post | null>) => {
       return { post: action.payload };
     },
   },

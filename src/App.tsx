@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -20,10 +19,10 @@ import {
   fetchUserPosts,
   loadingStatus,
 } from './features/posts/postsSlice';
-import { useAppSelector } from './app/hooks';
+import { useAppSelector, useAppDispatch } from './app/hooks';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   // const [posts, setPosts] = useState<Post[]>([]);
   // const [loaded, setLoaded] = useState(false);
   // const [hasError, setError] = useState(false);
@@ -63,7 +62,7 @@ export const App: React.FC = () => {
     // we clear the post when an author is changed
     // not to confuse the user
     // setSelectedPost(null);
-    dispatch(selectPost(undefined));
+    dispatch(selectPost(null));
 
     if (author) {
       loadUserPosts(author.id);

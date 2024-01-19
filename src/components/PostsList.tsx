@@ -1,9 +1,9 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 // import { Post } from '../types/Post';
 import { set as selectPost } from '../features/selectedPost/selectedPost';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 /* type Props = {
   // posts: Post[],
@@ -16,7 +16,7 @@ export const PostsList: React.FC = (/* {
   // selectedPostId = 0,
   // onPostSelected,
 } */) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const selectedPostId = useAppSelector(state => state
     .selectedPost.post?.id) || 0;
   const posts = useAppSelector(state => state.posts.posts);
@@ -50,14 +50,16 @@ export const PostsList: React.FC = (/* {
                       'is-light': post.id !== selectedPostId,
                     },
                   )}
-                  onClick={() => {
+                  /* onClick={() => {
                     // onPostSelected(post.id === selectedPostId ? null : post);
                     if (post.id === selectedPostId) {
-                      dispatch(selectPost(undefined));
+                      dispatch(selectPost(null));
                     } else {
                       dispatch(selectPost(post));
                     }
-                  }}
+                  }} */
+                  onClick={() => dispatch(selectPost(post.id === selectedPostId
+                    ? null : post))}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
