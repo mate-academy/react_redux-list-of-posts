@@ -14,7 +14,7 @@ import { initPosts } from './features/posts-slice';
 
 export const App: React.FC = () => {
   const { loaded, hasError, posts } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
@@ -22,6 +22,11 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(initPosts(+author?.id));
     }
+
+    dispatch({
+      type: 'selectedPost/setSelectedPost',
+      payload: null,
+    });
 
     dispatch(init());
   }, [dispatch, author]);

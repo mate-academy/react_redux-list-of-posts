@@ -50,8 +50,7 @@ const commentsSlice = createSlice({
     deleteComments: (state, action) => {
       return {
         ...state,
-        comments: state.comments
-          .filter(com => com.id !== action.payload),
+        comments: state.comments.filter(com => com.id !== action.payload),
       };
     },
 

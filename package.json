@@ -5,6 +5,7 @@
   "keywords": [],
   "author": "Mate Academy",
   "license": "GPL-3.0",
+  "pageLoadTimeout": 120000,
   "dependencies": {
     "@cypress/react": "^5.12.4",
     "@fortawesome/fontawesome-free": "^6.1.2",

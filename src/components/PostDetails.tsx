@@ -6,7 +6,7 @@ import * as commentsApi from '../api/comments';
 
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initComments } from '../features/comments-slice';
+import { deletedComment, initComments } from '../features/comments-slice';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
@@ -20,6 +20,7 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     if (selectedPost) {
       dispatch(initComments(selectedPost.id));
+      setVisible(false);
     }
   }, [dispatch, selectedPost]);
 
@@ -42,10 +43,8 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch({
-      type: 'deleteComment',
-      payload: commentId,
-    });
+    dispatch({ type: 'comments/deleteComments', payload: commentId });
+    dispatch(deletedComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -63,7 +62,7 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!author && loaded && (
+        {selectedPost && loaded && (
           <Loader />
         )}
 
