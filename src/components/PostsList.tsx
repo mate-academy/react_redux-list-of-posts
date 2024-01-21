@@ -24,7 +24,7 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            <th />
+            <th aria-label="button"> &nbsp; </th>
           </tr>
         </thead>
 
@@ -35,6 +35,7 @@ export const PostsList: React.FC<Props> = ({
               <td data-cy="PostTitle">{post.title}</td>
               <td className="has-text-right is-vcentered">
                 <button
+                  aria-label="button"
                   type="button"
                   data-cy="PostButton"
                   className={classNames(

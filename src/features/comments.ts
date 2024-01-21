@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
 import * as commentsApi from '../api/comments';
@@ -15,19 +16,20 @@ const initialState: CommentState = {
   error: '',
 };
 
-export const init = createAsyncThunk('comment/fetch', (userId: number) => {
-  return getPostComments(userId);
+export const init = createAsyncThunk('comment/fetch', (postId: number) => {
+  return getPostComments(postId);
 });
 
-export const deleteCommentAsync = createAsyncThunk(
-  'comment/delete', async (commentId: number) => {
-    await commentsApi.deleteComment(commentId);
+export const remuveComment = createAsyncThunk(
+  'comments/delete', async (commentId: number) => {
+    return commentsApi.deleteComment(commentId);
   },
 );
 
-export const addNewComment = createAsyncThunk(
-  'comment/add', async (newComment: Comment) => {
-    await commentsApi.createComment(newComment);
+export const pushComment = createAsyncThunk(
+  'comments/add',
+  (data: Omit<Comment, 'id'>) => {
+    return commentsApi.createComment(data);
   },
 );
 
@@ -35,29 +37,40 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setComments: (state, action: PayloadAction<Comment[]>) => {
-      return { ...state, comments: action.payload };
+    removeCom: (state, action) => {
+      state.comments = state.comments.filter(comment => (
+        comment.id !== action.payload
+      ));
     },
   },
   extraReducers: (builder) => {
     builder.addCase(init.pending, (state) => {
-      return { ...state, loading: true };
+      state.loading = true;
     });
 
     builder.addCase(init.fulfilled, (state, action) => {
-      return {
-        ...state,
-        comments: action.payload,
-        loading: false,
-        error: 'No comments yet',
-      };
+      state.loading = false;
+      state.comments = action.payload;
+      state.error = '';
     });
 
     builder.addCase(init.rejected, (state) => {
-      return { ...state, loading: false, error: '' };
+      state.loading = false;
+      state.error = 'No comments yet';
+    });
+
+    builder.addCase(pushComment.fulfilled, (state, action) => {
+      state.comments = [...state.comments, action.payload];
+    });
+    builder.addCase(remuveComment.fulfilled, (state, action) => {
+      const commentId = action.payload;
+
+      state.comments = state.comments.filter(comment => (
+        comment.id !== commentId
+      ));
     });
   },
 });
 
-export const { setComments } = commentsSlice.actions;
+export const { removeCom } = commentsSlice.actions;
 export default commentsSlice.reducer;

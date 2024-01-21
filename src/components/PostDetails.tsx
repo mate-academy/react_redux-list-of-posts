@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentsApi from '../api/comments';
 
 import {
-  addNewComment,
-  deleteCommentAsync,
+  pushComment,
+  remuveComment,
   init,
-  setComments,
+  removeCom,
 } from '../features/comments';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
@@ -32,24 +31,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = await commentsApi.createComment({
+    const newComment = {
       name,
       email,
       body,
       postId: post.id,
-    });
+    };
 
-    dispatch(setComments([...comments, newComment]));
-    dispatch(addNewComment(newComment));
+    await dispatch(pushComment(newComment));
   };
 
   const deleteComment = async (commentId: number) => {
-    const updatedComments = comments
-      .filter(comment => comment.id !== commentId);
+    dispatch(removeCom(commentId));
 
-    dispatch(setComments(updatedComments));
-
-    dispatch(deleteCommentAsync(commentId));
+    await dispatch(remuveComment(commentId));
   };
 
   return (
@@ -69,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <Loader />
         )}
 
-        {loading && error && (
+        {!loading && error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
