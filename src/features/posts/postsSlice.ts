@@ -27,7 +27,11 @@ export const uploadPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: { },
+  reducers: {
+    resetError: (state) => {
+      state.error = '';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(uploadPosts.pending, (state) => {
@@ -44,3 +48,4 @@ export const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+export const { resetError } = postsSlice.actions;

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { uploadUsers } from '../features/users/usersSlice';
 
 import { setUser } from '../features/author/authorSlice';
-import { uploadPosts } from '../features/posts/postsSlice';
+import { resetError, uploadPosts } from '../features/posts/postsSlice';
 import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
@@ -20,12 +19,11 @@ export const UserSelector: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(uploadPosts(author.id));
+      dispatch(resetError());
     }
   }, [author]);
 
@@ -34,10 +32,7 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -47,8 +42,6 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
   }, [expanded]);
 
   return (

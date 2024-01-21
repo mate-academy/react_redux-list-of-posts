@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -13,6 +13,10 @@ import {
   setError,
   uploadComments,
 } from '../features/comments/commentsSlice';
+import {
+  hideCommentForm,
+  showCommentForm,
+} from '../features/newCommentForm/newCommentFormSlice';
 
 type Props = {
   post: Post;
@@ -20,11 +24,12 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const { comments, loading, error } = useAppSelector(state => state.comments);
-  const [visible, setVisible] = useState(false);
+  const { form } = useAppSelector(state => state.newCommentForm);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setVisible(false);
+    dispatch(hideCommentForm());
+
     dispatch(uploadComments(post.id));
   }, [post.id]);
 
@@ -112,18 +117,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !error && !visible && (
+        {!loading && !error && !form && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={() => dispatch(showCommentForm())}
           >
             Write a comment
           </button>
         )}
 
-        {!loading && !error && visible && (
+        {!loading && !error && form && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
