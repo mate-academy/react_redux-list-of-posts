@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
+// import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { uploadUsers } from '../features/users/usersSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+import { setUser } from '../features/author/authorSlice';
+import { uploadPosts } from '../features/posts/postsSlice';
 
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const { users } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(uploadUsers());
   }, []);
+
+  useEffect(() => {
+    // we clear the post when an author is changed
+    // not to confuse the user
+    // setSelectedPost(null);
+
+    if (author) {
+      dispatch(uploadPosts(author.id));
+    }
+  }, [author]);
 
   useEffect(() => {
     if (!expanded) {
@@ -61,7 +67,7 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {author?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -77,10 +83,10 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setUser(user));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

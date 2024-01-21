@@ -18,7 +18,6 @@ export const uploadUsers = createAsyncThunk(
   async () => {
     const value = await getUsers();
 
-    // The value we return becomes the `fulfilled` action payload
     return value;
   },
 );
