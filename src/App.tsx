@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,14 +8,12 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
   const { posts, loading, error } = useAppSelector(state => state.posts);
-
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
     <main className="section">
@@ -54,11 +52,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && !loading && !error && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>

@@ -6,6 +6,7 @@ import { uploadUsers } from '../features/users/usersSlice';
 
 import { setUser } from '../features/author/authorSlice';
 import { uploadPosts } from '../features/posts/postsSlice';
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
@@ -21,7 +22,7 @@ export const UserSelector: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    // setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(uploadPosts(author.id));
