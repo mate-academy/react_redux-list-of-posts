@@ -1,7 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
-import { getPostComments } from '../../api/comments';
+import {
+  getPostComments,
+} from '../../api/comments';
 
 export interface CommentsState {
   comments: Comment[];
@@ -10,7 +12,7 @@ export interface CommentsState {
 }
 
 const initialState: CommentsState = {
-  comments: [],
+  comments: [] as Comment[],
   loading: false,
   error: '',
 };
@@ -28,7 +30,20 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
+    addLocalComment: (state, action) => {
+      return { ...state, comments: [...state.comments, action.payload] };
+    },
 
+    deleteLocalComment: (state, action) => {
+      return {
+        ...state,
+        coomments: state.comments.filter(i => i.id !== action.payload),
+      };
+    },
+
+    setError: (state) => {
+      return { ...state, error: 'Error' };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -46,3 +61,8 @@ export const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
+export const {
+  addLocalComment,
+  deleteLocalComment,
+  setError,
+} = commentsSlice.actions;

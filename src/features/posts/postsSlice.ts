@@ -10,7 +10,7 @@ export interface UsersState {
 }
 
 const initialState: UsersState = {
-  posts: [],
+  posts: [] as Post[],
   loading: false,
   error: '',
 };
@@ -27,9 +27,7 @@ export const uploadPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-
-  },
+  reducers: { },
   extraReducers: (builder) => {
     builder
       .addCase(uploadPosts.pending, (state) => {
