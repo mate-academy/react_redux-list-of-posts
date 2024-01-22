@@ -29,7 +29,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     resetError: (state) => {
-      state.error = '';
+      return { ...state, error: '' };
     },
   },
   extraReducers: (builder) => {

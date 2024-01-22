@@ -31,18 +31,15 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     addLocalComment: (state, action) => {
-      return { ...state, comments: [...state.comments, action.payload] };
+      state.comments = [...state.comments, action.payload];
     },
 
     deleteLocalComment: (state, action) => {
-      return {
-        ...state,
-        coomments: state.comments.filter(i => i.id !== action.payload),
-      };
+      state.comments = [...state.comments].filter(i => i.id !== action.payload);
     },
 
     setError: (state) => {
-      return { ...state, error: 'Error' };
+      state.error = 'Error';
     },
   },
   extraReducers: (builder) => {

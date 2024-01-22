@@ -54,6 +54,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     await commentsApi.deleteComment(commentId);
   };
 
+  const commentsIsVisible = !loading && !error && !!comments.length;
+  const commentFormIsActive = !loading && !error && form;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -77,13 +80,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {!loading && !error && comments.length === 0 && (
+        {!commentsIsVisible && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !error && comments.length > 0 && (
+        {commentsIsVisible && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -117,7 +120,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !error && !form && (
+        {!commentFormIsActive && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -128,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!loading && !error && form && (
+        {commentFormIsActive && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

@@ -15,6 +15,10 @@ export const App: React.FC = () => {
   const { posts, loading, error } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
+  const errorMessage = author && !loading && error;
+  const authorHasPosts = author && !loading && !error && !!posts.length;
+  const authorHasNoPosts = author && !loading && !error && !posts.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -36,7 +40,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {author && !loading && error && (
+                {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -45,13 +49,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {authorHasNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {authorHasPosts && (
                   <PostsList />
                 )}
               </div>
