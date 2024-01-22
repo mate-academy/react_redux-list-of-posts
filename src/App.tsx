@@ -9,15 +9,19 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import * as AuthorActions from './features/author/authorSlice';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  const { author } = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
+
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
@@ -41,6 +45,10 @@ export const App: React.FC = () => {
       setPosts([]);
     }
   }, [author]);
+
+  const setAuthor = (user: User) => {
+    dispatch(AuthorActions.set(user));
+  };
 
   return (
     <main className="section">
