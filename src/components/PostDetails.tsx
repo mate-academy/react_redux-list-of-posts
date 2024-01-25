@@ -24,7 +24,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const loaded2 = useAppSelector(state => !state.comments.isLoading);
 
   const dispatch = useDispatch();
-  const thunkDispatch: ThunkDispatch<RootState, any, AnyAction> = useDispatch();
+  const thunkDispatch: ThunkDispatch<
+  RootState, unknown, AnyAction> = useDispatch();
 
   useEffect(() => {
     setVisible(false);

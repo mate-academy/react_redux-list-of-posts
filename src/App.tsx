@@ -26,7 +26,8 @@ export const App: React.FC = () => {
   const hasError = useAppSelector(state => state.posts.error);
   const loaded = useAppSelector(state => !state.posts.isLoading);
   const dispatch = useDispatch();
-  const thunkDispatch: ThunkDispatch<RootState, any, AnyAction> = useDispatch();
+  const thunkDispatch: ThunkDispatch<
+  RootState, unknown, AnyAction> = useDispatch();
 
   const setAuthor = (value: User) => {
     dispatch(authorSlice.actions.set(value));
