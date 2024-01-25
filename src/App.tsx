@@ -19,6 +19,7 @@ import { fetchPosts, postsSlice } from './components/Posts';
 import { selectedPostSlice } from './components/SelectedPost';
 import { RootState } from './app/store';
 
+
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author.value);
   const posts = useAppSelector(state => state.posts.value);
@@ -45,7 +46,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(postsSlice.actions.set([]));
     }
-  }, [author?.id]);
+  }, [author]);
 
   return (
     <main className="section">
