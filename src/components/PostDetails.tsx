@@ -16,6 +16,7 @@ export const PostDetails: React.FC = () => {
 
   function loadComments() {
     if (selectedPost) {
+      setVisible(false);
       dispatch(commentsActions.init(selectedPost.id));
     }
   }
