@@ -12,12 +12,16 @@ import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 import * as postsActions from './features/PostsSlice';
-import { setSelectedPost } from './features/SelectedPostSlice';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
-  const { items, loading, hasError } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const {
+    items,
+    loading,
+    hasError,
+    selectedPost,
+  } = useAppSelector(state => state.posts);
+  // const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   const loadUserPosts = useCallback((userId: number) => {
@@ -32,7 +36,7 @@ export const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(setSelectedPost(undefined));
+    dispatch(postsActions.setSelectedPost(undefined));
 
     if (author) {
       loadUserPosts(author.id);

@@ -5,12 +5,14 @@ type PostState = {
   items: Post[];
   loading: boolean;
   hasError: boolean;
+  selectedPost?: Post;
 };
 
 const initialState: PostState = {
   items: [],
   loading: false,
   hasError: false,
+  selectedPost: undefined,
 };
 
 export const postsSlice = createSlice({
@@ -26,8 +28,16 @@ export const postsSlice = createSlice({
     setError: (state, action) => {
       return { ...state, hasError: action.payload };
     },
+    setSelectedPost: (state, action: PayloadAction<Post | undefined>) => {
+      return { ...state, selectedPost: action.payload };
+    },
   },
 });
 
 export default postsSlice.reducer;
-export const { setPosts, setLoading, setError } = postsSlice.actions;
+export const {
+  setPosts,
+  setLoading,
+  setError,
+  setSelectedPost,
+} = postsSlice.actions;

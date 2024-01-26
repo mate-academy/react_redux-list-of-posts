@@ -1,13 +1,13 @@
+/* eslint-disable max-len */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedPost } from '../features/SelectedPostSlice';
+import * as postsActions from '../features/PostsSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { items, selectedPost } = useAppSelector(state => state.posts);
 
   return (
     <div data-cy="PostsList">
@@ -39,7 +39,7 @@ export const PostsList: React.FC = () => {
                     },
                   )}
                   onClick={() => {
-                    dispatch(setSelectedPost(post.id === selectedPost?.id
+                    dispatch(postsActions.setSelectedPost(post.id === selectedPost?.id
                       ? undefined
                       : post));
                   }}
