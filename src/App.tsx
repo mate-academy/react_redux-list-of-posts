@@ -8,41 +8,38 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as AuthorActions from './features/author/authorSlice';
+import * as PostsActions from './features/posts/postsSlice';
 import { User } from './types/User';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
   const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  // useEffect(() => {
+  //   // we clear the post when an author is changed
+  //   // not to confuse the user
+  //   setSelectedPost(null);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  //   if (author) {
+  //     loadUserPosts(author.id);
+  //   } else {
+  //     setPosts([]);
+  //   }
+  // }, [author]);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(PostsActions.init(author.id));
     }
   }, [author]);
 
