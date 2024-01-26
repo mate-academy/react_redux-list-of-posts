@@ -1,44 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppSelector } from './app/hooks';
+import { authorSlice } from './components/author';
+import { fetchPosts, postsSlice } from './components/Posts';
+import { selectedPostSlice } from './components/SelectedPost';
+import { RootState } from './app/store';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const author = useAppSelector(state => state.author.value);
+  const posts = useAppSelector(state => state.posts.value);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
+  const hasError = useAppSelector(state => state.posts.error);
+  const loaded = useAppSelector(state => !state.posts.isLoading);
+  const dispatch = useDispatch();
+  const thunkDispatch: ThunkDispatch<
+  RootState, unknown, AnyAction> = useDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const setAuthor = (value: User) => {
+    dispatch(authorSlice.actions.set(value));
+  };
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const setSelectedPost = (value: Post | null) => {
+    dispatch(selectedPostSlice.actions.set(value));
+  };
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostSlice.actions.set(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      thunkDispatch(fetchPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(postsSlice.actions.set([]));
     }
   }, [author]);
 
