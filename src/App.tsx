@@ -12,7 +12,6 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 import { useAppSelector } from './app/hooks';
 import { authorSlice } from './components/author';
 import { fetchPosts, postsSlice } from './components/Posts';
@@ -49,9 +48,6 @@ export const App: React.FC = () => {
 
   return (
     <main className="section">
-
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">

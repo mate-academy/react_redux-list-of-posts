@@ -31,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
 
     thunkDispatch(fetchComments(post.id));
-  }, [post]);
+  }, [post, thunkDispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
