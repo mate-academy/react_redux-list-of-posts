@@ -14,11 +14,11 @@ const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    set: (state, action) => {
+    setAuthor: (state, action) => {
       state.author = action.payload;
     },
   },
 });
 
 export default authorSlice.reducer;
-export const { set } = authorSlice.actions;
+export const { setAuthor } = authorSlice.actions;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,44 +8,47 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as AuthorActions from './features/author/authorSlice';
 import * as PostsActions from './features/posts/postsSlice';
+import * as SelectedPostActions
+  from './features/selectedPost/selectedPostSlice';
 import { User } from './types/User';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
   const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  // useEffect(() => {
-  //   // we clear the post when an author is changed
-  //   // not to confuse the user
-  //   setSelectedPost(null);
+  const setAuthor = (user: User) => {
+    dispatch(AuthorActions.setAuthor(user));
+  };
 
-  //   if (author) {
-  //     loadUserPosts(author.id);
-  //   } else {
-  //     setPosts([]);
-  //   }
-  // }, [author]);
+  const setSelectedPost = useCallback((post: Post | null) => {
+    dispatch(SelectedPostActions.setSelectedPost(post));
+  }, [dispatch]);
+
+  useEffect(() => {
+    // we clear the post when an author is changed
+    // not to confuse the user
+    setSelectedPost(null);
+
+    if (author) {
+      dispatch(PostsActions.init(author.id));
+    } else {
+      dispatch(PostsActions.init(null));
+    }
+  }, [author, dispatch, setSelectedPost]);
 
   useEffect(() => {
     if (author) {
       dispatch(PostsActions.init(author.id));
     }
-  }, [author]);
-
-  const setAuthor = (user: User) => {
-    dispatch(AuthorActions.set(user));
-  };
+  }, [author, dispatch]);
 
   return (
     <main className="section">

@@ -15,9 +15,16 @@ const initialState: PostsState = {
   posts: [],
 };
 
-export const init = createAsyncThunk('posts/fetch', (userId: number) => {
-  return getUserPosts(userId);
-});
+export const init = createAsyncThunk(
+  'posts/fetch',
+  (userId: number | null) => {
+    if (userId) {
+      return getUserPosts(userId);
+    }
+
+    return Promise.resolve([]);
+  },
+);
 
 const postsSlice = createSlice({
   name: 'posts',
