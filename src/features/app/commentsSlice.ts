@@ -63,7 +63,7 @@ const commentsSlice = createSlice({
       state.loaded = true;
     });
     builder.addCase(init.rejected, (state) => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
     builder.addCase(deleteing.fulfilled, (state, action) => {

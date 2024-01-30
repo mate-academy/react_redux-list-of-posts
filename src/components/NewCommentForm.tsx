@@ -1,7 +1,9 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector, useLocalStorage } from '../app/hooks';
 import { adding } from '../features/app/commentsSlice';
+
+/* eslint-disable max-len */
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -14,18 +16,18 @@ export const NewCommentForm: React.FC = () => {
     body: false,
   });
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const [name, setName] = useLocalStorage('name', '');
+  const [email, setEmail] = useLocalStorage('email', '');
+  const [body, setBody] = useLocalStorage('body', '');
+
+  useEffect(() => {
+    setBody('');
+  }, []);
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+    setName('');
+    setEmail('');
+    setBody('');
 
     setErrors({
       name: false,
@@ -34,12 +36,32 @@ export const NewCommentForm: React.FC = () => {
     });
   };
 
+  const validateEmail = (userEmail: string) => {
+    return String(userEmail)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      );
+  };
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    switch (field) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'body':
+        setBody(value);
+        break;
+      default: break;
+    }
+
     setErrors(current => ({ ...current, [field]: false }));
   };
 
@@ -47,12 +69,12 @@ export const NewCommentForm: React.FC = () => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !validateEmail(email),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !validateEmail(email) || !body.trim()) {
       return;
     }
 
@@ -63,9 +85,7 @@ export const NewCommentForm: React.FC = () => {
     };
 
     await dispatch(adding(newComment));
-
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
   };
 
   return (
