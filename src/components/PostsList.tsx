@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
@@ -20,7 +21,7 @@ export const PostsList: React.FC<Props> = ({
       <thead>
         <tr className="has-background-link-light">
           <th>#</th>
-          <th>Title</th>
+          <th> Title </th>
           <th> </th>
         </tr>
       </thead>
