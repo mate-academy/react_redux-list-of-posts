@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  addComment, deleteComment, fetchComments, setError,
+  addComment,
+  deleteComment,
+  fetchComments,
+  setError,
 } from '../features/comments';
 
 type Props = {
@@ -17,13 +19,10 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const {
-    comments,
-    loaded,
-    hasError,
-  } = useAppSelector((state) => state.comments);
+  const { comments, loaded, hasError } = useAppSelector((state) => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
+  const [commentError, setCommentError] = useState(false);
 
   function loadComments() {
     dispatch(fetchComments(post.id));
@@ -33,15 +32,24 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(loadComments, [post.id]);
 
   const handleAdding = async ({ name, email, body }: CommentData) => {
+    const trimmedBody = body.trim();
+
+    if (trimmedBody === '') {
+      setCommentError(true);
+
+      return;
+    }
+
     try {
       const newComment = await commentsApi.createComment({
         name,
         email,
-        body,
+        body: trimmedBody,
         postId: post.id,
       });
 
       dispatch(addComment(newComment));
+      setCommentError(false);
     } catch (error) {
       dispatch(setError());
     }
@@ -56,13 +64,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
       <div className="block">
         {!loaded && <Loader />}
-
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
@@ -78,7 +84,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map((comment) => (
               <article
                 className="message is-small"
@@ -89,7 +94,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
@@ -100,12 +104,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     delete button
                   </button>
                 </div>
-
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>
               </article>
             ))}
+          </>
+        )}
+
+        {loaded && !hasError && visible && (
+          <>
+            <NewCommentForm onSubmit={handleAdding} />
+            {commentError && <p style={{ color: 'red' }}>Please enter a non-empty comment.</p>}
           </>
         )}
 
@@ -118,10 +128,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           >
             Write a comment
           </button>
-        )}
-
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={handleAdding} />
         )}
       </div>
     </div>
