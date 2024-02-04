@@ -67,7 +67,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
