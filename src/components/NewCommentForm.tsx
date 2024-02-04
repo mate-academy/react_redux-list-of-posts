@@ -67,8 +67,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  // eslint-disable-next-line no-console
-  console.log(true);
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
