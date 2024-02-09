@@ -76,7 +76,12 @@ export const App: React.FC = () => {
                 )}
 
                 {author && !isLoading && !hasError && posts.length > 0 && (
-                  <PostsList />
+                  <PostsList
+                    posts={posts}
+                    onPostSelected={
+                      post => dispatch(postActions.setSelectedPost(post))
+                    }
+                  />
                 )}
               </div>
             </div>
