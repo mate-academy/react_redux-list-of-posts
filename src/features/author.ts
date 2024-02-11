@@ -13,7 +13,7 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    selectedUser: (state, action: PayloadAction<User>) => {
+    selectUser: (state, action: PayloadAction<User>) => {
       return {
         ...state,
         author: action.payload,
@@ -22,6 +22,6 @@ export const authorSlice = createSlice({
   },
 });
 
-export const { selectedUser } = authorSlice.actions;
+export const { selectUser } = authorSlice.actions;
 
 export default authorSlice.reducer;

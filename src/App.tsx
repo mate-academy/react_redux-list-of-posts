@@ -14,7 +14,7 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { selectPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     dispatch(postsActions.clearPosts);
@@ -75,12 +75,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': selectPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {selectPost && (
                 <PostDetails />
               )}
             </div>

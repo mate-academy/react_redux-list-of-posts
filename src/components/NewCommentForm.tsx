@@ -6,7 +6,7 @@ import { addComment } from '../features/comments';
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { selectPost } = useAppSelector(state => state.selectedPost);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -62,13 +62,11 @@ export const NewCommentForm: React.FC = () => {
       name,
       email,
       body,
-      postId: selectedPost?.id || 0,
+      postId: selectPost?.id || 0,
     }));
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
