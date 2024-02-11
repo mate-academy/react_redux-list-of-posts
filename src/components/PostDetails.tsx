@@ -15,7 +15,7 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items: comments, loaded, hasError }
     = useAppSelector(state => state.comments);
-  const { selectPost: post } = useAppSelector(state => state.selectedPost);
+  const { selectedPost: post } = useAppSelector(state => state.selectedPost);
 
   function loadComments() {
     setVisible(false);

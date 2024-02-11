@@ -6,7 +6,7 @@ import { addComment } from '../features/comments';
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
-  const { selectPost } = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -62,7 +62,7 @@ export const NewCommentForm: React.FC = () => {
       name,
       email,
       body,
-      postId: selectPost?.id || 0,
+      postId: selectedPost?.id || 0,
     }));
 
     setSubmitting(false);

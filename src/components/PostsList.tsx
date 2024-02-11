@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { currentPost } from '../features/selectedPost';
+import { setCurrentPost } from '../features/selectedPost';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector(state => state.posts);
-  const { selectPost } = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
     <div data-cy="PostsList">
@@ -34,16 +34,16 @@ export const PostsList: React.FC = () => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectPost?.id,
+                      'is-light': post.id !== selectedPost?.id,
                     },
                   )}
                   onClick={() => {
-                    dispatch(currentPost(
-                      post.id === selectPost?.id ? null : post,
+                    dispatch(setCurrentPost(
+                      post.id === selectedPost?.id ? null : post,
                     ));
                   }}
                 >
-                  {post.id === selectPost?.id ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
