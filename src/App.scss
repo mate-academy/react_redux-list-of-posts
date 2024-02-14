@@ -25,3 +25,8 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+.dropdown-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
