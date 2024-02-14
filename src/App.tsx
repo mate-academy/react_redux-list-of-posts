@@ -30,28 +30,6 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     .finally(() => setLoaded(true));
-  // }
-
-  // useEffect(() => {
-  //   // we clear the post when an author is changed
-  //   // not to confuse the user
-  //   setSelectedPost(null);
-
-  //   if (author) {
-  //     loadUserPosts(author.id);
-  //   } else {
-  //     setPosts([]);
-  //   }
-  // }, [author]);
-
   return (
     <main className="section">
       <div className="container">
