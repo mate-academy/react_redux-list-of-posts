@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { CommentData } from '../types/Comment';
 
 export const defaultErrorValues: ErrorMessages = {
@@ -32,13 +32,13 @@ const newCommentFormSlice = createSlice({
   name: 'newCommentForm',
   initialState,
   reducers: {
-    setErrors: (state, action) => {
+    setErrors: (state, action: PayloadAction<ErrorMessages>) => {
       state.errors = action.payload;
     },
-    setCommentData: (state, action) => {
+    setCommentData: (state, action: PayloadAction<CommentData>) => {
       state.commentData = action.payload;
     },
-    setIsLoading: (state, action) => {
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
   },

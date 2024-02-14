@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
 const authorSlice = createSlice({
   name: 'author',
   initialState: null as null | User,
   reducers: {
-    setAuthor: (_author, action) => action.payload,
+    setAuthor: (_author, action: PayloadAction<User | null>) => action.payload,
   },
 });
 

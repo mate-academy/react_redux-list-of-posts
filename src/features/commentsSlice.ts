@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import * as api from '../api/comment';
 
@@ -29,16 +29,16 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setComments: (state, action) => {
+    setComments: (state, action: PayloadAction<Comment[]>) => {
       state.comments = action.payload;
     },
-    setErrorMessage: (state, action) => {
+    setErrorMessage: (state, action: PayloadAction<string>) => {
       state.errorMessage = action.payload;
     },
-    setIsLoading: (state, action) => {
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    setDeletingComment: (state, action) => {
+    setDeletingComment: (state, action: PayloadAction<Comment>) => {
       state.deletingComment = action.payload;
     },
   },
