@@ -22,7 +22,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setError(false);
     setVisible(false);
 
-    commentsApi.getPostComments(post.id)
+    commentsApi
+      .getPostComments(post.id)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
@@ -65,9 +66,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      setComments(currentComments => [...currentComments, newComment]);
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,10 +81,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
+    // eslint-disable-next-line max-len
+    setComments(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
     );
 
     await commentsApi.deleteComment(commentId);
@@ -94,19 +92,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">
-          {`#${post.id}: ${post.title}`}
-        </h2>
+        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-        <p data-cy="PostBody">
-          {post.body}
-        </p>
+        <p data-cy="PostBody">{post.body}</p>
       </div>
 
       <div className="block">
-        {!loaded && (
-          <Loader />
-        )}
+        {!loaded && <Loader />}
 
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">

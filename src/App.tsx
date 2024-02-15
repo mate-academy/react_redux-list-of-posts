@@ -53,15 +53,9 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && (
-                  <Loader />
-                )}
+                {author && !loaded && <Loader />}
 
                 {author && loaded && hasError && (
                   <div
@@ -102,9 +96,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>
