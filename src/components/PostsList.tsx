@@ -1,11 +1,13 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
+  posts: Post[];
+  selectedPostId?: number;
+  onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -34,13 +36,9 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 data-cy="PostButton"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
+                className={classNames('button', 'is-link', {
+                  'is-light': post.id !== selectedPostId,
+                })}
                 onClick={() => {
                   onPostSelected(post.id === selectedPostId ? null : post);
                 }}
