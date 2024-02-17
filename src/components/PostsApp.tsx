@@ -1,41 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { PostsList } from './PostsList';
 import { PostDetails } from './PostDetails';
 import { UserSelector } from './UserSelector';
 import { Loader } from './Loader';
-import { getUserPosts } from '../api/posts';
-import { User } from '../types/User';
-import { Post } from '../types/Post';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setSelectedPost } from '../features/posts/selectedPost';
+import {
+  setPosts,
+  loadPosts,
+} from '../features/posts/posts';
 
 export const PostsApp = () => {
   const dispatch = useAppDispatch();
-  const { loaded, hasError } = useAppSelector(state => state.users);
-  const [posts, setPosts] = useState();
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const {
+    isLoading,
+    errorMessage,
+    posts,
+  } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(loadPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
+  }, [dispatch, author]);
+
+  useEffect(() => {
+    setSelectedPost(null);
   }, [author]);
 
   return (
@@ -43,7 +38,7 @@ export const PostsApp = () => {
       <div className="tile is-parent">
         <div className="tile is-child box is-success">
           <div className="block">
-            <UserSelector value={author} onChange={setAuthor} />
+            <UserSelector />
           </div>
 
           <div className="block" data-cy="MainContent">
@@ -53,11 +48,11 @@ export const PostsApp = () => {
               </p>
             )}
 
-            {author && !loaded && (
+            {author && !isLoading && (
               <Loader />
             )}
 
-            {author && loaded && hasError && (
+            {author && isLoading && errorMessage && (
               <div
                 className="notification is-danger"
                 data-cy="PostsLoadingError"
@@ -66,17 +61,15 @@ export const PostsApp = () => {
               </div>
             )}
 
-            {author && loaded && !hasError && posts.length === 0 && (
+            {author && isLoading && !errorMessage && posts.length === 0 && (
               <div className="notification is-warning" data-cy="NoPostsYet">
                 No posts yet
               </div>
             )}
 
-            {author && loaded && !hasError && posts.length > 0 && (
+            {author && isLoading && !errorMessage && posts.length > 0 && (
               <PostsList
                 posts={posts}
-                selectedPostId={selectedPost?.id}
-                onPostSelected={setSelectedPost}
               />
             )}
           </div>
