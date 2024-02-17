@@ -12,7 +12,7 @@ const initialState = {
   users: [] as User[],
 };
 
-const usersSlice = createSlice({
+const usersFromServerSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
@@ -24,4 +24,4 @@ const usersSlice = createSlice({
   },
 });
 
-export default usersSlice.reducer;
+export default usersFromServerSlice.reducer;
