@@ -42,7 +42,9 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
+          <span>
+            {selectedUser.name.length ? selectedUser.name : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

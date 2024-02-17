@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUsers } from '../../api/users';
+import { getUsers } from '../../api/usersFromServer';
 import { User } from '../../types/User';
 
 export const loadUsers = createAsyncThunk<User[]>(
@@ -12,10 +12,14 @@ const initialState = {
   users: [] as User[],
 };
 
-const usersSlice = createSlice({
+const u = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setIsLoading: (state, action) => {
+      state.users = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loadUsers.fulfilled, (state, action) => {
@@ -24,4 +28,5 @@ const usersSlice = createSlice({
   },
 });
 
-export default usersSlice.reducer;
+export default u.reducer;
+export const { setIsLoading } = u.actions;
