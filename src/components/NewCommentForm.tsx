@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { addComment } from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
+interface Props {
   postId: number;
-};
+}
 
 const initialValues = {
   name: '',
@@ -45,22 +45,26 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const newComment = {
-      name,
-      email,
-      body,
-      postId,
-    };
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedName,
+      email: !trimmedEmail,
+      body: !trimmedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       return;
     }
+
+    const newComment = {
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
+      postId,
+    };
 
     dispatch(addComment(newComment));
 

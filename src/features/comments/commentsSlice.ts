@@ -18,9 +18,12 @@ const initialState: CommentsState = {
   submitting: false,
 };
 
-export const init = createAsyncThunk('comments/fetch', (postId: number) => {
-  return commentsApi.getPostComments(postId);
-});
+export const fetchComments = createAsyncThunk(
+  'comments/fetch',
+  (postId: number) => {
+    return commentsApi.getPostComments(postId);
+  },
+);
 
 export const addComment = createAsyncThunk(
   'comments/add',
@@ -43,14 +46,14 @@ const commentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(init.pending, (state) => {
+      .addCase(fetchComments.pending, (state) => {
         state.loading = true;
       })
-      .addCase(init.fulfilled, (state, action) => {
+      .addCase(fetchComments.fulfilled, (state, action) => {
         state.comments = action.payload;
         state.loading = false;
       })
-      .addCase(init.rejected, (state) => {
+      .addCase(fetchComments.rejected, (state) => {
         state.error = true;
         state.loading = false;
       })

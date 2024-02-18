@@ -8,9 +8,9 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/comments/commentsSlice';
 import * as commentsApi from '../api/comments';
 
-type Props = {
+interface Props {
   post: Post;
-};
+}
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const {
@@ -24,7 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   function loadComments() {
     setVisible(false);
-    dispatch(commentsActions.init(post.id));
+    dispatch(commentsActions.fetchComments(post.id));
   }
 
   const deleteComment = async (commentId: number) => {

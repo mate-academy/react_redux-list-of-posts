@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
+import * as usersApi from '../../api/users';
 
 interface UsersState {
   users: User[],
@@ -12,6 +13,13 @@ const initialState: UsersState = {
   expanded: false,
 };
 
+export const fetchUsers = createAsyncThunk(
+  'users/fetch',
+  () => {
+    return usersApi.getUsers();
+  },
+);
+
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -19,11 +27,14 @@ export const usersSlice = createSlice({
     setExpanded: (state, action: PayloadAction<boolean>) => {
       state.expanded = action.payload;
     },
-    set: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.users = action.payload;
+      });
   },
 });
 
 export default usersSlice.reducer;
-export const { set, setExpanded } = usersSlice.actions;
+export const { setExpanded } = usersSlice.actions;

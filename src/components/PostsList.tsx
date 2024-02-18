@@ -6,13 +6,17 @@ import { useAppDispatch } from '../app/hooks';
 import * as selectedPostActions
   from '../features/selectedPost/selectedPostSlice';
 
-type Props = {
+interface Props {
   posts: Post[];
   selectedPostId?: number;
-};
+}
 
 export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
   const dispatch = useAppDispatch();
+
+  const handleSelectPost = (post: Post) => {
+    dispatch(selectedPostActions.set(post.id === selectedPostId ? null : post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -39,10 +43,7 @@ export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== selectedPostId,
                   })}
-                  onClick={() => {
-                    dispatch(selectedPostActions
-                      .set(post.id === selectedPostId ? null : post));
-                  }}
+                  onClick={() => handleSelectPost(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>

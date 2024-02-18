@@ -3,13 +3,12 @@ import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsers } from '../features/users/users';
 import * as usersActions from '../features/users/usersSlice';
 import * as authorActions from '../features/author/authorSlice';
 
-type Props = {
+interface Props {
   value: User | null;
-};
+}
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
@@ -23,8 +22,7 @@ export const UserSelector: React.FC<Props> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getUsers()
-      .then(usersFromServer => dispatch(usersActions.set(usersFromServer)));
+    dispatch(usersActions.fetchUsers());
   }, []);
 
   useEffect(() => {
@@ -49,6 +47,16 @@ export const UserSelector: React.FC<Props> = ({
   // when the Dopdown is closed
   }, [expanded]);
 
+  const handleDropdownToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    dispatch(usersActions.setExpanded(!expanded));
+  };
+
+  const handleUserSelect = (user: User) => {
+    dispatch(authorActions.set(user));
+    dispatch(usersActions.setExpanded(false));
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -60,10 +68,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={(e) => {
-            e.stopPropagation();
-            dispatch(usersActions.setExpanded(!expanded));
-          }}
+          onClick={handleDropdownToggle}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -81,9 +86,7 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(authorActions.set(user));
-              }}
+              onClick={() => handleUserSelect(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
