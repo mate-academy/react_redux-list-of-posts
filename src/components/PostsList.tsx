@@ -22,7 +22,6 @@ export const PostsList: React.FC<Props> = ({ posts }) => (
       <tbody>
         {posts.map(post => (
           <PostInfo
-            aria-label="postInfo"
             key={post.id}
             post={post}
           />

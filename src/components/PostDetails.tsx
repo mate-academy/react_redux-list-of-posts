@@ -23,6 +23,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     comments,
   } = useAppSelector(state => state.comments);
   const [isFormOpened, setIsFormOpened] = useState(false);
+  const onDeleteComment = (commentId: number) => {
+    const updatedComments = comments
+      .filter(comment => comment.id !== commentId);
+
+    dispatch(setComments(updatedComments));
+  };
 
   useEffect(() => {
     dispatch(loadComments(post.id));
@@ -77,7 +83,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       <p className="title is-4">Comments:</p>
 
                       {comments.map(comment => (
-                        <CommentInfo key={comment.id} comment={comment} />
+                        <CommentInfo
+                          key={comment.id}
+                          comment={comment}
+                          onDeleteComment={onDeleteComment}
+                        />
                       ))}
                     </>
                   )}

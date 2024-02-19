@@ -1,13 +1,22 @@
 import { useAppDispatch } from '../../app/hooks';
-import { deleteComment } from '../../features/comments/comments';
+import {
+  deleteComment,
+  setDeletingComment,
+} from '../../features/comments/comments';
 import { Comment } from '../../types/Comment';
 
 interface Props {
   comment: Comment;
+  onDeleteComment: (commentId: number) => void;
 }
 
-export const CommentInfo: React.FC<Props> = ({ comment }) => {
+export const CommentInfo: React.FC<Props> = ({ comment, onDeleteComment }) => {
   const dispatch = useAppDispatch();
+  const handleDeleteComment = () => {
+    setDeletingComment(comment);
+    dispatch(deleteComment(comment.id));
+    onDeleteComment(comment.id);
+  };
 
   return (
     <article
@@ -25,7 +34,7 @@ export const CommentInfo: React.FC<Props> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => dispatch(deleteComment(comment.id))}
+          onClick={handleDeleteComment}
         >
           delete button
         </button>

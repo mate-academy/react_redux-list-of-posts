@@ -8,6 +8,7 @@ import { Loader } from './Loader';
 import { setSelectedPost } from '../features/posts/selectedPost';
 import {
   setPosts,
+  setIsLoading,
   loadPosts,
 } from '../features/posts/posts';
 
@@ -23,7 +24,9 @@ export const PostsApp = () => {
 
   useEffect(() => {
     if (author) {
-      dispatch(loadPosts(author.id));
+      dispatch(loadPosts(author.id))
+        .then(() => dispatch(setIsLoading(false)))
+        .catch(() => dispatch(setIsLoading(false)));
     } else {
       dispatch(setPosts([]));
     }
@@ -48,7 +51,7 @@ export const PostsApp = () => {
               </p>
             )}
 
-            {author && !isLoading && (
+            {isLoading && (
               <Loader />
             )}
 
@@ -61,13 +64,13 @@ export const PostsApp = () => {
               </div>
             )}
 
-            {author && isLoading && !errorMessage && posts.length === 0 && (
+            {author && !isLoading && !errorMessage && posts.length === 0 && (
               <div className="notification is-warning" data-cy="NoPostsYet">
                 No posts yet
               </div>
             )}
 
-            {author && isLoading && !errorMessage && posts.length > 0 && (
+            {author && !isLoading && !errorMessage && posts.length > 0 && (
               <PostsList
                 posts={posts}
               />

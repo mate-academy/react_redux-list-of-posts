@@ -9,7 +9,7 @@ export const loadPosts = createAsyncThunk(
 );
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   errorMessage: '',
   posts: [] as Post[],
 };

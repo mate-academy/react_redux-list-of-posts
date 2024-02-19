@@ -53,14 +53,10 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(deleteComment.pending, (state) => {
-      state.comments = state.comments
-        .filter(comment => comment.id !== state.deletingComment?.id);
       state.errorMessage = '';
     });
 
     builder.addCase(deleteComment.rejected, (state) => {
-      state.comments = [...state.comments, state.deletingComment as Comment];
-      state.deletingComment = null;
       state.errorMessage = 'Unable to delete a todo';
     });
 
