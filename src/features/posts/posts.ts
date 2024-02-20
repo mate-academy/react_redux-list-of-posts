@@ -3,9 +3,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
 
-export const loadPosts = createAsyncThunk(
-  'posts/load',
-  (userId: number) => getUserPosts(userId),
+export const loadPosts = createAsyncThunk('posts/load', (userId: number) =>
+  getUserPosts(userId),
 );
 
 const initialState = {
@@ -28,15 +27,15 @@ const postsSlice = createSlice({
       state.posts = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(loadPosts.pending, (state) => {
+      .addCase(loadPosts.pending, state => {
         state.isLoading = true;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
         state.posts = action.payload;
       })
-      .addCase(loadPosts.rejected, (state) => {
+      .addCase(loadPosts.rejected, state => {
         state.isLoading = false;
         state.errorMessage = 'An error occured';
       });

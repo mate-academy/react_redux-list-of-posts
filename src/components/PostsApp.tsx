@@ -6,19 +6,13 @@ import { PostDetails } from './PostDetails';
 import { UserSelector } from './UserSelector';
 import { Loader } from './Loader';
 import { setSelectedPost } from '../features/posts/selectedPost';
-import {
-  setPosts,
-  setIsLoading,
-  loadPosts,
-} from '../features/posts/posts';
+import { setPosts, setIsLoading, loadPosts } from '../features/posts/posts';
 
 export const PostsApp = () => {
   const dispatch = useAppDispatch();
-  const {
-    isLoading,
-    errorMessage,
-    posts,
-  } = useAppSelector(state => state.posts);
+  const { isLoading, errorMessage, posts } = useAppSelector(
+    state => state.posts,
+  );
   const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.selectedPost);
 
@@ -45,15 +39,9 @@ export const PostsApp = () => {
           </div>
 
           <div className="block" data-cy="MainContent">
-            {!author && (
-              <p data-cy="NoSelectedUser">
-                No user selected
-              </p>
-            )}
+            {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-            {isLoading && (
-              <Loader />
-            )}
+            {isLoading && <Loader />}
 
             {author && isLoading && errorMessage && (
               <div
@@ -71,9 +59,7 @@ export const PostsApp = () => {
             )}
 
             {author && !isLoading && !errorMessage && posts.length > 0 && (
-              <PostsList
-                posts={posts}
-              />
+              <PostsList posts={posts} />
             )}
           </div>
         </div>
@@ -81,20 +67,12 @@ export const PostsApp = () => {
 
       <div
         data-cy="Sidebar"
-        className={classNames(
-          'tile',
-          'is-parent',
-          'is-8-desktop',
-          'Sidebar',
-          {
-            'Sidebar--open': selectedPost,
-          },
-        )}
+        className={classNames('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+          'Sidebar--open': selectedPost,
+        })}
       >
         <div className="tile is-child box is-success ">
-          {selectedPost && (
-            <PostDetails post={selectedPost} />
-          )}
+          {selectedPost && <PostDetails post={selectedPost} />}
         </div>
       </div>
     </div>

@@ -38,8 +38,5 @@ const newCommentFormSlice = createSlice({
 });
 
 export default newCommentFormSlice.reducer;
-export const {
-  setIsLoading,
-  setCommentData,
-  setErrors,
-} = newCommentFormSlice.actions;
+export const { setIsLoading, setCommentData, setErrors }
+  = newCommentFormSlice.actions;

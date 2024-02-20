@@ -17,15 +17,14 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
-  const {
-    isLoading,
-    errorMessage,
-    comments,
-  } = useAppSelector(state => state.comments);
+  const { isLoading, errorMessage, comments } = useAppSelector(
+    state => state.comments,
+  );
   const [isFormOpened, setIsFormOpened] = useState(false);
   const onDeleteComment = (commentId: number) => {
-    const updatedComments = comments
-      .filter(comment => comment.id !== commentId);
+    const updatedComments = comments.filter(
+      comment => comment.id !== commentId,
+    );
 
     dispatch(setComments(updatedComments));
   };
@@ -40,10 +39,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [dispatch, post.id]);
 
   const handleAddNewComment = (commentData: CommentData) => {
-    return dispatch(addComment({
-      ...commentData,
-      postId: post.id,
-    }));
+    return dispatch(
+      addComment({
+        ...commentData,
+        postId: post.id,
+      }),
+    );
   };
 
   const isNoCommentMessageShown = !comments.length && !errorMessage;
@@ -54,64 +55,54 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${post.id}: ${post.title}`}
-          </h2>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-          <p data-cy="PostBody">
-            {post.body}
-          </p>
+          <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
-          {isLoading
-            ? <Loader />
-            : (
-              <>
-                {!!errorMessage && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="CommentsError"
-                  >
-                    {errorMessage}
-                  </div>
-                )}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              {!!errorMessage && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  {errorMessage}
+                </div>
+              )}
 
-                {areCommentsShown
-                  && (
-                    <>
-                      <p className="title is-4">Comments:</p>
+              {areCommentsShown && (
+                <>
+                  <p className="title is-4">Comments:</p>
 
-                      {comments.map(comment => (
-                        <CommentInfo
-                          key={comment.id}
-                          comment={comment}
-                          onDeleteComment={onDeleteComment}
-                        />
-                      ))}
-                    </>
-                  )}
+                  {comments.map(comment => (
+                    <CommentInfo
+                      key={comment.id}
+                      comment={comment}
+                      onDeleteComment={onDeleteComment}
+                    />
+                  ))}
+                </>
+              )}
 
-                {isNoCommentMessageShown
-                  && (
-                    <p className="title is-4" data-cy="NoCommentsMessage">
-                      No comments yet
-                    </p>
-                  )}
+              {isNoCommentMessageShown && (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
 
-                {isNewCommentButtonShown
-                  && (
-                    <button
-                      data-cy="WriteCommentButton"
-                      type="button"
-                      className="button is-link"
-                      onClick={() => setIsFormOpened(true)}
-                    >
-                      Write a comment
-                    </button>
-                  )}
-              </>
-            )}
+              {isNewCommentButtonShown && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => setIsFormOpened(true)}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
+          )}
         </div>
 
         {isFormOpened && (

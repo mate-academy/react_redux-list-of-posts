@@ -3,10 +3,10 @@ import { setSelectedPost } from '../../features/posts/selectedPost';
 import { Post } from '../../types/Post';
 
 interface Props {
-  post: Post,
+  post: Post;
 }
 
-export const PostInfo:React.FC<Props> = ({ post }) => {
+export const PostInfo: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost);
   const isSelected = selectedPost?.id === post.id;

@@ -19,11 +19,7 @@ export const CommentInfo: React.FC<Props> = ({ comment, onDeleteComment }) => {
   };
 
   return (
-    <article
-      className="message is-small"
-      key={comment.id}
-      data-cy="Comment"
-    >
+    <article className="message is-small" key={comment.id} data-cy="Comment">
       <div className="message-header">
         <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
           {comment.name}

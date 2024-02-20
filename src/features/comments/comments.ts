@@ -43,7 +43,7 @@ const commentsSlice = createSlice({
     },
   },
 
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(addComment.fulfilled, (state, action) => {
       state.comments = [...state.comments, action.payload];
     });
@@ -52,24 +52,24 @@ const commentsSlice = createSlice({
       throw new Error();
     });
 
-    builder.addCase(deleteComment.pending, (state) => {
+    builder.addCase(deleteComment.pending, state => {
       state.errorMessage = '';
     });
 
-    builder.addCase(deleteComment.rejected, (state) => {
+    builder.addCase(deleteComment.rejected, state => {
       state.errorMessage = 'Unable to delete a todo';
     });
 
-    builder.addCase(deleteComment.fulfilled, (state) => {
+    builder.addCase(deleteComment.fulfilled, state => {
       state.deletingComment = null;
       state.errorMessage = '';
     });
 
-    builder.addCase(loadComments.pending, (state) => {
+    builder.addCase(loadComments.pending, state => {
       state.isLoading = true;
     });
 
-    builder.addCase(loadComments.rejected, (state) => {
+    builder.addCase(loadComments.rejected, state => {
       state.isLoading = false;
       state.errorMessage = 'Unable to load comments';
     });

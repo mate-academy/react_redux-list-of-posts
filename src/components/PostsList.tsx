@@ -3,7 +3,7 @@ import { PostInfo } from './PostInfo/PostInfo';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
+  posts: Post[];
 };
 
 export const PostsList: React.FC<Props> = ({ posts }) => (
@@ -21,10 +21,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => (
 
       <tbody>
         {posts.map(post => (
-          <PostInfo
-            key={post.id}
-            post={post}
-          />
+          <PostInfo key={post.id} post={post} />
         ))}
       </tbody>
     </table>

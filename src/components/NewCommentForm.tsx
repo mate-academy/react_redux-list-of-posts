@@ -12,27 +12,25 @@ import {
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleAddNewComment: (commentData: CommentData) => Promise<any>,
+  handleAddNewComment: (commentData: CommentData) => Promise<any>;
 }
 
-export const NewCommentForm: React.FC<Props> = ({
-  handleAddNewComment,
-}) => {
-  const {
-    commentData,
-    errors,
-    isLoading,
-  } = useAppSelector(state => state.newCommentForm);
+export const NewCommentForm: React.FC<Props> = ({ handleAddNewComment }) => {
+  const { commentData, errors, isLoading } = useAppSelector(
+    state => state.newCommentForm,
+  );
   const dispatch = useAppDispatch();
 
   const handleReset = () => {
     dispatch(setCommentData(defaultCommentData));
-    dispatch(setErrors({
-      ...errors,
-      name: '',
-      email: '',
-      body: '',
-    }));
+    dispatch(
+      setErrors({
+        ...errors,
+        name: '',
+        email: '',
+        body: '',
+      }),
+    );
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -49,10 +47,12 @@ export const NewCommentForm: React.FC<Props> = ({
     };
 
     if (currentErrors.name || currentErrors.email || currentErrors.body) {
-      dispatch(setErrors({
-        ...errors,
-        ...currentErrors,
-      }));
+      dispatch(
+        setErrors({
+          ...errors,
+          ...currentErrors,
+        }),
+      );
 
       return;
     }
@@ -67,33 +67,42 @@ export const NewCommentForm: React.FC<Props> = ({
       .then(() => {
         dispatch(setErrors(defaultErrorValues));
 
-        dispatch(setCommentData({
-          ...commentData,
-          body: '',
-        }));
+        dispatch(
+          setCommentData({
+            ...commentData,
+            body: '',
+          }),
+        );
       })
       .catch(() => {
-        dispatch(setErrors({
-          ...errors,
-          server: 'Unable to add a comment',
-        }));
+        dispatch(
+          setErrors({
+            ...errors,
+            server: 'Unable to add a comment',
+          }),
+        );
       })
       .finally(() => dispatch(setIsLoading(false)));
   };
 
   const handleCommentChanged = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event:
+    | React.ChangeEvent<HTMLInputElement>
     | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    dispatch(setErrors({
-      ...errors,
-      [event.target.name]: '',
-    }));
+    dispatch(
+      setErrors({
+        ...errors,
+        [event.target.name]: '',
+    }),
+    );
 
-    dispatch(setCommentData({
-      ...commentData,
-      [event.target.name]: event.target.value,
-    }));
+    dispatch(
+      setCommentData({
+        ...commentData,
+        [event.target.name]: event.target.value,
+      }),
+    );
   };
 
   return (
@@ -225,10 +234,7 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
       </div>
       {!!errors.server && (
-        <div
-          className="notification is-danger"
-          data-cy="PostsLoadingError"
-        >
+        <div className="notification is-danger" data-cy="PostsLoadingError">
           {errors.server}
         </div>
       )}
