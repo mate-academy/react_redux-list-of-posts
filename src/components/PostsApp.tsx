@@ -52,15 +52,18 @@ export const PostsApp = () => {
               </div>
             )}
 
-            {!!author.name.length && posts.length === 0 ? (
+            {!!author.name.length && posts.length === 0 && (
               <div className="notification is-warning" data-cy="NoPostsYet">
                 No posts yet
               </div>
-            ) : (
-              <div className="notification is-warning" data-cy="NoPostsYet">
-              No selected user
-            </div>
             )}
+
+            {!author.name.length && (
+              <div className="notification is-warning" data-cy="NoPostsYet">
+                No selected users
+              </div>
+            )}
+
             {author && !isLoading && !errorMessage && posts.length > 0 && (
               <PostsList posts={posts} />
             )}
