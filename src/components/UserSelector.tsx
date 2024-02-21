@@ -3,6 +3,7 @@ import cn from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addAuthor } from '../features/users/author';
+import { setSelectedPost } from '../features/posts/selectedPost';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,7 @@ export const UserSelector: React.FC = () => {
 
   const handleNewUserSelected = (user: User) => {
     setIsDropdownActive(false);
+    dispatch(setSelectedPost(null));
 
     if (selectedUser?.id !== user.id) {
       dispatch(addAuthor(user));
