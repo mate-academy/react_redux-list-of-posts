@@ -54,7 +54,7 @@ export const PostsApp = () => {
 
             {author && !isLoading && !errorMessage && posts.length === 0 && (
               <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
+                No selected user
               </div>
             )}
 
