@@ -1,5 +1,6 @@
 // axios docs https://axios-http.com/docs/intro
 import axios from 'axios';
+import { Post } from '../types/Post';
 
 const instance = axios.create({
   baseURL: 'https://mate.academy/students-api',
@@ -14,13 +15,13 @@ export const client = {
     return response.data;
   },
 
-  async post<T>(url: string, data: any) {
+  async post<T>(url: string, data: Post) {
     const response = await instance.post<T>(url, data);
 
     return response.data;
   },
 
-  async patch<T>(url: string, data: any) {
+  async patch<T>(url: string, data: Post) {
     const response = await instance.patch<T>(url, data);
 
     return response.data;
