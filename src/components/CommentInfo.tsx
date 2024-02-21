@@ -1,9 +1,9 @@
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import {
   deleteComment,
   setDeletingComment,
-} from '../../features/comments/comments';
-import { Comment } from '../../types/Comment';
+} from '../features/comments/comments';
+import { Comment } from '../types/Comment';
 
 interface Props {
   comment: Comment;

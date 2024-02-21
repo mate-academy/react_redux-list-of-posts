@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { setSelectedPost } from '../../features/posts/selectedPost';
-import { Post } from '../../types/Post';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setSelectedPost } from '../features/posts/selectedPost';
+import { Post } from '../types/Post';
 
 interface Props {
   post: Post;

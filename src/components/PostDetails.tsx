@@ -9,7 +9,7 @@ import {
   loadComments,
   setComments,
 } from '../features/comments/comments';
-import { CommentInfo } from './CommentInfo/CommentInfo';
+import { CommentInfo } from './CommentInfo';
 
 type Props = {
   post: Post;
