@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as commentsApi from '../api/comments';
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  fetchComments, setComment, removeComment,
+  fetchComments, removeComment, deleteComments,
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -25,21 +23,9 @@ export const PostDetails: React.FC = () => {
 
   useEffect(loadComments, [selectedPost?.id]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = await commentsApi.createComment({
-      name,
-      email,
-      body,
-      postId: selectedPost?.id || 0,
-    });
-
-    dispatch(setComment(newComment));
-  };
-
-  const deleteComment = async (commentId: number) => {
+  const handleDelete = (commentId: number) => {
     dispatch(removeComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    dispatch(deleteComments(commentId));
   };
 
   return (
@@ -91,7 +77,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDelete(comment.id)}
                   >
                     delete button
                   </button>
@@ -117,7 +103,7 @@ export const PostDetails: React.FC = () => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm />
         )}
       </div>
     </div>
