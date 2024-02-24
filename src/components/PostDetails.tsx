@@ -2,31 +2,46 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
+import {
+  getPostComments,
+  createComment,
+  deleteCommentApi,
+} from '../api/comments';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  setLoaded,
+  setError,
+  setComments,
+} from '../features/postCommentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.postComments,
+  );
+
+  const dispatch = useAppDispatch();
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
+
     setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+    try {
+      dispatch(getPostComments(post.id));
+    } catch {
+      dispatch(setError(true));
+    } finally {
+      dispatch(setLoaded(true));
+    }
   }
 
   useEffect(loadComments, [post.id]);
@@ -59,14 +74,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
-      const newComment = await commentsApi.createComment({
+      const newComment = await createComment({
         name,
         email,
         body,
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      const newComments = [...comments, newComment];
+
+      dispatch(setComments(newComments));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,11 +99,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    const newComments = comments.filter(comment => comment.id !== commentId);
 
-    await commentsApi.deleteComment(commentId);
+    dispatch(setComments(newComments));
+
+    await deleteCommentApi(commentId);
   };
 
   return (
