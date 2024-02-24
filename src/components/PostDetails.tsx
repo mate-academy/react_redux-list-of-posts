@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  fetchComments, removeComment, deleteComments,
+  fetchComments, removeComment, deleteComment,
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -25,7 +25,7 @@ export const PostDetails: React.FC = () => {
 
   const handleDelete = (commentId: number) => {
     dispatch(removeComment(commentId));
-    dispatch(deleteComments(commentId));
+    dispatch(deleteComment(commentId));
   };
 
   return (

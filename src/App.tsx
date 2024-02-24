@@ -11,6 +11,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setSelectedPost } from './features/selectedPostSlice';
 import { fetchPosts } from './features/postsSlice';
+import { clearComments } from './features/commentsSlice';
 
 export const App: React.FC = () => {
   const {
@@ -22,6 +23,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
+    dispatch(clearComments());
 
     if (author) {
       dispatch(fetchPosts(author.id));

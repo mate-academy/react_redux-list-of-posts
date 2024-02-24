@@ -1,6 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { createComment, getPostComments, deleteComment } from '../api/comments';
+import { 
+  createComment,
+  getPostComments,
+  deleteComment as deleteCommentApi
+} from '../api/comments';
 import { Comment } from '../types/Comment';
 
 export interface CommentsState {
@@ -33,12 +37,12 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const deleteComments = createAsyncThunk(
+export const deleteComment = createAsyncThunk(
   'comments/delete',
   async (commentId: number) => {
-    const commentData = await deleteComment(commentId);
+    const idComment = await deleteCommentApi(commentId);
 
-    return commentData;
+    return idComment;
   },
 );
 
@@ -54,6 +58,9 @@ export const commentsSlice = createSlice({
         item => item.id !== action.payload,
       );
     },
+    clearComments: (state: CommentsState) => {
+      state.items = [];
+    }
   },
   extraReducers(builder) {
     builder
@@ -85,7 +92,7 @@ export const commentsSlice = createSlice({
           hasError: true,
         };
       })
-      .addCase(deleteComments.fulfilled,
+      .addCase(deleteComment.fulfilled,
         (state: CommentsState) => {
           return {
             ...state,
@@ -96,4 +103,4 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { setComment, removeComment } = commentsSlice.actions;
+export const { setComment, removeComment, clearComments } = commentsSlice.actions;
