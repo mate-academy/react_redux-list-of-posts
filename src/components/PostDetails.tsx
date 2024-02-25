@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post.id, dispatch]);
 
   // The same useEffect with async/await
   /*

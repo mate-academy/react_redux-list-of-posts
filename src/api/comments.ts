@@ -3,10 +3,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
-// export const getPostComments = (postId: number) => {
-//   return client.get<Comment[]>(`/comments?postId=${postId}`);
-// };
-
 export const getPostComments = createAsyncThunk(
   'fetchPostComments',
   async (postId: number) => client.get<Comment[]>(`/comments?postId=${postId}`),

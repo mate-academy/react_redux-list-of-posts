@@ -12,7 +12,7 @@ import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/authorSlice';
-import { setLoaded, setError, setPostsEmpty } from './features/postsSlice';
+import { setPostsEmpty } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
 import { Post } from './types/Post';
 
@@ -22,22 +22,15 @@ export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    dispatch(setLoaded(false));
-    try {
-      dispatch(getUserPosts(userId));
-    } catch {
-      dispatch(setError(true));
-    } finally {
-      dispatch(setLoaded(true));
-    }
-  }
-
   const handleAuthor = (auth: User) => {
     dispatch(setAuthor(auth));
   };
 
   useEffect(() => {
+    function loadUserPosts(userId: number) {
+      dispatch(getUserPosts(userId));
+    }
+
     dispatch(setSelectedPost(null));
     if (author) {
       loadUserPosts(author.id);
