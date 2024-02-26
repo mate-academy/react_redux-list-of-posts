@@ -23,7 +23,7 @@ export const PostsList: React.FC<Props> = ({
         <tr className="has-background-link-light">
           <th>#</th>
           <th>Title</th>
-          <th> </th>
+          <th aria-label="expand"> </th>
         </tr>
       </thead>
 
