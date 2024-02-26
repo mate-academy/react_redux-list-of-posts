@@ -55,7 +55,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     const nameError = !name;
     const emailError = !email || !validateEmail(email);
-    const bodyError = !body;
+    const bodyError = !body || body.trim() === '';
 
     setErrors({
       name: nameError,
