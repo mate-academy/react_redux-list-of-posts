@@ -53,7 +53,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const nameError = !name;
+    const nameError = !name || name.trim() === '';
     const emailError = !email || !validateEmail(email);
     const bodyError = !body || body.trim() === '';
 

@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getUsers } from '../api/users';
 import { actions as usersActions } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
+import { actions as commentsActions } from '../features/comment/commentSlice';
+import { User } from '../types/User';
 
 export const UserSelector = () => {
   const { author } = useAppSelector(state => state.author);
@@ -41,6 +43,12 @@ export const UserSelector = () => {
     // when the Dopdown is closed
   }, [expanded]);
 
+  const handleUserClick = (user: User) => {
+    dispatch(authorActions.set(user));
+    dispatch(commentsActions.set([]));
+    setExpanded(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -73,9 +81,7 @@ export const UserSelector = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(authorActions.set(user));
-              }}
+              onClick={() => handleUserClick(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
