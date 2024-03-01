@@ -36,22 +36,35 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!newComment.name || !newComment.body || !newComment.email) {
+    const normalizedName = newComment.name.trim();
+    const normalizedMail = newComment.email.trim();
+    const normalizedBody = newComment.body.trim();
+
+    const normalizedNewComment = {
+      name: normalizedName,
+      email: normalizedMail,
+      body: normalizedBody,
+    };
+
+    if (!normalizedName
+    || !normalizedBody
+    || !normalizedMail
+    ) {
       dispatch(setNewCommentErrors({
-        name: !newComment.name,
-        email: !newComment.email,
-        body: !newComment.body,
+        name: !normalizedName,
+        email: !normalizedMail,
+        body: !normalizedBody,
       }));
+
+      dispatch(setNewComment(normalizedNewComment));
     }
 
-    if (newComment.name
-      && newComment.body
-      && newComment.email
+    if (normalizedName
+      && normalizedBody
+      && normalizedMail
       && selectedPost) {
       const newComm = {
-        name: newComment.name,
-        email: newComment.email,
-        body: newComment.body,
+        ...normalizedNewComment,
         postId: selectedPost.id,
       };
 
