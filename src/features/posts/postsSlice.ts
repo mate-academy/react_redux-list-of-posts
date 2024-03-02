@@ -22,7 +22,11 @@ export const init = createAsyncThunk('posts/fetch', (id: number) => {
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    clear: state => {
+      state.posts = [];
+    },
+  },
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
       state.loaded = false;
@@ -41,3 +45,4 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+export const { clear } = postsSlice.actions;
