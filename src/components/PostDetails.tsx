@@ -2,19 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createComment } from '../api/comments';
 import * as commentsSlice from '../features/comments/commentsSlice';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [visible, setVisible] = useState(false);
+export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [visible, setVisible] = useState(false);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { loaded, hasError, comments } = useAppSelector(
     state => state.comments,
@@ -24,6 +19,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     if (selectedPost) {
       dispatch(commentsSlice.init(selectedPost.id));
     }
+
+    setVisible(false);
   }, [dispatch, selectedPost]);
 
   const addComment = async (newComment: CommentData) => {
@@ -42,9 +39,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">
