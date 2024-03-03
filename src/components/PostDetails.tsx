@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -57,7 +57,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   // effect can return only a function but not a Promise
   */
 
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const addComment = useCallback(async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -66,17 +66,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
-
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
       // because it takes the `comments` cached during the first render
       // not the actual ones
+
+      setComments(currentComments => [...currentComments, newComment]);
     } catch (error) {
-      // we show an error message in case of any error
       setError(true);
     }
-  };
+  }, [post.id, comments, setComments]);
+
 
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
