@@ -7,17 +7,15 @@ import * as postActions from '../features/postSlice';
 import * as commentsAction from '../features/commentSlice';
 import { Post } from '../types/Post';
 
-
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { posts, selectedPost } = useAppSelector(state => state.posts);
   const handleSelectedPosts = (post: Post) => {
-
     if (post?.id === selectedPost?.id) {
       dispatch(postActions.selectedPosts(null));
       dispatch(commentsAction.clearComments());
     } else {
-       dispatch(postActions.selectedPosts(post));
+      dispatch(postActions.selectedPosts(post));
     }
   };
 
@@ -58,4 +56,3 @@ export const PostsList: React.FC = () => {
     </div>
   );
 };
-

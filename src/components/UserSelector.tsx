@@ -9,13 +9,13 @@ import * as postAction from '../features/postSlice';
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
-  const { users, selectedUser, } = useAppSelector(state => state.users);
+  const { users, selectedUser } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
       return;
-    };
+    }
 
     const handleDocumentClick = () => {
       setExpanded(false);
@@ -27,13 +27,12 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-
   }, [expanded]);
 
   const chooseUser = (user: User) => {
     dispatch(userAction.selectedUser(user));
     dispatch(postAction.selectedPosts(null));
-  }
+  };
 
   return (
     <div

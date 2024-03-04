@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentAction from '../features/commentSlice'
-
+import * as commentAction from '../features/commentSlice';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -60,13 +59,16 @@ export const NewCommentForm: React.FC = () => {
     setSubmitting(true);
 
     if (selectedPost) {
-      await dispatch(commentAction.fetchAddComment({
-        name,
-        email,
-        body,
-        postId: selectedPost?.id
-      }))}
-    
+      await dispatch(
+        commentAction.fetchAddComment({
+          name,
+          email,
+          body,
+          postId: selectedPost?.id,
+        }),
+      );
+    }
+
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
   };

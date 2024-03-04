@@ -8,15 +8,17 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.posts);
-  const { comments, isError, isLoader } = useAppSelector(state => state.comments);
+  const { comments, isError, isLoader } = useAppSelector(
+    state => state.comments,
+  );
 
   useEffect(() => {
-    if(selectedPost) {
+    if (selectedPost) {
       dispatch(commentsAction.fetchComment(selectedPost.id));
     }
 
-    setVisible(false)
-  },[selectedPost]);
+    setVisible(false);
+  }, [selectedPost, dispatch]);
 
   const deleteComment = (commentId: number) => {
     dispatch(commentsAction.removeComment(commentId));
@@ -92,9 +94,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {!isLoader && !isError && visible && (
-          <NewCommentForm />
-        )}
+        {!isLoader && !isError && visible && <NewCommentForm />}
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { DataType } from './axiosClient';
+
 function read(key: string) {
   const data = window.localStorage.getItem(key);
 
@@ -8,11 +10,11 @@ function read(key: string) {
   }
 }
 
-function write(key: string, data: any) {
+function write(key: string, data: DataType) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 
-export function init(key: string, initialData: any) {
+export function init(key: string, initialData: DataType) {
   if (!read(key)) {
     write(key, initialData);
   }

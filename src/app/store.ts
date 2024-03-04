@@ -3,12 +3,12 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
 import postReducer, { PostState } from '../features/postSlice';
 import userReducer, { UserState } from '../features/userSlice';
-import  commentsReducer, { CommentState } from '../features/commentSlice';
+import commentsReducer, { CommentState } from '../features/commentSlice';
 
 interface Store {
-  comments: CommentState,
-  posts: PostState,
-  users: UserState,
+  comments: CommentState;
+  posts: PostState;
+  users: UserState;
 }
 
 export const store = configureStore<Store>({

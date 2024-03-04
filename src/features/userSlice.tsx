@@ -1,15 +1,15 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUsers } from "../api/users";
-import { User } from "../types/User";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getUsers } from '../api/users';
+import { User } from '../types/User';
 
 export const usersFetch = createAsyncThunk('users/fetch', async () => {
-  return await getUsers();
+  return getUsers();
 });
 
 export interface UserState {
-  users: User[],
-  selectedUser: User | null,
-};
+  users: User[];
+  selectedUser: User | null;
+}
 
 const initialState: UserState = {
   users: [],
@@ -21,20 +21,18 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     selectedUser: (state, action: PayloadAction<User | null>) => {
-      return {...state, selectedUser: action.payload}
-    }
+      return { ...state, selectedUser: action.payload };
+    },
   },
 
-  extraReducers: (builder) => {
-    builder
-      .addCase(usersFetch.fulfilled, (state, action) => {
-        return { 
-          ...state,
-          users: action.payload,
-        }
-      })
-  }
-
+  extraReducers: builder => {
+    builder.addCase(usersFetch.fulfilled, (state, action) => {
+      return {
+        ...state,
+        users: action.payload,
+      };
+    });
+  },
 });
 
 export default userSlice.reducer;

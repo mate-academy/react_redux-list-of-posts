@@ -14,21 +14,26 @@ import * as postAction from './features/postSlice';
 import { fetchPost } from './features/postSlice';
 
 export const App: React.FC = () => {
-  useEffect(() => {
-    dispatch(userAction.usersFetch())
-  }, []);
-
-  const { isError, isLoader, posts, selectedPost } = useAppSelector(state => state.posts);
-  const { selectedUser } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(userAction.usersFetch());
+  }, [dispatch]);
+
+  const { isError, isLoader, posts, selectedPost } = useAppSelector(
+    state => state.posts,
+  );
+  const { selectedUser } = useAppSelector(state => state.users);
+
+  useEffect(() => {
     if (selectedUser) {
-        dispatch(fetchPost(selectedUser.id))
+      dispatch(fetchPost(selectedUser.id));
     } else {
       dispatch(postAction.clearPosts());
     }
-  }, [selectedUser]);
+  }, [selectedUser, dispatch]);
+
+  const noPosts = selectedUser && !isLoader && !isError && posts.length === 0;
 
   return (
     <main className="section">
@@ -41,7 +46,9 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {selectedUser && isLoader && <Loader />}
 
@@ -54,7 +61,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !isLoader && !isError && posts.length === 0 && (
+                {noPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -80,9 +87,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-             
               {selectedPost && <PostDetails />}
-
             </div>
           </div>
         </div>
