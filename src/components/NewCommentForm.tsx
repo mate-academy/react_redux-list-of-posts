@@ -21,6 +21,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     body: '',
   });
 
+  const normalizedBody = body.trim();
+  const normalizedName =
+    name.length > 50 ? `${name.trim().slice(0, 50)}...` : name.trim();
+  const normalizedEmail = email.trim().slice(0, 50);
+
   const clearForm = () => {
     setValues({
       name: '',
@@ -48,19 +53,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !normalizedName,
+      email: !normalizedEmail,
+      body: !normalizedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!normalizedName || !normalizedEmail || !normalizedBody) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit({
+      name: normalizedName,
+      email: normalizedEmail,
+      body: normalizedBody,
+    });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
