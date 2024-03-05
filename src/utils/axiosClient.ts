@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // axios docs https://axios-http.com/docs/intro
 import axios from 'axios';
 
