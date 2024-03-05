@@ -5,10 +5,10 @@ import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as userAction from '../features/userSlice';
 import * as postAction from '../features/postSlice';
+import * as commentAction from '../features/commentSlice';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
-
   const { users, selectedUser } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
 
@@ -32,6 +32,7 @@ export const UserSelector: React.FC = () => {
   const chooseUser = (user: User) => {
     dispatch(userAction.selectedUser(user));
     dispatch(postAction.selectedPosts(null));
+    dispatch(commentAction.clearComments());
   };
 
   return (

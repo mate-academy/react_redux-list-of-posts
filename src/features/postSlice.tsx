@@ -29,6 +29,7 @@ export const postState = createSlice({
         selectedPost: action.payload,
       };
     },
+
     clearPosts: state => {
       return {
         ...state,
