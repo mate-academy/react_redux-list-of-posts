@@ -52,7 +52,7 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
