@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,39 +8,32 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { loadUsers } from './features/users/usersSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { loadedUserPosts, removePosts } from './features/posts/postsSlice';
+import { removePost } from './features/selectedPosts/selectedPostsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { author } = useAppSelector(store => store.author);
+  const { loaded, hasError, items } = useAppSelector(store => store.posts);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const { currentPost } = useAppSelector(store => store.selectedPost);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(removePost());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(loadedUserPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(removePosts());
     }
-  }, [author]);
+  }, [author, dispatch]);
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, [dispatch]);
 
   return (
     <main className="section">
@@ -49,7 +42,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -66,18 +59,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && loaded && !hasError && items.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -91,12 +80,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': currentPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {currentPost && <PostDetails />}
             </div>
           </div>
         </div>
