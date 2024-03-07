@@ -1,7 +1,3 @@
-// function wait(delay: number) {
-//   return new Promise(done => setTimeout(done, delay));
-// }
-
 function read(key: string) {
   const data = window.localStorage.getItem(key);
 
@@ -12,11 +8,11 @@ function read(key: string) {
   }
 }
 
-function write(key: string, data: any) {
+function write<T>(key: string, data: T) {
   window.localStorage.setItem(key, JSON.stringify(data));
 }
 
-export function init(key: string, initialData: any) {
+export function init<T>(key: string, initialData: T) {
   if (!read(key)) {
     write(key, initialData);
   }
