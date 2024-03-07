@@ -20,8 +20,11 @@ export const App: React.FC = () => {
     errorMessage,
     posts,
   } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost);
-  const author = useAppSelector(state => state.author);
+  const { author, selectedPost } = useAppSelector(state => state);
+  const isPostListShown = author
+    && !isLoading
+    && !errorMessage
+    && !posts.length;
 
   useEffect(() => {
     dispatch(init());
@@ -71,18 +74,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author
-                  && !isLoading
-                  && !errorMessage
-                  && !posts.length
-                  && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {isPostListShown && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
                 {author && !isLoading && !errorMessage && !!posts.length && (
                   <PostsList

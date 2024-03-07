@@ -6,8 +6,7 @@ import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users);
-  const selectedUser = useAppSelector(state => state.author);
+  const { users, author: selectedUser } = useAppSelector(state => state);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
 
   const handleNewUserSelected = (user: User) => {
