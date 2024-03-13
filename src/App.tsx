@@ -10,21 +10,15 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { RootState } from './app/store';
-import { clearSelectedPost } from './features/selectedPost/selectedPostSlice';
 import { fetchUserPosts } from './utils/thunks/fetchUserPosts';
+import { clearSelectedPost } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const {
-    value: author,
-    userPosts: posts,
-    hasError,
-    userPostsLoaded: loaded,
-  } = useAppSelector((state: RootState) => state.selectedUser);
-
-  const selectedPost = useAppSelector(
-    (state: RootState) => state.selectedPost.value,
+  const { author } = useAppSelector((state: RootState) => state.users);
+  const { posts, selectedPost, hasError, isLoading } = useAppSelector(
+    (state: RootState) => state.posts,
   );
 
   useEffect(() => {
@@ -48,9 +42,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && isLoading && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && !isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -59,13 +53,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !isLoading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !isLoading && !hasError && posts.length > 0 && (
                   <PostsList posts={posts} selectedPostId={selectedPost?.id} />
                 )}
               </div>

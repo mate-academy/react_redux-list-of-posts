@@ -1,25 +1,36 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { fetchUsers } from '../../utils/thunks/fetchUsers';
 
 export interface UsersState {
-  value: User[];
+  users: User[];
+  author: User | null;
 }
 
 const initialState: UsersState = {
-  value: [],
+  users: [],
+  author: null,
 };
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedUser: (state, action: PayloadAction<User>) => {
+      state.author = action.payload;
+    },
+    clearSelectedUser: state => {
+      state.author = null;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.value = action.payload;
+      state.users = action.payload;
     });
   },
 });
+
+export const { setSelectedUser, clearSelectedUser } = usersSlice.actions;
 
 export default usersSlice.reducer;

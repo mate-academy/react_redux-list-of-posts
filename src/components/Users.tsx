@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RootState } from '../app/store';
-import { setSelectedUser } from '../features/selectedUser/selectedUserSlice';
 import { User } from '../types/User';
 import { fetchUsers } from '../utils/thunks/fetchUsers';
+import { setSelectedUser } from '../features/users/usersSlice';
 
 interface UsersProps {
   selectedUser: User | null;
@@ -12,7 +12,7 @@ interface UsersProps {
 
 export const Users: React.FC<UsersProps> = ({ selectedUser }) => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector((state: RootState) => state.users.value);
+  const { users } = useAppSelector((state: RootState) => state.users);
 
   useEffect(() => {
     dispatch(fetchUsers());

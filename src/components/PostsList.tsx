@@ -3,11 +3,11 @@
 import cn from 'classnames';
 import React from 'react';
 import { useAppDispatch } from '../app/hooks';
+import { Post } from '../types/Post';
 import {
   clearSelectedPost,
   setSelectedPost,
-} from '../features/selectedPost/selectedPostSlice';
-import { Post } from '../types/Post';
+} from '../features/posts/postsSlice';
 
 interface PostsListProps {
   selectedPostId: number | undefined;
