@@ -10,8 +10,8 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { RootState } from './app/store';
-import { fetchUserPosts } from './features/selectedUser/selectedUserSlice';
 import { clearSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { fetchUserPosts } from './utils/thunks/fetchUserPosts';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();

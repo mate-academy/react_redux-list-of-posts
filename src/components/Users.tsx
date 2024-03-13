@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import cn from 'classnames';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import { fetchUsers } from './usersSlice';
-import { setSelectedUser } from '../selectedUser/selectedUserSlice';
-import { User } from '../../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { RootState } from '../app/store';
+import { setSelectedUser } from '../features/selectedUser/selectedUserSlice';
+import { User } from '../types/User';
+import { fetchUsers } from '../utils/thunks/fetchUsers';
 
 interface UsersProps {
   selectedUser: User | null;

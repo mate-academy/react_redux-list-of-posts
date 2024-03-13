@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch } from '../app/hooks';
-import { addPostComment } from '../features/selectedPost/selectedPostSlice';
+import { addPostComment } from '../utils/thunks/addPostComment';
 
 type NewCommentFormProps = {
   postId: number;

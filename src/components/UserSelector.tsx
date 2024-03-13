@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { Users } from '../features/users/Users';
+import { Users } from './Users';
 import { User } from '../types/User';
 
 interface UserSelectorProps {

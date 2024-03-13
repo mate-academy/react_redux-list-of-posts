@@ -3,11 +3,9 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  deletePostComment,
-  fetchPostComments,
-} from '../features/selectedPost/selectedPostSlice';
+import { deletePostComment } from '../features/selectedPost/selectedPostSlice';
 import * as commentsApi from '../api/comments';
+import { fetchPostComments } from '../utils/thunks/fetchPostComments';
 
 type Props = {
   post: Post;

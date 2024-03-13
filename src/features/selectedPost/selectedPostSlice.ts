@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getPostComments } from '../../api/comments';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
-import * as commentsApi from '../../api/comments';
+import { fetchPostComments } from '../../utils/thunks/fetchPostComments';
+import { addPostComment } from '../../utils/thunks/addPostComment';
 
 export interface SelectedPostState {
   value: Post | null;
@@ -18,20 +18,6 @@ const initialState: SelectedPostState = {
   postCommentsLoaded: false,
   hasError: false,
 };
-
-export const fetchPostComments = createAsyncThunk(
-  'selectedPost/fetchComments',
-  async (postId: number) => {
-    return getPostComments(postId);
-  },
-);
-
-export const addPostComment = createAsyncThunk(
-  'selectedPost/addComment',
-  async (comment: Omit<Comment, 'id'>) => {
-    return commentsApi.createComment(comment);
-  },
-);
 
 export const selectedPostSlice = createSlice({
   name: 'selectedPost',

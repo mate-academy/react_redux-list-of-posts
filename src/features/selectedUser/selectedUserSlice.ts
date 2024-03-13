@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
+import { fetchUserPosts } from '../../utils/thunks/fetchUserPosts';
 
 export interface SelectedUserState {
   value: User | null;
@@ -17,13 +17,6 @@ const initialState: SelectedUserState = {
   userPostsLoaded: false,
   hasError: false,
 };
-
-export const fetchUserPosts = createAsyncThunk(
-  'selectedUser/fetchPosts',
-  async (userId: number) => {
-    return getUserPosts(userId);
-  },
-);
 
 export const selectedUserSlice = createSlice({
   name: 'selectedUser',
