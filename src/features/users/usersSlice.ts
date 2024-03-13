@@ -17,10 +17,10 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setSelectedUser: (state, action: PayloadAction<User>) => {
+    setAuthor: (state, action: PayloadAction<User>) => {
       state.author = action.payload;
     },
-    clearSelectedUser: state => {
+    clearAuthor: state => {
       state.author = null;
     },
   },
@@ -31,6 +31,6 @@ export const usersSlice = createSlice({
   },
 });
 
-export const { setSelectedUser, clearSelectedUser } = usersSlice.actions;
+export const { setAuthor, clearAuthor } = usersSlice.actions;
 
 export default usersSlice.reducer;

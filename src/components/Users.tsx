@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RootState } from '../app/store';
 import { User } from '../types/User';
 import { fetchUsers } from '../utils/thunks/fetchUsers';
-import { setSelectedUser } from '../features/users/usersSlice';
+import { setAuthor } from '../features/users/usersSlice';
 
 interface UsersProps {
   selectedUser: User | null;
@@ -25,7 +25,7 @@ export const Users: React.FC<UsersProps> = ({ selectedUser }) => {
           key={user.id}
           href={`#user-${user.id}`}
           onClick={() => {
-            dispatch(setSelectedUser(user));
+            dispatch(setAuthor(user));
           }}
           className={cn('dropdown-item', {
             'is-active': user.id === selectedUser?.id,
