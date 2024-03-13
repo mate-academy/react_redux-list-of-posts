@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { fetchPostComments } from '../../utils/thunks/fetchPostComments';
 import { addPostComment } from '../../utils/thunks/addPostComment';
