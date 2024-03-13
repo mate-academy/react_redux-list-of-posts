@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { fetchUsers } from '../../utils/thunks/fetchUsers';
