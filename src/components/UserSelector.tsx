@@ -1,23 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable consistent-return */
+/* eslint-disable operator-linebreak */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
+  onChange: (user: User | null) => void; // Allow null to clear the selection
+  users: User[] | null;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
+  users,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -25,22 +22,22 @@ export const UserSelector: React.FC<Props> = ({
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
+
+  // Function to handle user selection and clear comments
+  const handleUserChange = (user: User) => {
+    onChange(user); // Trigger the callback with the new user
+    setExpanded(false); // Collapse the dropdown
+  };
 
   return (
     <div
@@ -68,20 +65,22 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {users &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onClick={e => {
+                  e.preventDefault(); // Prevent the default anchor behavior
+                  handleUserChange(user);
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>
