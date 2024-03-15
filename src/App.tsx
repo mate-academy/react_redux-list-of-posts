@@ -29,8 +29,16 @@ export const App: React.FC = () => {
   const { posts, isLoading, error } = useAppSelector(state => state.posts);
   const { post: selectedPost } = useAppSelector(state => state.post);
 
-  const handleSetAuthor = (user: User) => {
-    dispatch(setAuthor(user));
+  const clearComments = () => {
+    dispatch({ type: 'CLEAR_COMMENTS' });
+  };
+
+  const handleSetAuthor = (user: User | null) => {
+    if (!user || (author && user.id !== author.id)) {
+      clearComments();
+    }
+
+    setAuthor(user);
   };
 
   const handleSetSelectedPost = (post: Post | null) => {
