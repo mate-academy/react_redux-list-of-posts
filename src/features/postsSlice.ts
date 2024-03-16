@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
+import { Post } from '../types/Post';
+import { getUserPosts } from '../api/posts';
 
 export interface PostsStateType {
   posts: Post[];

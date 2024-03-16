@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -8,18 +8,15 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { init as usersInit } from './features/users/usersSlice';
-import {
-  set as postsSet,
-  clear as clearPosts,
-} from './features/posts/postsSlice';
+import { init as usersInit } from './features/usersSlice';
+import { set as postsSet, clear as clearPosts } from './features/postsSlice';
+import { clear as clearSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const { posts, loaded, hasError } = useAppSelector(store => store.posts);
   const { author } = useAppSelector(store => store.author);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { selectedPost } = useAppSelector(store => store.selectedPost);
 
   const dispatch = useAppDispatch();
 
@@ -28,9 +25,7 @@ export const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(clearSelectedPost());
 
     if (author) {
       dispatch(postsSet(author.id));
@@ -70,11 +65,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -93,7 +84,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

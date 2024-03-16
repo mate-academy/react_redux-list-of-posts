@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-import { set } from '../features/author/authorSlice';
+import { set } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons

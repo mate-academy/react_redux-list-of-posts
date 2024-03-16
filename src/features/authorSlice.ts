@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { User } from '../../types/User';
+import { User } from '../types/User';
 
 export interface AuthorStateType {
   author: User | null;
