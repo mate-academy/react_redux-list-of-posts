@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,39 +8,33 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { init } from './features/Posts';
+import { clear } from './features/Users';
+import { setSelectedPost } from './features/SelectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const loadUsersPost = useCallback(
+    (userId: number) => {
+      dispatch(init(userId));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
+    clear();
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(() => loadUsersPost(author.id));
     }
-  }, [author]);
+  }, [author, loadUsersPost]);
 
   return (
     <main className="section">
@@ -55,9 +49,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !loading && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -66,41 +60,42 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && loading && !error && posts.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+          {author && selectedPost.selectedPost && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                {
+                  'Sidebar--open': selectedPost,
+                },
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                {/* Pass selectedPost.selectedPost to PostDetails */}
+                <PostDetails post={selectedPost.selectedPost} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
   );
 };
+
+export default App;
