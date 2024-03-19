@@ -4,7 +4,7 @@ import {
   getCommentPosts,
   addComment,
   deleteCom,
-} from '../features/ComentSlice';
+} from '../features/CommentSlice';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
