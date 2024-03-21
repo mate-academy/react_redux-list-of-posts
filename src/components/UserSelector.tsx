@@ -12,15 +12,15 @@ export const UserSelector = () => {
   const { author } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
 
+  const fetchUsers = async () => {
+    const fetchedUsers = await getUsers();
+
+    dispatch(usersActions.set(fetchedUsers));
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      const fetchedUsers = await getUsers();
-
-      dispatch(usersActions.set(fetchedUsers));
-    };
-
     fetchUsers();
-  }, [users]);
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
