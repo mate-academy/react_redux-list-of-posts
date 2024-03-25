@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getUsersFromServ } from '../features/Users';
+import { setAuthor } from '../features/AuthorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
@@ -20,6 +12,7 @@ export const UserSelector: React.FC<Props> = ({
 
   const { users } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
+  const author = useAppSelector(state => state.author.author);
 
   useEffect(() => {
     dispatch(getUsersFromServ());
@@ -61,7 +54,7 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -76,10 +69,10 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setAuthor(user));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

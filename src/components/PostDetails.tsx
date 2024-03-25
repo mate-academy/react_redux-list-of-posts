@@ -12,8 +12,8 @@ import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.selectedPost);
-  const post = selectedPost.selectedPost;
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const post = selectedPost;
   const { comments, loading, error } = useAppSelector(state => state.comments);
 
   const [visible, setVisible] = useState(false);

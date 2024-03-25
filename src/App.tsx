@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,17 +8,16 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init } from './features/Posts';
 import { clear } from './features/Users';
 import { setSelectedPost } from './features/SelectedPost';
 
 export const App: React.FC = () => {
-  const [author, setAuthor] = useState<User | null>(null);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { posts, loading, error } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
+  const { author } = useAppSelector(state => state.author);
 
   const loadUsersPost = useCallback(
     (userId: number) => {
@@ -46,7 +45,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -74,7 +73,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {author && selectedPost.selectedPost && (
+          {author && selectedPost && (
             <div
               data-cy="Sidebar"
               className={classNames(

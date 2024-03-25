@@ -11,10 +11,8 @@ export const PostsList: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost);
   const selectedPostId = selectedPost.selectedPost?.id;
   const dispatch = useAppDispatch();
-  const hendelSelect = (post: Post | null) => {
-    dispatch(
-      setSelectedPost(post?.id === (selectedPostId || null) ? null : post),
-    );
+  const handelSelect = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPostId ? null : post));
   };
 
   return (
@@ -42,7 +40,7 @@ export const PostsList: React.FC = () => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== selectedPostId,
                   })}
-                  onClick={() => hendelSelect(post)}
+                  onClick={() => handelSelect(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
