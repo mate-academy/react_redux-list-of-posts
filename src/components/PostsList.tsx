@@ -42,9 +42,7 @@ export const PostsList: React.FC = () => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== selectedPostId,
                   })}
-                  onClick={() => {
-                    hendelSelect(post);
-                  }}
+                  onClick={() => hendelSelect(post)}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>

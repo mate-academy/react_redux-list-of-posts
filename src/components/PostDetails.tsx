@@ -9,14 +9,11 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CommentData } from '../types/Comment';
-import { Post } from '../types/Post';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const post = selectedPost.selectedPost;
   const { comments, loading, error } = useAppSelector(state => state.comments);
 
   const [visible, setVisible] = useState(false);
@@ -27,14 +24,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     if (post) {
       dispatch(getCommentPosts(post.id));
     }
-  }, [post.id, dispatch]);
+  }, [post?.id, dispatch, post]);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
     const newComm = {
       name,
       email,
       body,
-      postId: post.id,
+      postId: post?.id,
     };
 
     await dispatch(addComment(newComm));
@@ -47,8 +44,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-        <p data-cy="PostBody">{post.body}</p>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">

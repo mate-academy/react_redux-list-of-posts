@@ -34,7 +34,10 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(() => loadUsersPost(author.id));
     }
-  }, [author, loadUsersPost]);
+  }, [author, loadUsersPost, dispatch]);
+
+  const IsNoPostsShown = author && !loading && !error && posts.length === 0;
+  const IsPostListShown = author && !loading && !error && posts.length > 0;
 
   return (
     <main className="section">
@@ -49,9 +52,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loading && <Loader />}
+                {author && loading && <Loader />}
 
-                {author && loading && error && (
+                {author && !loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -60,15 +63,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !error && posts.length === 0 && (
+                {IsNoPostsShown && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loading && !error && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {IsPostListShown && <PostsList />}
               </div>
             </div>
           </div>
@@ -87,8 +88,7 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                {/* Pass selectedPost.selectedPost to PostDetails */}
-                <PostDetails post={selectedPost.selectedPost} />
+                <PostDetails />
               </div>
             </div>
           )}
