@@ -4,6 +4,7 @@ import { getUsers } from '../api/users';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as usersActions } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
+import { actions as commentsActions } from '../features/commentsSlice';
 
 export const UserSelector = () => {
   const { users } = useAppSelector(state => state.users);
@@ -67,6 +68,7 @@ export const UserSelector = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 dispatch(authorActions.set(user));
+                dispatch(commentsActions.set([]));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
