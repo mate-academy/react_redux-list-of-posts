@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -7,6 +7,7 @@ import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as commentsActions } from '../features/commentsSlice';
+import { commentsThunks } from '../features/commentsSlice';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
@@ -18,21 +19,16 @@ export const PostDetails = () => {
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    dispatch(commentsActions.setLoaded(false));
-    dispatch(commentsActions.setHasError(false));
+  const loadComments = useCallback(() => {
+    if (selectedPost?.id) {
+      dispatch(commentsThunks.init(selectedPost.id));
+    }
+  }, [selectedPost?.id, dispatch]);
+
+  useEffect(() => {
+    loadComments();
     setVisible(false);
-
-    commentsApi
-      .getPostComments(selectedPost?.id || 0)
-      .then(commentsFromApi =>
-        dispatch(commentsActions.setComments(commentsFromApi)),
-      ) // save the loaded comments
-      .catch(() => dispatch(commentsActions.setHasError(true))) // show an error when something went wrong
-      .finally(() => dispatch(commentsActions.setLoaded(true))); // hide the spinner
-  }
-
-  useEffect(loadComments, [selectedPost?.id, dispatch]);
+  }, [loadComments, selectedPost?.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -44,21 +40,12 @@ export const PostDetails = () => {
       });
 
       dispatch(commentsActions.addComment(newComment));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
     } catch (error) {
-      // we show an error message in case of any error
-      dispatch(commentsActions.setHasError(true));
+      throw error;
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
     dispatch(commentsActions.removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);

@@ -8,10 +8,10 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { actions as postsActions } from './features/postsSlice';
 import { actions as selectedPostActions } from './features/selectedPostSlice';
+import { postsThunks } from './features/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,20 +25,12 @@ export const App: React.FC = () => {
 
   const loadUserPosts = useCallback(
     (userId: number) => {
-      dispatch(postsActions.setLoaded(false));
-
-      getUserPosts(userId)
-        .then(userPosts => dispatch(postsActions.setPosts(userPosts)))
-        .catch(() => dispatch(postsActions.setHasError(true)))
-        // We disable the spinner in any case
-        .finally(() => dispatch(postsActions.setLoaded(true)));
+      dispatch(postsThunks.init(userId));
     },
     [dispatch],
   );
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(selectedPostActions.set(null));
 
     if (author) {

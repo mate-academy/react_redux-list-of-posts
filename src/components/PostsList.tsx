@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as selectedPostActions } from '../features/selectedPostSlice';
@@ -23,30 +22,32 @@ export const PostsList = () => {
         </thead>
 
         <tbody>
-          {items.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => {
-                    dispatch(
-                      selectedPostActions.set(
-                        post.id === selectedPost?.id ? null : post,
-                      ),
-                    );
-                  }}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {items.map(post => {
+            const isSelectedPost = post.id === selectedPost?.id;
+
+            return (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button', 'is-link', {
+                      'is-light': !isSelectedPost,
+                    })}
+                    onClick={() => {
+                      dispatch(
+                        selectedPostActions.set(isSelectedPost ? null : post),
+                      );
+                    }}
+                  >
+                    {isSelectedPost ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
