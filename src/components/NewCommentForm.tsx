@@ -57,6 +57,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
+    setErrors({
+      name: !name.trim().length,
+      email: !email.trim().length,
+      body: !body.trim().length,
+    });
+
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
