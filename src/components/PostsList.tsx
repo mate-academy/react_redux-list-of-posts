@@ -8,9 +8,9 @@ import { setSelectedPost } from '../features/SelectedPost';
 
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost);
   const selectedPostId = selectedPost.selectedPost?.id;
-  const dispatch = useAppDispatch();
   const handelSelect = (post: Post) => {
     dispatch(setSelectedPost(post.id === selectedPostId ? null : post));
   };

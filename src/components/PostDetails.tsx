@@ -24,7 +24,7 @@ export const PostDetails: React.FC = () => {
     if (post) {
       dispatch(getCommentPosts(post.id));
     }
-  }, [post?.id, dispatch, post]);
+  }, [dispatch, post]);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
     const newComm = {
