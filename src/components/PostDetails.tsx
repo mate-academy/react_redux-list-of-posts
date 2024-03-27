@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable import/extensions */
 /* eslint-disable operator-linebreak */
 import { useEffect, useState } from 'react';
@@ -26,8 +27,8 @@ export const PostDetails = () => {
   const { post } = useAppSelector(state => state.post);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    setIsLoading(false);
+    setIsError(false);
     dispatch(setIsLoading(true));
     dispatch(setIsError(false));
     setVisible(false);

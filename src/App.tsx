@@ -20,6 +20,7 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -31,6 +32,7 @@ export const App: React.FC = () => {
   const handleSetAuthor = (user: User | null) => {
     dispatch(setAuthor(user));
   };
+
   const handleSetSelectedPost = (post: Post | null) => {
     dispatch(setPost(post));
   };
