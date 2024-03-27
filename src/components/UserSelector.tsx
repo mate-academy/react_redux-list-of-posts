@@ -12,7 +12,7 @@ export const UserSelector = () => {
 
   useEffect(() => {
     dispatch(loadUsers());
-  });
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
