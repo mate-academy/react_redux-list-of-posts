@@ -28,7 +28,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
+        {posts?.map(post => (
           <tr key={post.id} data-cy="Post">
             <td data-cy="PostId">{post.id}</td>
             <td data-cy="PostTitle">{post.title}</td>
