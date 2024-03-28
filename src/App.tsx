@@ -9,25 +9,27 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { init as initUsers } from './features/users';
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const [loadedP, setLoadedPosts] = useState(false);
+  const [hasErrorP, setErrorPosts] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  const author = useAppSelector(state => state.author.author);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    setLoadedPosts(false);
 
     getUserPosts(userId)
       .then(setPosts)
-      .catch(() => setError(true))
+      .catch(() => setErrorPosts(true))
       // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .finally(() => setLoadedPosts(true));
   }
 
   useEffect(() => {
@@ -42,6 +44,10 @@ export const App: React.FC = () => {
     }
   }, [author]);
 
+  useEffect(() => {
+    dispatch(initUsers());
+  }, [dispatch]);
+
   return (
     <main className="section">
       <div className="container">
@@ -49,15 +55,15 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !loadedP && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && loadedP && hasErrorP && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -66,13 +72,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loadedP && !hasErrorP && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loadedP && !hasErrorP && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
