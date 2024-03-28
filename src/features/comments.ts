@@ -51,6 +51,12 @@ export const postsSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(getComments.pending, (state) => {
+      return {
+        ...state,
+        loaded: false,
+      };
+    });
     builder.addCase(getComments.fulfilled, (state, action) => {
       return {
         ...state,
@@ -62,6 +68,7 @@ export const postsSlice = createSlice({
       return {
         ...state,
         hasError: true,
+        loaded: true,
       };
     });
     builder.addCase(delComment.fulfilled, (state, action) => {
@@ -77,6 +84,7 @@ export const postsSlice = createSlice({
       return {
         ...state,
         hasError: true,
+        loaded: true,
       };
     });
     builder.addCase(postComment.fulfilled, (state, action) => {

@@ -44,9 +44,9 @@ export const NewCommentForm: React.FC<Props> = () => {
     if (!newCommentData.body || !newCommentData.email || !newCommentData.name) {
       dispatch(
         newCommentActions.setErrors({
-          name: !errors.name,
-          email: !errors.email,
-          body: !errors.body,
+          name: !newCommentData.name,
+          email: !newCommentData.email,
+          body: !newCommentData.body,
         }),
       );
 

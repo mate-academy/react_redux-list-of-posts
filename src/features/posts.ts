@@ -23,6 +23,13 @@ export const postsSlice = createSlice({
   initialState: initialPosts,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(getPosts.pending, state => {
+      return {
+        ...state,
+        posts: [],
+        loaded: false,
+      };
+    });
     builder.addCase(getPosts.fulfilled, (state, action) => {
       return {
         ...state,
@@ -34,6 +41,7 @@ export const postsSlice = createSlice({
       return {
         ...state,
         hasError: true,
+        loaded: true,
       };
     });
   },

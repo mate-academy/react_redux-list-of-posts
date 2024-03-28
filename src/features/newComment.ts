@@ -4,6 +4,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { CommentData, Comment } from '../types/Comment';
 import { createComment } from '../api/comments';
+import { getComments } from './comments';
 
 type NewCommentErrors = {
   name: boolean;
@@ -87,7 +88,10 @@ export const newCommentSlice = createSlice({
     builder.addCase(postComment.fulfilled, (state) => {
       return {
         ...state,
-        newCommentData: initialComment,
+        newCommentData: {
+          ...state.newCommentData,
+          body: '',
+        },
         submitting: false,
       };
     });
@@ -95,6 +99,12 @@ export const newCommentSlice = createSlice({
       return {
         ...state,
         submitting: false,
+      };
+    });
+    builder.addCase(getComments.pending, (state) => {
+      return {
+        ...state,
+        visible: false,
       };
     });
   }
