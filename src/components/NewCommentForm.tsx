@@ -19,17 +19,18 @@ export const NewCommentForm: React.FC<Props> = () => {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
+    const formattedValue = value.replace(/\s\s+/g, ' ');
 
     dispatch(
       newCommentActions.set({
         ...newCommentData,
-        [field]: value,
+        [field]: formattedValue,
       }),
     );
     dispatch(
       newCommentActions.setErrors({
         ...errors,
-        [field]: !value,
+        [field]: !formattedValue,
       }),
     );
   };
@@ -40,13 +41,16 @@ export const NewCommentForm: React.FC<Props> = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const isEmptyName = !newCommentData.name.trim();
+    const isEmptyBody = !newCommentData.body.trim();
+    const isEmptyEmail = !newCommentData.email.trim();
 
-    if (!newCommentData.body || !newCommentData.email || !newCommentData.name) {
+    if (isEmptyName || isEmptyBody || isEmptyEmail) {
       dispatch(
         newCommentActions.setErrors({
-          name: !newCommentData.name,
-          email: !newCommentData.email,
-          body: !newCommentData.body,
+          name: isEmptyName,
+          email: isEmptyEmail,
+          body: isEmptyBody,
         }),
       );
 
