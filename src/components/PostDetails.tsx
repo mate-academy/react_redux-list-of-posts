@@ -9,7 +9,6 @@ import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loadComments,
-  setCommentError,
   addComment,
   deleteComment,
 } from '../features/comments/commentsSlice';
@@ -25,37 +24,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     dispatch(loadComments(post.id));
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   useEffect(() => {
     setVisible(false);
   }, [post.id]);
 
-  const handleAddComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
+  const handleAddComment = async (commentData: CommentData) => {
+    await dispatch(
+      addComment({
         postId: post.id,
-      });
-
-      dispatch(addComment(newComment));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setCommentError('Something went wrong with new comment!');
-    }
+        commentData,
+      }),
+    );
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
     dispatch(deleteComment(commentId));
 
     await commentsApi.deleteComment(commentId);
