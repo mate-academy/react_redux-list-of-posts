@@ -21,6 +21,20 @@ export const NewCommentForm: React.FC = () => {
     body: '',
   });
 
+  const handlErorsForms = () => {
+    if (name.trim().length === 0) {
+      setErrors(prev => ({ ...prev, name: true }));
+    }
+
+    if (email.trim().length === 0) {
+      setErrors(prev => ({ ...prev, email: true }));
+    }
+
+    if (body.trim().length === 0) {
+      setErrors(prev => ({ ...prev, body: true }));
+    }
+  };
+
   const clearForm = () => {
     setValues({
       name: '',
@@ -42,10 +56,27 @@ export const NewCommentForm: React.FC = () => {
 
     setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    handlErorsForms();
+
+    const hasAnyErrors =
+      name.trim().length === 0 ||
+      email.trim().length === 0 ||
+      body.trim().length === 0;
+
+    if (hasAnyErrors) {
+      return;
+    }
 
     const handleAddComment = async (comment: CommentData) => {
       try {
@@ -56,16 +87,6 @@ export const NewCommentForm: React.FC = () => {
         setSubmitting(false);
       }
     };
-
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
-      return;
-    }
 
     const newComment: CommentData = {
       name,
