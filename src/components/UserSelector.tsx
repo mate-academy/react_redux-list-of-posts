@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 import { setAuthor } from '../features/author';
 import { removeSelectedPost } from '../features/selectedPost';
+import { clearCommets } from '../features/comments';
 
 export const UserSelector: React.FC = () => {
   const users = useAppSelector(state => state.users.users);
@@ -17,6 +18,7 @@ export const UserSelector: React.FC = () => {
   const handleSelectAuthor = (user: User) => {
     dispatch(setAuthor(user));
     dispatch(removeSelectedPost());
+    dispatch(clearCommets());
   };
 
   useEffect(() => {
