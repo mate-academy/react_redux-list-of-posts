@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loadUsers } from '../features/users/usersSlice';
 import { setAuthor } from '../features/author/authorSlice';
+import { clearComments } from '../features/comments/commentsSlice';
 
 export const UserSelector = () => {
   const users = useAppSelector(store => store.users);
@@ -68,6 +69,7 @@ export const UserSelector = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 dispatch(setAuthor(user));
+                dispatch(clearComments());
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,

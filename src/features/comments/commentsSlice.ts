@@ -48,6 +48,9 @@ export const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
     },
+    clearComments: state => {
+      state.items = [];
+    },
   },
   extraReducers: builder => {
     builder
@@ -72,4 +75,4 @@ export const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { deleteComment } = commentsSlice.actions;
+export const { deleteComment, clearComments } = commentsSlice.actions;
