@@ -5,13 +5,13 @@ import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[];
+  postsUser: Post[];
   selectedPostId?: number;
   onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts,
+  postsUser,
   selectedPostId = 0,
   onPostSelected,
 }) => (
@@ -28,7 +28,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
+        {postsUser.map(post => (
           <tr key={post.id} data-cy="Post">
             <td data-cy="PostId">{post.id}</td>
             <td data-cy="PostTitle">{post.title}</td>
