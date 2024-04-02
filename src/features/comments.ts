@@ -7,24 +7,22 @@ export const init = createAsyncThunk('comment/fetch', (id: number) =>
   api.getPostComments(id),
 );
 
-export const remove = createAsyncThunk('deleteComment/fetch', (id: number) => {
-  return api.deleteComment(id);
-});
+export const remove = createAsyncThunk('deleteComment/fetch', (id: number) =>
+  api.deleteComment(id),
+);
 
 export const create = createAsyncThunk(
   'createComment/fetch',
-  (data: Omit<Comment, 'id'>) => {
-    return api.createComment(data);
-  },
+  (data: Omit<Comment, 'id'>) => api.createComment(data),
 );
 
-type CommentsState = {
+type StateComments = {
   comments: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
 
-const initialState: CommentsState = {
+const initialState: StateComments = {
   comments: [],
   loaded: false,
   hasError: false,

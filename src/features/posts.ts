@@ -7,13 +7,13 @@ export const init = createAsyncThunk('posts/fetch', (id: number) =>
   getUserPosts(id),
 );
 
-type PostsState = {
+type StatePosts = {
   posts: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
-const initialState: PostsState = {
+const initialState: StatePosts = {
   posts: [],
   loaded: false,
   hasError: false,

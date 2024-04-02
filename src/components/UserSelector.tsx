@@ -5,10 +5,17 @@ import { set } from '../features/author';
 
 export const UserSelector = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users.users);
+  const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
 
   const selectedUser = useAppSelector(state => state.author.author);
+
+  const handleDropdown = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.stopPropagation();
+    setExpanded(current => !current);
+  };
 
   useEffect(() => {
     if (!expanded) {
@@ -37,10 +44,7 @@ export const UserSelector = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
+          onClick={event => handleDropdown(event)}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
 
@@ -52,20 +56,24 @@ export const UserSelector = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(set(user));
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {users.map(user => {
+            const { id, name } = user;
+
+            return (
+              <a
+                key={user.id}
+                href={`#user-${id}`}
+                onClick={() => {
+                  dispatch(set(user));
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': id === selectedUser?.id,
+                })}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

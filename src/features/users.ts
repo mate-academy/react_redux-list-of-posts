@@ -3,13 +3,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-type UsersState = {
+type StateUsers = {
   users: User[];
   loading: boolean;
   error: boolean;
 };
 
-const initialState: UsersState = {
+const initialState: StateUsers = {
   users: [],
   loading: false,
   error: false,
