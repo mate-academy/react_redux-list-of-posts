@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { set } from '../features/author';
+import { resetComments } from '../features/comments';
+import { User } from '../types/User';
 
 export const UserSelector = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +17,11 @@ export const UserSelector = () => {
   ) => {
     event.stopPropagation();
     setExpanded(current => !current);
+  };
+
+  const handleUserSelection = (user: User) => {
+    dispatch(resetComments());
+    dispatch(set(user));
   };
 
   useEffect(() => {
@@ -63,9 +70,7 @@ export const UserSelector = () => {
               <a
                 key={user.id}
                 href={`#user-${id}`}
-                onClick={() => {
-                  dispatch(set(user));
-                }}
+                onClick={() => handleUserSelection(user)}
                 className={classNames('dropdown-item', {
                   'is-active': id === selectedUser?.id,
                 })}
