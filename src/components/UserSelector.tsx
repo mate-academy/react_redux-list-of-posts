@@ -4,12 +4,17 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import * as authorActions from '../features/authorSlice';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
+
+  const onUserSelection = (user: User) => {
+    dispatch(authorActions.set(user));
+  };
 
   useEffect(() => {
     if (!expanded) {
@@ -63,7 +68,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(authorActions.set(user))}
+              onClick={() => onUserSelection(user)}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}

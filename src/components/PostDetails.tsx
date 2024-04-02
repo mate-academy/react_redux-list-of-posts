@@ -57,6 +57,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     [dispatch],
   );
 
+  const handleWriteCommentButtonClick = () => {
+    dispatch(commentsActions.setVisible(true));
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -119,7 +123,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(commentsActions.setVisible(true))}
+            onClick={handleWriteCommentButtonClick}
           >
             Write a comment
           </button>
