@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectUsers } from '../features/users';
+import { selectUserState } from '../features/users';
 import { selectAuthor, setAuthor } from '../features/author';
 
 // type Props = {
@@ -21,7 +21,7 @@ export const UserSelector: React.FC = () => {
   // and now we can easily reuse the `UserSelector` in any form
   const [expanded, setExpanded] = useState(false);
 
-  const users = useAppSelector(selectUsers);
+  const { users } = useAppSelector(selectUserState);
   const author = useAppSelector(selectAuthor);
   const dispatch = useAppDispatch();
 

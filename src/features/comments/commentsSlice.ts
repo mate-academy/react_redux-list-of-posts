@@ -1,10 +1,19 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../../app/store';
 import { Comment } from '../../types/Comment';
-import { getPostComments } from '../../api/comments';
+import { createComment, getPostComments } from '../../api/comments';
 
-export const fetchPosts = createAsyncThunk(
+export const create = createAsyncThunk(
+  'comment/create',
+  async (comment: Omit<Comment, 'id'>) => {
+    const createdComment = await createComment(comment);
+
+    return createdComment;
+  },
+);
+
+export const fetchPostCommnets = createAsyncThunk(
   'comments/fetch',
   async (id: number) => {
     const comments = await getPostComments(id);
@@ -16,37 +25,48 @@ export const fetchPosts = createAsyncThunk(
 type State = {
   comments: Comment[];
   loading: boolean;
-  error: string;
+  error: boolean;
 };
 
 const initialState: State = {
   comments: [],
   loading: false,
-  error: '',
+  error: false,
 };
 
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteCommentById(state, action: PayloadAction<number>) {
+      state.comments = state.comments.filter(
+        item => item.id !== action.payload,
+      );
+    },
+  },
   extraReducers: builder => {
     builder
-      .addCase(fetchPosts.pending, state => {
+      .addCase(fetchPostCommnets.pending, state => {
         state.loading = true;
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchPostCommnets.fulfilled, (state, action) => {
         state.loading = false;
         state.comments = action.payload;
       })
-      .addCase(fetchPosts.rejected, state => {
+      .addCase(fetchPostCommnets.rejected, state => {
         state.loading = false;
-        state.error = 'Error';
+        state.error = true;
+      })
+      .addCase(create.fulfilled, (state, action) => {
+        state.comments.push(action.payload);
+      })
+      .addCase(create.rejected, state => {
+        state.error = true;
       });
   },
 });
 
-export const selectCommments = (state: RootState) => state.comments.comments;
-export const selectLoader = (state: RootState) => state.comments.loading;
-export const selectError = (state: RootState) => state.comments.error;
+export const selectCommentState = (state: RootState) => state.comments;
 
+export const { deleteCommentById } = commentsSlice.actions;
 export default commentsSlice.reducer;

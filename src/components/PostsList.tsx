@@ -2,22 +2,19 @@
 
 import classNames from 'classnames';
 import React from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { selectPostState } from '../features/posts';
+import { selectPost, setSelectedPost } from '../features/selectedPost';
 import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
-import { selectPosts } from '../features/posts';
 
-type Props = {
-  // posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
+export const PostsList: React.FC = () => {
+  const { posts } = useAppSelector(selectPostState);
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(selectPost);
 
-export const PostsList: React.FC<Props> = ({
-  // posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
-  const posts = useAppSelector(selectPosts);
+  const handleSelectPost = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPost?.id ? null : post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -42,13 +39,11 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
-                  }}
+                  onClick={() => handleSelectPost(post)}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
