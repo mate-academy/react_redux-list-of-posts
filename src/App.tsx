@@ -43,6 +43,8 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
+  const canShowPost = author && isPostsLoading && !postsError;
+
   return (
     <main className="section">
       <div className="container">
@@ -64,12 +66,12 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {author && isPostsLoading && !postsError && !posts.length && (
+                {canShowPost && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-                {author && isPostsLoading && !postsError && !!posts.length && (
+                {canShowPost && !!posts.length && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
