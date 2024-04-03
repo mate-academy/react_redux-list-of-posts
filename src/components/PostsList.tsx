@@ -18,7 +18,9 @@ export const PostsList: React.FC<Props> = ({
   onPostSelected,
 }) => {
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);
+
   console.log(postsUser);
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
