@@ -13,9 +13,9 @@ const Root = () => (
   <Provider store={store}>
     {/* Remove UsersProvider when you move users to Redux store */}
     {/* <UsersProvider> */}
-      <Router>
-        <App />
-      </Router>
+    <Router>
+      <App />
+    </Router>
     {/* </UsersProvider> */}
   </Provider>
 );

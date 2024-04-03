@@ -7,7 +7,9 @@ import { setSelectedUser } from './UsersContext';
 export const UserSelector = () => {
   const users = useSelector((state: RootState) => state.users.users);
 
-  const userSelect = useSelector((state: RootState) => state.selectedUser.selectedUser);
+  const userSelect = useSelector(
+    (state: RootState) => state.selectedUser.selectedUser,
+  );
 
   const [expanded, setExpanded] = useState(false);
   const dispatch = useDispatch();
