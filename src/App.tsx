@@ -13,6 +13,7 @@ import { fetchPosts, selectPostState } from './features/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectAuthor } from './features/author';
 import { selectPost, setSelectedPost } from './features/selectedPost';
+import { clearComment } from './features/comments';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +37,10 @@ export const App: React.FC = () => {
     } else {
       dispatch(setSelectedPost(null));
     }
+  }, [author, dispatch]);
+
+  useEffect(() => {
+    dispatch(clearComment([]));
   }, [author, dispatch]);
 
   useEffect(() => {

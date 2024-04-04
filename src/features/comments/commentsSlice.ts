@@ -43,6 +43,9 @@ export const commentsSlice = createSlice({
         item => item.id !== action.payload,
       );
     },
+    clearComment(state, action: PayloadAction<[]>) {
+      state.comments = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -68,5 +71,5 @@ export const commentsSlice = createSlice({
 
 export const selectCommentState = (state: RootState) => state.comments;
 
-export const { deleteCommentById } = commentsSlice.actions;
+export const { deleteCommentById, clearComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

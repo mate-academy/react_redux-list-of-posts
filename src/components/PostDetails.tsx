@@ -32,7 +32,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const loadPostCommments = () => {
     setVisible(false);
-    dispatch(fetchPostCommnets(selectedPost?.id || 0));
+
+    if (selectedPost?.id) {
+      dispatch(fetchPostCommnets(selectedPost.id || 0));
+    }
   };
 
   useEffect(() => {
