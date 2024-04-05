@@ -8,9 +8,9 @@ import { selectAuthor, setAuthor } from '../features/author';
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
-  const { users } = useAppSelector(selectUserState);
-  const author = useAppSelector(selectAuthor);
   const dispatch = useAppDispatch();
+  const author = useAppSelector(selectAuthor);
+  const { users } = useAppSelector(selectUserState);
 
   const handleSetAuthor = (user: User) => {
     dispatch(setAuthor(user));
