@@ -15,6 +15,15 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
+  const handlePostActions = (post: Post) => {
+    dispatch(commentsSlice.actions.setVisible(false));
+    if (post.id === selectedPost?.id) {
+      dispatch(selectedPostSlice.actions.clear());
+    } else {
+      dispatch(selectedPostSlice.actions.set(post));
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -40,14 +49,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => {
-                    dispatch(commentsSlice.actions.setVisible(false));
-                    if (post.id === selectedPost?.id) {
-                      dispatch(selectedPostSlice.actions.clear());
-                    } else {
-                      dispatch(selectedPostSlice.actions.set(post));
-                    }
-                  }}
+                  onClick={() => handlePostActions(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
