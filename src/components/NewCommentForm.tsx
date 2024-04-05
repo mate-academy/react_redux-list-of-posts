@@ -53,12 +53,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
-      // setErrors({
-      //   name: !name.trim(),
-      //   email: !email.trim(),
-      //   body: !body.trim(),
-      // });
+    if (!name.trim() || !email.trim() || !body.trim()) {
+      setErrors({
+        name: !name.trim(),
+        email: !email.trim(),
+        body: !body.trim(),
+      });
 
       return;
     }
