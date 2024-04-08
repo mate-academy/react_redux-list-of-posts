@@ -1,7 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  // useContext,
+  useEffect,
+  useState,
+} from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+// import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchUsers } from '../features/usersSlice';
 
 type Props = {
   value: User | null;
@@ -17,8 +23,13 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -68,7 +79,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
