@@ -15,7 +15,7 @@ export const PostsList = () => {
   // console.log(postsUser);
 
   const handleSelect = (post: Post) => {
-    if (selectedPost) {
+    if (selectedPost && selectedPost === post.id) {
       dispatch(setClearSelected()); // Диспетчеризувати без даних
     } else {
       dispatch(setSelectedPost(post));

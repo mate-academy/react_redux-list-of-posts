@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
 import { getComments } from './CommentsContext';
 // import { deleteComment } from '../api/comments';
-import { deleteSelectedComment, setSelectedComment } from './DelComentContext';
+// import { deleteSelectedComment, setSelectedComment } from './DelComentContext';  Вимкнув
 
 // type Props = {
 //   post: Post;
@@ -149,7 +149,7 @@ export const PostDetails = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => {setSelectedComment(comment.id), dispatch(deleteSelectedComment(comment.id))}}
+                    // onClick={() => {setSelectedComment(comment.id), dispatch(deleteSelectedComment())}} вимкнув
                   >
                     delete button
                   </button>
