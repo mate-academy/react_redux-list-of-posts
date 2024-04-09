@@ -63,6 +63,15 @@ export const NewCommentForm: React.FC<Props> = () => {
 
     setSubmitting(true);
 
+    if (!body.trim()) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        body: true,
+      }));
+
+      return;
+    }
+
     if (!selectedPost) {
       setSubmitting(false);
 
