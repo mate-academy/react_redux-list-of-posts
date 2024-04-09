@@ -26,6 +26,9 @@ export const PostsContext = createSlice({
     setSelectedPost(state, action: PayloadAction<Post>) {
       state.selectedPost = action.payload;
     },
+    setClearSelected(state) {
+      state.selectedPost = null;
+    }
   },
   extraReducers: builder => {
     builder.addCase(posts.pending, state => {
@@ -42,7 +45,7 @@ export const PostsContext = createSlice({
   },
 });
 
-export const { setPosts, setSelectedPost } = PostsContext.actions;
+export const { setPosts, setSelectedPost, setClearSelected } = PostsContext.actions;
 export default PostsContext.reducer;
 
 export const posts = createAsyncThunk(`/posts`, (userSelect: number) => {

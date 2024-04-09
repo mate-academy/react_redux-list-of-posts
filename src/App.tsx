@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { users } from './components/UsersContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './app/store';
 import type { AppDispatch } from './app/store';
 import { posts } from './components/PostsContext';
 import { useAppSelector } from './app/hooks';
+import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
   const userSelect = useAppSelector(state => state.selectedUser);
@@ -23,12 +22,20 @@ export const App: React.FC = () => {
   );
   const hasError = useSelector((state: RootState) => state.userPosts.error);
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost);
   const dispatch = useDispatch<AppDispatch>();
+
+  console.log(selectedPost?.id)
 
   useEffect(() => {
     dispatch(users());
   }, []);
+
+  useEffect(() => {
+    if (userSelect.selectedUser?.id) {
+      dispatch(posts(userSelect.selectedUser?.id));
+    }
+  }, [userSelect]);
 
   useEffect(() => {
     if (userSelect.selectedUser?.id) {
@@ -47,7 +54,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!userSelect && (
+                {!userSelect.selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
@@ -62,7 +69,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {userSelect &&
+                {userSelect.selectedUser &&
                   !loadingUserPosts &&
                   !hasError &&
                   postsUser.length === 0 && (
@@ -79,8 +86,6 @@ export const App: React.FC = () => {
                   !hasError &&
                   postsUser.length > 0 && (
                     <PostsList
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
                     />
                   )}
               </div>
@@ -100,7 +105,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              <PostDetails />
             </div>
           </div>
         </div>

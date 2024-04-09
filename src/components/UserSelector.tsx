@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { setSelectedUser } from './UsersContext';
+import React from 'react';
 
 export const UserSelector = () => {
   const users = useSelector((state: RootState) => state.users.users);

@@ -3,23 +3,27 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
+import { setClearSelected, setSelectedPost } from './PostsContext';
 
-type Props = {
-  // postsUser: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
-
-export const PostsList: React.FC<Props> = ({
-  // postsUser,
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+export const PostsList = () => {
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);
+  const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost?.id);
+  const dispatch = useDispatch();
 
-  console.log(postsUser);
+  // console.log(postsUser);
+
+  const handleSelect = (post: Post) => {
+    if (selectedPost) {
+      dispatch(setClearSelected()); // Диспетчеризувати без даних
+    } else {
+      dispatch(setSelectedPost(post));
+    }
+
+  }
+
+  console.log(selectedPost)
 
   return (
     <div data-cy="PostsList">
@@ -43,13 +47,11 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost,
                   })}
-                  onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
-                  }}
+                  onClick={() => handleSelect(post)}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

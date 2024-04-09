@@ -3,6 +3,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import UsersContext from '../components/UsersContext';
 import PostsContext from '../components/PostsContext';
+import CommentsContext from '../components/CommentsContext';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,8 @@ export const store = configureStore({
     users: UsersContext,
     selectedUser: UsersContext,
     userPosts: PostsContext,
+    comments: CommentsContext,
+    selectedComment: CommentsContext,
   },
 });
 
