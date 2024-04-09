@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
-import classNames from 'classnames';
+import cn from 'classnames';
 import React from 'react';
+
 import { Post } from '../types/Post';
 
-type Props = {
+interface Props {
   posts: Post[];
   selectedPostId?: number;
   onPostSelected: (post: Post | null) => void;
@@ -36,7 +36,7 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 data-cy="PostButton"
-                className={classNames('button', 'is-link', {
+                className={cn('button', 'is-link', {
                   'is-light': post.id !== selectedPostId,
                 })}
                 onClick={() => {
