@@ -8,7 +8,7 @@ import { onPostSelected, selectPosts } from '../features/posts/postsSlice';
 
 export const PostsList: React.FC = ({}) => {
   const dispatch = useAppDispatch();
-  const { posts, selectedPost: selectedPostId } = useAppSelector(selectPosts);
+  const { posts, selectedPost } = useAppSelector(selectPosts);
 
   const handleOnPostSelected = (post: Post | null) => {
     dispatch(onPostSelected(post));
@@ -28,28 +28,35 @@ export const PostsList: React.FC = ({}) => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
-                  })}
-                  onClick={() => {
-                    handleOnPostSelected(
-                      post.id === selectedPostId ? null : post,
-                    );
-                  }}
-                >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {posts.map(post => {
+            const selectedPostId =
+              typeof selectedPost === 'number'
+                ? selectedPost
+                : selectedPost?.id;
+
+            return (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button', 'is-link', {
+                      'is-light': post.id !== selectedPostId,
+                    })}
+                    onClick={() => {
+                      handleOnPostSelected(
+                        post.id === selectedPostId ? null : post,
+                      );
+                    }}
+                  >
+                    {post.id === selectedPostId ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -42,7 +42,6 @@ const postsSlice = createSlice({
         state.loaded = true;
       })
       .addCase(getPostsAsync.fulfilled, (state, action) => {
-
         state.items = action.payload;
         state.loaded = true;
       })
