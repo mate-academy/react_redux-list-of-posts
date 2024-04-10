@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { CommentData } from '../types/Comment';
 import { selectPosts } from '../features/posts/postsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  createCommentAsync,
   deleteCommentAsync,
   getCommentsAsync,
   selectcomments,
@@ -26,17 +24,6 @@ export const PostDetails: React.FC = () => {
   }
 
   useEffect(loadComments, [post.id]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: post.id,
-    };
-
-    dispatch(createCommentAsync(newComment));
-  };
 
   const deleteComment = async (commentId: number) => {
     dispatch(deleteCommentAsync(commentId));
@@ -110,9 +97,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
+        {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );

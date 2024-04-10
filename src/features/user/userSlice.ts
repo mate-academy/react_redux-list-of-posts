@@ -25,14 +25,11 @@ const initialState: UserState = {
   hasError: false,
 };
 
-export const getUsersAsync = createAsyncThunk(
-  'users/fetchUsers',
-  async () => {
-    const value = await getUsers();
+export const getUsersAsync = createAsyncThunk('users/fetchUsers', async () => {
+  const value = await getUsers();
 
-    return value;
-  },
-);
+  return value;
+});
 
 const userSlice = createSlice({
   name: 'users',
