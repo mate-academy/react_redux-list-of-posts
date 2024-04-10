@@ -24,14 +24,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(setComments) // зберегти завантажені коментарі
+      .catch(() => setError(true)) // показувати помилку, коли щось пішло не так
+      .finally(() => setLoaded(true)); // сховати спінер
   }
 
   useEffect(loadComments, [post.id]);
 
-  // The same useEffect with async/await
+  // Той самий useEffect з async/await
   /*
   async function loadComments() {
     setLoaded(false);
@@ -69,18 +69,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       setComments(currentComments => [...currentComments, newComment]);
 
       // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
+      // працює неправильно, якщо ми обгортаємо `addComment` з `useCallback`
+      // тому що він приймає `коментарі`, кешовані під час першого відтворення
+      // не справжні
     } catch (error) {
-      // we show an error message in case of any error
+      // ми показуємо повідомлення про помилку в разі будь-якої помилки
       setError(true);
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
+    // ми негайно видаляємо коментар, щоб
+    // не змушувати користувача довго чекати фактичного видалення
     // eslint-disable-next-line max-len
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),

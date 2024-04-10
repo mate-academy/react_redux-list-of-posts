@@ -10,7 +10,7 @@ export const client = {
   async get<T>(url: string) {
     const response = await instance.get<T>(url);
 
-    // no need to run `response.json()` data is already prepared
+    // немає необхідності запускати  `response.json()' дані вже підготовлені
     return response.data;
   },
 
@@ -29,7 +29,7 @@ export const client = {
   },
 
   async delete(url: string) {
-    // if we don't need the response data
+    // якщо нам не потрібні дані відповіді
     return instance.delete(url);
   },
 };
