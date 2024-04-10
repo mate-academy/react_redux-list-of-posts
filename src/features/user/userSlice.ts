@@ -1,24 +1,32 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../../app/store';
 import { getUsers } from '../../api/users';
 import { User } from '../../types/User';
+import { Post } from '../../types/Post';
 
 export interface UserState {
   value: User[];
   author: User | null;
   loading: boolean;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: UserState = {
   value: [],
   author: null,
   loading: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const getUsersAsync = createAsyncThunk(
-  'counter/fetchCount',
+  'users/fetchUsers',
   async () => {
     const value = await getUsers();
 
