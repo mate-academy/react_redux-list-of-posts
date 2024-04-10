@@ -25,8 +25,6 @@ export const App: React.FC = () => {
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost);
   const dispatch = useDispatch<AppDispatch>();
 
-  console.log(selectedPost?.id)
-
   useEffect(() => {
     dispatch(users());
   }, []);

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
+// import { start } from 'repl';
 
 export type CommentPost = {
   comments: Comment[];
@@ -25,6 +26,7 @@ export const CommentsContext = createSlice({
     },
     setSelectedComments(state, action: PayloadAction<Comment>) {
       state.selectedComment = action.payload;
+      state.comments = state.comments.filter(comment => comment.id !== action.payload.id);
     },
   },
   extraReducers: builder => {

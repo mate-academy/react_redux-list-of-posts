@@ -12,18 +12,14 @@ export const PostsList = () => {
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost?.id);
   const dispatch = useDispatch();
 
-  // console.log(postsUser);
-
   const handleSelect = (post: Post) => {
     if (selectedPost && selectedPost === post.id) {
-      dispatch(setClearSelected()); // Диспетчеризувати без даних
+      dispatch(setClearSelected());
     } else {
       dispatch(setSelectedPost(post));
     }
 
   }
-
-  console.log(selectedPost)
 
   return (
     <div data-cy="PostsList">

@@ -1,16 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { deleteComment } from '../api/comments';
 
-export type CommentPost = {
-  comments: Comment | null;
+export type DelCommentPost = {
+  delComment: Comment | null;
   selectedDelComment: null | number;
   loading: boolean;
   error: string;
 };
 
-const initialState: CommentPost = {
-  comments: null,
+const initialState: DelCommentPost = {
+  delComment: null,
   selectedDelComment: null,
   loading: false,
   error: '',
@@ -20,17 +20,18 @@ export const CommentsContext = createSlice({
   name: 'delComment',
   initialState,
   reducers: {
-    setSelectedComment: (state, action) => {
+    setSelectedComment: (state, action: PayloadAction<number>) => {
+      console.log(typeof action.payload);
       state.selectedDelComment = action.payload;
     },
   },
+
   extraReducers: builder => {
     builder.addCase(deleteSelectedComment.pending, state => {
       state.loading = true;
     });
     builder.addCase(deleteSelectedComment.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      
+      state.delComment = action.payload;
     });
     builder.addCase(deleteSelectedComment.rejected, state => {
       state.loading = false;

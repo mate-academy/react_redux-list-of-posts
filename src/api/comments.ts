@@ -11,5 +11,5 @@ export const createComment = (data: Omit<Comment, 'id'>) => {
 };
 
 export const deleteComment = (commentId: number) => {
-  return client.delete<Comment>(`/comments/${commentId}`);
+  return client.delete<Comment | null>(`/comments/${commentId}`);
 };
