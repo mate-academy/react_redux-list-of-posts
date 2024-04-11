@@ -12,14 +12,17 @@ import { RootState } from './app/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from './app/hooks';
 import { getPostsAsync, postsSliceActions } from './features/postsSlice';
-import { selectPost } from './features/selectedPostSlice';
+import { SelecterPostState, selectPost } from './features/selectedPostSlice';
+import { AuthorState } from './features/authorSlice';
 
 export const App: React.FC = () => {
   const posts = useSelector((state: RootState) => state.posts.data);
   const loaded = useSelector((state: RootState) => state.posts.loading);
   const hasError = useSelector((state: RootState) => state.posts.error);
-  const author = useSelector((state: RootState) => state.author);
-  const selectedPost = useSelector((state: RootState) => state.selectedPost);
+  const author = useSelector((state: RootState) => state.author) as AuthorState;
+  const selectedPost = useSelector(
+    (state: RootState) => state.selectedPost,
+  ) as SelecterPostState;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -27,8 +30,8 @@ export const App: React.FC = () => {
     // not to confuse the user
     dispatch(selectPost(null));
 
-    if (author) {
-      dispatch(getPostsAsync(author?.id));
+    if (author && author !== null && author !== undefined && author.id) {
+      dispatch(getPostsAsync(author.id));
     } else {
       dispatch(postsSliceActions.clearPosts());
     }
