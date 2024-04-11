@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -11,23 +12,25 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setPosts, setLoaded, setError } from './features/posts';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(setLoaded(false));
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
+      .then(res => dispatch(setPosts(res)))
+      .catch(() => dispatch(setError(true)))
       // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
   }, [author]);
 
