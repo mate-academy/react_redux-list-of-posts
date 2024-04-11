@@ -33,13 +33,13 @@ export const App: React.FC = () => {
   // function loadUserPosts(userId: number) {
   //   setLoaded(false);
 
-    // getUserPosts(userId)
-    //   .then(response => {
-    //     dispatch(userPostsAction.setUserPosts(response));
-    //   })
-    //   .catch(() => setError(true))
-    //   // Відключаємо спінер в будь-якому випадку
-    //   .finally(() => setLoaded(true));
+  // getUserPosts(userId)
+  //   .then(response => {
+  //     dispatch(userPostsAction.setUserPosts(response));
+  //   })
+  //   .catch(() => setError(true))
+  //   // Відключаємо спінер в будь-якому випадку
+  //   .finally(() => setLoaded(true));
   // }
 
   useEffect(() => {

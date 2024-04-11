@@ -50,22 +50,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors({
       name: !name,
       email: !email,
-      body: !body,
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
-    // дуже легко забути про ключове слово `await`
     await onSubmit({ name, email, body });
 
-    // і спінер відразу зникне
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // Ми зберігаємо введене ім'я та електронну адресу
   };
 
   return (
@@ -114,7 +111,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -154,7 +151,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', {
+              'is-danger': errors.body,
+            })}
             value={body}
             onChange={handleChange}
           />

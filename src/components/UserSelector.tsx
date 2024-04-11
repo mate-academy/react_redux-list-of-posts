@@ -4,10 +4,6 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  // `users` завантажуються з API, тому з міркувань продуктивності
-  // ми завантажуємо їх один раз у `UsersContext`, коли відкривається `App`
-  // і тепер ми можемо легко використовувати `UserSelector` у будь-якій формі
-
   const { users, author } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
 
@@ -18,21 +14,15 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // ми зберігаємо посилання, щоб пізніше видалити слухача
     const handleDocumentClick = () => {
-      //ми закриваємо спадне меню при будь-якому клацанні (всередині чи зовні)
-      // Тому немає потреби перевіряти, чи ми клацнули всередині списку
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // ми не хочемо прислухатися до зовнішніх клацань
-    // коли спадне меню закрито
   }, [expanded]);
 
   return (

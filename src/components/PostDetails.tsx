@@ -24,38 +24,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // зберегти завантажені коментарі
-      .catch(() => setError(true)) // показувати помилку, коли щось пішло не так
-      .finally(() => setLoaded(true)); // сховати спінер
+      .then(setComments)
+      .catch(() => setError(true))
+      .finally(() => setLoaded(true));
   }
 
   useEffect(loadComments, [post.id]);
-
-  // Той самий useEffect з async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -67,21 +41,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // працює неправильно, якщо ми обгортаємо `addComment` з `useCallback`
-      // тому що він приймає `коментарі`, кешовані під час першого відтворення
-      // не справжні
     } catch (error) {
-      // ми показуємо повідомлення про помилку в разі будь-якої помилки
       setError(true);
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // ми негайно видаляємо коментар, щоб
-    // не змушувати користувача довго чекати фактичного видалення
-    // eslint-disable-next-line max-len
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),
     );

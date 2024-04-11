@@ -3,14 +3,12 @@ import axios from 'axios';
 
 const instance = axios.create({
   baseURL: 'https://mate.academy/students-api',
-  // application/json is a default Content-Type
 });
 
 export const client = {
   async get<T>(url: string) {
     const response = await instance.get<T>(url);
 
-    // немає необхідності запускати  `response.json()' дані вже підготовлені
     return response.data;
   },
 
@@ -29,7 +27,6 @@ export const client = {
   },
 
   async delete(url: string) {
-    // якщо нам не потрібні дані відповіді
     return instance.delete(url);
   },
 };
