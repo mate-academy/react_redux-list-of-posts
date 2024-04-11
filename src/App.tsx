@@ -8,20 +8,14 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-// import { Post } from './types/Post';
-// import { Counter } from './features/counter/Counter';
 import * as usersAction from './features/usersSlice';
 import * as userPostsAction from './features/usersPostsSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import classNames from 'classnames';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.users);
   const { selectedPost, userPosts } = useAppSelector(state => state.userPosts);
@@ -30,23 +24,8 @@ export const App: React.FC = () => {
     dispatch(usersAction.init());
   }, [dispatch]);
 
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  // getUserPosts(userId)
-  //   .then(response => {
-  //     dispatch(userPostsAction.setUserPosts(response));
-  //   })
-  //   .catch(() => setError(true))
-  //   // Відключаємо спінер в будь-якому випадку
-  //   .finally(() => setLoaded(true));
-  // }
-
   useEffect(() => {
-    // ми очищаємо допис при зміні автора
-    // щоб не заплутати користувача
     dispatch(userPostsAction.setSelectedPost(null));
-    // setSelectedPost(null);
 
     if (author) {
       setLoaded(false);
@@ -55,20 +34,11 @@ export const App: React.FC = () => {
           dispatch(userPostsAction.setUserPosts(response));
         })
         .catch(() => setError(true))
-        // Відключаємо спінер в будь-якому випадку
         .finally(() => setLoaded(true));
     } else {
       dispatch(userPostsAction.setUserPosts([]));
     }
   }, [author, dispatch]);
-
-  // if (loading) {
-  //   return <Loader />;
-  // }
-
-  // if (error) {
-  //   return <h2>{error}</h2>;
-  // }
 
   return (
     <main className="section">
@@ -123,7 +93,6 @@ export const App: React.FC = () => {
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
-          {/* <Counter /> */}
         </div>
       </div>
     </main>
