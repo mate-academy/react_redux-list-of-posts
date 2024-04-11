@@ -11,18 +11,21 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setPosts, setLoaded, setError } from './features/posts';
+import { setSelectedPost } from './features/selectedPost';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.items);
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
-
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  // console.log(selectedPost, 'selectedpost');
+  
   function loadUserPosts(userId: number) {
     dispatch(setLoaded(false));
 
@@ -33,10 +36,14 @@ export const App: React.FC = () => {
       .finally(() => dispatch(setLoaded(true)));
   }
 
+  function setSelectPost(post: Post | null) {
+     dispatch(setSelectedPost(post))
+  }
+
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
@@ -79,7 +86,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={(post) => setSelectPost(post)}
                   />
                 )}
               </div>
