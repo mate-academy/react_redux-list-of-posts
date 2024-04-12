@@ -13,7 +13,7 @@ import {
   getCommentsAsync,
   deleteComment as deleteSelectedComment,
   setVisible,
-  addCommentsAsync,
+  addCommentLocally,
 } from '../features/commentsSlice';
 
 type Props = {
@@ -67,7 +67,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       postId: +post.id,
     };
 
-    dispatch(addCommentsAsync(newComment));
+    // dispatch(addCommentsAsync(newComment));
+    dispatch(addCommentLocally(newComment));
+    await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: post.id,
+    });
   };
 
   const deleteComment = async (commentId: number) => {

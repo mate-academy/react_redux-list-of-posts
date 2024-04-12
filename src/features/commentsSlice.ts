@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { Comment } from '../types/Comment';
-import { createComment, getPostComments } from '../api/comments';
+import { getPostComments } from '../api/comments';
 
 type Comments = {
   data: Comment[];
@@ -24,19 +24,17 @@ export const getCommentsAsync = createAsyncThunk(
   },
 );
 
-export const addCommentsAsync = createAsyncThunk(
-  'comments/addComments',
-  async (comment: Comment) => {
-    const newComment = await createComment(comment);
-
-    return newComment;
-  },
-);
-
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
+    addCommentLocally: (state, action) => {
+      return {
+        ...state,
+        data: [...state.data, action.payload],
+      };
+    },
+
     deleteComment: (state, action) => {
       return {
         ...state,
@@ -75,19 +73,14 @@ const commentsSlice = createSlice({
     builder.addCase(getCommentsAsync.rejected, state => {
       return { ...state, hasError: true, loaded: true };
     });
-
-    builder.addCase(addCommentsAsync.pending, state => {
-      return { ...state, loaded: false };
-    });
-    builder.addCase(addCommentsAsync.fulfilled, (state, action) => {
-      return { ...state, data: [...state.data, action.payload], loaded: true };
-    });
-    builder.addCase(addCommentsAsync.rejected, state => {
-      return { ...state, hasError: true, loaded: true };
-    });
   },
 });
 
-export const { deleteComment, setError, setLoaded, setVisible } =
-  commentsSlice.actions;
+export const {
+  addCommentLocally,
+  deleteComment,
+  setError,
+  setLoaded,
+  setVisible,
+} = commentsSlice.actions;
 export default commentsSlice.reducer;

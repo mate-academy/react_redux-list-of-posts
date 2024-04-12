@@ -30,7 +30,7 @@ export const App: React.FC = () => {
     // not to confuse the user
     dispatch(selectPost(null));
 
-    if (author && author !== null && author !== undefined && author.id) {
+    if (author) {
       dispatch(getPostsAsync(author.id));
     } else {
       dispatch(postsSliceActions.clearPosts());
