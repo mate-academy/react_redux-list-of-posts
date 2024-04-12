@@ -35,7 +35,9 @@ export const UserSelector: React.FC = () => {
 
   const handleSelect = (user: User) => {
     dispatch(authorActions.set(user));
-    dispatch(commentsActions.clearComments());
+    if (user !== selectedUser) {
+      dispatch(commentsActions.clearComments());
+    }
   };
 
   return (
