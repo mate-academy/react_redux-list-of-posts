@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
-import { getUsers } from '../../api/users';
+import { User } from '../types/User';
+import { getUsers } from '../api/users';
 
 export const initUsers = createAsyncThunk('users/fetch', () => {
   return getUsers();
@@ -22,7 +22,6 @@ const initialState: InitialState = {
 export const userSlice = createSlice({
   name: 'users',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     set: (state, action: PayloadAction<User[]>) => {
       state.value = action.payload;

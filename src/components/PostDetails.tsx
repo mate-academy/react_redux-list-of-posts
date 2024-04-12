@@ -30,14 +30,14 @@ export const PostDetails = () => {
   }, [selectedPostId]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = await commentsApi.createComment({
-      name,
-      email,
-      body,
-      postId: post?.id as number,
-    });
-
-    dispatch(commentsActions.addComment(newComment));
+    dispatch(
+      commentsActions.createComment({
+        name,
+        email,
+        body,
+        postId: post?.id as number,
+      }),
+    );
   };
 
   const deleteComment = async (commentId: number) => {
