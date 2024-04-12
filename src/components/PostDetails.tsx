@@ -84,7 +84,7 @@ export const PostDetails: React.FC = () => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(comments.filter(comment => comment.id !== commentId));
+    dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
 
     await commentsApi.deleteComment(commentId);
   };
