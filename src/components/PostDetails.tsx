@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/commentSlice';
@@ -42,7 +41,6 @@ export const PostDetails = () => {
 
   const deleteComment = async (commentId: number) => {
     dispatch(commentsActions.deleteComment(commentId));
-    await commentsApi.deleteComment(commentId);
   };
 
   return (

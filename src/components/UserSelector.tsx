@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/userSlice';
 import * as authorActions from '../features/authorSlice';
+import * as commentsActions from '../features/commentSlice';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
@@ -13,7 +14,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     dispatch(usersActions.initUsers());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
@@ -34,6 +35,7 @@ export const UserSelector: React.FC = () => {
 
   const handleSelect = (user: User) => {
     dispatch(authorActions.set(user));
+    dispatch(commentsActions.clearComments());
   };
 
   return (

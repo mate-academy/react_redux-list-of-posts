@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import * as commentsApi from '../api/comments';
@@ -34,19 +34,21 @@ export const createComment = createAsyncThunk(
   },
 );
 
+export const deleteComment = createAsyncThunk(
+  'comments/delete',
+  (commentId: number) => {
+    commentsApi.deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
 export const commentSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    deleteComment: (state, action: PayloadAction<number>) => {
-      const commentId = action.payload;
-
-      state.comments = state.comments.filter(
-        comment => comment.id != commentId,
-      );
-    },
-    addComment: (state, action: PayloadAction<Comment>) => {
-      state.comments.push(action.payload);
+    clearComments: state => {
+      state.comments = [];
     },
     setVisible: (state, action: PayloadAction<boolean>) => {
       state.visible = action.payload;
@@ -78,8 +80,21 @@ export const commentSlice = createSlice({
       state.hasError = true;
       state.submitting = false;
     });
+    builder.addCase(deleteComment.pending, state => {
+      state.hasError = false;
+    });
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      const commentId = action.payload;
+
+      state.comments = state.comments.filter(
+        comment => comment.id != commentId,
+      );
+    });
+    builder.addCase(deleteComment.rejected, state => {
+      state.hasError = true;
+    });
   },
 });
 
 export default commentSlice.reducer;
-export const { deleteComment, setVisible, addComment } = commentSlice.actions;
+export const { setVisible, clearComments } = commentSlice.actions;
