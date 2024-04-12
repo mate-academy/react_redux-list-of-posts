@@ -5,7 +5,7 @@ import { createCommentAsync } from '../features/comments/commentsSlice';
 import { selectPosts } from '../features/posts/postsSlice';
 
 export const NewCommentForm: React.FC = () => {
-  const { selectedPost } = useAppSelector(selectPosts);
+  const { selectedPostId: postId } = useAppSelector(selectPosts);
 
   const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
@@ -64,8 +64,10 @@ export const NewCommentForm: React.FC = () => {
       name,
       email,
       body,
-      postId: selectedPost.id,
+      postId,
     };
+
+    // const postId: number = selectedPost.id;
 
     dispatch(createCommentAsync(newComment));
 

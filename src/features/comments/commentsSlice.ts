@@ -14,14 +14,12 @@ export interface CommentState {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  selectedPost: Comment | number;
 }
 
 const initialState: CommentState = {
   items: [],
   loaded: false,
   hasError: false,
-  selectedPost: 0,
 };
 
 export const getCommentsAsync = createAsyncThunk(

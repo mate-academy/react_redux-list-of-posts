@@ -10,6 +10,7 @@ export interface UserState {
   loaded: boolean;
   hasError: boolean;
   selectedPost: Post | number;
+  selectedPostId: number;
 }
 
 const initialState: UserState = {
@@ -17,6 +18,7 @@ const initialState: UserState = {
   loaded: false,
   hasError: false,
   selectedPost: 0,
+  selectedPostId: 0,
 };
 
 export const getPostsAsync = createAsyncThunk(
@@ -34,6 +36,8 @@ const postsSlice = createSlice({
   reducers: {
     onPostSelected: (state, action) => {
       state.selectedPost = action.payload;
+      state.selectedPostId =
+        typeof action.payload === 'number' ? action.payload : action.payload.id;
     },
   },
   extraReducers: builder => {
@@ -58,6 +62,7 @@ export const selectPosts = (state: RootState) => {
     loaded: state.posts.loaded,
     hasError: state.posts.hasError,
     selectedPost: state.posts.selectedPost,
+    selectedPostId: state.posts.selectedPostId,
   };
 };
 
