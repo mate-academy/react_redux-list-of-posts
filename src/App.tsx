@@ -44,8 +44,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(setPosts([]));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [author, authorId]);
+  }, [author, authorId, dispatch]);
 
   return (
     <main className="section">

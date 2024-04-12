@@ -30,8 +30,7 @@ export const PostDetails: React.FC = () => {
     dispatch(fetchComments(post.id));
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post.id, dispatch]);
 
   // The same useEffect with async/await
   /*
