@@ -9,11 +9,12 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+// import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 // import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setPosts, setLoaded, setError } from './features/posts';
+import * as postsActions from './features/posts';
+// import { setPosts, setLoaded, setError } from './features/posts';
 import { setSelectedPost } from './features/selectedPost';
 import { Post } from './types/Post';
 
@@ -27,13 +28,7 @@ export const App: React.FC = () => {
   // console.log(selectedPost, 'selectedpost');
   
   function loadUserPosts(userId: number) {
-    dispatch(setLoaded(false));
-
-    getUserPosts(userId)
-      .then(res => dispatch(setPosts(res)))
-      .catch(() => dispatch(setError(true)))
-      // We disable the spinner in any case
-      .finally(() => dispatch(setLoaded(true)));
+    dispatch(postsActions.userPosts(userId));
   }
 
   function setSelectPost(post: Post | null) {
@@ -48,7 +43,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      dispatch(setPosts([]));
+      dispatch(postsActions.setPosts([]));
     }
   }, [author]);
 
