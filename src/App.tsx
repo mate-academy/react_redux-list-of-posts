@@ -14,12 +14,12 @@ import { setHasError, setLoaded, setPosts } from './features/posts/postsSlice';
 import { clearSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const author = useAppSelector(state => state.author.selectedAuthor);
   const posts = useAppSelector(state => state.posts.items);
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+
   const dispatch = useAppDispatch();
 
   function loadUserPosts(userId: number) {
@@ -34,8 +34,6 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(clearSelectedPost());
 
     if (author) {
