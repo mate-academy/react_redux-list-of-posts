@@ -5,9 +5,13 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadComments } from '../features/comment/commentSlice';
+import {
+  createComment,
+  deleteComment,
+  loadComments,
+} from '../features/comment/commentSlice';
 
 type Props = {
   post: Post;
@@ -76,27 +80,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(addComment(currentComments => [...currentComments, newComment]));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
+      dispatch(createComment(newComment));
+    } catch (error) {}
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+  const deleteCommentHandler = async (commentId: number) => {
+    dispatch(deleteComment(commentId));
 
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+    } catch (error) {}
   };
 
   return (
@@ -142,7 +135,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => deleteCommentHandler(comment.id)}
                   >
                     delete button
                   </button>

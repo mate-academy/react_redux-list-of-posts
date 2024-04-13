@@ -4,7 +4,7 @@ import {
   getPostComments,
   createComment as createCommentApi,
   deleteComment as deleteCommentApi,
-} from '../../api/comments'; // Імпорт функцій для роботи з коментарями з вашого API
+} from '../../api/comments';
 import { Comment } from '../../types/Comment';
 import { RootState } from '../../app/store';
 
@@ -38,7 +38,7 @@ export const deleteComment = createAsyncThunk(
     )?.postId;
 
     if (postId) {
-      thunkAPI.dispatch(loadComments(postId));
+      return;
     }
 
     return commentId;
@@ -67,6 +67,26 @@ export const commentsSlice = createSlice({
       })
       .addCase(loadComments.rejected, state => {
         state.loaded = true;
+        state.hasError = true;
+      })
+      .addCase(createComment.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(createComment.fulfilled, state => {
+        state.loaded = false;
+      })
+      .addCase(createComment.rejected, state => {
+        state.loaded = false;
+        state.hasError = true;
+      })
+      .addCase(deleteComment.pending, state => {
+        state.hasError = false;
+      })
+      .addCase(deleteComment.fulfilled, state => {
+        state.loaded = false;
+      })
+      .addCase(deleteComment.rejected, state => {
         state.hasError = true;
       });
   },
