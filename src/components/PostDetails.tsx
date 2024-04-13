@@ -6,30 +6,40 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loadComments } from '../features/comment/commentSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [comments, setComments] = useState<Comment[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const comments = useAppSelector(state => state.comments.comments);
+  const loaded = useAppSelector(state => state.comments.loaded);
+  const hasError = useAppSelector(state => state.comments.hasError);
+  const dispatch = useAppDispatch();
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
+  // function loadComments() {
+  //   setLoaded(false);
+  //   setError(false);
+  //   setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
+  //   commentsApi
+  //     .getPostComments(post.id)
+  //     .then(setComments) // save the loaded comments
+  //     .catch(() => setError(true)) // show an error when something went wrong
+  //     .finally(() => setLoaded(true)); // hide the spinner
+  // }
 
-  useEffect(loadComments, [post.id]);
+  // useEffect(loadComments, [post.id]);
+
+  useEffect(() => {
+    dispatch(loadComments(post.id));
+  }, [dispatch, post.id]);
 
   // The same useEffect with async/await
   /*
@@ -66,7 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(addComment(currentComments => [...currentComments, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
