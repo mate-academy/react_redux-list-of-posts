@@ -49,9 +49,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim() || name.trim() === '',
+      email: !email || email.trim() === '',
+      body: !body || body.trim() === '',
     });
 
     if (!name || !email || !body) {
@@ -75,7 +75,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', {
+              'is-danger': errors.name,
+            })}
             value={name}
             onChange={handleChange}
           />
