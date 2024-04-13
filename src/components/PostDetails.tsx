@@ -29,15 +29,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [dispatch, post.id]);
 
   const addComment = ({ name, email, body }: CommentData) => {
-    dispatch(
-      createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-        id: 0,
-      }),
-    );
+    if (name.trim() !== '' && email.trim() !== '' && body.trim() !== '') {
+      dispatch(
+        createComment({
+          name,
+          email,
+          body,
+          postId: post.id,
+          id: 0,
+        }),
+      );
+    }
   };
 
   const deleteCommentHandler = (commentId: number) => {
