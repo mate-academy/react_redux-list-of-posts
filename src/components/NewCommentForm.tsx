@@ -8,7 +8,6 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-
   const submitting = useAppSelector(state => state.comments.isSubmitting);
   const [errors, setErrors] = useState({
     name: false,
@@ -36,8 +35,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-
-
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -63,8 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     await onSubmit({ name, email, body });
 
     setValues(current => ({ ...current, body: '' }));
-
-  };  
+  };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">

@@ -16,7 +16,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments = useAppSelector(state => state.comments.items);
   const loaded = useAppSelector(state => state.comments.loaded);
   const hasError = useAppSelector(state => state.comments.hasError);
-  
+
   function loadComments() {
     dispatch(commentsActions.setComments(post.id));
   }
