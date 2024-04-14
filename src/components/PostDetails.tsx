@@ -3,31 +3,28 @@ import { Loader } from './Loader';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
-import { getComments, setSelectedComments } from './CommentsContext';
-import { deleteSelectedComment } from './DelComentContext';
+import { delets, getComments, setOpened, setSelectedComments } from './CommentsContext';
+import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails = () => {
   const loading = useSelector((state: RootState) => state.comments.loading);
   const post = useSelector((state: RootState) => state.userPosts.selectedPost);
   const comments = useSelector((state: RootState) => state.comments.comments);
   const hasError = useSelector((state: RootState) => state.comments.error);
-  const selected = useSelector((state: RootState) => state.comments.selectedComment?.id);
+  const opened = useSelector((state: RootState) => state.comments.opened);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if(post?.id) {
       dispatch(getComments(post.id));
     }
-    // if(selected) {
-
-    // }
-  }, [post?.id, selected]);
+  }, [post?.id,]);
 
   const handleDeleteComent = (id: number) => {
-    dispatch(deleteSelectedComment(id))
+    dispatch(delets(id));
+    dispatch(setSelectedComments(id));
   }
-
-console.log(selected)
+console.log(opened)
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -54,7 +51,7 @@ console.log(selected)
         )}
 
         {
-        // loaded && !hasError && comments.length > 0 && 
+          !hasError && comments.length > 0 && 
         (
           <>
             <p className="title is-4">Comments:</p>
@@ -75,7 +72,7 @@ console.log(selected)
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => {setSelectedComments(comment), handleDeleteComent(comment.id)}} 
+                    onClick={() => {setSelectedComments(comment.id),handleDeleteComent(comment.id)}} 
                   >
                     delete button
                   </button>
@@ -90,25 +87,23 @@ console.log(selected)
         )}
 
         {
-        // loaded && !hasError && 
+          !opened && !hasError && 
         (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            // onClick={() => setVisible(true)}
+            onClick={() => dispatch(setOpened(!opened))}
           >
             Write a comment
           </button>
         )}
 
-        {/* {
-        // loaded && !hasError && 
+        {
+          opened && !hasError && 
         (
-          <NewCommentForm 
-          onSubmit={addComment} 
-          />
-        )} */}
+          <NewCommentForm />
+        )}
       </div>
     </div>
   );

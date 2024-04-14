@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { setSelectedUser } from './UsersContext';
 import React from 'react';
+import { setClearSelected } from './PostsContext';
 
 export const UserSelector = () => {
   const users = useSelector((state: RootState) => state.users.users);
@@ -63,7 +64,7 @@ export const UserSelector = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(setSelectedUser(user));
+                dispatch(setSelectedUser(user)), dispatch(setClearSelected());
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === userSelect?.id,

@@ -11,7 +11,7 @@ import { users } from './components/UsersContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './app/store';
 import type { AppDispatch } from './app/store';
-import { posts } from './components/PostsContext';
+import { posts, setClearSelected } from './components/PostsContext';
 import { useAppSelector } from './app/hooks';
 import { PostDetails } from './components/PostDetails';
 
@@ -32,14 +32,15 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (userSelect.selectedUser?.id) {
       dispatch(posts(userSelect.selectedUser?.id));
+      dispatch(setClearSelected())
     }
   }, [userSelect]);
 
-  useEffect(() => {
-    if (userSelect.selectedUser?.id) {
-      dispatch(posts(userSelect.selectedUser?.id));
-    }
-  }, [userSelect]);
+  // useEffect(() => {
+  //   if (userSelect.selectedUser?.id) {
+  //     dispatch(posts(userSelect.selectedUser?.id));
+  //   }
+  // }, [userSelect]);
 
   return (
     <main className="section">
@@ -103,7 +104,8 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && selectedPost.id && postsUser &&
+                <PostDetails />}
             </div>
           </div>
         </div>
