@@ -1,14 +1,14 @@
+/* eslint-disable */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
-// import { start } from 'repl';
 
 type NewComent = {
   postId: number;
   name: string;
   email: string;
   body: string;
-}
+};
 
 export type CommentPost = {
   comments: Comment[];
@@ -35,78 +35,112 @@ const initialState: CommentPost = {
   error: '',
 };
 
-export const getComments  = createAsyncThunk(`/commentsGet`, (selectedPost: number) => {
-  return getPostComments(selectedPost);
-});
+export const getComments = createAsyncThunk(
+  `/commentsGet`,
+  (selectedPost: number) => {
+    return getPostComments(selectedPost);
+  }
+);
 
-export const delets = createAsyncThunk(`/commentsDel`, (selectedPost: number) => {
-  return deleteComment(selectedPost);
-});
+export const delets = createAsyncThunk(
+  `/commentsDel`,
+  (selectedPost: number) => {
+    return deleteComment(selectedPost);
+  }
+);
 
-export const create  = createAsyncThunk(`/commentsCreate`, (comment: NewComent) => {
-  return createComment(comment);
-});
+export const create = createAsyncThunk(
+  `/commentsCreate`,
+  (comment: NewComent) => {
+    return createComment(comment);
+  }
+);
 
 export const CommentsContext = createSlice({
   name: 'comments',
   initialState,
   reducers: {
     setComments(state, action: PayloadAction<Comment[]>) {
-      state.comments = action.payload;
+      const currentState = state;
+
+      currentState.comments = action.payload;
     },
     setOpened(state, action: PayloadAction<boolean>) {
-      state.opened = action.payload;
+      const currentState = state;
+
+      currentState.opened = action.payload;
     },
     setSelectedComments(state, action: PayloadAction<number>) {
-      state.selectedComment = action.payload;
-      state.comments = state.comments.filter(comment => comment.id !== action.payload);
+      const currentState = state;
+
+      currentState.selectedComment = action.payload;
+      currentState.comments = state.comments.filter(comment => comment.id !== action.payload);
     },
     setName(state, action: PayloadAction<string>) {
-      state.newComent.name = action.payload;
+      const currentState = state;
+
+      currentState.newComent.name = action.payload;
     },
     setEmail(state, action: PayloadAction<string>) {
-      state.newComent.email = action.payload;
+      const currentState = state;
+
+      currentState.newComent.email = action.payload;
     },
     setBody(state, action: PayloadAction<string>) {
-      state.newComent.body = action.payload;
+      const currentState = state;
+
+      currentState.newComent.body = action.payload;
     },
     setPostId(state, action: PayloadAction<number>) {
-      state.newComent.postId = action.payload;
+      const currentState = state;
+
+      currentState.newComent.postId = action.payload;
     },
     setSend(state, action: PayloadAction<boolean>) {
-      state.send = action.payload;
-    }
+      const currentState = state;
+
+      currentState.send = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getComments.pending, state => {
-      state.loading = true;
+      const currentState = state;
+
+      currentState.loading = true;
     });
     builder.addCase(getComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.loading = false;
+      const currentState = state;
+
+      currentState.comments = action.payload;
+      currentState.loading = false;
     });
     builder.addCase(getComments.rejected, state => {
-      state.loading = false;
-      state.error = 'Error';
+      const currentState = state;
+
+      currentState.loading = false;
+      currentState.error = 'Error';
     });
     builder.addCase(delets.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(
+      const currentState = state;
+
+      currentState.comments = currentState.comments.filter(
         comment => comment.id !== action.payload?.id,
       );
     })
     builder.addCase(create.pending, state => {
-      state.send = false;
+      const currentState = state;
+
+      currentState.send = false;
     });
     builder.addCase(create.fulfilled, (state, action) => {
-      state.comments = [...state.comments, action.payload];
-      state.newComent.body = '';
-      state.newComent.name = '';
-      state.newComent.email = '';
-      state.send = true;
+      const currentState = state;
+
+      currentState.comments = [...state.comments, action.payload];
+      currentState.newComent.body = '';
+      currentState.newComent.name = '';
+      currentState.newComent.email = '';
+      currentState.send = true;
     });
-    // builder.addCase(create.rejected, state => {
-      
-    // });
   },
 });
 

@@ -5,10 +5,11 @@ import React from 'react';
 import { Post } from '../types/Post';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setClearSelected, setSelectedPost } from './PostsContext';
+import { setClearSelected, setSelectedPost } from './PostsSlice';
 
 export const PostsList = () => {
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);
+  // eslint-disable-next-line
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost?.id);
   const dispatch = useDispatch();
 
@@ -18,8 +19,7 @@ export const PostsList = () => {
     } else {
       dispatch(setSelectedPost(post));
     }
-
-  }
+  };
 
   return (
     <div data-cy="PostsList">

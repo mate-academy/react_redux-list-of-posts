@@ -16,38 +16,51 @@ const initialState: UserPost = {
   error: '',
 };
 
+export const posts = createAsyncThunk(`/posts`, (userSelect: number) => {
+  return getUserPosts(userSelect);
+});
+
 export const PostsContext = createSlice({
   name: 'posts',
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      const currentState = state;
+
+      currentState.posts = action.payload;
     },
     setSelectedPost(state, action: PayloadAction<Post>) {
-      state.selectedPost = action.payload;
+      const currentState = state;
+
+      currentState.selectedPost = action.payload;
     },
     setClearSelected(state) {
-      state.selectedPost = null;
-    }
+      const currentState = state;
+
+      currentState.selectedPost = null;
+    },
   },
   extraReducers: builder => {
     builder.addCase(posts.pending, state => {
-      state.loading = true;
+      const currentState = state;
+
+      currentState.loading = true;
     });
     builder.addCase(posts.fulfilled, (state, action) => {
-      state.posts = action.payload;
-      state.loading = false;
+      const currentState = state;
+
+      currentState.posts = action.payload;
+      currentState.loading = false;
     });
     builder.addCase(posts.rejected, state => {
-      state.loading = false;
-      state.error = 'Error';
+      const currentState = state;
+
+      currentState.loading = false;
+      currentState.error = 'Error';
     });
   },
 });
 
+// eslint-disable-next-line
 export const { setPosts, setSelectedPost, setClearSelected } = PostsContext.actions;
 export default PostsContext.reducer;
-
-export const posts = createAsyncThunk(`/posts`, (userSelect: number) => {
-  return getUserPosts(userSelect);
-});

@@ -3,7 +3,12 @@ import { Loader } from './Loader';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
-import { delets, getComments, setOpened, setSelectedComments } from './CommentsContext';
+import {
+  delets,
+  getComments,
+  setOpened,
+  setSelectedComments,
+} from './CommentsSlice';
 import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails = () => {
@@ -15,16 +20,15 @@ export const PostDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if(post?.id) {
+    if (post?.id) {
       dispatch(getComments(post.id));
     }
-  }, [post?.id,]);
+  }, [post?.id]);
 
   const handleDeleteComent = (id: number) => {
     dispatch(delets(id));
     dispatch(setSelectedComments(id));
-  }
-console.log(opened)
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -43,16 +47,13 @@ console.log(opened)
           </div>
         )}
 
-        {loading && !hasError && comments.length === 0 && 
-        (
+        {loading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {
-          !hasError && comments.length > 0 && 
-        (
+        {!hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -72,7 +73,10 @@ console.log(opened)
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => {setSelectedComments(comment.id),handleDeleteComent(comment.id)}} 
+                    onClick={() => {
+                      setSelectedComments(comment.id);
+                      handleDeleteComent(comment.id);
+                    }}
                   >
                     delete button
                   </button>
@@ -86,9 +90,7 @@ console.log(opened)
           </>
         )}
 
-        {
-          !opened && !hasError && 
-        (
+        {!opened && !hasError && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -99,11 +101,7 @@ console.log(opened)
           </button>
         )}
 
-        {
-          opened && !hasError && 
-        (
-          <NewCommentForm />
-        )}
+        {opened && !hasError && <NewCommentForm />}
       </div>
     </div>
   );

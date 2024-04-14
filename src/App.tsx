@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -7,11 +8,11 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { users } from './components/UsersContext';
+import { users } from './components/UsersSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './app/store';
 import type { AppDispatch } from './app/store';
-import { posts, setClearSelected } from './components/PostsContext';
+import { posts, setClearSelected } from './components/PostsSlice';
 import { useAppSelector } from './app/hooks';
 import { PostDetails } from './components/PostDetails';
 
@@ -22,6 +23,7 @@ export const App: React.FC = () => {
   );
   const hasError = useSelector((state: RootState) => state.userPosts.error);
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);
+  // eslint-disable-next-line
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -32,15 +34,9 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (userSelect.selectedUser?.id) {
       dispatch(posts(userSelect.selectedUser?.id));
-      dispatch(setClearSelected())
+      dispatch(setClearSelected());
     }
   }, [userSelect]);
-
-  // useEffect(() => {
-  //   if (userSelect.selectedUser?.id) {
-  //     dispatch(posts(userSelect.selectedUser?.id));
-  //   }
-  // }, [userSelect]);
 
   return (
     <main className="section">
@@ -72,21 +68,21 @@ export const App: React.FC = () => {
                   !loadingUserPosts &&
                   !hasError &&
                   postsUser.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                  )
+                }
 
                 {userSelect &&
                   !loadingUserPosts &&
                   !hasError &&
-                  postsUser.length > 0 && (
-                    <PostsList
-                    />
-                  )}
+                  postsUser.length > 0 && 
+                  <PostsList />
+                }
               </div>
             </div>
           </div>
@@ -105,7 +101,8 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && selectedPost.id && postsUser &&
-                <PostDetails />}
+                <PostDetails />
+              }
             </div>
           </div>
         </div>

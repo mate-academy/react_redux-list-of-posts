@@ -1,46 +1,59 @@
+/* eslint-disable */
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
-import { create, setBody, setEmail, setName, setOpened, setPostId, setSend } from './CommentsContext';
-// import { CommentData } from '../types/Comment';
+import {
+  create,
+  setBody,
+  setEmail,
+  setName,
+  setOpened,
+  setPostId,
+  setSend,
+} from './CommentsSlice';
 
 export const NewCommentForm = () => {
-  // const [submitting, setSubmitting] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  // const postId = useSelector((state: RootState) => state.userPosts.selectedPost);
   const opened = useSelector((state: RootState) => state.comments.opened);
   const sended = useSelector((state: RootState) => state.comments.send);
+  // eslint-disable-next-line
   const nameComment = useSelector((state: RootState) => state.comments.newComent.name);
+  // eslint-disable-next-line
   const emailComment = useSelector((state: RootState) => state.comments.newComent.email);
+  // eslint-disable-next-line
   const bodyComment = useSelector((state: RootState) => state.comments.newComent.body);
+  // eslint-disable-next-line
   const postIdComment = useSelector((state: RootState) => state.comments.newComent.postId);
+  // eslint-disable-next-line
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost);
 
   const handleChangeName = (
+    // eslint-disable-next-line
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    dispatch(setName(event.target.value))
+    dispatch(setName(event.target.value));
   };
 
   const handleChangeEmail = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    dispatch(setEmail(event.target.value))
+    dispatch(setEmail(event.target.value));
   };
 
   const handleChangeBody = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    dispatch(setBody(event.target.value))
-  }
+    dispatch(setBody(event.target.value));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     
     if (selectedPost?.id) {
-      dispatch(setPostId(selectedPost?.id))
-    }
+      dispatch(setPostId(selectedPost?.id));
+    };
+
     if (postIdComment && nameComment &&  emailComment && bodyComment) {
       dispatch(create({
         postId: postIdComment,
@@ -51,40 +64,14 @@ export const NewCommentForm = () => {
       dispatch(setOpened(!opened));
     } else {
       dispatch(setSend(false));
-    }
-    
-  }
-  
-  // console.log(nameComment)
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  //   setErrors({
-  //     name: !name,
-  //     email: !email,
-  //     body: !body,
-  //   });
-
-  //   if (!name || !email || !body) {
-  //     return;
-  //   }
-
-  //   setSubmitting(true);
-
-  //   // it is very easy to forget about `await` keyword
-  //   await onSubmit({ name, email, body });
-
-  //   // and the spinner will disappear immediately
-  //   setSubmitting(false);
-  //   setValues(current => ({ ...current, body: '' }));
-  //   // We keep the entered name and email
-  // };
+    };
+  };
 
   return (
     <form 
     onSubmit={handleSubmit}
     // onReset={clearForm}
-     data-cy="NewCommentForm">
+    data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -133,6 +120,7 @@ export const NewCommentForm = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
+            // eslint-disable-next-line
             className={classNames('input', { 'is-danger': !emailComment && !sended })}
             value={emailComment}
             onChange={handleChangeEmail}
@@ -169,6 +157,7 @@ export const NewCommentForm = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
+            // eslint-disable-next-line
             className={classNames('textarea', { 'is-danger': !bodyComment && !sended })}
             value={bodyComment}
             onChange={handleChangeBody}

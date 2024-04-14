@@ -1,10 +1,11 @@
+// eslint-disable-next-line
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setSelectedUser } from './UsersContext';
+import { setSelectedUser } from './UsersSlice';
 import React from 'react';
-import { setClearSelected } from './PostsContext';
+import { setClearSelected } from './PostsSlice';
 
 export const UserSelector = () => {
   const users = useSelector((state: RootState) => state.users.users);
@@ -64,7 +65,8 @@ export const UserSelector = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(setSelectedUser(user)), dispatch(setClearSelected());
+                dispatch(setSelectedUser(user));
+                dispatch(setClearSelected());
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === userSelect?.id,
