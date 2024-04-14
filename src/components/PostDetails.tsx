@@ -12,7 +12,8 @@ import {
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { selectedPost: post } = useAppSelector(selectPosts);
+  const { selectedPost: post, selectedPostId: postId } =
+    useAppSelector(selectPosts);
   const { comments, loaded, hasError } = useAppSelector(selectcomments);
 
   const [visible, setVisible] = useState(false);
@@ -20,10 +21,10 @@ export const PostDetails: React.FC = () => {
   function loadComments() {
     setVisible(false);
 
-    dispatch(getCommentsAsync(post.id));
+    dispatch(getCommentsAsync(postId));
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [postId]);
 
   const deleteComment = async (commentId: number) => {
     dispatch(deleteCommentAsync(commentId));
@@ -32,7 +33,7 @@ export const PostDetails: React.FC = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${postId}: ${post.title}`}</h2>
 
         <p data-cy="PostBody">{post.body}</p>
       </div>
