@@ -30,7 +30,7 @@ export const PostDetails: React.FC = () => {
     dispatch(deleteCommentAsync(commentId));
   };
 
-  return (
+  return typeof post !== 'number' ? (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${postId}: ${post.title}`}</h2>
@@ -101,5 +101,7 @@ export const PostDetails: React.FC = () => {
         {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
+  ) : (
+    ''
   );
 };
