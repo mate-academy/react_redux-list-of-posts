@@ -6,16 +6,16 @@ import { AppDispatch, RootState } from '../app/store';
 import {
   create,
   setBody,
+  setClear,
   setEmail,
   setName,
-  setOpened,
   setPostId,
   setSend,
 } from './CommentsSlice';
 
 export const NewCommentForm = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const opened = useSelector((state: RootState) => state.comments.opened);
+  // const opened = useSelector((state: RootState) => state.comments.opened);
   const sended = useSelector((state: RootState) => state.comments.send);
   // eslint-disable-next-line
   const nameComment = useSelector((state: RootState) => state.comments.newComent.name);
@@ -27,6 +27,8 @@ export const NewCommentForm = () => {
   const postIdComment = useSelector((state: RootState) => state.comments.newComent.postId);
   // eslint-disable-next-line
   const selectedPost = useSelector((state: RootState) => state.userPosts.selectedPost);
+  // eslint-disable-next-line
+  const loading = useSelector((state: RootState) => state.comments.loadingNewComment);
 
   const handleChangeName = (
     // eslint-disable-next-line
@@ -54,15 +56,22 @@ export const NewCommentForm = () => {
       dispatch(setPostId(selectedPost?.id));
     };
 
-    if (postIdComment && nameComment &&  emailComment && bodyComment) {
+    if (postIdComment &&
+      nameComment.trim() &&
+      emailComment.trim() &&
+      bodyComment.trim() &&
+      nameComment &&
+      emailComment &&
+      bodyComment
+    ) {
       dispatch(create({
         postId: postIdComment,
         name: nameComment,
         email: emailComment,
         body: bodyComment,
       }));
-      dispatch(setOpened(!opened));
-    } else {
+    } 
+    else {
       dispatch(setSend(false));
     };
   };
@@ -83,7 +92,7 @@ export const NewCommentForm = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': !nameComment && !sended })}
+            className={classNames('input', { 'is-danger': ((!nameComment.trim()|| !nameComment) && !sended) })}
             value={nameComment}
             onChange={handleChangeName}
           />
@@ -92,7 +101,7 @@ export const NewCommentForm = () => {
             <i className="fas fa-user" />
           </span>
 
-          {!nameComment && !sended && (
+          {((!nameComment.trim() || !nameComment) && !sended) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -102,7 +111,7 @@ export const NewCommentForm = () => {
           )}
         </div>
 
-        {!nameComment && !sended && (
+        {((!nameComment.trim() || !nameComment) && !sended) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -121,7 +130,7 @@ export const NewCommentForm = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             // eslint-disable-next-line
-            className={classNames('input', { 'is-danger': !emailComment && !sended })}
+            className={classNames('input', { 'is-danger': ((!emailComment.trim() || !emailComment) && !sended) })}
             value={emailComment}
             onChange={handleChangeEmail}
           />
@@ -130,7 +139,7 @@ export const NewCommentForm = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {!emailComment && !sended && (
+          {((!emailComment.trim() || !emailComment) && !sended)&& (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -140,7 +149,7 @@ export const NewCommentForm = () => {
           )}
         </div>
 
-        {!emailComment && !sended && (
+        {((!emailComment.trim() || !emailComment) && !sended) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -158,13 +167,13 @@ export const NewCommentForm = () => {
             name="body"
             placeholder="Type comment here"
             // eslint-disable-next-line
-            className={classNames('textarea', { 'is-danger': !bodyComment && !sended })}
+            className={classNames('textarea', { 'is-danger': (!bodyComment && !sended) || (!bodyComment.trim() && !sended) })}
             value={bodyComment}
             onChange={handleChangeBody}
           />
         </div>
 
-        {!bodyComment && !sended && (
+        {(!bodyComment && !sended) || (!bodyComment.trim() && !sended) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -176,7 +185,7 @@ export const NewCommentForm = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              // 'is-loading': handleSubmit,
+              'is-loading': loading,
             })}
             // onClick={handleAdd}
           >
@@ -186,7 +195,10 @@ export const NewCommentForm = () => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => dispatch(setClear())}>
             Clear
           </button>
         </div>

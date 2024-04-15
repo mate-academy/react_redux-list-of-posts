@@ -17,6 +17,7 @@ export type CommentPost = {
   opened: boolean;
   selectedComment: number | null;
   loading: boolean;
+  loadingNewComment: boolean;
   error: string;
 };
 
@@ -32,6 +33,7 @@ const initialState: CommentPost = {
   opened: false,
   selectedComment: null,
   loading: false,
+  loadingNewComment: false,
   error: '',
 };
 
@@ -101,12 +103,20 @@ export const CommentsContext = createSlice({
 
       currentState.send = action.payload;
     },
+    setClear(state) {
+      const currentState = state;
+
+      currentState.newComent.body = '';
+      currentState.newComent.name = '';
+      currentState.newComent.email = '';
+    }
   },
   extraReducers: builder => {
     builder.addCase(getComments.pending, state => {
       const currentState = state;
 
       currentState.loading = true;
+      currentState.opened = false;
     });
     builder.addCase(getComments.fulfilled, (state, action) => {
       const currentState = state;
@@ -131,6 +141,7 @@ export const CommentsContext = createSlice({
       const currentState = state;
 
       currentState.send = false;
+      currentState.loadingNewComment = true;
     });
     builder.addCase(create.fulfilled, (state, action) => {
       const currentState = state;
@@ -140,6 +151,7 @@ export const CommentsContext = createSlice({
       currentState.newComent.name = '';
       currentState.newComent.email = '';
       currentState.send = true;
+      currentState.loadingNewComment = false;
     });
   },
 });
@@ -153,6 +165,7 @@ export const {
   setBody,
   setPostId,
   setSend,
+  setClear,
 } = CommentsContext.actions;
 
 export default CommentsContext.reducer;
