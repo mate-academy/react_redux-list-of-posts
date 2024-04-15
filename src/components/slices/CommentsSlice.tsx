@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
-import { createComment, deleteComment, getPostComments } from '../../api/comments';
+import {
+  createComment,
+  deleteComment,
+  getPostComments,
+} from '../../api/comments';
 
 type NewComent = {
   postId: number;

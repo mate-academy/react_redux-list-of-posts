@@ -61,7 +61,8 @@ export const NewCommentForm = () => {
       dispatch(setPostId(selectedPost?.id));
     }
 
-    if (postIdComment && 
+    if (
+      postIdComment &&
       nameComment.trim() &&
       emailComment.trim() &&
       bodyComment.trim() &&
@@ -69,22 +70,21 @@ export const NewCommentForm = () => {
       emailComment &&
       bodyComment
     ) {
-      dispatch(create({
-        postId: postIdComment,
-        name: nameComment,
-        email: emailComment,
-        body: bodyComment,
-      }));
-    } 
-    else {
+      dispatch(
+        create({
+          postId: postIdComment,
+          name: nameComment,
+          email: emailComment,
+          body: bodyComment,
+        }),
+      );
+    } else {
       dispatch(setSend(false));
-    };
+    }
   };
 
   return (
-    <form 
-    onSubmit={handleSubmit}
-    data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -96,12 +96,9 @@ export const NewCommentForm = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames(
-              'input', 
-              {'is-danger': (
-                (!nameComment.trim()|| !nameComment)
-                && !sended)
-              })}
+            className={classNames('input', {
+              'is-danger': (!nameComment.trim() || !nameComment) && !sended,
+            })}
             value={nameComment}
             onChange={handleChangeName}
           />
@@ -110,7 +107,7 @@ export const NewCommentForm = () => {
             <i className="fas fa-user" />
           </span>
 
-          {((!nameComment.trim() || !nameComment) && !sended) && (
+          {(!nameComment.trim() || !nameComment) && !sended && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -120,7 +117,7 @@ export const NewCommentForm = () => {
           )}
         </div>
 
-        {((!nameComment.trim() || !nameComment) && !sended) && (
+        {(!nameComment.trim() || !nameComment) && !sended && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -138,9 +135,9 @@ export const NewCommentForm = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames(
-              'input',
-              { 'is-danger': ((!emailComment.trim() || !emailComment) && !sended) })}
+            className={classNames('input', {
+              'is-danger': (!emailComment.trim() || !emailComment) && !sended,
+            })}
             value={emailComment}
             onChange={handleChangeEmail}
           />
@@ -149,7 +146,7 @@ export const NewCommentForm = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {((!emailComment.trim() || !emailComment) && !sended) && (
+          {(!emailComment.trim() || !emailComment) && !sended && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -159,7 +156,7 @@ export const NewCommentForm = () => {
           )}
         </div>
 
-        {((!emailComment.trim() || !emailComment) && !sended) && (
+        {(!emailComment.trim() || !emailComment) && !sended && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -176,17 +173,21 @@ export const NewCommentForm = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': (!bodyComment && !sended) || (!bodyComment.trim() && !sended) })}
+            className={classNames('textarea', {
+              'is-danger':
+                (!bodyComment && !sended) || (!bodyComment.trim() && !sended),
+            })}
             value={bodyComment}
             onChange={handleChangeBody}
           />
         </div>
 
-        {(!bodyComment && !sended) || (!bodyComment.trim() && !sended) && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
+        {(!bodyComment && !sended) ||
+          (!bodyComment.trim() && !sended && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Enter some text
+            </p>
+          ))}
       </div>
 
       <div className="field is-grouped">
@@ -206,7 +207,8 @@ export const NewCommentForm = () => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => dispatch(setClear())}>
+            onClick={() => dispatch(setClear())}
+          >
             Clear
           </button>
         </div>
