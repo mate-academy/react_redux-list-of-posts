@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
@@ -41,21 +40,21 @@ export const getComments = createAsyncThunk(
   `/commentsGet`,
   (selectedPost: number) => {
     return getPostComments(selectedPost);
-  }
+  },
 );
 
 export const delets = createAsyncThunk(
   `/commentsDel`,
   (selectedPost: number) => {
     return deleteComment(selectedPost);
-  }
+  },
 );
 
 export const create = createAsyncThunk(
   `/commentsCreate`,
   (comment: NewComent) => {
     return createComment(comment);
-  }
+  },
 );
 
 export const CommentsContext = createSlice({
@@ -76,7 +75,9 @@ export const CommentsContext = createSlice({
       const currentState = state;
 
       currentState.selectedComment = action.payload;
-      currentState.comments = state.comments.filter(comment => comment.id !== action.payload);
+      currentState.comments = state.comments.filter(
+        comment => comment.id !== action.payload,
+      );
     },
     setName(state, action: PayloadAction<string>) {
       const currentState = state;
@@ -109,7 +110,7 @@ export const CommentsContext = createSlice({
       currentState.newComent.body = '';
       currentState.newComent.name = '';
       currentState.newComent.email = '';
-    }
+    },
   },
   extraReducers: builder => {
     builder.addCase(getComments.pending, state => {
@@ -136,7 +137,7 @@ export const CommentsContext = createSlice({
       currentState.comments = currentState.comments.filter(
         comment => comment.id !== action.payload?.id,
       );
-    })
+    });
     builder.addCase(create.pending, state => {
       const currentState = state;
 
