@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -20,12 +21,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     state => state.comments,
   );
 
-  useEffect(() => {
+  function loadComments() {
     dispatch(commentsAction.setLoading(false));
     dispatch(commentsAction.setError(false));
     dispatch(commentsAction.setVisible(false));
-    dispatch(commentsAction.initComments(post.id));
-  }, [dispatch, post.id]);
+    if (post) {
+      dispatch(commentsAction.initComments(post.id));
+    }
+  }
+
+  useEffect(loadComments, [post?.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -51,7 +56,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">
+          {post ? `#${post.id}: ${post.title}` : 'Loading...'}
+        </h2>
 
         <p data-cy="PostBody">{post.body}</p>
       </div>
