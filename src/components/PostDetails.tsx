@@ -8,7 +8,7 @@ import {
   getComments,
   setOpened,
   setSelectedComments,
-} from './CommentsSlice';
+} from './slices/CommentsSlice';
 import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails = () => {

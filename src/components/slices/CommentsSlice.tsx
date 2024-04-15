@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
-import { createComment, deleteComment, getPostComments } from '../api/comments';
+import { Comment } from '../../types/Comment';
+import { createComment, deleteComment, getPostComments } from '../../api/comments';
 
 type NewComent = {
   postId: number;
@@ -148,9 +148,6 @@ export const CommentsContext = createSlice({
       const currentState = state;
 
       currentState.comments = [...state.comments, action.payload];
-      currentState.newComent.body = '';
-      currentState.newComent.name = '';
-      currentState.newComent.email = '';
       currentState.send = true;
       currentState.loadingNewComment = false;
     });

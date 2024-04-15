@@ -10,7 +10,7 @@ import {
   setName,
   setPostId,
   setSend,
-} from './CommentsSlice';
+} from './slices/CommentsSlice';
 
 export const NewCommentForm = () => {
   const dispatch = useDispatch<AppDispatch>();

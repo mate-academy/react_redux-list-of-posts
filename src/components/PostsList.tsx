@@ -5,7 +5,7 @@ import React from 'react';
 import { Post } from '../types/Post';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setClearSelected, setSelectedPost } from './PostsSlice';
+import { setClearSelected, setSelectedPost } from './slices/PostsSlice';
 
 export const PostsList = () => {
   const postsUser = useSelector((state: RootState) => state.userPosts.posts);

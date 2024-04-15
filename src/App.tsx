@@ -8,11 +8,11 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { users } from './components/UsersSlice';
+import { users } from './components/slices/UsersSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './app/store';
 import type { AppDispatch } from './app/store';
-import { posts, setClearSelected } from './components/PostsSlice';
+import { posts, setClearSelected } from './components/slices/PostsSlice';
 import { useAppSelector } from './app/hooks';
 import { PostDetails } from './components/PostDetails';
 

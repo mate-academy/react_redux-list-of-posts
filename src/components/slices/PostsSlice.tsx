@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
-import { getUserPosts } from '../api/posts';
+import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
 
 export type UserPost = {
   posts: Post[];
