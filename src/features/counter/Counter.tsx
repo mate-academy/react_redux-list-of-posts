@@ -21,6 +21,8 @@ export function Counter() {
     setIncrementAmount(+event.target.value);
   };
 
+  // console.log(store.getState().counter.status);
+
   return (
     <div>
       <div className={styles.row}>

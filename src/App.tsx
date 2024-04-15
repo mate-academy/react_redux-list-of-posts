@@ -11,6 +11,7 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -99,6 +100,8 @@ export const App: React.FC = () => {
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
+
+          <Counter />
         </div>
       </div>
     </main>

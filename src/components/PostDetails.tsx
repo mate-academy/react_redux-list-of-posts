@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
+import { getPostComments, createComment, deleteComment } from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
@@ -22,8 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setError(false);
     setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
+    getPostComments(post.id)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
@@ -59,7 +58,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
-      const newComment = await commentsApi.createComment({
+      const newComment = await createComment({
         name,
         email,
         body,
@@ -78,7 +77,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  const deleteComment = async (commentId: number) => {
+  const removeComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
@@ -86,7 +85,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       currentComments.filter(comment => comment.id !== commentId),
     );
 
-    await commentsApi.deleteComment(commentId);
+    await deleteComment(commentId);
   };
 
   return (
@@ -132,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => removeComment(comment.id)}
                   >
                     delete button
                   </button>

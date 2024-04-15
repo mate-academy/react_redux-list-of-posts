@@ -29,6 +29,10 @@ export const incrementAsync = createAsyncThunk(
   },
 );
 
+// console.log(incrementAsync);
+// console.log(incrementAsync.fulfilled);
+// console.log(incrementAsync.pending);
+
 export const counterSlice = createSlice({
   name: 'counter',
   initialState,
@@ -66,13 +70,14 @@ export const counterSlice = createSlice({
   },
 });
 
+// console.log(getState());
+
 export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectCount = (state: RootState) => state.counter.value;
-
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
 export const incrementIfOdd = (amount: number): AppThunk => {
@@ -82,6 +87,9 @@ export const incrementIfOdd = (amount: number): AppThunk => {
     if (currentValue % 2 === 1) {
       dispatch(incrementByAmount(amount));
     }
+
+    // console.log(getState());
+    // console.log(currentValue);
   };
 };
 
