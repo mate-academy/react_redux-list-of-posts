@@ -15,7 +15,6 @@ import {
 
 export const NewCommentForm = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // const opened = useSelector((state: RootState) => state.comments.opened);
   const sended = useSelector((state: RootState) => state.comments.send);
   // eslint-disable-next-line
   const nameComment = useSelector((state: RootState) => state.comments.newComent.name);
@@ -79,7 +78,6 @@ export const NewCommentForm = () => {
   return (
     <form 
     onSubmit={handleSubmit}
-    // onReset={clearForm}
     data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -125,7 +123,7 @@ export const NewCommentForm = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

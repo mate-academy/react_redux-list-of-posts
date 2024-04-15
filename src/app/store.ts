@@ -4,7 +4,6 @@ import counterReducer from '../features/counter/counterSlice';
 import UsersContext from '../components/UsersSlice';
 import PostsContext from '../components/PostsSlice';
 import CommentsContext from '../components/CommentsSlice';
-// import DelComentContext from '../components/DelComentContext';
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +12,6 @@ export const store = configureStore({
     selectedUser: UsersContext,
     userPosts: PostsContext,
     comments: CommentsContext,
-    // selectedDelComment: DelComentContext,
   },
 });
 
