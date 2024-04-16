@@ -1,7 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { actions as usersActions } from '../features/usersSlice.ts';
+import { getUsers } from '../api/users';
 
 type Props = {
   value: User | null;
@@ -17,13 +19,20 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
+
+    getUsers().then(usersFromServer => {
+      dispatch(usersActions.set(usersFromServer));
+    });
 
     // we save a link to remove the listener later
     const handleDocumentClick = () => {
@@ -40,7 +49,7 @@ export const UserSelector: React.FC<Props> = ({
     };
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
-  }, [expanded]);
+  }, [expanded, dispatch]);
 
   return (
     <div

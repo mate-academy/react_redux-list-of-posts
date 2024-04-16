@@ -87,9 +87,6 @@ export const incrementIfOdd = (amount: number): AppThunk => {
     if (currentValue % 2 === 1) {
       dispatch(incrementByAmount(amount));
     }
-
-    // console.log(getState());
-    // console.log(currentValue);
   };
 };
 
