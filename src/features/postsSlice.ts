@@ -5,15 +5,15 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 type PostsState = {
-  posts: Post[];
-  loading: boolean;
-  error: boolean;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 const postsSlice = createSlice({
@@ -21,21 +21,21 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      state.items = action.payload;
     },
   },
 
   extraReducers: builder => {
     builder.addCase(userPosts.pending, state => {
-      state.loading = true;
+      state.loaded = true;
     });
     builder.addCase(userPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
     builder.addCase(userPosts.rejected, state => {
-      state.loading = false;
-      state.error = true;
+      state.loaded = false;
+      state.hasError = true;
     });
   },
 });

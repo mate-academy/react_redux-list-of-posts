@@ -9,10 +9,11 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
+// import { Post } from './types/Post';
+// import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/postsSlice';
+import { actions as selectedPostActions } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   // const [posts, setPosts] = useState<Post[]>([]);
@@ -20,15 +21,17 @@ export const App: React.FC = () => {
   // const [error, setError] = useState(false);
 
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const dispatch = useAppDispatch();
-  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const { items: posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostActions.set(null))
+    // setSelectedPost(null);
 
     if (author) {
       dispatch(postsActions.userPosts(author.id));
@@ -51,9 +54,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loading && <Loader />}
+                {author && loaded && <Loader />}
 
-                {author && !loading && error && (
+                {author && !loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -62,17 +65,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && !loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && !loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={(post) => dispatch(selectedPostActions.set(post))}
                   />
                 )}
               </div>
@@ -96,7 +99,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <Counter />
+          {/* <Counter /> */}
         </div>
       </div>
     </main>
