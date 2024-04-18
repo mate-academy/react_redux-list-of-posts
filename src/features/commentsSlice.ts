@@ -23,26 +23,32 @@ const commentsSlice = createSlice({
     setComments: (state, action: PayloadAction<Comment[]>) => {
       state.items = action.payload;
     },
+    setError: (state, action: PayloadAction<boolean>) => {
+      state.hasError = action.payload;
+    },
   },
 
   extraReducers: builder => {
-    builder.addCase(userComments.pending, state => {
+    builder.addCase(getUserComments.pending, state => {
+      state.loaded = false;
+      // state.hasError = false;
+    });
+    builder.addCase(getUserComments.fulfilled, (state, action) => {
+      state.items = action.payload;
       state.loaded = true;
     });
-    builder.addCase(userComments.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = false;
-    });
-    builder.addCase(userComments.rejected, state => {
-      state.loaded = false;
+    builder.addCase(getUserComments.rejected, state => {
+      state.loaded = true;
       state.hasError = true;
     });
   },
 });
 
 export default commentsSlice.reducer;
-export const { setComments } = commentsSlice.actions;
+export const { setComments, setError } = commentsSlice.actions;
 
 export const getUserComments = createAsyncThunk('comments/fetch', (postId: number) => {
+  console.log('1');
+
   return getPostComments(postId);
 });
