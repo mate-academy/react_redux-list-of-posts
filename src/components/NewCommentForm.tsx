@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (comment: CommentData) => Promise<void>;
 };
-
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState<boolean>(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -46,6 +45,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmiting(true);
 
     setErrors({
       name: !name,
@@ -54,18 +54,24 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
 
     if (!name || !email || !body) {
+      setIsSubmiting(false);
+
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+
+    setIsSubmiting(false);
+  };
+
+  const handleClearForm = () => {
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   return (
@@ -172,7 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmiting,
             })}
           >
             Add
@@ -181,7 +187,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleClearForm}
+          >
             Clear
           </button>
         </div>
