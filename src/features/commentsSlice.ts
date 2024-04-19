@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
@@ -75,3 +76,4 @@ const commentsSlice = createSlice({
 
 export default commentsSlice.reducer;
 export const { setVisible } = commentsSlice.actions;
+/* eslint-enable no-param-reassign */

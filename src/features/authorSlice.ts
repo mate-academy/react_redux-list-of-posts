@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
@@ -29,3 +30,4 @@ const authorSlice = createSlice({
 
 export default authorSlice.reducer;
 export const { set, remove } = authorSlice.actions;
+/* eslint-enable no-param-reassign */

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
@@ -45,3 +46,4 @@ const usersSlice = createSlice({
 
 export const { set } = usersSlice.actions;
 export default usersSlice.reducer;
+/* eslint-enable no-param-reassign */

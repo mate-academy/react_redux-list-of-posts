@@ -48,9 +48,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setIsSubmiting(true);
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
     if (!name || !email || !body) {

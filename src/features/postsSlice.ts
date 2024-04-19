@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
@@ -45,3 +46,4 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 export const { clear } = postsSlice.actions;
+/* eslint-enable no-param-reassign */
