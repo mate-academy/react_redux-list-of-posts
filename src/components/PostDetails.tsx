@@ -18,15 +18,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const dispatch = useAppDispatch();
   const {items: comments, loaded, hasError} = useAppSelector(state => state.comments);
-  // const [comments, setComments] = useState<Comment[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
 
   function loadComments() {
-    // setVisible(false);
+    setVisible(false);
     console.log(post.id)
 
-    commentsActions.getUserComments(post.id)
+    dispatch(commentsActions.getUserComments(post.id));
   }
 
   useEffect(loadComments, [post.id, dispatch]);
@@ -67,6 +64,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       dispatch(commentsActions.setComments([...comments, newComment]))
+      dispatch(commentsActions.setComments([...comments, newComment]))
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -75,7 +73,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch (error) {
       // we show an error message in case of any error
       dispatch(commentsActions.setError(true))
-      // setError(true);
     }
   };
 
@@ -83,6 +80,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
+    dispatch(commentsActions.setComments(
+      comments.filter(comment => comment.id !== commentId)
+    ))
+    // setComments(currentComments =>
+    //   currentComments.filter(comment => comment.id !== commentId),
+    // );
     dispatch(commentsActions.setComments(
       comments.filter(comment => comment.id !== commentId)
     ))

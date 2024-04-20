@@ -31,7 +31,6 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(getUserComments.pending, state => {
       state.loaded = false;
-      // state.hasError = false;
     });
     builder.addCase(getUserComments.fulfilled, (state, action) => {
       state.items = action.payload;

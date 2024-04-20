@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions as usersActions } from '../features/usersSlice.ts';
-import { getUsers } from '../api/users';
 
 type Props = {
   value: User | null;
@@ -30,10 +28,6 @@ export const UserSelector: React.FC<Props> = ({
       return;
     }
 
-    getUsers().then(usersFromServer => {
-      dispatch(usersActions.set(usersFromServer));
-    });
-
     // we save a link to remove the listener later
     const handleDocumentClick = () => {
       // we close the Dropdown on any click (inside or outside)
@@ -48,7 +42,7 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
     // we don't want to listening for outside clicks
-    // when the Dopdown is closed
+    // when the Dropdown is closed
   }, [expanded, dispatch]);
 
   return (

@@ -9,35 +9,35 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-// import { Post } from './types/Post';
-// import { Counter } from './features/counter/Counter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/postsSlice';
 import { actions as selectedPostActions } from './features/selectedPostSlice';
+import { getUsers } from './api/users';
+import { actions as usersActions } from './features/usersSlice.ts';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loading, setLoaded] = useState(false);
-  // const [error, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const dispatch = useAppDispatch();
-  const { items: posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const {
+    items: posts, loaded, hasError,
+  } = useAppSelector(state => state.posts);
+
   const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
     dispatch(selectedPostActions.set(null))
-    // setSelectedPost(null);
+
+    getUsers().then(usersFromServer => {
+      dispatch(usersActions.set(usersFromServer));
+    });
 
     if (author) {
       dispatch(postsActions.userPosts(author.id));
     } else {
       dispatch(postsActions.setPosts([]));
-      // setPosts([]);
     }
   }, [author, dispatch]);
 
@@ -99,7 +99,6 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {/* <Counter /> */}
         </div>
       </div>
     </main>
