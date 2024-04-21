@@ -11,7 +11,7 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/postsSlice';
-import { actions as selectedPostActions } from './features/selectedPostSlice';
+import { actions as selectedActions } from './features/selectedPostSlice';
 import { getUsers } from './api/users';
 import { actions as usersActions } from './features/usersSlice.ts';
 
@@ -20,7 +20,9 @@ export const App: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const {
-    items: posts, loaded, hasError,
+    items: posts,
+    loaded,
+    hasError,
   } = useAppSelector(state => state.posts);
 
   const selectedPost = useAppSelector(state => state.selectedPost);
@@ -28,7 +30,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(selectedPostActions.set(null))
+    dispatch(selectedActions.set(null));
 
     getUsers().then(usersFromServer => {
       dispatch(usersActions.set(usersFromServer));
@@ -75,7 +77,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={(post) => dispatch(selectedPostActions.set(post))}
+                    onPostSelected={post => dispatch(selectedActions.set(post))}
                   />
                 )}
               </div>
@@ -98,7 +100,6 @@ export const App: React.FC = () => {
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
-
         </div>
       </div>
     </main>
