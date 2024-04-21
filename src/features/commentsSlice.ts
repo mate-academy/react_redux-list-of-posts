@@ -46,8 +46,7 @@ const commentsSlice = createSlice({
 export default commentsSlice.reducer;
 export const { setComments, setError } = commentsSlice.actions;
 
-export const getUserComments = createAsyncThunk('comments/fetch', (postId: number) => {
-  console.log('1');
-
-  return getPostComments(postId);
-});
+export const getUserComments = createAsyncThunk(
+  'comments/fetch',
+  (postId: number) => getPostComments(postId),
+);
