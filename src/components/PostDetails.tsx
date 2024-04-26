@@ -3,30 +3,31 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
+import * as commentsAcrions from '../features/commentsSlice';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { comments, loading, error } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
+    dispatch(commentsAcrions.setLoading(true));
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(commentsFromServer => {
+        dispatch(commentsAcrions.set(commentsFromServer));
+      }) // save the loaded comments
+      .catch(() => dispatch(commentsAcrions.setError(true))) // show an error when something went wrong
+      .finally(() => dispatch(commentsAcrions.setLoading(false))); // hide the spinner
   }
 
   useEffect(loadComments, [post.id]);
@@ -66,15 +67,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
+      dispatch(commentsAcrions.add(newComment));
+    } catch {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(commentsAcrions.setError(true));
     }
   };
 
@@ -82,9 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(commentsAcrions.remove(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -98,21 +92,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loading && <Loader />}
 
-        {loaded && hasError && (
+        {!loading && error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loading && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loading && !error && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -146,7 +140,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loading && !error && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -157,7 +151,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {!loading && !error && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
