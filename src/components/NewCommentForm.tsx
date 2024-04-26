@@ -83,6 +83,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
+            required
           />
 
           <span className="icon is-small is-left">
@@ -113,13 +114,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
+            required
           />
 
           <span className="icon is-small is-left">
