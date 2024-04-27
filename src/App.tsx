@@ -52,28 +52,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author &&
-                  status !== 'loading' &&
-                  status !== 'failed' &&
-                  !posts.length && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
+                {author && status === 'idle' && !posts.length && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
                 )}
 
-                {author &&
-                  status !== 'loading' &&
-                  status !== 'failed' &&
-                  !!posts.length && (
-                    <PostsList
-                      posts={posts}
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
-                    />
-                  )}
+                {author && status === 'idle' && !!posts.length && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPost?.id}
+                    onPostSelected={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
