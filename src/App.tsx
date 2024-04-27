@@ -67,7 +67,7 @@ export const App: React.FC = () => {
                 {author &&
                   status !== 'loading' &&
                   status !== 'failed' &&
-                  posts.length > 0 && (
+                  !!posts.length && (
                     <PostsList
                       posts={posts}
                       selectedPostId={selectedPost?.id}

@@ -50,6 +50,4 @@ export const postsSlice = createSlice({
   },
 });
 
-// export const { set, setLoading, setError } = postsSlice.actions;
-
 export default postsSlice.reducer;

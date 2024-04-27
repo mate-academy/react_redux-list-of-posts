@@ -1,28 +1,26 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
-import { getPostComments } from '../api/comments';
+import { Comment, CommentData } from '../types/Comment';
+import { createComment, getPostComments, deleteComment } from '../api/comments';
 
-// export interface CommentsState {
-//   posts: Comment[];
-//   status: 'idle' | 'loading' | 'failed';
-// }
-
-// const initialState: CommentsState = {
-//   posts: [],
-//   status: 'idle',
-// };
+type FetchSstatus = 'idle' | 'loading' | 'failed';
 
 export interface CommentsState {
   comments: Comment[];
-  loading: boolean;
-  error: boolean;
+  status: {
+    loadComments: FetchSstatus;
+    addComments: FetchSstatus;
+    deleteComments: FetchSstatus;
+  };
 }
 
 const initialState: CommentsState = {
   comments: [],
-  loading: false,
-  error: false,
+  status: {
+    loadComments: 'idle',
+    addComments: 'idle',
+    deleteComments: 'idle',
+  },
 };
 
 export const commentsAsync = createAsyncThunk(
@@ -34,19 +32,33 @@ export const commentsAsync = createAsyncThunk(
   },
 );
 
+export const addNewCommentAsync = createAsyncThunk(
+  'newComment/fetchCreateComment',
+  async ({ name, email, body, postId }: CommentData) => {
+    const newComment = await createComment({
+      name,
+      email,
+      body,
+      postId,
+    });
+
+    return newComment;
+  },
+);
+
+export const deleteCommentAsync = createAsyncThunk(
+  'deleteComment/fetchDeleteComment',
+  async (commentId: number) => {
+    const deleteReview = await deleteComment(commentId);
+
+    return deleteReview;
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<Comment[]>) => {
-      state.comments = action.payload;
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setError: (state, action: PayloadAction<boolean>) => {
-      state.error = action.payload;
-    },
     add: (state, action: PayloadAction<Comment>) => {
       state.comments.push(action.payload);
     },
@@ -56,21 +68,53 @@ export const commentsSlice = createSlice({
       );
     },
   },
-  // extraReducers: builder => {
-  //   builder
-  //     .addCase(commentsAsync.pending, state => {
-  //       state.status = 'loading';
-  //     })
-  //     .addCase(commentsAsync.fulfilled, (state, action) => {
-  //       state.status = 'idle';
-  //       state.posts = action.payload;
-  //     })
-  //     .addCase(commentsAsync.rejected, state => {
-  //       state.status = 'failed';
-  //     });
-  // },
+  extraReducers: builder => {
+    builder
+      .addCase(commentsAsync.pending, state => {
+        state.status.loadComments = 'loading';
+      })
+      .addCase(commentsAsync.fulfilled, (state, action) => {
+        state.status.loadComments = 'idle';
+        state.comments = action.payload;
+      })
+      .addCase(commentsAsync.rejected, state => {
+        state.status.loadComments = 'failed';
+      });
+
+    builder
+      .addCase(addNewCommentAsync.pending, state => {
+        state.status.addComments = 'loading';
+      })
+      .addCase(
+        addNewCommentAsync.fulfilled,
+        (state, action: PayloadAction<Comment>) => {
+          state.status.addComments = 'idle';
+          state.comments.push(action.payload);
+        },
+      )
+      .addCase(addNewCommentAsync.rejected, state => {
+        state.status.addComments = 'failed';
+      });
+
+    builder
+      .addCase(deleteCommentAsync.pending, state => {
+        state.status.deleteComments = 'loading';
+      })
+      .addCase(
+        deleteCommentAsync.fulfilled,
+        (state, action: PayloadAction<number>) => {
+          state.status.deleteComments = 'idle';
+          state.comments = state.comments.filter(
+            comment => comment.id !== action.payload,
+          );
+        },
+      )
+      .addCase(deleteCommentAsync.rejected, state => {
+        state.status.deleteComments = 'failed';
+      });
+  },
 });
 
-export const { set, setLoading, setError, add, remove } = commentsSlice.actions;
+export const { add, remove } = commentsSlice.actions;
 
 export default commentsSlice.reducer;
