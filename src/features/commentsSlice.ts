@@ -49,9 +49,9 @@ export const addNewCommentAsync = createAsyncThunk(
 export const deleteCommentAsync = createAsyncThunk(
   'deleteComment/fetchDeleteComment',
   async (commentId: number) => {
-    const deleteReview = await deleteComment(commentId);
+    await deleteComment(commentId);
 
-    return deleteReview;
+    return commentId;
   },
 );
 

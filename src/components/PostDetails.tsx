@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-import * as commentsAcrions from '../features/commentsSlice';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -43,15 +40,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = (commentId: number) => {
     dispatch(deleteCommentAsync(commentId));
   };
-
-  // const deleteComment = async (commentId: number) => {
-  //   // we delete the comment immediately so as
-  //   // not to make the user wait long for the actual deletion
-  //   // eslint-disable-next-line max-len
-  //   dispatch(commentsAcrions.remove(commentId));
-
-  //   await commentsApi.deleteComment(commentId);
-  // };
 
   return (
     <div className="content" data-cy="PostDetails">
