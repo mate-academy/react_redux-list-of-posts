@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({ ...current, [field]: value.trim() }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
