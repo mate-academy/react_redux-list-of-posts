@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
+import { deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 export interface CommentsState {
@@ -23,6 +23,11 @@ const initialState: CommentsState = {
 export const loadComments = createAsyncThunk(
   'comments/fetch',
   (postId: number) => getPostComments(postId),
+);
+
+export const deleteAsyncComment = createAsyncThunk(
+  'comments/delete',
+  (commentId: number) => deleteComment(commentId),
 );
 
 const commentsSlice = createSlice({
@@ -66,5 +71,5 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { setLoading, setVisible, setError, add, remove, clear } =
+export const { setLoading, setVisible, setError, add, remove } =
   commentsSlice.actions;
