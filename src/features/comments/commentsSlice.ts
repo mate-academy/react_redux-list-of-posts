@@ -11,12 +11,14 @@ export interface CommentsState {
   loaded: boolean;
   hasError: boolean;
   comments: Comment[];
+  submitting: boolean;
 }
 
 const initialState: CommentsState = {
   loaded: false,
   hasError: false,
   comments: [],
+  submitting: false,
 };
 
 export const initComments = createAsyncThunk(
@@ -75,8 +77,15 @@ export const commentsSlice = createSlice({
         state.hasError = true;
         state.loaded = true;
       })
+      .addCase(addComment.pending, state => {
+        state.submitting = true;
+      })
       .addCase(addComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
+        state.submitting = false;
+      })
+      .addCase(addComment.rejected, state => {
+        state.submitting = false;
       });
   },
 });
