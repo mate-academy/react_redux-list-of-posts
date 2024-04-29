@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
   getPostComments,
@@ -29,17 +29,38 @@ export const addComment = createAsyncThunk(
   (comment: Omit<Comment, 'id'>) => createComment(comment),
 );
 
+// the ability to return a comment in case of an error when deleting a comment on the server
 export const removeComment = createAsyncThunk(
   'comments/deleteComment',
-  (commentId: number) => deleteComment(commentId),
+  async (commentId: number, thunkAPI) => {
+    const state = thunkAPI.getState() as { comments: CommentsState };
+
+    const oldComments = [...state.comments.comments];
+
+    thunkAPI.dispatch({
+      type: 'comments/setComments',
+      payload: oldComments.filter(comment => comment.id !== commentId),
+    });
+
+    try {
+      await deleteComment(commentId);
+    } catch (e) {
+      thunkAPI.dispatch({
+        type: 'comments/setComments',
+        payload: oldComments,
+      });
+    }
+  },
 );
 
-let oldComments: Comment[] = [];
-
 export const commentsSlice = createSlice({
-  name: 'posts',
+  name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    setComments: (state, action: PayloadAction<Comment[]>) => {
+      state.comments = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(initComments.pending, state => {
@@ -56,25 +77,6 @@ export const commentsSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
-      })
-      // .addCase(removeComment.fulfilled, (state, action) => {
-      //   // state.comments = state.comments.filter(
-      //   //   comment => comment.id !== action.payload,
-      //   // );
-      // })
-      .addCase(removeComment.pending, (state, action) => {
-        oldComments = [...state.comments];
-
-        console.log('remove item', state.comments, action);
-
-        state.comments = state.comments.filter(
-          comment => comment.id !== action.meta.arg,
-        );
-      })
-      .addCase(removeComment.rejected, state => {
-        console.log('oldComments', oldComments);
-
-        state.comments = oldComments;
       });
   },
 });
