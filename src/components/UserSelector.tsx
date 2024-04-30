@@ -56,18 +56,22 @@ export const UserSelector = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => dispatch(authorActions.setAuthor(user))}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === author?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {users.map(user => {
+            const { id, name } = user;
+
+            return (
+              <a
+                key={id}
+                href={`#user-${id}`}
+                onClick={() => dispatch(authorActions.setAuthor(user))}
+                className={classNames('dropdown-item', {
+                  'is-active': id === author?.id,
+                })}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

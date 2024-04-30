@@ -58,11 +58,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (

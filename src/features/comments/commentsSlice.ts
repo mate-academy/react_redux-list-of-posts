@@ -31,7 +31,6 @@ export const addComment = createAsyncThunk(
   (comment: Omit<Comment, 'id'>) => createComment(comment),
 );
 
-// the ability to return a comment in case of an error when deleting a comment on the server
 export const removeComment = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number, thunkAPI) => {

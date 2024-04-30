@@ -11,14 +11,14 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const dispatch = useAppDispatch();
   const { loaded, hasError, comments } = useAppSelector(
     state => state.comments,
   );
 
   useEffect(() => {
-    setVisible(false);
+    setIsVisible(false);
 
     dispatch(commentsActions.initComments(post.id));
   }, [dispatch, post.id]);
@@ -93,18 +93,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {loaded && !hasError && !isVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setVisible(true)}
+            onClick={() => setIsVisible(true)}
           >
             Write a comment
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {loaded && !hasError && isVisible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
