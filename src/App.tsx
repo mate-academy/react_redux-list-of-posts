@@ -8,11 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
-// eslint-disable-next-line max-len
-import * as selectedPostActions from './features/selectedPost/selectedPostSlice';
+import * as selectPostActions from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +21,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(selectedPostActions.setSelectedPost(null));
+    dispatch(selectPostActions.setSelectedPost(null));
 
     if (author) {
       dispatch(postsActions.initPosts(author.id));

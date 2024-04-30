@@ -4,8 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-// eslint-disable-next-line max-len
-import * as selectedPostActions from '../features/selectedPost/selectedPostSlice';
+import * as selectPostActions from '../features/selectedPost/selectedPostSlice';
 
 type Props = {
   posts: Post[];
@@ -18,7 +17,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
   const selectedPostId = selectedPost ? selectedPost.id : 0;
 
   const onPostSelected = (post: Post | null) =>
-    dispatch(selectedPostActions.setSelectedPost(post));
+    dispatch(selectPostActions.setSelectedPost(post));
 
   return (
     <div data-cy="PostsList">
