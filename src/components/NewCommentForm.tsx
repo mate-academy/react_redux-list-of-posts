@@ -48,12 +48,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim().length,
+      email: !email.trim().length,
+      body: !body.trim().length,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim().length || !email.trim().length || !body.trim().length) {
       return;
     }
 
@@ -114,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
