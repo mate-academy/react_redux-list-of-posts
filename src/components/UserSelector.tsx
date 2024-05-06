@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
@@ -9,26 +10,19 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const users = useAppSelector(state => state.users.users);
 
-  useEffect(() => {
+  const [expanded, setExpanded] = React.useState(false);
+
+  React.useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -38,8 +32,6 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (

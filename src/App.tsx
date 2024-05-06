@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -6,41 +6,57 @@ import './App.scss';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+
 import { UserSelector } from './components/UserSelector';
+import { actions as usersActions } from './features/usersSlice';
+import * as usersService from './api/users';
+
+import { actions as authorActions } from './features/authorSlice';
+import { actions as postsActions } from './features/postsSlice';
+import { actions as selectedPostActions } from './features/selectedPostSlice';
+
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
+
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const author = useAppSelector(state => state.author.author);
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const loadUserPosts = React.useCallback(
+    (userId: number) => {
+      dispatch(postsActions.setLoaded(false));
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+      getUserPosts(userId)
+        .then(localPosts => dispatch(postsActions.set(localPosts)))
+        .catch(() => dispatch(postsActions.setError()))
+        .finally(() => dispatch(postsActions.setLoaded(true)));
+    },
+    [dispatch],
+  );
 
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+  React.useEffect(() => {
+    usersService.getUsers().then(users => {
+      dispatch(usersActions.set(users));
+    });
+
+    dispatch(selectedPostActions.set(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(postsActions.set([]));
     }
-  }, [author]);
+  }, [author, dispatch, loadUserPosts]);
+
+  const handleOnPostSelected = (post: Post | null) => {
+    dispatch(selectedPostActions.set(post));
+  };
 
   return (
     <main className="section">
@@ -49,7 +65,10 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(authorActions.set(user))}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -76,7 +95,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={handleOnPostSelected}
                   />
                 )}
               </div>
