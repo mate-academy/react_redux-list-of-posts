@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,27 +8,26 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { Author } from './features/author/authorSlice';
+import * as authorActions from './features/author/authorSlice';
+import * as postsAcitons from './features/posts/postsSlice';
+import { SelectedPost } from './features/selectedPost/selectedPostSlice';
+// eslint-disable-next-line max-len
+import * as selectedPostActions from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const setSelectedPost = useCallback(
+    (newSelectedPost: SelectedPost) => {
+      dispatch(selectedPostActions.set(newSelectedPost));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -36,11 +35,13 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(postsAcitons.setUserPosts(author.id));
     }
-  }, [author]);
+  }, [author, dispatch, setSelectedPost]);
+
+  const setAuthor = (newAuthor: Author) => {
+    dispatch(authorActions.set(newAuthor));
+  };
 
   return (
     <main className="section">
@@ -96,7 +97,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && (
+                <PostDetails key={selectedPost.id} post={selectedPost} />
+              )}
             </div>
           </div>
         </div>
