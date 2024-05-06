@@ -1,23 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import * as usersSelector from '../features/users/usersSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setAuthor } from '../features/author/authorSlice';
+import { loadPosts } from '../features/posts/postsSlice';
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+export const UserSelector: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users);
+  const author = useAppSelector(state => state.author);
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  useEffect(() => {
+    dispatch(usersSelector.init());
+  }, [dispatch]);
+
+  // #region expanded
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -25,10 +23,7 @@ export const UserSelector: React.FC<Props> = ({
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -38,9 +33,8 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
+  // #endregion
 
   return (
     <div
@@ -58,7 +52,7 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -73,10 +67,12 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setAuthor(user));
+                dispatch(loadPosts(user.id));
+                dispatch(setSelectedPost(null));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}
