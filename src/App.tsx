@@ -11,6 +11,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { Status } from './types/Status';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
@@ -38,9 +39,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && status === 'loading' && <Loader />}
+                {author && status === Status.loading && <Loader />}
 
-                {author && status === 'failed' && (
+                {author && status === Status.failed && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -49,13 +50,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && status === 'idle' && posts.length === 0 && (
+                {author && status === Status.idle && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && status === 'idle' && posts.length > 0 && (
+                {author && status === Status.idle && posts.length > 0 && (
                   <PostsList posts={posts} />
                 )}
               </div>

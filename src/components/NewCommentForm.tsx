@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppSelector } from '../app/hooks';
+import { Status } from '../types/Status';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -49,12 +50,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim().length,
+      email: !email.trim().length,
+      body: !body.trim().length,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim().length || !email.trim().length || !body.trim().length) {
       return;
     }
 
@@ -166,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': status.addComment === 'loading',
+              'is-loading': status.addComment === Status.loading,
             })}
           >
             Add

@@ -2,8 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment, CommentData } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
-
-type Status = 'idle' | 'loading' | 'failed';
+import { Status } from '../types/Status';
 
 interface CommentsState {
   comments: Comment[];
@@ -17,9 +16,9 @@ interface CommentsState {
 const initialState: CommentsState = {
   comments: [],
   status: {
-    fetchComments: 'idle',
-    addComment: 'idle',
-    removeComment: 'idle',
+    fetchComments: Status.idle,
+    addComment: Status.idle,
+    removeComment: Status.idle,
   },
 };
 
@@ -65,36 +64,36 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        state.status.fetchComments = 'loading';
+        state.status.fetchComments = Status.loading;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.comments = action.payload;
-        state.status.fetchComments = 'idle';
+        state.status.fetchComments = Status.idle;
       })
       .addCase(fetchComments.rejected, state => {
-        state.status.fetchComments = 'failed';
+        state.status.fetchComments = Status.failed;
       })
       .addCase(addComment.pending, state => {
-        state.status.addComment = 'loading';
+        state.status.addComment = Status.loading;
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
-        state.status.addComment = 'idle';
+        state.status.addComment = Status.idle;
       })
       .addCase(addComment.rejected, state => {
-        state.status.addComment = 'failed';
+        state.status.addComment = Status.failed;
       })
       .addCase(removeComment.pending, state => {
-        state.status.removeComment = 'loading';
+        state.status.removeComment = Status.loading;
       })
       .addCase(removeComment.fulfilled, (state, action) => {
         state.comments = state.comments.filter(
           comment => comment.id !== action.payload,
         );
-        state.status.removeComment = 'idle';
+        state.status.removeComment = Status.idle;
       })
       .addCase(removeComment.rejected, state => {
-        state.status.removeComment = 'failed';
+        state.status.removeComment = Status.failed;
       });
   },
 });

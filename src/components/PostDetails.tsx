@@ -10,6 +10,7 @@ import {
   removeComment,
 } from '../features/commentsSlice';
 import { CommentData } from '../types/Comment';
+import { Status } from '../types/Status';
 
 type Props = {
   post: Post;
@@ -43,21 +44,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {status.fetchComments === 'loading' && <Loader />}
+        {status.fetchComments === Status.loading && <Loader />}
 
-        {status.fetchComments === 'failed' && (
+        {status.fetchComments === Status.failed && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {status.fetchComments === 'idle' && comments.length === 0 && (
+        {status.fetchComments === Status.idle && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {status.fetchComments === 'idle' && comments.length > 0 && (
+        {status.fetchComments === Status.idle && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -91,7 +92,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {status.fetchComments === 'idle' && !visible && (
+        {status.fetchComments === Status.idle && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -102,7 +103,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {status.fetchComments === 'idle' && visible && (
+        {status.fetchComments === Status.idle && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>

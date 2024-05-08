@@ -2,15 +2,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
+import { Status } from '../types/Status';
 
 type PostsState = {
   posts: Post[];
-  status: 'idle' | 'loading' | 'failed';
+  status: Status;
 };
 
 const initialState: PostsState = {
   posts: [],
-  status: 'idle',
+  status: Status.idle,
 };
 
 export const fetchPosts = createAsyncThunk(
@@ -29,14 +30,14 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        state.status = 'loading';
+        state.status = Status.loading;
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.posts = action.payload;
-        state.status = 'idle';
+        state.status = Status.idle;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.status = 'failed';
+        state.status = Status.failed;
       });
   },
 });
