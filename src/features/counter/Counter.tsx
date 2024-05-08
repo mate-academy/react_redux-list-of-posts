@@ -22,61 +22,63 @@ export function Counter() {
   };
 
   return (
-    <div>
-      <div className={styles.row}>
-        <button
-          type="button"
-          className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
-        >
-          -
-        </button>
+    <>
+      <div>
+        <div className={styles.row}>
+          <button
+            type="button"
+            className={styles.button}
+            aria-label="Decrement value"
+            onClick={() => dispatch(decrement())}
+          >
+            -
+          </button>
 
-        <span className={styles.value}>{count}</span>
+          <span className={styles.value}>{count}</span>
 
-        <button
-          type="button"
-          className={styles.button}
-          aria-label="Increment value"
-          onClick={() => dispatch(increment())}
-        >
-          +
-        </button>
+          <button
+            type="button"
+            className={styles.button}
+            aria-label="Increment value"
+            onClick={() => dispatch(increment())}
+          >
+            +
+          </button>
+        </div>
+
+        <div className={styles.row}>
+          <input
+            className={styles.textbox}
+            aria-label="Set increment amount"
+            value={incrementAmount}
+            onChange={handleAmountChange}
+          />
+
+          <button
+            type="button"
+            className={styles.button}
+            onClick={() => dispatch(incrementByAmount(incrementAmount))}
+          >
+            Add Amount
+          </button>
+
+          <button
+            type="button"
+            className={styles.asyncButton}
+            onClick={() => dispatch(incrementAsync(incrementAmount))}
+          >
+            Add Async
+          </button>
+
+          <button
+            type="button"
+            className={styles.button}
+            onClick={() => dispatch(incrementIfOdd(incrementAmount))}
+          >
+            Add If Odd
+          </button>
+        </div>
       </div>
-
-      <div className={styles.row}>
-        <input
-          className={styles.textbox}
-          aria-label="Set increment amount"
-          value={incrementAmount}
-          onChange={handleAmountChange}
-        />
-
-        <button
-          type="button"
-          className={styles.button}
-          onClick={() => dispatch(incrementByAmount(incrementAmount))}
-        >
-          Add Amount
-        </button>
-
-        <button
-          type="button"
-          className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementAmount))}
-        >
-          Add Async
-        </button>
-
-        <button
-          type="button"
-          className={styles.button}
-          onClick={() => dispatch(incrementIfOdd(incrementAmount))}
-        >
-          Add If Odd
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
