@@ -83,13 +83,14 @@ const commentsSlice = createSlice({
       .addCase(addComment.rejected, state => {
         state.status.addComment = Status.failed;
       })
-      .addCase(removeComment.pending, state => {
+      .addCase(removeComment.pending, (state, action) => {
         state.status.removeComment = Status.loading;
-      })
-      .addCase(removeComment.fulfilled, (state, action) => {
+
         state.comments = state.comments.filter(
-          comment => comment.id !== action.payload,
+          comment => comment.id !== action.meta.arg,
         );
+      })
+      .addCase(removeComment.fulfilled, state => {
         state.status.removeComment = Status.idle;
       })
       .addCase(removeComment.rejected, state => {
