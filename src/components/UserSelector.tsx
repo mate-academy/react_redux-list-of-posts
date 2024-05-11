@@ -4,9 +4,6 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions as actionsUsers } from '../features/users/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
   const { users, author } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
@@ -16,10 +13,7 @@ export const UserSelector: React.FC = () => {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -29,8 +23,6 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (

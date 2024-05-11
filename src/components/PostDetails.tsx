@@ -8,6 +8,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.posts);
+  const {
+    id: idSelected,
+    title: titleSelected,
+    body: bodySelected,
+  } = selectedPost || { id: 0, title: '', body: '' };
   const { comments, loader, hasError } = useAppSelector(
     state => state.comments,
   );
@@ -17,8 +22,8 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     setVisible(false);
-    dispatch(actionComments.init(selectedPost?.id || 0));
-  }, [dispatch, selectedPost?.id]);
+    dispatch(actionComments.init(idSelected));
+  }, [dispatch, idSelected]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     await dispatch(
@@ -26,7 +31,7 @@ export const PostDetails: React.FC = () => {
         name,
         email,
         body,
-        postId: selectedPost?.id || 0,
+        postId: idSelected,
       }),
     );
 
@@ -34,9 +39,6 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
     dispatch(actionComments.setTempComment(commentId));
     dispatch(actionComments.deleteCommentThuck(commentId));
   };
@@ -44,9 +46,9 @@ export const PostDetails: React.FC = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${idSelected}: ${titleSelected}`}</h2>
 
-        <p data-cy="PostBody">{selectedPost?.body}</p>
+        <p data-cy="PostBody">{bodySelected}</p>
       </div>
 
       <div className="block">

@@ -1,22 +1,9 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-import classNames from 'classnames';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as actionsPosts from '../features/posts/postsSlice';
-import { Post } from '../types/Post';
+import { useAppSelector } from '../app/hooks';
+import { PostItem } from './PostItem';
 
 export const PostsList: React.FC = () => {
-  const { posts, selectedPost } = useAppSelector(state => state.posts);
-  const dispatch = useAppDispatch();
-
-  const handleClickPost = (post: Post) => {
-    if (post.id !== selectedPost?.id) {
-      dispatch(actionsPosts.setPost(post));
-    } else {
-      dispatch(actionsPosts.deletePost());
-    }
-  };
+  const { posts } = useAppSelector(state => state.posts);
 
   return (
     <div data-cy="PostsList">
@@ -33,22 +20,7 @@ export const PostsList: React.FC = () => {
 
         <tbody>
           {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => handleClickPost(post)}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+            <PostItem post={post} key={post.id} />
           ))}
         </tbody>
       </table>

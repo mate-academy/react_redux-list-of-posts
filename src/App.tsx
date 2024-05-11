@@ -25,8 +25,6 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(actionsPosts.deletePost());
 
     if (author) {
@@ -36,6 +34,11 @@ export const App: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [author]);
+
+  const loaderPostList = !!author && !loader;
+  const errorPostList = !!author && loader && hasError;
+  const noPostYetList = !!author && loader && !hasError && posts.length === 0;
+  const usePostList = !!author && loader && !hasError && posts.length > 0;
 
   return (
     <main className="section">
@@ -50,9 +53,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loader && <Loader />}
+                {loaderPostList && <Loader />}
 
-                {author && loader && hasError && (
+                {errorPostList && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -61,15 +64,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loader && !hasError && posts.length === 0 && (
+                {noPostYetList && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loader && !hasError && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {usePostList && <PostsList />}
               </div>
             </div>
           </div>
