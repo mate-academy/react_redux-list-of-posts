@@ -57,6 +57,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
+    if (name.trim() === '' || email.trim() === '' || body.trim() === '') {
+      setErrors({
+        name: name.trim() === '',
+        email: email.trim() === '',
+        body: body.trim() === '',
+      });
+
+      return;
+    }
+
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
@@ -114,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
