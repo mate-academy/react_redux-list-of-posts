@@ -14,9 +14,6 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  // const [comments, setComments] = useState<Comment[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -25,8 +22,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const hasError = useAppSelector(state => state.comments.hasError);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
     setVisible(false);
 
     commentsApi

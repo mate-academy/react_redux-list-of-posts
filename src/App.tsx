@@ -34,8 +34,6 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(setSelectedPost(null));
 
     if (author) {
@@ -47,7 +45,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     getUsers().then(users => dispatch(setUsers(users)));
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className="section">
