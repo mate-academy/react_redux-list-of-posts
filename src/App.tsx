@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,38 +9,45 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+
+import { getUsers } from './api/users';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setUsers } from './features/usersSlice';
+import { setItems, setLoaded, setError } from './features/postsSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const author = useAppSelector(state => state.author);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .then(data => dispatch(setItems(data)))
+      .catch(() => dispatch(setError(true)))
+      .finally(() => dispatch(setLoaded(true)));
   }
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setItems([]));
     }
   }, [author]);
+
+  useEffect(() => {
+    getUsers().then(users => dispatch(setUsers(users)));
+  }, []);
 
   return (
     <main className="section">
@@ -49,7 +56,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -73,11 +80,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
