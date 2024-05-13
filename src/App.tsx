@@ -25,7 +25,7 @@ export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(setLoaded(false));
 
     getUserPosts(userId)
       .then(data => dispatch(setItems(data)))
