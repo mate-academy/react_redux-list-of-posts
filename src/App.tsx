@@ -13,7 +13,7 @@ import { fetchPosts, selectPostState } from './features/postsSlice';
 import { fetchUsers } from './features/usersSlice';
 import { selectAuthor } from './features/authorSlice';
 import { selectPost } from './features/selectedPostSlice';
-import React = require('react');
+import React from 'react';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();

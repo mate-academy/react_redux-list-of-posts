@@ -11,7 +11,7 @@ import { selectPost } from '../features/selectedPostSlice';
 import { CommentData } from '../types/Comment';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import React = require('react');
+import React from 'react';
 
 type Props = {
   post: Post;
