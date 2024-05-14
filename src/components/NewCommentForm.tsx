@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import React = require('react');
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -35,6 +36,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const isValid = !name.trim() || !email.trim() || !body.trim();
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -53,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (isValid) {
       return;
     }
 
