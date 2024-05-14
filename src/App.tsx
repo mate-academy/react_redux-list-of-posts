@@ -16,7 +16,7 @@ import {
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.users.author);
-  const { items, selectedPost, loaded, hasError } = useAppSelector(
+  const { posts, selectedPost, loading, hasError } = useAppSelector(
     state => state.posts,
   );
   const dispatch = useAppDispatch();
@@ -27,7 +27,13 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(fetchPosts(author.id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [author]);
+
+  const load = author && !loading && !hasError;
+  const error = author && hasError;
+  const noPosts = author && loading && !hasError && !posts.length;
+  const showPostsList = author && loading && !hasError && !!posts.length;
 
   return (
     <main className="section">
@@ -42,9 +48,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && !hasError && <Loader />}
+                {load && <Loader />}
 
-                {author && hasError && (
+                {error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -53,14 +59,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length === 0 && (
+                {noPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length > 0 && (
-                  <PostsList posts={items} selectedPostId={selectedPost?.id} />
+                {showPostsList && (
+                  <PostsList posts={posts} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>

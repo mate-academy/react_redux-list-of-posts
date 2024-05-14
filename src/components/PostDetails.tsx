@@ -19,7 +19,6 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [error, setError] = useState(false);
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -32,6 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       dispatch(removeAllComments());
       dispatch(fetchComments(post.id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.id, post.userId]);
 
   const addCommentHadler = async ({ name, email, body }: CommentData) => {
@@ -47,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         dispatch(addComment(newComment));
       }
     } catch (e) {
-      setError(true);
+      throw new Error(JSON.stringify(e));
     }
   };
 
@@ -56,6 +56,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     await commentsApi.deleteComment(commentId);
   };
+
+  const loading = !loaded && !hasError;
+  const error = !loaded && hasError;
+  const noComments = loaded && !hasError && !comments.length;
+  const showComments = loaded && !hasError && !!comments.length;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -66,21 +71,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && !hasError && <Loader />}
+        {loading && <Loader />}
 
-        {(error || (!loaded && hasError)) && (
+        {error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {noComments && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {showComments && (
           <>
             <p className="title is-4">Comments:</p>
 

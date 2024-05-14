@@ -17,6 +17,7 @@ export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
 
   useEffect(() => {
     dispatch(fetchAllUsers());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
 
   const handleSelect = (user: User) => {
     dispatch(removeUser());
+
     if (user) {
       dispatch(selectUser(user));
     }
@@ -69,7 +71,7 @@ export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {loading === 'pending' && <Loader />}
+          {loading && <Loader />}
           {!!users.length &&
             users.map(user => (
               <a
