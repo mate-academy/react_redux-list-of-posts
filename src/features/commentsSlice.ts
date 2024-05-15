@@ -97,7 +97,7 @@ export const commentsSlice = createSlice({
         currentState.isCreateCommentLoading = false;
         currentState.error = true;
       });
-    }
+  },
 });
 
 export const selectCommentState = (state: RootState) => state.comments;
