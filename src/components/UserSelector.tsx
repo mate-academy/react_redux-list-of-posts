@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { setAuthor, selectAuthor } from '../features/authorSlice';
 import { selectUserState } from '../features/usersSlice';
 import { User } from '../types/User';
-import React from 'react';
 
 export const UserSelector = () => {
   const [expanded, setExpanded] = useState(false);

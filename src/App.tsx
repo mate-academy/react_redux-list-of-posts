@@ -8,15 +8,16 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch, useAppSelector } from './app/hooks';
+import { useAppSelector } from './app/hooks';
 import { fetchPosts, selectPostState } from './features/postsSlice';
 import { fetchUsers } from './features/usersSlice';
 import { selectAuthor } from './features/authorSlice';
 import { selectPost } from './features/selectedPostSlice';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 export const App: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<any>();
   const {
     loading: loaded,
     error: hasError,
@@ -35,6 +36,14 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
+  const openedSideBar = () => {
+    if (!post || !author || post.userId !== author.id) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -48,12 +57,12 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {!author && loaded && <Loader />}
+                {loaded && <Loader />}
 
-                {!author && !loaded && hasError && (
+                {hasError && (
                   <div
-                    className="notification is-danger"
                     data-cy="PostsLoadingError"
+                    className="notification is-danger"
                   >
                     Something went wrong!
                   </div>
@@ -80,7 +89,7 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': post,
+                'Sidebar--open': openedSideBar(),
               },
             )}
           >

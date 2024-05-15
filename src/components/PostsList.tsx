@@ -6,7 +6,6 @@ import { useAppSelector } from '../app/hooks';
 import { selectPostState } from '../features/postsSlice';
 import { selectPost, setSelectedPost } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
-import React from 'react';
 
 export const PostsList = () => {
   const dispatch = useDispatch();

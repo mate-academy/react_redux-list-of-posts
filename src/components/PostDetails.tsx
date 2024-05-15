@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../app/hooks';
 import {
   create,
   deleteCommentById,
@@ -12,6 +12,7 @@ import { CommentData } from '../types/Comment';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   post: Post;
@@ -27,7 +28,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loading: loaded,
   } = useAppSelector(selectCommentState);
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<any>();
 
   useEffect(() => {
     setVisible(false);
@@ -39,6 +40,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = {
+        id: Math.random(),
         name,
         email,
         body,

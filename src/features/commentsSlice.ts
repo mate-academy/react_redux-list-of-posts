@@ -69,14 +69,21 @@ export const commentsSlice = createSlice({
         currentState.loading = false;
         currentState.error = true;
       })
+      .addCase(create.pending, state => {
+        const currentState = state;
+
+        currentState.loading = true;
+      })
       .addCase(create.fulfilled, (state, action) => {
         const currentState = state;
 
+        currentState.loading = false;
         currentState.comments.push(action.payload);
       })
       .addCase(create.rejected, state => {
         const currentState = state;
 
+        currentState.loading = false;
         currentState.error = true;
       });
   },
