@@ -60,7 +60,7 @@ export const commentsSlice = createSlice({
         const currentState = state;
 
         currentState.comments = state.comments.filter(
-          item => item.id !== action.payload,
+          item => item.id !== action.meta.arg,
         );
       })
       .addCase(fetchPostCommnets.pending, state => {
