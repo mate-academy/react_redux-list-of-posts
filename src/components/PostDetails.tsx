@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { useAppSelector } from '../app/hooks';
 import {
   create,
-  deleteCommentById,
+  deletePostCommnets,
   fetchPostCommnets,
   selectCommentState,
 } from '../features/commentsSlice';
@@ -40,7 +40,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = {
-        id: Math.random(),
         name,
         email,
         body,
@@ -52,7 +51,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(deleteCommentById(commentId));
+    dispatch(deletePostCommnets(commentId));
   };
 
   return (

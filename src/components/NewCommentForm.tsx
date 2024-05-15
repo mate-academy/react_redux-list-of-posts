@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 import { useState } from 'react';
+import { useAppSelector } from '../app/hooks';
+import { selectCommentState } from '../features/commentsSlice';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -7,9 +9,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  // const { loading: loaded } = useAppSelector(selectCommentState);
-
-  const [loading, setIsLoading] = useState(false);
+  const { isCreateCommentLoading: loaded } = useAppSelector(selectCommentState);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -61,10 +61,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setIsLoading(true);
     await onSubmit({ name, email, body });
 
-    setIsLoading(false);
     setValues(current => ({ ...current, body: '' }));
   };
 
@@ -172,7 +170,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': loading,
+              'is-loading': loaded,
             })}
           >
             Add
