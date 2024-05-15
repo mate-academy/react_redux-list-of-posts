@@ -9,7 +9,7 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   // const { loading: loaded } = useAppSelector(selectCommentState);
 
-  const [loading, setIsLoading] = useState(false)
+  const [loading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -61,10 +61,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     await onSubmit({ name, email, body });
 
-    setIsLoading(false)
+    setIsLoading(false);
     setValues(current => ({ ...current, body: '' }));
   };
 
