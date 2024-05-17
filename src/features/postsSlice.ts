@@ -30,7 +30,7 @@ const PostsSlice = createSlice({
 
   extraReducers: builder => {
     builder.addCase(loadPosts.pending, state => {
-      state.loading = false;
+      state.loading = true;
     });
 
     builder.addCase(loadPosts.fulfilled, (state, action) => {
