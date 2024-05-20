@@ -64,7 +64,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues(current => ({ ...current, name: '', email: '', body: '' }));
     // We keep the entered name and email
   };
 
@@ -114,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
