@@ -5,6 +5,7 @@ import usersReducer from '../features/users/users';
 import authorReducer from '../features/users/author';
 import postsReducer from '../features/posts/posts';
 import selectedPostReducer from '../features/posts/selectedPost';
+import commentsReducer from '../features/comments/comments';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     author: authorReducer,
     posts: postsReducer,
     selectedPost: selectedPostReducer,
+    comments: commentsReducer,
   },
 });
 
