@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,39 +9,28 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as usersActions from './features/users/users';
+import * as postsActions from './features/posts/posts';
+import * as selectedPostActions from './features/posts/selectedPost';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { loading, error, posts } = useAppSelector(state => state.posts);
 
   const author = useAppSelector(state => state.author);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      .finally(() => setLoaded(true));
-  }
-
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(selectedPostActions.set(null));
 
     dispatch(usersActions.init());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(postsActions.loadPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(postsActions.set([]));
     }
   }, [author, dispatch]);
 
@@ -62,9 +51,9 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isAuthorSelected && !loaded && <Loader />}
+                {isAuthorSelected && loading && <Loader />}
 
-                {isAuthorSelected && loaded && hasError && (
+                {isAuthorSelected && loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -74,8 +63,8 @@ export const App: React.FC = () => {
                 )}
 
                 {isAuthorSelected &&
-                  loaded &&
-                  !hasError &&
+                  !loading &&
+                  !error &&
                   posts.length === 0 && (
                     <div
                       className="notification is-warning"
@@ -85,16 +74,9 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                {isAuthorSelected &&
-                  loaded &&
-                  !hasError &&
-                  posts.length > 0 && (
-                    <PostsList
-                      posts={posts}
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
-                    />
-                  )}
+                {isAuthorSelected && !loading && !error && posts.length > 0 && (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>

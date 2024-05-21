@@ -2,19 +2,25 @@
 
 import classNames from 'classnames';
 import React from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as selectedPostActions from '../features/posts/selectedPost';
 import { Post } from '../types/Post';
 
-type Props = {
-  posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
+export const PostsList: React.FC = () => {
+  const postsState = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+  const handleButtonClick = (post: Post) => {
+    if (!selectedPost) {
+      dispatch(selectedPostActions.set(post));
+    }
+
+    if (selectedPost) {
+      dispatch(selectedPostActions.set(null));
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -29,7 +35,7 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {postsState.posts.map(post => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
@@ -38,13 +44,11 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
-                  }}
+                  onClick={() => handleButtonClick(post)}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

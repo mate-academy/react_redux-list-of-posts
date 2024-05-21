@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 import * as authorActions from '../features/users/author';
+import * as postsActions from '../features/posts/posts';
 
 export const UserSelector: React.FC = () => {
   const usersState = useAppSelector(state => state.users);
@@ -16,6 +17,7 @@ export const UserSelector: React.FC = () => {
 
     if (selectedUser?.id !== user.id) {
       dispatch(authorActions.add(user));
+      dispatch(postsActions.loadPosts(user.id));
     }
   };
 
