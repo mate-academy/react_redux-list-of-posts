@@ -22,7 +22,7 @@ export const fetchPostComments = async (postId: number) => {
 };
 
 export const getPostCommentsAsync = createAsyncThunk(
-  'users/fetchPostComments',
+  'comments/fetchPostComments',
   async (postId: number) => {
     const value = await fetchPostComments(postId);
 

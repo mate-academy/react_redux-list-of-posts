@@ -24,7 +24,7 @@ export const fetchUsersPosts = async (userId: number) => {
 };
 
 export const getPostsAsync = createAsyncThunk(
-  'users/fetchUsersPosts',
+  'posts/fetchUsersPosts',
   async (userId: number) => {
     const value = await fetchUsersPosts(userId);
 
