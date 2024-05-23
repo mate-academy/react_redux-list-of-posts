@@ -18,6 +18,9 @@ export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
+  const visiblePostList = author && !loading && !error && !!posts.length;
+  const noPostsMessage = author && !loading && !error && !posts.length;
+
   useEffect(() => {
     dispatch(actions.set(null));
 
@@ -50,15 +53,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {noPostsMessage && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {visiblePostList && <PostsList />}
               </div>
             </div>
           </div>

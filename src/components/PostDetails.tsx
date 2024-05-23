@@ -11,6 +11,11 @@ export const PostDetails = () => {
   const { comments, error, loading } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
+  const noCommentsMessage = !loading && !error && !comments.length;
+  const visibleComments = !loading && !error && !!comments.length;
+  const visibleCommentForm = !loading && !error && visible;
+  const hiddenCommentForm = !loading && !error && !visible;
+
   function loadComments() {
     setVisible(false);
     if (selectedPost) {
@@ -43,13 +48,13 @@ export const PostDetails = () => {
           </div>
         )}
 
-        {!loading && !error && comments.length === 0 && (
+        {noCommentsMessage && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !error && comments.length > 0 && (
+        {visibleComments && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -83,7 +88,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {!loading && !error && !visible && (
+        {hiddenCommentForm && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -94,7 +99,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loading && !error && visible && <NewCommentForm />}
+        {visibleCommentForm && <NewCommentForm />}
       </div>
     </div>
   );
