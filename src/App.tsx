@@ -27,7 +27,7 @@ export const App: React.FC = () => {
 
     dispatch(usersActions.init());
 
-    if (author) {
+    if (author.id !== 0) {
       dispatch(postsActions.loadPosts(author.id));
     } else {
       dispatch(postsActions.set([]));
