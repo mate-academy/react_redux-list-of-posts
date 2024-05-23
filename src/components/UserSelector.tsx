@@ -39,7 +39,7 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     dispatch(usersActions.init());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div
