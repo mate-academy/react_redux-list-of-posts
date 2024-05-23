@@ -10,7 +10,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import * as usersActions from './features/users/users';
 import * as postsActions from './features/posts/posts';
 import * as selectedPostActions from './features/posts/selectedPost';
 
@@ -24,8 +23,6 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(selectedPostActions.set(null));
-
-    dispatch(usersActions.init());
 
     if (author.id !== 0) {
       dispatch(postsActions.loadPosts(author.id));
