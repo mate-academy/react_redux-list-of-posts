@@ -10,6 +10,7 @@ import {
   addComment,
   removeComment,
 } from '../features/commentsSlice';
+import { Status } from '../types/Status';
 
 type Props = {
   post: Post;
@@ -48,32 +49,28 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {status === 'loading' && <Loader />}
+        {status === Status.loading && <Loader />}
 
-        {status === 'failed' && (
+        {status === Status.failed && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {status === 'idle' && comments.length === 0 && (
+        {status === Status.idle && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {status === 'idle' && comments.length > 0 && (
+        {status === Status.idle && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
+            {comments.map(({ id, email, name, body }) => (
+              <article className="message is-small" key={id} data-cy="Comment">
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
                   </a>
 
                   <button
@@ -81,21 +78,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(id)}
                   >
                     delete button
                   </button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
+                  {body}
                 </div>
               </article>
             ))}
           </>
         )}
 
-        {status === 'idle' && !visible && (
+        {status === Status.idle && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
