@@ -34,11 +34,11 @@ export const addCommentAsync = createAsyncThunk(
 );
 
 export const deleteCommentAsync = createAsyncThunk(
-  'comments/deeleteComment',
+  'comments/deleteComment',
   async (commentId: number) => {
-    const value = await deleteComment(commentId);
+    await deleteComment(commentId);
 
-    return value;
+    return commentId;
   },
 );
 
@@ -71,7 +71,9 @@ const commentsSlice = createSlice({
 
     builder
       .addCase(deleteCommentAsync.fulfilled, (state, action) => {
-        state.items.filter(item => item.id !== action.payload);
+        // console.log(action.payload);
+
+        state.items = state.items.filter(item => item.id !== action.payload);
       })
       .addCase(deleteCommentAsync.rejected, state => {
         state.hasError = true;
