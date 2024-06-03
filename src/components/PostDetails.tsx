@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(commentsInit(post.id));
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
