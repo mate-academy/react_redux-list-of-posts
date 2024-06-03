@@ -32,7 +32,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clear());
     }
-  }, [author, loadUserPosts, dispatch]);
+  }, [author]);
 
   return (
     <main className="section">

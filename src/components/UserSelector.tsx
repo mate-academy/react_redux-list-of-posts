@@ -11,7 +11,7 @@ export const UserSelector: React.FC= () => {
 
   useEffect(() => {
     dispatch(usersInit());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (!expanded) {
