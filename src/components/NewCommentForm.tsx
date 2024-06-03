@@ -73,10 +73,14 @@ export const NewCommentForm: React.FC = () => {
 
     try {
       await addComment(newComment).unwrap();
-      clearForm();
+      setValues({
+        name,
+        email,
+        body: '',
+      });
       refetch();
-    } catch {
-      // handle error appropriately
+    } catch (err: any) {
+      throw new Error(err);
     } finally {
       setSubmitting(false);
     }

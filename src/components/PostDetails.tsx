@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import {
@@ -25,6 +25,10 @@ export const PostDetails: React.FC = () => {
     await deleteComment(commentId);
     refetch();
   };
+
+  useEffect(() => {
+    setVisible(false);
+  }, [selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
