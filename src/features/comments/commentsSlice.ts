@@ -2,13 +2,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { Comment } from '../../types/Comment';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteComment} from '../../api/comments';
 
 export const init = createAsyncThunk('comments/fetch', (postId: number) => {
   return getPostComments(postId);
 });
 
-export const deleteComment = createAsyncThunk('comments/delete',
+export const deleteComments = createAsyncThunk('comments/delete',
   async (commentId: number) => {
     await deleteComment(commentId);
 
@@ -59,7 +59,7 @@ export const commentsSlice = createSlice({
       state.loaded = false;
       state.hasError = true;
     });
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
+    builder.addCase(deleteComments.fulfilled, (state, action) => {
       state.comments =
         state.comments.filter(comment => comment.id !== action.payload);
     });

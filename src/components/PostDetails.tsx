@@ -8,7 +8,7 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  init as commentsInit, deleteComment,
+  init as commentsInit, deleteComments,
   setError, setNewComment, setVisibleNewForm
 } from '../features/comments/commentsSlice';
 
@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    await dispatch(deleteComment(commentId));
+    await dispatch(deleteComments(commentId));
   };
 
   const handleOpenNewCommentForm = (
