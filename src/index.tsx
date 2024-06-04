@@ -17,6 +17,9 @@ const Root = () => (
         <App />
       </Router>
     </UsersProvider>
+    <Router>
+      <App />
+    </Router>
   </Provider>
 );
 
