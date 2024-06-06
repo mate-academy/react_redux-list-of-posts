@@ -2,19 +2,19 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
-interface UsersState {
+export interface UsersState {
   users: User[];
-  loading: boolean;
+  loaded: boolean;
   error: boolean;
 }
 
 const initialState: UsersState = {
   users: [],
-  loading: false,
+  loaded: false,
   error: false,
 };
 
-export const init = createAsyncThunk('users/fetch', async () => {
+export const fetchUsers = createAsyncThunk('users/fetch', async () => {
   const response = await getUsers();
 
   return response;
@@ -26,21 +26,21 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(init.pending, state => {
+      .addCase(fetchUsers.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = true;
+        state.loaded = true;
       })
-      .addCase(init.fulfilled, (state, action) => {
+      .addCase(fetchUsers.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
         state.users = action.payload;
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = false;
       })
-      .addCase(init.rejected, state => {
+      .addCase(fetchUsers.rejected, state => {
         // eslint-disable-next-line no-param-reassign
         state.error = true;
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = false;
       });
   },
 });
