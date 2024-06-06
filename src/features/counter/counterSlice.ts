@@ -14,11 +14,11 @@ const initialState: CounterState = {
   status: 'idle',
 };
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
+// Функція нижче називається thunk і дозволяє виконувати асинхронну логіку. Її
+// можна викликати як звичайну дію: `dispatch(incrementAsync(10))`. Це
+// викличе thunk з функцією `dispatch` як першим аргументом. Async
+// код може бути виконано, а також можуть бути відправлені інші дії. Thunk
+// зазвичай використовуються для виконання асинхронних запитів.
 export const incrementAsync = createAsyncThunk(
   'counter/fetchCount',
   async (amount: number) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -7,11 +7,11 @@ import * as commentsApi from '../api/comments';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 
-type Props = {
+type TProps = {
   post: Post;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: FC<TProps> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
