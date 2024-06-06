@@ -14,13 +14,17 @@ export const client = {
     return response.data;
   },
 
+  async post<T>(url: string, data: unknown) {
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async post<T>(url: string, data: any) {
+
     const response = await instance.post<T>(url, data);
 
     return response.data;
   },
 
+  async patch<T>(url: string, data: unknown) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async patch<T>(url: string, data: any) {
     const response = await instance.patch<T>(url, data);
