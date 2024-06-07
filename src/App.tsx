@@ -16,7 +16,7 @@ import { setSelectedPost } from './features/selectedPostSlice/selectedPostSlice'
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
-  const { posts, loaded, error } = useAppSelector(state => state.posts);
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const loadUserPosts = useCallback(
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
 
                 {author && !loaded && <Loader />}
 
-                {author && loaded && error && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -60,13 +60,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length === 0 && (
+                {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost?.id && <PostDetails post={selectedPost} />}
+              {selectedPost?.id && <PostDetails />}
             </div>
           </div>
         </div>

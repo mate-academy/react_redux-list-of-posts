@@ -14,7 +14,6 @@ const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     setSelectedPost: (state, action) => {
-      // eslint-disable-next-line no-param-reassign
       state.selectedPost = action.payload;
     },
   },

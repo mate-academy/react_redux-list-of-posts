@@ -14,7 +14,6 @@ const authorSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      // eslint-disable-next-line no-param-reassign
       state.author = action.payload;
     },
   },

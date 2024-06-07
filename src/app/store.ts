@@ -6,6 +6,7 @@ import authorReduser from '../features/authorSlice/authorSlice';
 import postsReduser from '../features/postsSlice/postsSlice';
 // eslint-disable-next-line max-len
 import selectedPostReduser from '../features/selectedPostSlice/selectedPostSlice';
+import commentsResurer from '../features/commentsSlice/commentsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     author: authorReduser,
     posts: postsReduser,
     selectedPost: selectedPostReduser,
+    comments: commentsResurer,
   },
 });
 
