@@ -2,19 +2,22 @@
 import { FC } from 'react';
 import cn from 'classnames';
 
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setPost } from '../features/post/postSlice';
 import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
 
-type TProps = {
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
+export const PostsList: FC = () => {
+  const { posts, selectedPost } = useAppSelector(state => state.posts);
 
-export const PostsList: FC<TProps> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
-  const { posts } = useAppSelector(state => state.posts);
+  const dispatch = useAppDispatch();
+
+  const handleSelectPost = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      dispatch(setPost(null));
+    } else {
+      dispatch(setPost(post));
+    }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -39,13 +42,11 @@ export const PostsList: FC<TProps> = ({
                   type="button"
                   data-cy="PostButton"
                   className={cn('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
-                  }}
+                  onClick={() => handleSelectPost(post)}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

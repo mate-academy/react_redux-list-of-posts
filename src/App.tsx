@@ -1,44 +1,38 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 import cn from 'classnames';
-
-import { useAppDispatch, useAppSelector } from './app/hooks';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
-import { Post } from './types/Post';
-import { fetchUsers } from './features/users/usersAPI';
-import { getUsers } from './features/users/usersSlice';
-import { fetchPosts } from './features/post/postAPI';
-import { getPosts, getLoaded, getError } from './features/post/postSlice';
+import { initUsers } from './features/users/usersSlice';
+import { initPosts } from './features/post/postSlice';
+
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector(currenAuthor => currenAuthor);
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { author } = useAppSelector(state => state.author);
+  const { posts, loaded, hasError, selectedPost } = useAppSelector(
+    state => state.posts,
+  );
 
   useEffect(() => {
-    fetchUsers().then(usersFromServer => dispatch(getUsers(usersFromServer)));
+    dispatch(initUsers());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getLoaded(true));
-
     if (!author) {
       return;
     }
 
-    fetchPosts(author.id)
-      .then(post => dispatch(getPosts(post)))
-      .catch(() => getError(true))
-      .finally(() => dispatch(getLoaded(false)));
+    dispatch(initPosts(author.id));
+
+    return;
   }, [author, dispatch]);
 
   return (
@@ -72,10 +66,7 @@ export const App: FC = () => {
                 )}
 
                 {author && !loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -88,7 +79,7 @@ export const App: FC = () => {
             })}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

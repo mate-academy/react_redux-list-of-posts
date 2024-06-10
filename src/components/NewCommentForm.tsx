@@ -1,14 +1,13 @@
 import React, { FC, useState } from 'react';
 import cn from 'classnames';
 
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComments } from '../features/comments/commentSlice';
 
-type TProps = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: FC<TProps> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: FC = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.posts);
+  const { LOADING_BTN } = useAppSelector(state => state.comment);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -58,15 +57,16 @@ export const NewCommentForm: FC<TProps> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    if (selectedPost) {
+      try {
+        await dispatch(
+          addComments({ name, email, body, postId: selectedPost.id }),
+        );
+        setValues(current => ({ ...current, body: '' }));
+      } catch (error) {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -173,7 +173,7 @@ export const NewCommentForm: FC<TProps> = ({ onSubmit }) => {
           <button
             type="submit"
             className={cn('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': LOADING_BTN,
             })}
           >
             Add
@@ -181,7 +181,6 @@ export const NewCommentForm: FC<TProps> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>

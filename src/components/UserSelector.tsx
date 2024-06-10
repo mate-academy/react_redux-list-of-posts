@@ -2,20 +2,22 @@ import { FC, useEffect, useState } from 'react';
 import cn from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchAutorById } from '../features/author/authorAPI';
-import { getAuthor } from '../features/author/authorSlice';
+import { setAuthor } from '../features/author/authorSlice';
+import { User } from '../types/User';
+import { setPost } from '../features/post/postSlice';
 
 export const UserSelector: FC = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users);
-  const author = useAppSelector(state => state.author);
+  const { users } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
 
   const [expanded, setExpanded] = useState(false);
 
-  const selectUser = (userId: number) => {
-    fetchAutorById(userId).then(userFromServer =>
-      dispatch(getAuthor(userFromServer)),
-    );
+  const handleUserClick = (user: User) => {
+    if (user.id !== author?.id) {
+      dispatch(setAuthor(user));
+      dispatch(setPost(null));
+    }
   };
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export const UserSelector: FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>{author?.name || 'Choose a user'}</span>
+          <span>{author ? author.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -68,7 +70,7 @@ export const UserSelector: FC = () => {
               className={cn('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
-              onClick={() => selectUser(user.id)}
+              onClick={() => handleUserClick(user)}
             >
               {user.name}
             </a>

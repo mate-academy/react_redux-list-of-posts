@@ -1,16 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
+import { RootState } from '../../app/store';
 
-const initialState: User | null = null;
+type AuthorState = {
+  author: User | null;
+};
+
+const initialState: AuthorState = {
+  author: null,
+};
 
 const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    getAuthor: (_, action) => action.payload,
+    setAuthor: (state, action: PayloadAction<User | null>) => {
+      // eslint-disable-next-line no-param-reassign
+      state.author = action.payload;
+    },
   },
 });
 
-export default authorSlice.reducer;
+export const { setAuthor } = authorSlice.actions;
 
-export const { getAuthor } = authorSlice.actions;
+export const selectAuthor = (state: RootState) => state.author.author;
+
+export default authorSlice.reducer;
