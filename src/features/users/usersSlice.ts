@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
-import { fetchUsers } from './usersAPI';
+
+import { getUsers } from '../../api/users';
 
 type UsersState = {
   users: User[];
@@ -14,7 +15,7 @@ const initialState: UsersState = {
   error: false,
 };
 
-export const initUsers = createAsyncThunk('users/fetch', () => fetchUsers());
+export const initUsers = createAsyncThunk('users/fetch', () => getUsers());
 
 const usersSlice = createSlice({
   name: 'users',

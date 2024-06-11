@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { fetchPosts } from './postAPI';
+
+import { getUserPosts } from '../../api/posts';
 
 type PostsState = {
   posts: Post[];
@@ -16,8 +17,13 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-export const initPosts = createAsyncThunk('posts/fetch', (userId: number) =>
-  fetchPosts(userId),
+export const initPosts = createAsyncThunk(
+  'posts/fetch',
+  async (userId: number) => {
+    const response = await getUserPosts(userId);
+
+    return response;
+  },
 );
 
 const postsSlice = createSlice({

@@ -7,7 +7,7 @@ import { addComments } from '../features/comments/commentSlice';
 export const NewCommentForm: FC = () => {
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.posts);
-  const { LOADING_BTN } = useAppSelector(state => state.comment);
+  const { isButtonLoading } = useAppSelector(state => state.comment);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -47,20 +47,29 @@ export const NewCommentForm: FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedName,
+      email: !trimmedEmail,
+      body: !trimmedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       return;
     }
 
     if (selectedPost) {
       try {
         await dispatch(
-          addComments({ name, email, body, postId: selectedPost.id }),
+          addComments({
+            name: trimmedName,
+            email: trimmedEmail,
+            body: trimmedBody,
+            postId: selectedPost.id,
+          }),
         );
         setValues(current => ({ ...current, body: '' }));
       } catch (error) {
@@ -115,7 +124,7 @@ export const NewCommentForm: FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -173,7 +182,7 @@ export const NewCommentForm: FC = () => {
           <button
             type="submit"
             className={cn('button', 'is-link', {
-              'is-loading': LOADING_BTN,
+              'is-loading': isButtonLoading,
             })}
           >
             Add
