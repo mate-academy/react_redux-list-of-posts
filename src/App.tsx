@@ -9,16 +9,26 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { actions } from './features/authorSlice';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  // const [author, setAuthor] = useState<User | null>(null);
+  const author = useAppSelector(state => state.author.value);
+
+  const setAuthor = (user: User) => {
+    dispatch(actions.set(user));
+  };
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
