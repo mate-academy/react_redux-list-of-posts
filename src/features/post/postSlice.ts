@@ -6,14 +6,14 @@ import { getUserPosts } from '../../api/posts';
 type PostsState = {
   posts: Post[];
   selectedPost?: Post | null;
-  loaded: boolean;
+  isLoading: boolean;
   hasError: boolean;
 };
 
 const initialState: PostsState = {
   posts: [],
   selectedPost: null,
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -44,19 +44,19 @@ const postsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(initPosts.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loaded = true;
+      state.isLoading = true;
     });
     builder.addCase(initPosts.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
       state.posts = action.payload;
       // eslint-disable-next-line no-param-reassign
-      state.loaded = false;
+      state.isLoading = false;
     });
     builder.addCase(initPosts.rejected, state => {
       // eslint-disable-next-line no-param-reassign
       state.hasError = true;
       // eslint-disable-next-line no-param-reassign
-      state.loaded = false;
+      state.isLoading = false;
     });
   },
 });

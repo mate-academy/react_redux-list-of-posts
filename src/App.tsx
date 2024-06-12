@@ -17,9 +17,12 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 export const App: FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
-  const { posts, loaded, hasError, selectedPost } = useAppSelector(
-    state => state.posts,
-  );
+  const {
+    posts,
+    isLoading: loaded,
+    hasError,
+    selectedPost,
+  } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     dispatch(initUsers());

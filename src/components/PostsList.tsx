@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { FC } from 'react';
-import cn from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setPost } from '../features/post/postSlice';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 export const PostsList: FC = () => {
   const { posts, selectedPost } = useAppSelector(state => state.posts);
@@ -34,22 +34,11 @@ export const PostsList: FC = () => {
 
         <tbody>
           {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={cn('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => handleSelectPost(post)}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+            <PostItem
+              key={post.id}
+              post={post}
+              handleSelectPost={handleSelectPost}
+            />
           ))}
         </tbody>
       </table>

@@ -9,14 +9,14 @@ import {
 
 type CommentsState = {
   comments: Comment[];
-  isLoaded: boolean;
+  isLoading: boolean;
   isButtonLoading: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
   comments: [],
-  isLoaded: false,
+  isLoading: false,
   isButtonLoading: false,
   hasError: false,
 };
@@ -56,19 +56,19 @@ const commentSlice = createSlice({
     builder
       .addCase(initComments.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoaded = true;
+        state.isLoading = true;
       })
       .addCase(initComments.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
         state.comments = action.payload;
         // eslint-disable-next-line no-param-reassign
-        state.isLoaded = false;
+        state.isLoading = false;
       })
       .addCase(initComments.rejected, state => {
         // eslint-disable-next-line no-param-reassign
         state.hasError = true;
         // eslint-disable-next-line no-param-reassign
-        state.isLoaded = false;
+        state.isLoading = false;
       })
       .addCase(addComments.fulfilled, (state, action) => {
         state.comments.push(action.payload);

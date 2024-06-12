@@ -5,13 +5,13 @@ import { getUsers } from '../../api/users';
 
 type UsersState = {
   users: User[];
-  loading: boolean;
+  isLoading: boolean;
   error: boolean;
 };
 
 const initialState: UsersState = {
   users: [],
-  loading: false,
+  isLoading: false,
   error: false,
 };
 
@@ -26,15 +26,15 @@ const usersSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.users = action.payload;
       // eslint-disable-next-line no-param-reassign
-      state.loading = false;
+      state.isLoading = false;
     });
     builder.addCase(initUsers.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = true;
+      state.isLoading = true;
     });
     builder.addCase(initUsers.rejected, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = false;
+      state.isLoading = false;
       // eslint-disable-next-line no-param-reassign
       state.error = true;
     });

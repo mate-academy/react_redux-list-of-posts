@@ -10,7 +10,7 @@ import {
 
 export const PostDetails: FC = () => {
   const { selectedPost } = useAppSelector(state => state.posts);
-  const { comments, isLoaded, hasError } = useAppSelector(
+  const { comments, isLoading, hasError } = useAppSelector(
     state => state.comment,
   );
   const dispatch = useAppDispatch();
@@ -32,21 +32,21 @@ export const PostDetails: FC = () => {
       </div>
 
       <div className="block">
-        {isLoaded && <Loader />}
+        {isLoading && <Loader />}
 
-        {!isLoaded && hasError && (
+        {!isLoading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!isLoaded && !hasError && comments.length === 0 && (
+        {!isLoading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!isLoaded && !hasError && comments.length > 0 && (
+        {!isLoading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -80,7 +80,7 @@ export const PostDetails: FC = () => {
           </>
         )}
 
-        {!isLoaded && !hasError && !visible && (
+        {!isLoading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -91,7 +91,7 @@ export const PostDetails: FC = () => {
           </button>
         )}
 
-        {!isLoaded && !hasError && visible && <NewCommentForm />}
+        {!isLoading && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );
