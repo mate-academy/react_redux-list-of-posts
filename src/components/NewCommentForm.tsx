@@ -1,13 +1,13 @@
-import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { FC, useState } from 'react';
+import cn from 'classnames';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComments } from '../features/comments/commentSlice';
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: FC = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost } = useAppSelector(state => state.posts);
+  const { isButtonLoading } = useAppSelector(state => state.comment);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -47,25 +47,35 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedName,
+      email: !trimmedEmail,
+      body: !trimmedBody,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    if (selectedPost) {
+      try {
+        await dispatch(
+          addComments({
+            name: trimmedName,
+            email: trimmedEmail,
+            body: trimmedBody,
+            postId: selectedPost.id,
+          }),
+        );
+        setValues(current => ({ ...current, body: '' }));
+      } catch (error) {
+        throw error;
+      }
+    }
   };
 
   return (
@@ -81,7 +91,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={cn('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -114,11 +124,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={cn('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -154,7 +164,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={cn('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
@@ -171,8 +181,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+            className={cn('button', 'is-link', {
+              'is-loading': isButtonLoading,
             })}
           >
             Add
@@ -180,7 +190,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
