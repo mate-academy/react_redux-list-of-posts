@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
 import { getPosts } from '../api/posts';
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 type State = {

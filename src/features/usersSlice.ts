@@ -9,14 +9,6 @@ const initialState: State = {
   value: [],
 };
 
-// const getUsersAsync = createAsyncThunk('users/fetchUsers', () => {
-//   return async () => {
-//     const users = await getUsers();
-
-//     return users;
-//   };
-// });
-
 export const usersSlice = createSlice({
   name: 'users',
   initialState,

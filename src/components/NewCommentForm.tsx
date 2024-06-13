@@ -1,41 +1,25 @@
-import React, { useState } from 'react';
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions } from '../features/commentsSlice';
-import { Comment } from '../types/Comment';
+import React, { useState } from 'react';
+import { CommentData } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  onSubmit: (data: CommentData) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
     body: '',
   });
-
-  const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.selectedPost.value);
-  const commentErrors = useAppSelector(state => state.comments.errors);
-  const isAddingComment = useAppSelector(
-    state => state.comments.isAddingComment,
-  );
-  const comments = useAppSelector(state => state.comments.items);
-
-  const clearCommentErrors = () =>
-    dispatch(
-      actions.setErrors({
-        name: false,
-        email: false,
-        body: false,
-      }),
-    );
-
-  const setCommentErrors = () =>
-    dispatch(
-      actions.setErrors({
-        name: !name,
-        email: !email,
-        body: !body,
-      }),
-    );
 
   const clearForm = () => {
     setValues({
@@ -44,7 +28,11 @@ export const NewCommentForm: React.FC = () => {
       body: '',
     });
 
-    clearCommentErrors();
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   const handleChange = (
@@ -53,40 +41,31 @@ export const NewCommentForm: React.FC = () => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
-
-    dispatch(actions.setErrors({ ...commentErrors, [field]: false }));
+    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!!selectedPost) {
-      setCommentErrors();
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
 
-      if (!name || !email || !body) {
-        return;
-      }
-
-      const highestCommentId = [...comments].sort(
-        (commentA: Comment, commentB: Comment) => commentB.id - commentA.id,
-      )[0];
-
-      const comment: Comment = {
-        id: highestCommentId?.id + 1 ?? 1,
-        postId: selectedPost.id,
-        name: name,
-        email: email,
-        body: body,
-      };
-
-      dispatch(actions.add(comment));
-
-      setValues({
-        name,
-        email,
-        body: '',
-      });
+    if (!name || !email || !body) {
+      return;
     }
+
+    setSubmitting(true);
+
+    // it is very easy to forget about `await` keyword
+    await onSubmit({ name, email, body });
+
+    // and the spinner will disappear immediately
+    setSubmitting(false);
+    setValues(current => ({ ...current, body: '' }));
+    // We keep the entered name and email
   };
 
   return (
@@ -102,7 +81,7 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': commentErrors.name })}
+            className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -111,7 +90,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-user" />
           </span>
 
-          {commentErrors.name && (
+          {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -121,7 +100,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {commentErrors.name && (
+        {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -139,9 +118,7 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', {
-              'is-danger': commentErrors.email,
-            })}
+            className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -150,7 +127,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {commentErrors.email && (
+          {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -160,7 +137,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {commentErrors.email && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -177,15 +154,13 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', {
-              'is-danger': commentErrors.body,
-            })}
+            className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
         </div>
 
-        {commentErrors.body && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -197,7 +172,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': isAddingComment,
+              'is-loading': submitting,
             })}
           >
             Add

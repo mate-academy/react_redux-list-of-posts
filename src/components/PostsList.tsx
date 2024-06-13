@@ -6,19 +6,12 @@ import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions } from '../features/selectedPostSlice';
 import { fetchCommentsAsync } from '../features/commentsSlice';
-// import { fetchPostsAsync } from '../features/postsSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
-  // const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   // Set posts
-  //   dispatch(fetchPostsAsync());
-  // }, [dispatch]);
 
   const onPostSelected = (post: Post) => {
     if (post.id === selectedPost?.id) {
