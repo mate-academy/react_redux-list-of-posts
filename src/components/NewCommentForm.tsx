@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { CommentData } from '../types/Comment';
+import { actions } from '../features/commentsSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Comment } from '../types/Comment';
+// import { getPostComments } from '../api/comments';
+// import { CommentData } from '../types/Comment';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+// type Props = {
+//   onSubmit: (data: CommentData) => Promise<void>;
+// };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -44,28 +51,59 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+
+  // setErrors({
+  //   name: !name,
+  //   email: !email,
+  //   body: !body,
+  // });
+
+  // if (!name || !email || !body) {
+  //   return;
+  // }
+
+  //   setSubmitting(true);
+
+  //   // it is very easy to forget about `await` keyword
+  //   await onSubmit({ name, email, body });
+
+  //   // and the spinner will disappear immediately
+  //   setSubmitting(false);
+  //   setValues(current => ({ ...current, body: '' }));
+  //   // We keep the entered name and email
+  // };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
-      return;
-    }
-
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (!!selectedPost) {
+      setErrors({
+        name: !name,
+        email: !email,
+        body: !body,
+      });
 
-    // and the spinner will disappear immediately
+      if (!name || !email || !body) {
+        return;
+      }
+
+      const comment: Comment = {
+        // The id is omitted in the apiCall in the extraReducer anyway
+        id: 1,
+        postId: selectedPost.id,
+        name: name,
+        email: email,
+        body: body,
+      };
+
+      dispatch(actions.add(comment));
+    }
+
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (

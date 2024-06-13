@@ -5,6 +5,7 @@ import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { actions } from '../features/selectedPostSlice';
+import { fetchCommentsAsync } from '../features/commentsSlice';
 // import { fetchPostsAsync } from '../features/postsSlice';
 
 export const PostsList: React.FC = () => {
@@ -24,6 +25,7 @@ export const PostsList: React.FC = () => {
       dispatch(actions.clear());
     } else {
       dispatch(actions.set(post));
+      dispatch(fetchCommentsAsync(post.id));
     }
   };
 
