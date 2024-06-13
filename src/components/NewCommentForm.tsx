@@ -11,22 +11,44 @@ import { Comment } from '../types/Comment';
 // };
 
 export const NewCommentForm: React.FC = () => {
-  const [submitting, setSubmitting] = useState(false);
-
-  const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.selectedPost.value);
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
     body: '',
   });
+  // const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
+  const commentErrors = useAppSelector(state => state.comments.errors);
+  const isAddingComment = useAppSelector(
+    state => state.comments.isAddingComment,
+  );
+  const comments = useAppSelector(state => state.comments.items);
+
+  // const [errors, setErrors] = useState({
+  //   name: false,
+  //   email: false,
+  //   body: false,
+  // });
+
+  const clearCommentErrors = () =>
+    dispatch(
+      actions.setErrors({
+        name: false,
+        email: false,
+        body: false,
+      }),
+    );
+
+  const setCommentErrors = () =>
+    dispatch(
+      actions.setErrors({
+        name: !name,
+        email: !email,
+        body: !body,
+      }),
+    );
 
   const clearForm = () => {
     setValues({
@@ -35,11 +57,7 @@ export const NewCommentForm: React.FC = () => {
       body: '',
     });
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    clearCommentErrors();
   };
 
   const handleChange = (
@@ -48,7 +66,8 @@ export const NewCommentForm: React.FC = () => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+
+    dispatch(actions.setErrors({ ...commentErrors, [field]: false }));
   };
 
   // const handleSubmit = async (event: React.FormEvent) => {
@@ -78,22 +97,22 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setSubmitting(true);
+    // setSubmitting(true);
 
     if (!!selectedPost) {
-      setErrors({
-        name: !name,
-        email: !email,
-        body: !body,
-      });
+      setCommentErrors();
 
       if (!name || !email || !body) {
         return;
       }
 
+      const highestCommentId = [...comments].sort(
+        (commentA: Comment, commentB: Comment) => commentB.id - commentA.id,
+      )[0];
+
       const comment: Comment = {
         // The id is omitted in the apiCall in the extraReducer anyway
-        id: 1,
+        id: highestCommentId?.id + 1 ?? 1,
         postId: selectedPost.id,
         name: name,
         email: email,
@@ -103,7 +122,7 @@ export const NewCommentForm: React.FC = () => {
       dispatch(actions.add(comment));
     }
 
-    setSubmitting(false);
+    // setSubmitting(false);
   };
 
   return (
@@ -119,7 +138,7 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', { 'is-danger': commentErrors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -128,7 +147,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {commentErrors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -138,7 +157,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {errors.name && (
+        {commentErrors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -156,7 +175,9 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', {
+              'is-danger': commentErrors.email,
+            })}
             value={email}
             onChange={handleChange}
           />
@@ -165,7 +186,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {commentErrors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -175,7 +196,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {errors.email && (
+        {commentErrors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -192,13 +213,15 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', {
+              'is-danger': commentErrors.body,
+            })}
             value={body}
             onChange={handleChange}
           />
         </div>
 
-        {errors.body && (
+        {commentErrors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -210,7 +233,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isAddingComment,
             })}
           >
             Add
