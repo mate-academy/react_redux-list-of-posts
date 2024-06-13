@@ -11,7 +11,9 @@ const initialState: State = {
 
 export const authorSlice = createSlice({
   name: 'author',
+
   initialState,
+
   reducers: {
     set: (state, action: PayloadAction<User>) => {
       // eslint-disable-next-line no-param-reassign
