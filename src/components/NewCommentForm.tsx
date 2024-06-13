@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { actions } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { actions } from '../features/commentsSlice';
 import { Comment } from '../types/Comment';
-// import { getPostComments } from '../api/comments';
-// import { CommentData } from '../types/Comment';
-
-// type Props = {
-//   onSubmit: (data: CommentData) => Promise<void>;
-// };
 
 export const NewCommentForm: React.FC = () => {
   const [{ name, email, body }, setValues] = useState({
@@ -16,7 +10,6 @@ export const NewCommentForm: React.FC = () => {
     email: '',
     body: '',
   });
-  // const [submitting, setSubmitting] = useState(false);
 
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.value);
@@ -25,12 +18,6 @@ export const NewCommentForm: React.FC = () => {
     state => state.comments.isAddingComment,
   );
   const comments = useAppSelector(state => state.comments.items);
-
-  // const [errors, setErrors] = useState({
-  //   name: false,
-  //   email: false,
-  //   body: false,
-  // });
 
   const clearCommentErrors = () =>
     dispatch(
@@ -70,34 +57,8 @@ export const NewCommentForm: React.FC = () => {
     dispatch(actions.setErrors({ ...commentErrors, [field]: false }));
   };
 
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  // setErrors({
-  //   name: !name,
-  //   email: !email,
-  //   body: !body,
-  // });
-
-  // if (!name || !email || !body) {
-  //   return;
-  // }
-
-  //   setSubmitting(true);
-
-  //   // it is very easy to forget about `await` keyword
-  //   await onSubmit({ name, email, body });
-
-  //   // and the spinner will disappear immediately
-  //   setSubmitting(false);
-  //   setValues(current => ({ ...current, body: '' }));
-  //   // We keep the entered name and email
-  // };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    // setSubmitting(true);
 
     if (!!selectedPost) {
       setCommentErrors();
@@ -111,7 +72,6 @@ export const NewCommentForm: React.FC = () => {
       )[0];
 
       const comment: Comment = {
-        // The id is omitted in the apiCall in the extraReducer anyway
         id: highestCommentId?.id + 1 ?? 1,
         postId: selectedPost.id,
         name: name,
@@ -120,9 +80,13 @@ export const NewCommentForm: React.FC = () => {
       };
 
       dispatch(actions.add(comment));
-    }
 
-    // setSubmitting(false);
+      setValues({
+        name,
+        email,
+        body: '',
+      });
+    }
   };
 
   return (
