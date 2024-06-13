@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,10 +8,11 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
+// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 // import { actions as authorActions } from './features/authorSlice';
 import { actions as postActions } from './features/postsSlice';
+import { actions as selectedPostActions } from './features/selectedPostSlice';
 import { fetchPostsAsync } from './features/postsSlice';
 
 export const App: React.FC = () => {
@@ -20,10 +21,11 @@ export const App: React.FC = () => {
   // const [loaded, setLoaded] = useState(false);
   // const [hasError, setError] = useState(false);
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // const [author, setAuthor] = useState<User | null>(null);
   const author = useAppSelector(state => state.author.value);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
 
   const {
     items: posts,
@@ -49,7 +51,7 @@ export const App: React.FC = () => {
 
     if (author) {
       // Load posts
-      // dispatch(postActions.clear());
+      dispatch(selectedPostActions.clear());
       dispatch(fetchPostsAsync(author.id));
     } else {
       dispatch(postActions.clear());
@@ -87,10 +89,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>

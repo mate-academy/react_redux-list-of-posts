@@ -3,25 +3,29 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { actions } from '../features/selectedPostSlice';
 // import { fetchPostsAsync } from '../features/postsSlice';
 
-type Props = {
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
+export const PostsList: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-export const PostsList: React.FC<Props> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
   const posts = useAppSelector(state => state.posts.items);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
   // const dispatch = useAppDispatch();
 
   // useEffect(() => {
   //   // Set posts
   //   dispatch(fetchPostsAsync());
   // }, [dispatch]);
+
+  const onPostSelected = (post: Post) => {
+    if (post.id === selectedPost?.id) {
+      dispatch(actions.clear());
+    } else {
+      dispatch(actions.set(post));
+    }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -46,13 +50,13 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
                   onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
+                    onPostSelected(post);
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
