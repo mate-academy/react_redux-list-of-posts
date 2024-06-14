@@ -1,29 +1,15 @@
-import React, { useEffect } from 'react';
-import 'bulma/bulma.sass';
-import '@fortawesome/fontawesome-free/css/all.css';
-import './App.scss';
-
+import React from 'react';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { Post } from './types/Post';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-// import { actions as authorActions } from './features/authorSlice';
-import { actions as postActions } from './features/postsSlice';
-import { actions as selectedPostActions } from './features/selectedPostSlice';
-import { fetchPostsAsync } from './features/postsSlice';
+import { useAppSelector } from './app/hooks';
+import 'bulma/bulma.sass';
+import '@fortawesome/fontawesome-free/css/all.css';
+import './App.scss';
 
 export const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
-
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  // const [author, setAuthor] = useState<User | null>(null);
   const author = useAppSelector(state => state.author.value);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
 
@@ -32,31 +18,6 @@ export const App: React.FC = () => {
     hasError,
     loaded,
   } = useAppSelector(state => state.posts);
-
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     .finally(() => setLoaded(true));
-  // }
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-
-    // dispatch(postActions.clear());
-
-    if (author) {
-      // Load posts
-      dispatch(selectedPostActions.clear());
-      dispatch(fetchPostsAsync(author.id));
-    } else {
-      dispatch(postActions.clear());
-    }
-  }, [author, dispatch]);
 
   return (
     <main className="section">

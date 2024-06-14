@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getPosts } from '../api/posts';
+import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
@@ -20,7 +20,7 @@ export const fetchPostsAsync = createAsyncThunk(
   'posts/fetchPosts',
   (userId: User['id']) => {
     return new Promise<Post[]>((resolve, reject) => {
-      getPosts()
+      getUserPosts(userId)
         .then((allPosts: Post[]) => {
           resolve(allPosts.filter((post: Post) => post.userId === userId));
         })

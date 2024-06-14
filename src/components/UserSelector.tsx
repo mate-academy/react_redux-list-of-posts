@@ -4,6 +4,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getUsers } from '../api/users';
 import { actions } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
+import { actions as selectedPostActions } from '../features/selectedPostSlice';
+import {
+  fetchPostsAsync,
+  actions as postActions,
+} from '../features/postsSlice';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
@@ -11,6 +16,7 @@ export const UserSelector: React.FC = () => {
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const users = useAppSelector(state => state.users.value);
+  const author = useAppSelector(state => state.author.value);
   const selectedUser = useAppSelector(state => state.author.value);
   const dispatch = useAppDispatch();
 
@@ -40,6 +46,15 @@ export const UserSelector: React.FC = () => {
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    if (author) {
+      dispatch(selectedPostActions.clear());
+      dispatch(fetchPostsAsync(author.id));
+    } else {
+      dispatch(postActions.clear());
+    }
+  }, [author, dispatch]);
 
   useEffect(() => {
     // Fetch users

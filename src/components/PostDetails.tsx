@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
@@ -13,6 +13,9 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
+
+  const author = useAppSelector(state => state.author.value);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
 
   const {
     items: comments,
@@ -39,6 +42,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = (commentId: Comment['id']) => {
     dispatch(commentActions.remove(commentId));
   };
+
+  useEffect(() => {
+    setVisible(false);
+  }, [author, selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
