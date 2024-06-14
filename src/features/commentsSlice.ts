@@ -8,20 +8,12 @@ type State = {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  // errors: CommentErrors;
-  // isAddingComment: boolean;
 };
 
 const initialState: State = {
   items: [],
   loaded: false,
   hasError: false,
-  // errors: {
-  //   name: false,
-  //   email: false,
-  //   body: false,
-  // },
-  // isAddingComment: false,
 };
 
 export const fetchCommentsAsync = createAsyncThunk(
@@ -38,16 +30,6 @@ export const fetchCommentsAsync = createAsyncThunk(
     });
   },
 );
-
-// export const addCommentAsync = createAsyncThunk(
-//   'comments/addComments',
-//   async (comment: Comment) => {
-//     return new Promise<Comment>(resolve => {
-//       commentsApi.createComment(comment);
-//       resolve(comment);
-//     });
-//   },
-// );
 
 export const commentsSlice = createSlice({
   name: 'users',
@@ -79,10 +61,6 @@ export const commentsSlice = createSlice({
     setError: (state, action: PayloadAction<boolean>) => {
       state.hasError = action.payload;
     },
-
-    // setErrors: (state, action: PayloadAction<CommentErrors>) => {
-    //   state.errors = action.payload;
-    // },
   },
   extraReducers: builder => {
     // Fetching comments
@@ -104,21 +82,6 @@ export const commentsSlice = createSlice({
       state.hasError = true;
       state.loaded = true;
     });
-
-    // Adding comment
-    // builder.addCase(addCommentAsync.pending, state => {
-    //   state.isAddingComment = true;
-    // });
-    // builder.addCase(
-    //   addCommentAsync.fulfilled,
-    //   (state, action: PayloadAction<Comment>) => {
-    //     state.isAddingComment = false;
-    //     state.items.push(action.payload);
-    //   },
-    // );
-    // builder.addCase(addCommentAsync.rejected, state => {
-    //   state.isAddingComment = false;
-    // });
   },
 });
 
