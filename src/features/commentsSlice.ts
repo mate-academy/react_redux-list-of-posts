@@ -57,11 +57,9 @@ export const commentsSlice = createSlice({
       state.items = action.payload;
     },
 
-    // add: (state, action: PayloadAction<Comment>) => {
-    //   commentsApi.createComment(action.payload).then();
-
-    //   state.items.push(action.payload);
-    // },
+    add: (state, action: PayloadAction<Comment>) => {
+      state.items.push(action.payload);
+    },
 
     remove: (state, action: PayloadAction<Comment['id']>) => {
       deleteComment(action.payload);

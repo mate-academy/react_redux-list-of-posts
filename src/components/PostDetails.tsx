@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { actions } from '../features/commentsSlice';
+import { actions as commentActions } from '../features/commentsSlice';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 
@@ -30,14 +30,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(actions.set([...comments, newComment]));
+      dispatch(commentActions.add(newComment));
     } catch (error) {
-      dispatch(actions.setError(true));
+      dispatch(commentActions.setError(true));
     }
   };
 
   const deleteComment = (commentId: Comment['id']) => {
-    dispatch(actions.remove(commentId));
+    dispatch(commentActions.remove(commentId));
   };
 
   return (
