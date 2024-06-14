@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getUsers } from '../api/users';
-import { actions } from '../features/usersSlice';
+import { fetchUsersAsync } from '../features/usersSlice';
 import { actions as authorActions } from '../features/authorSlice';
 import { actions as selectedPostActions } from '../features/selectedPostSlice';
 import {
@@ -49,9 +48,7 @@ export const UserSelector: React.FC = () => {
   }, [author, dispatch]);
 
   useEffect(() => {
-    getUsers().then((usersFromApi: User[]) => {
-      dispatch(actions.set(usersFromApi));
-    });
+    dispatch(fetchUsersAsync());
   }, [dispatch]);
 
   return (
