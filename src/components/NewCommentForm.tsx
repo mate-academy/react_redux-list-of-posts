@@ -1,5 +1,7 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useAppSelector } from '../app/hooks';
+import { selectCommentState } from '../features/commentsSlice';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -7,7 +9,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const { isCreateCommentLoading: loaded } = useAppSelector(selectCommentState);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -35,6 +37,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const isValid = !name.trim() || !email.trim() || !body.trim();
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -53,23 +56,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (isValid) {
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit} onReset={clearForm}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -172,7 +168,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': loaded,
             })}
           >
             Add
