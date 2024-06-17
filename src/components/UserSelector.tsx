@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersAction from '../features/users';
 import * as authorAction from '../features/author';
 import { getUser } from '../api/users';
+import { clearSelectedPost } from '../features/selectedPost';
+import { clearComments } from '../features/comments';
 
 export const UserSelector = () => {
   // `users` are loaded from the API, so for the performance reasons
@@ -20,6 +22,8 @@ export const UserSelector = () => {
   const [expanded, setExpanded] = useState(false);
 
   const handleOnClick = (id: number) => {
+    dispatch(clearSelectedPost());
+    dispatch(clearComments());
     getUser(id).then(data => dispatch(authorAction.setAuthor(data)));
   };
 

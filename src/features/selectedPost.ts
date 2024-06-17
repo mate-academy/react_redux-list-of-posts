@@ -9,8 +9,11 @@ const selectedPostSlice = createSlice({
     setSelectedPost(_, action: PayloadAction<Post | null>) {
       return action.payload;
     },
+    clearSelectedPost() {
+      return null;
+    },
   },
 });
 
 export default selectedPostSlice.reducer;
-export const { setSelectedPost } = selectedPostSlice.actions;
+export const { setSelectedPost, clearSelectedPost } = selectedPostSlice.actions;

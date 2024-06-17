@@ -39,6 +39,9 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
+    clearComments: state => {
+      state.items = [];
+    },
     removeOptimistically: (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
     },
@@ -81,6 +84,7 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { removeOptimistically, revertRemove } = commentsSlice.actions;
+export const { removeOptimistically, revertRemove, clearComments } =
+  commentsSlice.actions;
 
 export default commentsSlice.reducer;
