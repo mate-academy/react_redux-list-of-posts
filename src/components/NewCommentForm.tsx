@@ -49,19 +49,43 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim().length) {
+      setValues(current => ({ ...current, name: '' }));
+
       return;
     }
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (!email.trim().length) {
+      setValues(current => ({ ...current, email: '' }));
 
-    setValues(current => ({ ...current, body: '' }));
+      return;
+    }
+
+    if (!body.trim().length) {
+      setValues(current => ({ ...current, body: '' }));
+
+      return;
+    }
+
+    const comment = {
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
+    };
+
+    // it is very easy to forget about `await` keyword
+    await onSubmit(comment);
+
+    setValues({
+      name: name.trim(),
+      email: email.trim(),
+      body: '',
+    });
     // We keep the entered name and email
   };
 
@@ -111,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

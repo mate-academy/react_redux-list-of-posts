@@ -20,7 +20,7 @@ export const UserSelector = () => {
   const [expanded, setExpanded] = useState(false);
 
   const handleOnClick = (id: number) => {
-    getUser(id).then(response => dispatch(authorAction.setAuthor(response)));
+    getUser(id).then(data => dispatch(authorAction.setAuthor(data)));
   };
 
   useEffect(() => {
