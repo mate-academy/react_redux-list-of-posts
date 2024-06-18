@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
+import { RootState } from '../app/store';
 /* eslint-disable no-param-reassign */
 
 const selectedPostSlice = createSlice({
@@ -14,6 +15,8 @@ const selectedPostSlice = createSlice({
     },
   },
 });
+
+export const selectPost = (state: RootState) => state.selectedPost;
 
 export default selectedPostSlice.reducer;
 export const { setSelectedPost, clearSelectedPost } = selectedPostSlice.actions;

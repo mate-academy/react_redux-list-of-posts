@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
+import { RootState } from '../app/store';
 /* eslint-disable no-param-reassign */
 
 type State = {
@@ -39,5 +40,7 @@ const usersSlice = createSlice({
     });
   },
 });
+
+export const selectUsers = (state: RootState) => state.users.data;
 
 export default usersSlice.reducer;

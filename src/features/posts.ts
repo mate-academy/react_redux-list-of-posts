@@ -31,11 +31,12 @@ const postsSlice = createSlice({
     builder.addCase(init.fulfilled, (state, action) => {
       state.items = action.payload;
       state.isLoading = false;
+      state.hasError = false;
     });
 
     builder.addCase(init.rejected, state => {
       state.isLoading = false;
-      state.hasError = false;
+      state.hasError = true;
     });
   },
 });

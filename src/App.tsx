@@ -10,10 +10,17 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsAction from './features/posts';
+import * as authorActions from './features/author';
+import { selectAuthor } from './features/author';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.author);
+  const author = useAppSelector(selectAuthor);
+
+  const setAuthor = (newAuthor: User) => {
+    dispatch(authorActions.actions.setAuthor(newAuthor));
+  };
 
   const posts = useAppSelector(state => state.posts.items);
   const { isLoading, hasError } = useAppSelector(state => state.posts);
@@ -33,7 +40,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector value={author} onChange={setAuthor} />
               </div>
 
               <div className="block" data-cy="MainContent">

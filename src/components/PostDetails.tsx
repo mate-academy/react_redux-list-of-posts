@@ -5,6 +5,7 @@ import * as commentsAction from '../features/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
+import { selectPost } from '../features/selectedPost';
 
 type Props = {
   post: Post;
@@ -15,6 +16,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments = useAppSelector(state => state.comments);
   const { isLoading, hasError } = comments;
   const [visible, setVisible] = useState(false);
+
+  const selectedPost = useAppSelector(selectPost);
 
   useEffect(() => {
     dispatch(commentsAction.init(post.id));
@@ -47,6 +50,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       }
     }
   };
+
+  useEffect(() => {
+    setVisible(false);
+  }, [selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
