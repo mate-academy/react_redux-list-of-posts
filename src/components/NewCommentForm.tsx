@@ -1,13 +1,14 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const isCreating = useAppSelector(state => state.comments.isCreating);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -48,23 +49,43 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim().length) {
+      setValues(current => ({ ...current, name: '' }));
+
       return;
     }
 
-    setSubmitting(true);
+    if (!email.trim().length) {
+      setValues(current => ({ ...current, email: '' }));
+
+      return;
+    }
+
+    if (!body.trim().length) {
+      setValues(current => ({ ...current, body: '' }));
+
+      return;
+    }
+
+    const comment = {
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
+    };
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await onSubmit(comment);
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    setValues({
+      name: name.trim(),
+      email: email.trim(),
+      body: '',
+    });
     // We keep the entered name and email
   };
 
@@ -114,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -172,7 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isCreating,
             })}
           >
             Add
