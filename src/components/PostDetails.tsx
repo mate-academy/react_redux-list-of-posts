@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentsApi from '../api/comments';
+// import * as commentsApi from '../api/comments';
 import * as commentsActions from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
@@ -27,24 +27,19 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    try {
-      const newComment = await commentsApi.createComment({
+    dispatch(
+      commentsActions.addCommentAsync({
+        id: 0,
         name,
         email,
         body,
         postId: post.id,
-      });
-
-      dispatch(commentsActions.addComment(newComment));
-    } catch (error) {
-      dispatch(commentsActions.setError(true));
-    }
+      }),
+    );
   };
 
-  const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.removeComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+  const deleteComment = (commentId: number) => {
+    dispatch(commentsActions.deleteCommentAsync(commentId));
   };
 
   if (!post) {
