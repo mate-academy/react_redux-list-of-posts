@@ -49,7 +49,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       <div className="block">
         {isLoading && <Loader />}
-
         {!isLoading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
