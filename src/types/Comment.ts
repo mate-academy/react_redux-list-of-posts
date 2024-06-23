@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export interface Comment {
   id: number;
   postId: number;
