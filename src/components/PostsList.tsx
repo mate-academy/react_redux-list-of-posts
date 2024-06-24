@@ -6,7 +6,6 @@ import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectedPostSlice } from '../features/selectedPost';
 
-
 type Props = {
   posts: Post[];
 };
