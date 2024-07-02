@@ -33,7 +33,7 @@ export const commentsSlice: Slice<CommentsState> = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<Comment>) => {
+    addCom: (state, action: PayloadAction<Comment>) => {
       state.comments.push(action.payload);
     },
     deleteCom: (state, action: PayloadAction<number>) => {
@@ -59,5 +59,5 @@ export const commentsSlice: Slice<CommentsState> = createSlice({
   },
 });
 
-export const { set, deleteCom } = commentsSlice.actions;
+export const { addCom, deleteCom } = commentsSlice.actions;
 export default commentsSlice.reducer;

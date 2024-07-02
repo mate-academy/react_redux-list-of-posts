@@ -29,7 +29,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     return commentsApi
       .createComment({ ...commentData, postId: post.id })
       .then(newComment => {
-        dispatch(commentsActions.set(newComment));
+        dispatch(commentsActions.addCom(newComment));
       });
   }
 
