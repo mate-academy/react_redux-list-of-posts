@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,37 +8,54 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { getUsers } from './api/users';
+import { fillUsers } from './features/users';
+import { setAuthor } from './features/author';
+import { changeAsync, clearPosts } from './features/posts';
+import { addSelectedPost, clearSelectedPost } from './features/selectedPost';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    posts: statePosts,
+    author,
+    selectedPost,
+  } = useAppSelector(state => ({
+    ...state,
+    author: state.author.value,
+    selectedPost: state.selectedPost.value,
+  }));
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { loaded, hasError, items: posts } = statePosts;
+
+  const setCurrentAuthor = (newAuthor: User) => {
+    dispatch(setAuthor(newAuthor));
+  };
+
+  const setSelectedPost = (post: Post | null) => {
+    dispatch(addSelectedPost(post));
+  };
+
+  useEffect(() => {
+    getUsers().then(usersFromServer => dispatch(fillUsers(usersFromServer)));
+  }, []);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+    dispatch(changeAsync(userId));
   }
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(clearSelectedPost());
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
     }
   }, [author]);
 
@@ -49,7 +66,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={setCurrentAuthor} />
               </div>
 
               <div className="block" data-cy="MainContent">
