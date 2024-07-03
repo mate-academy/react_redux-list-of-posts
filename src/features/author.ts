@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
-type AuthorState =  User | null;
+type AuthorState = User | null;
 
 const initialState: AuthorState = null as AuthorState;
 

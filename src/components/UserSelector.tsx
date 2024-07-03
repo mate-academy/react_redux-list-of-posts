@@ -10,7 +10,7 @@ export const UserSelector: React.FC = () => {
   const setAuthor = (author: User) =>
     dispatch(authorSlice.actions.setAuthor(author));
   const [expanded, setExpanded] = useState(false);
-  const author = useAppSelector(state => state.author)
+  const author = useAppSelector(state => state.author);
 
   useEffect(() => {
     if (!expanded) {

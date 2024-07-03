@@ -3,18 +3,17 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { selectedPostSlice } from '../features/selectedPost';
 
-type Props = {
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
 
-export const PostsList: React.FC<Props> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
+  const setSelectedPost = (post: Post | null) =>
+    dispatch(selectedPostSlice.actions.setSelectedPost(post));
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -38,13 +37,13 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
                   onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
+                    setSelectedPost(post.id === selectedPost?.id ? null : post);
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

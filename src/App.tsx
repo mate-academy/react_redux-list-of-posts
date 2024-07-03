@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as usersActions from './features/users';
 import * as postsActions from './features/posts';
 import 'bulma/bulma.sass';
@@ -10,11 +10,10 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { selectedPostSlice } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const dispatch = useAppDispatch();
   const author = useAppSelector(state => state.author);
   const { isUsersLoading } = useAppSelector(state => state.users);
@@ -23,13 +22,15 @@ export const App: React.FC = () => {
   );
   const clearPosts = () =>
     dispatch(postsActions.postsSlice.actions.clearPosts());
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const clearSelectedPost = () => dispatch(selectedPostSlice.actions.clearSelectedPost())
 
   useEffect(() => {
     dispatch(usersActions.init());
   }, []);
 
   useEffect(() => {
-    setSelectedPost(null);
+    clearSelectedPost();
 
     if (author) {
       dispatch(postsActions.init(author.id));
@@ -82,10 +83,7 @@ export const App: React.FC = () => {
                   !isPostsLoading &&
                   !postsError &&
                   posts.length > 0 && (
-                    <PostsList
-                      selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
-                    />
+                    <PostsList />
                   )}
               </div>
             </div>

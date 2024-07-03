@@ -18,9 +18,9 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clearPosts: (state) => {
-        state.posts = [];
-    }
+    clearPosts: state => {
+      state.posts = [];
+    },
   },
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
