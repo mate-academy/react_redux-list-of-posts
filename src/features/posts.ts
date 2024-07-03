@@ -14,6 +14,10 @@ const initialState: PostState = {
   hasError: '',
 };
 
+export const init = createAsyncThunk('posts/fetch', (id: number) => {
+  return getUserPosts(id);
+});
+
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -35,10 +39,6 @@ export const postsSlice = createSlice({
       state.hasError = 'Something went wrong';
     });
   },
-});
-
-export const init = createAsyncThunk('posts/fetch', (id: number) => {
-  return getUserPosts(id);
 });
 
 export default postsSlice.reducer;

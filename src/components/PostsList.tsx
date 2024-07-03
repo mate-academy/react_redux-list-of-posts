@@ -6,7 +6,6 @@ import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectedPostSlice } from '../features/selectedPost';
 
-
 export const PostsList: React.FC = () => {
   const { posts } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost);
