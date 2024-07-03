@@ -17,13 +17,12 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const author = useAppSelector(state => state.author);
   const { isUsersLoading } = useAppSelector(state => state.users);
-  const { posts, postsError, isPostsLoading } = useAppSelector(
-    state => state.posts,
-  );
+  const { posts, hasError, loaded } = useAppSelector(state => state.posts);
   const clearPosts = () =>
     dispatch(postsActions.postsSlice.actions.clearPosts());
   const selectedPost = useAppSelector(state => state.selectedPost);
-  const clearSelectedPost = () => dispatch(selectedPostSlice.actions.clearSelectedPost())
+  const clearSelectedPost = () =>
+    dispatch(selectedPostSlice.actions.clearSelectedPost());
 
   useEffect(() => {
     dispatch(usersActions.init());
@@ -56,9 +55,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && isPostsLoading && <Loader />}
+                {author && !loaded && <Loader />}
 
-                {author && !isPostsLoading && postsError && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,24 +66,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author &&
-                  !isPostsLoading &&
-                  !postsError &&
-                  posts.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {author && loaded && !hasError && posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                {author &&
-                  !isPostsLoading &&
-                  !postsError &&
-                  posts.length > 0 && (
-                    <PostsList />
-                  )}
+                {author && loaded && !hasError && posts.length > 0 && (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>

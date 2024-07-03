@@ -4,14 +4,14 @@ import { getUserPosts } from '../api/posts';
 
 type PostState = {
   posts: Post[];
-  isPostsLoading: boolean;
-  postsError: string;
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: PostState = {
   posts: [],
-  isPostsLoading: false,
-  postsError: '',
+  loaded: false,
+  hasError: '',
 };
 
 export const postsSlice = createSlice({
@@ -24,15 +24,15 @@ export const postsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
-      state.isPostsLoading = true;
+      state.loaded = false;
     });
     builder.addCase(init.fulfilled, (state, action: PayloadAction<Post[]>) => {
-      state.isPostsLoading = false;
+      state.loaded = true;
       state.posts = action.payload;
     });
     builder.addCase(init.rejected, state => {
-      state.isPostsLoading = false;
-      state.postsError = 'Something went wrong';
+      state.loaded = true;
+      state.hasError = 'Something went wrong';
     });
   },
 });
