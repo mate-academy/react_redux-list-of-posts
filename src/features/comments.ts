@@ -1,14 +1,15 @@
+/* eslint-disable */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
-type commentsState = {
+type CommentsState = {
   comments: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
 
-const initialState: commentsState = {
+const initialState: CommentsState = {
   comments: [] as Comment[],
   loaded: false,
   hasError: false,

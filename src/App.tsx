@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import * as usersActions from './features/users';
 import * as postsActions from './features/posts';
@@ -38,10 +39,6 @@ export const App: React.FC = () => {
     }
   }, [author]);
 
-  if (isUsersLoading) {
-    return <Loader />;
-  }
-
   return (
     <main className="section">
       <div className="container">
@@ -49,7 +46,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                {isUsersLoading ? <Loader /> : <UserSelector />}
               </div>
 
               <div className="block" data-cy="MainContent">

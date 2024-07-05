@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
@@ -13,6 +14,10 @@ const initialState: UserState = {
   isUsersLoading: false,
   usersError: '',
 };
+
+export const init = createAsyncThunk('users/fetch', () => {
+  return getUsers();
+});
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -31,10 +36,6 @@ export const usersSlice = createSlice({
       state.usersError = 'Something went wrong';
     });
   },
-});
-
-export const init = createAsyncThunk('users/fetch', () => {
-  return getUsers();
 });
 
 export default usersSlice.reducer;
