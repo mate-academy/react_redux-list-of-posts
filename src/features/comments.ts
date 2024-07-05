@@ -21,8 +21,23 @@ export const init = createAsyncThunk('comments/fetch', (postId: number) => {
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    setComments: (state, action: PayloadAction<Comment>) => {
+      state.comments.push(action.payload);
+    },
+    setError: state => {
+      state.hasError = true;
+    },
+    removeComment: (state, action: PayloadAction<number>) => {
+      state.comments = state.comments.filter(
+        comment => comment.id !== action.payload,
+      );
+    },
+  },
   extraReducers: builder => {
+    builder.addCase(init.pending, state => {
+      state.loaded = false;
+    });
     builder.addCase(
       init.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
@@ -32,6 +47,9 @@ export const commentsSlice = createSlice({
     );
     builder.addCase(init.rejected, state => {
       state.loaded = false;
+      state.hasError = true;
     });
   },
 });
+
+export default commentsSlice.reducer;
