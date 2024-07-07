@@ -13,6 +13,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectedPostSlice } from './features/selectedPost';
+import { commentsSlice } from './features/comments';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost);
   const clearSelectedPost = () =>
     dispatch(selectedPostSlice.actions.clearSelectedPost());
+  const clearComments = () => dispatch(commentsSlice.actions.clearComments());
 
   useEffect(() => {
     dispatch(usersActions.init());
@@ -31,6 +33,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     clearSelectedPost();
+    clearComments();
 
     if (author) {
       dispatch(postsActions.init(author.id));

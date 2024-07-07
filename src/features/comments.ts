@@ -34,6 +34,9 @@ export const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
     },
+    clearComments: state => {
+      state.comments = [];
+    },
   },
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
