@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
+import { User } from '../types/User';
 
 export type AuthorState = {
   author: User | null;
@@ -14,6 +14,7 @@ export const authorSlice = createSlice({
   initialState,
   reducers: {
     setAuthor: (state, action: PayloadAction<User>) => {
+      /* eslint-disable-next-line no-param-reassign */
       state.author = action.payload;
     },
   },

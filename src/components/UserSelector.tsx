@@ -4,7 +4,7 @@ import { User } from '../types/User';
 import { getUsers } from '../api/users';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../app/hooks';
-import { setUsers } from '../features/counter/users';
+import { setUsers } from '../features/users';
 
 type Props = {
   value: User | null;

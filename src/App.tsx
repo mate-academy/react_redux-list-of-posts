@@ -8,28 +8,25 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from './app/hooks';
-import { setAuthor } from './features/counter/author';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setAuthor } from './features/author';
 import { User } from './types/User';
-import { setLoading, setPosts, setError } from './features/counter/posts';
-import { setSelectedPost as setSelectedPostAction } from './features/counter/selectedPost';
+import { clearPosts } from './features/posts';
+
+// import { setLoading, setPosts, setError } from './features/posts';
+/* eslint-disable max-len */
+import { setSelectedPost as setSelectedPostAction } from './features/selectedPost';
 import { Post } from './types/Post';
+import { changeAsync } from './features/users';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
   const { posts, loading, error } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   function loadUserPosts(userId: number) {
-    dispatch(setLoading(true));
-
-    getUserPosts(userId)
-      .then(postsFromServer => dispatch(setPosts(postsFromServer)))
-      .catch(() => dispatch(setError('Failed to fetch user posts')))
-      .finally(() => dispatch(setLoading(false)));
+    dispatch(changeAsync(userId));
   }
 
   const setCurrentAuthor = (newAuthor: User) => {
@@ -46,7 +43,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      dispatch(setPosts([]));
+      dispatch(clearPosts());
     }
   }, [author]);
 

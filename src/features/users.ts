@@ -1,5 +1,20 @@
-import { Slice, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
+import {
+  Slice,
+  createSlice,
+  PayloadAction,
+  createAsyncThunk,
+} from '@reduxjs/toolkit';
+import { User } from '../types/User';
+import { getUserPosts } from '../api/posts';
+
+export const changeAsync = createAsyncThunk(
+  'posts/fetchPost',
+  async (userId: number) => {
+    const posts = await getUserPosts(userId);
+
+    return posts;
+  },
+);
 
 export type UsersState = {
   users: User[];
@@ -14,6 +29,7 @@ export const usersSlice: Slice<UsersState> = createSlice({
   initialState,
   reducers: {
     setUsers(state, action: PayloadAction<User[]>) {
+      /* eslint-disable-next-line no-param-reassign */
       state.users = action.payload;
     },
     addUser(state, action: PayloadAction<User>) {
