@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const [, setSubmitting] = useState(false);
   const { loading } = useAppSelector(state => state.comments);
 
   const [errors, setErrors] = useState({
