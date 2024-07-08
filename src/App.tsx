@@ -12,9 +12,6 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/author';
 import { User } from './types/User';
 import { clearPosts } from './features/posts';
-
-// import { setLoading, setPosts, setError } from './features/posts';
-/* eslint-disable max-len */
 import { setSelectedPost as setSelectedPostAction } from './features/selectedPost';
 import { Post } from './types/Post';
 import { changeAsync } from './features/users';

@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
@@ -48,58 +50,43 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadComments.pending, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = 'loading';
       })
       .addCase(loadComments.fulfilled, (state, action) => {
-        /* eslint-disable-next-line no-param-reassign */
         state.comments = action.payload;
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = '';
       })
       .addCase(loadComments.rejected, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = '';
-        /* eslint-disable-next-line no-param-reassign */
         state.error = 'Error!';
       });
 
     builder
       .addCase(createNewComment.pending, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = 'add';
       })
       .addCase(createNewComment.fulfilled, (state, action) => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = '';
-        /* eslint-disable-next-line no-param-reassign */
         state.comments.push(action.payload);
       })
       .addCase(createNewComment.rejected, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = '';
-        /* eslint-disable-next-line no-param-reassign */
         state.error = 'Error!';
       });
 
     builder
       .addCase(deleteCommentFromServer.pending, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = 'delete';
       })
       .addCase(deleteCommentFromServer.fulfilled, (state, action) => {
-        /* eslint-disable-next-line no-param-reassign */
         state.comments = state.comments.filter(comment => {
-          /* eslint-disable-next-line no-param-reassign */
           state.loading = '';
 
           return comment.id !== action.payload;
         });
       })
       .addCase(deleteCommentFromServer.rejected, state => {
-        /* eslint-disable-next-line no-param-reassign */
         state.loading = '';
-        /* eslint-disable-next-line no-param-reassign */
         state.error = 'Error!';
       });
   },

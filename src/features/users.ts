@@ -1,3 +1,5 @@
+/* eslint-disable-next-line no-param-reassign */
+
 import {
   Slice,
   createSlice,
@@ -29,7 +31,6 @@ export const usersSlice: Slice<UsersState> = createSlice({
   initialState,
   reducers: {
     setUsers(state, action: PayloadAction<User[]>) {
-      /* eslint-disable-next-line no-param-reassign */
       state.users = action.payload;
     },
     addUser(state, action: PayloadAction<User>) {
