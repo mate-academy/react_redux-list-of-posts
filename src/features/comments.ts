@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, getPostComments, deleteComment } from '../api/comments';
+import { setPost } from './selectedPost';
 
 type CommentsState = {
   items: Comment[];
@@ -64,6 +65,8 @@ const commentsSlice = createSlice({
     builder.addCase(removeComment.rejected, state => {
       state.hasError = true;
     });
+
+    builder.addCase(setPost, () => initialState);
   },
 });
 
