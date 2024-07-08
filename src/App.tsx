@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/author';
 import { User } from './types/User';
 import { clearPosts } from './features/posts';
-import { setSelectedPost as setSelectedPostAction } from './features/selectedPost';
+import { setSelectedPost } from './features/selectedPost';
 import { Post } from './types/Post';
 import { changeAsync } from './features/users';
 
@@ -31,11 +31,11 @@ export const App: React.FC = () => {
   };
 
   const handleSetSelectedPost = (post: Post | null) => {
-    dispatch(setSelectedPostAction(post));
+    dispatch(setSelectedPost(post));
   };
 
   useEffect(() => {
-    dispatch(setSelectedPostAction(null));
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);

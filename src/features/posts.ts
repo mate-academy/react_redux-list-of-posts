@@ -1,4 +1,4 @@
-/* eslint-disable-next-line no-param-reassign */
+/* eslint-disable no-param-reassign */
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
