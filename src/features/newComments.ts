@@ -1,0 +1,115 @@
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Comment, CommentData } from '../types/Comment';
+import { createComment } from '../api/comments';
+import { getComments } from './comments';
+
+type NewCommentErrors = {
+  name: boolean;
+  body: boolean;
+  email: boolean;
+};
+
+type NewCommentState = {
+  newCommentData: CommentData;
+  visible: boolean;
+  submitting: boolean;
+  errors: NewCommentErrors;
+};
+
+const initialComment: CommentData = {
+  name: '',
+  body: '',
+  email: '',
+};
+
+const initialCommentError: NewCommentErrors = {
+  name: false,
+  body: false,
+  email: false,
+};
+
+const initialNewComment: NewCommentState = {
+  newCommentData: initialComment,
+  visible: false,
+  submitting: false,
+  errors: initialCommentError,
+};
+
+export const postComment = createAsyncThunk(
+  'newComment/post',
+  (comment: Omit<Comment, 'id'>) => {
+    return createComment(comment);
+  },
+);
+
+export const newCommentSlice = createSlice({
+  name: 'newComment',
+  initialState: initialNewComment,
+  reducers: {
+    set: (state, action: PayloadAction<CommentData>) => {
+      const newComment = {
+        name: action.payload.name,
+        body: action.payload.body,
+        email: action.payload.email,
+      };
+
+      return {
+        ...state,
+        newCommentData: newComment,
+      };
+    },
+    setVisibility: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        visible: action.payload,
+      };
+    },
+    clear: state => {
+      return {
+        ...state,
+        newCommentData: initialComment,
+        errors: initialCommentError,
+      };
+    },
+    setErrors: (state, action: PayloadAction<NewCommentErrors>) => {
+      return {
+        ...state,
+        errors: action.payload,
+      };
+    },
+  },
+  extraReducers: builder => {
+    builder.addCase(postComment.pending, state => {
+      return {
+        ...state,
+        submitting: true,
+      };
+    });
+    builder.addCase(postComment.fulfilled, state => {
+      return {
+        ...state,
+        newCommentData: {
+          ...state.newCommentData,
+          body: '',
+        },
+        submitting: false,
+      };
+    });
+    builder.addCase(postComment.rejected, state => {
+      return {
+        ...state,
+        submitting: false,
+      };
+    });
+    builder.addCase(getComments.pending, state => {
+      return {
+        ...state,
+        visible: false,
+      };
+    });
+  },
+});
+
+export const { set, setVisibility, clear, setErrors } = newCommentSlice.actions;
+
+export default newCommentSlice.reducer;
