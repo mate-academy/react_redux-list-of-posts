@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/bulma.sass';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './App.scss';
 
 import classNames from 'classnames';
@@ -26,17 +26,20 @@ export const App: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  function getSelectedPost(post: Post | null) {
+  const getSelectedPost = (post: Post | null) => {
     dispatch(setSelectedPost(post as Post));
-  }
+  };
 
-  function loadAuthorById(id: number) {
+  const loadAuthorById = (id: number) => {
     dispatch(fetchAuthor(id));
-  }
+  };
 
-  function loadUserPosts(userId: number) {
-    dispatch(fetchUserPosts(userId));
-  }
+  const loadUserPosts = useCallback(
+    (userId: number) => {
+      dispatch(fetchUserPosts(userId));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     dispatch(clearSelectedPost());

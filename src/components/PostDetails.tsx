@@ -23,11 +23,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const dispatch = useAppDispatch();
 
-  function loadComments() {
+  const loadComments = () => {
     setVisible(false);
 
     dispatch(fetchComments(post.id));
-  }
+  };
 
   useEffect(loadComments, [post.id, dispatch]);
 
