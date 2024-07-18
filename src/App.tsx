@@ -1,44 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import 'bulma/bulma.sass';
+import React, { useEffect } from 'react';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
+import { PostDetails } from './components/PostDetails';
+import { PostsList } from './components/PostsList';
+import { UserSelector } from './components/UserSelector';
+import { fetchAuthor } from './features/authorSlice';
+import {
+  clearPosts,
+  clearSelectedPost,
+  fetchUserPosts,
+  setSelectedPost,
+} from './features/postSlice';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { author } = useAppSelector(state => state.author);
+  const { posts, loaded, hasError, selectedPost } = useAppSelector(
+    state => state.post,
+  );
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
+
+  function getSelectedPost(post: Post | null) {
+    dispatch(setSelectedPost(post as Post));
+  }
+
+  function loadAuthorById(id: number) {
+    dispatch(fetchAuthor(id));
+  }
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+    dispatch(fetchUserPosts(userId));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(clearSelectedPost());
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
     }
   }, [author]);
 
@@ -49,7 +55,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={loadAuthorById} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -76,7 +82,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={getSelectedPost}
                   />
                 )}
               </div>
