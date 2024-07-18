@@ -39,10 +39,6 @@ export const UserSelector: React.FC<Props> = ({
     };
   }, [expanded]);
 
-  // if (loading) {
-  //   return <Loader />;
-  // }
-
   return (
     <div
       data-cy="UserSelector"
