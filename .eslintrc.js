@@ -3,12 +3,5 @@ module.exports = {
     '@mate-academy/eslint-config-react-typescript',
     'plugin:cypress/recommended',
   ],
-  rules: {
-    'no-param-reassign': [
-      2,
-      {
-        props: false,
-      },
-    ],
-  },
+  rules: { 'no-param-reassign': ['error', { props: false }] },
 };
