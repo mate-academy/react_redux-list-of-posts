@@ -16,13 +16,11 @@ export const UserSelector: React.FC<Props> = ({
   const [expanded, setExpanded] = useState(false);
 
   const { users } = useAppSelector(state => state.user);
-  // const { loading } = useAppSelector(state => state.author);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
