@@ -58,6 +58,7 @@ export const commentSlice = createSlice({
 
     builder.addCase(addComment.rejected, state => {
       state.submitting = false;
+      state.hasError = true;
     });
 
     builder.addCase(fetchComments.pending, state => {
