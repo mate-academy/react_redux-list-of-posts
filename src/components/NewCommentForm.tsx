@@ -1,13 +1,35 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments';
+import { SelectedPostState } from '../features/selectedPost';
+import { Comment } from '../types/Comment';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { selectedPost }: SelectedPostState = useAppSelector(
+    state => state.selectedPost,
+  );
+  const commentsState: commentsActions.CommentsState = useAppSelector(
+    state => state.comments,
+  );
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (commentsState.loaded) {
+    }
+  }, [commentsState.loaded]);
+
+  useEffect(() => {
+    if (commentsState.comments.length) {
+      setSubmitting(false);
+    }
+  }, [commentsState.comments.length, commentsState.loaded]);
+
+  const addComment = ({ postId, name, email, body }: Omit<Comment, 'id'>) => {
+    dispatch(commentsActions.create({ postId, name, email, body }));
+  };
 
   const [errors, setErrors] = useState({
     name: false,
@@ -44,7 +66,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
@@ -57,15 +79,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
+    if (selectedPost) {
+      addComment({ postId: selectedPost?.id, name, email, body });
+    }
+
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
