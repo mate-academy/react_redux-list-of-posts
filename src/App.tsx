@@ -9,7 +9,7 @@ import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { fetchAuthor } from './features/authorSlice';
+import { setAuthor } from './features/authorSlice';
 import {
   clearPosts,
   clearSelectedPost,
@@ -17,6 +17,7 @@ import {
   setSelectedPost,
 } from './features/postSlice';
 import { Post } from './types/Post';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
@@ -30,8 +31,8 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(post as Post));
   };
 
-  const loadAuthorById = (id: number) => {
-    dispatch(fetchAuthor(id));
+  const loadAuthor = (user: User) => {
+    dispatch(setAuthor(user));
   };
 
   const loadUserPosts = useCallback(
@@ -58,7 +59,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={loadAuthorById} />
+                <UserSelector value={author} onChange={loadAuthor} />
               </div>
 
               <div className="block" data-cy="MainContent">

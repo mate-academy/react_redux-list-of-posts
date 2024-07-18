@@ -6,7 +6,7 @@ import { User } from '../types/User';
 
 type Props = {
   value: User | null;
-  onChange: (id: number) => void;
+  onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -74,7 +74,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user.id);
+                onChange(user);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

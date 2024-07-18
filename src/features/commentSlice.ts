@@ -6,12 +6,14 @@ import { Comment } from '../types/Comment';
 type CommentState = {
   comments: Comment[];
   loaded: boolean;
+  submitting: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentState = {
   comments: [],
   loaded: false,
+  submitting: false,
   hasError: false,
 };
 
@@ -45,13 +47,24 @@ export const commentSlice = createSlice({
     },
   },
   extraReducers(builder) {
+    builder.addCase(addComment.pending, state => {
+      state.submitting = true;
+    });
+
     builder.addCase(addComment.fulfilled, (state, action) => {
       state.comments.push(action.payload);
+      state.submitting = false;
     });
+
+    builder.addCase(addComment.rejected, state => {
+      state.submitting = false;
+    });
+
     builder.addCase(fetchComments.pending, state => {
       state.loaded = false;
       state.hasError = false;
     });
+
     builder.addCase(fetchComments.fulfilled, (state, action) => {
       state.comments = action.payload;
       state.loaded = true;
