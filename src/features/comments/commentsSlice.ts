@@ -1,23 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { Comment } from '../../types/Comment';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getPostComments } from '../../api/comments';
-import { Comment, CommentData } from '../../types/Comment';
+import { CommentData } from '../../types/Comment';
 import * as commentsApi from '../../api/comments';
 
 export const selectComments = (state: RootState) => state.comments.comments;
 export const selectCommentsStatus = (state: RootState) => state.comments.status;
-
-export interface CommentsState {
-  comments: Comment[];
-  status: 'loaded' | 'hasError' | 'items';
-  error: string | null;
-}
-
-export const initialState: CommentsState = {
-  comments: [],
-  status: 'items',
-  error: null,
-};
 
 export const fetchCommentsByPostId = createAsyncThunk(
   'comments/fetchCommentsByPostId',
@@ -58,43 +48,66 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
+export interface CommentsState {
+  comments: Comment[];
+  status: 'loaded' | 'hasError' | 'items';
+  error: string | null;
+}
+
+export const initialState: CommentsState = {
+  comments: [],
+  status: 'items',
+  error: null,
+};
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
     setComments: (state, action: PayloadAction<Comment[]>) => {
-      // eslint-disable-next-line no-param-reassign
-      state.comments = action.payload;
+      return {
+        ...state,
+        comments: action.payload,
+      };
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchCommentsByPostId.pending, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.status = 'items';
+        return {
+          ...state,
+          status: 'items',
+        };
       })
       .addCase(fetchCommentsByPostId.rejected, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.status = 'hasError';
+        return {
+          ...state,
+          status: 'hasError',
+        };
       })
       .addCase(fetchCommentsByPostId.fulfilled, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.status = 'loaded';
-        // eslint-disable-next-line no-param-reassign
-        state.comments = action.payload;
+        return {
+          ...state,
+          status: 'loaded',
+          comments: action.payload,
+        };
       })
       .addCase(createComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
       })
       .addCase(createComment.rejected, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.error = action.payload as string;
+        return {
+          ...state,
+          error: action.payload as string,
+        };
       })
       .addCase(deleteComment.fulfilled, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.comments = state.comments.filter(
-          comment => action.payload !== comment.id,
-        );
+        return {
+          ...state,
+          comments: state.comments.filter(
+            comment => action.payload !== comment.id,
+          ),
+        };
       });
   },
 });

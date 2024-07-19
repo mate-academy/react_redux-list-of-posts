@@ -30,28 +30,35 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      // eslint-disable-next-line no-param-reassign
-      state.posts = action.payload;
+      return {
+        ...state,
+        posts: action.payload,
+      };
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPostsByUserId.pending, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.status = 'items';
+        return {
+          ...state,
+          status: 'items',
+        };
       })
       .addCase(
         fetchPostsByUserId.fulfilled,
         (state, action: PayloadAction<Post[]>) => {
-          // eslint-disable-next-line no-param-reassign
-          state.status = 'loaded';
-          // eslint-disable-next-line no-param-reassign
-          state.posts = action.payload;
+          return {
+            ...state,
+            status: 'loaded',
+            posts: action.payload,
+          };
         },
       )
       .addCase(fetchPostsByUserId.rejected, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.status = 'hasError';
+        return {
+          ...state,
+          status: 'hasError',
+        };
       });
   },
 });

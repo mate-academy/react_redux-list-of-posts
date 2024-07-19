@@ -18,8 +18,10 @@ export const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
-      // eslint-disable-next-line no-param-reassign
-      state.selectedPost = action.payload;
+      return {
+        ...state,
+        selectedPost: action.payload,
+      };
     },
   },
 });

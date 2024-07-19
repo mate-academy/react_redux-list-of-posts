@@ -12,6 +12,7 @@ import {
   selectComments,
   selectCommentsStatus,
 } from '../features/comments/commentsSlice';
+import { HAS_ERROR, ITEMS, LOADED } from '../App';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -26,32 +27,6 @@ export const PostDetails: React.FC = () => {
       dispatch(fetchCommentsByPostId(selectedPost.id));
     }
   }, [selectedPost, dispatch]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
     if (selectedPost) {
@@ -68,21 +43,21 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {commentsStatus === 'items' && <Loader />}
+        {commentsStatus === ITEMS && <Loader />}
 
-        {commentsStatus === 'hasError' && (
+        {commentsStatus === HAS_ERROR && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {commentsStatus === 'loaded' && comments.length === 0 && (
+        {commentsStatus === LOADED && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {commentsStatus === 'loaded' && comments.length > 0 && (
+        {commentsStatus === LOADED && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -116,7 +91,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {commentsStatus === 'loaded' && !visible && (
+        {commentsStatus === LOADED && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -127,7 +102,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {commentsStatus === 'loaded' && visible && (
+        {commentsStatus === LOADED && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
