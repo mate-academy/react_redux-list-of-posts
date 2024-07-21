@@ -1,191 +1,208 @@
-import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
+import cn from 'classnames';
+
+import { useAppSelector } from '../app/hooks';
 import { CommentData } from '../types/Comment';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC<Props> = memo(
+  function NewCommentFormComponent({ onSubmit }) {
+    const { submitting } = useAppSelector(state => state.comments);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+    const [errors, setErrors] = useState({
+      name: false,
+      email: false,
+      body: false,
+    });
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const clearForm = () => {
-    setValues({
+    const [{ name, email, body }, setValues] = useState({
       name: '',
       email: '',
       body: '',
     });
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+    const clearForm = () => {
+      setValues({
+        name: '',
+        email: '',
+        body: '',
+      });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
+      setErrors({
+        name: false,
+        email: false,
+        body: false,
+      });
+    };
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
-  };
+    const handleChange = (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+      const { name: field, value } = event.target;
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+      setValues(current => ({ ...current, [field]: value }));
+      setErrors(current => ({ ...current, [field]: false }));
+    };
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
 
-    if (!name || !email || !body) {
-      return;
-    }
+      setErrors({
+        name: false,
+        email: false,
+        body: false,
+      });
 
-    setSubmitting(true);
+      const normalized = {
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
+      };
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+      if (!normalized.name || !normalized.email || !normalized.body) {
+        setErrors({
+          name: !normalized.name && true,
+          email: !normalized.email && true,
+          body: !normalized.body && true,
+        });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
-  };
+        return;
+      }
 
-  return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+      onSubmit({
+        name,
+        email,
+        body,
+      });
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
-            value={name}
-            onChange={handleChange}
-          />
+      setValues(current => ({ ...current, body: '' }));
+    };
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
+    return (
+      <form
+        onSubmit={handleSubmit}
+        onReset={clearForm}
+        data-cy="NewCommentForm"
+      >
+        <div className="field" data-cy="NameField">
+          <label className="label" htmlFor="comment-author-name">
+            Author Name
+          </label>
+
+          <div className="control has-icons-left has-icons-right">
+            <input
+              type="text"
+              name="name"
+              id="comment-author-name"
+              placeholder="Name Surname"
+              className={cn('input', { 'is-danger': errors.name })}
+              value={name}
+              onChange={handleChange}
+            />
+
+            <span className="icon is-small is-left">
+              <i className="fas fa-user" />
+            </span>
+
+            {errors.name && (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )}
+          </div>
 
           {errors.name && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Name is required
+            </p>
           )}
         </div>
 
-        {errors.name && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
-      </div>
+        <div className="field" data-cy="EmailField">
+          <label className="label" htmlFor="comment-author-email">
+            Author Email
+          </label>
 
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
+          <div className="control has-icons-left has-icons-right">
+            <input
+              type="text"
+              name="email"
+              id="comment-author-email"
+              placeholder="email@test.com"
+              className={cn('input', { 'is-danger': errors.email })}
+              value={email}
+              onChange={handleChange}
+            />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
-            onChange={handleChange}
-          />
+            <span className="icon is-small is-left">
+              <i className="fas fa-envelope" />
+            </span>
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
+            {errors.email && (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )}
+          </div>
 
           {errors.email && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Email is required
+            </p>
           )}
         </div>
 
-        {errors.email && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
-      </div>
+        <div className="field" data-cy="BodyField">
+          <label className="label" htmlFor="comment-body">
+            Comment Text
+          </label>
 
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
+          <div className="control">
+            <textarea
+              id="comment-body"
+              name="body"
+              placeholder="Type comment here"
+              className={cn('textarea', { 'is-danger': errors.body })}
+              value={body}
+              onChange={handleChange}
+            />
+          </div>
 
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
-            onChange={handleChange}
-          />
+          {errors.body && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Enter some text
+            </p>
+          )}
         </div>
 
-        {errors.body && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
-      </div>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="submit"
+              className={cn('button', 'is-link', {
+                'is-loading': submitting,
+              })}
+            >
+              Add
+            </button>
+          </div>
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="submit"
-            className={classNames('button', 'is-link', {
-              'is-loading': submitting,
-            })}
-          >
-            Add
-          </button>
+          <div className="control">
+            <button type="reset" className="button is-link is-light">
+              Clear
+            </button>
+          </div>
         </div>
-
-        <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
-            Clear
-          </button>
-        </div>
-      </div>
-    </form>
-  );
-};
+      </form>
+    );
+  },
+);
