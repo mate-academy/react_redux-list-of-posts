@@ -6,22 +6,22 @@ import { CommentsState } from '../types/Reducer';
 const initialState: CommentsState = {
   comments: [] as Comment[],
   hasError: false,
-  loaded: true,
+  loading: false,
   visibleForm: false,
   submitting: false,
 };
 
-export const initComments = createAsyncThunk(
+export const fetchComments = createAsyncThunk(
   'comments/fetch',
   (postId: number) => commentsService.get(postId),
 );
 
-export const initCommentDeleted = createAsyncThunk(
+export const deleteComment = createAsyncThunk(
   'comments/delete/fetch',
   (commentId: number) => commentsService.delete(commentId),
 );
 
-export const initCommentCreat = createAsyncThunk(
+export const createComment = createAsyncThunk(
   'comments/create/fetch',
   ({ name, email, body, postId }: Comment) =>
     commentsService.create({
@@ -40,46 +40,46 @@ const commentsSlice = createSlice({
       ...state,
       visibleForm: action.payload,
     }),
-    deleteComment: (state, action: PayloadAction<number>) => ({
+    setDeleteComment: (state, action: PayloadAction<number>) => ({
       ...state,
       comments: state.comments.filter(comment => comment.id !== action.payload),
     }),
   },
 
   extraReducers: builder => {
-    builder.addCase(initComments.pending, state => ({
+    builder.addCase(fetchComments.pending, state => ({
       ...state,
-      loaded: true,
+      loading: true,
       hasError: false,
     }));
 
-    builder.addCase(initComments.fulfilled, (state, action) => ({
+    builder.addCase(fetchComments.fulfilled, (state, action) => ({
       ...state,
       comments: action.payload,
-      loaded: false,
+      loading: false,
     }));
 
-    builder.addCase(initComments.rejected, state => ({
+    builder.addCase(fetchComments.rejected, state => ({
       ...state,
       hasError: true,
-      loaded: false,
+      loading: false,
     }));
 
-    builder.addCase(initCommentDeleted.pending, state => state);
+    builder.addCase(deleteComment.pending, state => state);
 
-    builder.addCase(initCommentCreat.pending, state => ({
+    builder.addCase(createComment.pending, state => ({
       ...state,
       submitting: true,
       hasError: false,
     }));
 
-    builder.addCase(initCommentCreat.fulfilled, (state, action) => ({
+    builder.addCase(createComment.fulfilled, (state, action) => ({
       ...state,
       comments: [...state.comments, action.payload],
       submitting: false,
     }));
 
-    builder.addCase(initCommentCreat.rejected, state => ({
+    builder.addCase(createComment.rejected, state => ({
       ...state,
       hasError: true,
       submitting: false,
@@ -87,5 +87,5 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { setVisibleForm, deleteComment } = commentsSlice.actions;
+export const { setVisibleForm, setDeleteComment } = commentsSlice.actions;
 export const commentsReducer = commentsSlice.reducer;

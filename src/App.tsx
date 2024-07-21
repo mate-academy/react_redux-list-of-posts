@@ -11,25 +11,33 @@ import { Loader } from './components/Loader';
 
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as usersActions from './features/users';
+import * as postsActions from './features/posts';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { hasError, loaded, posts, selectedPost, selectedUser } =
+  const { hasError, loading, posts, selectedPost, selectedUser } =
     useAppSelector(state => ({
       ...state.users,
       ...state.posts,
     }));
 
   useEffect(() => {
-    dispatch(usersActions.initUsers());
+    dispatch(usersActions.fetchUsers());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (selectedUser?.id) {
+      dispatch(postsActions.fetchPosts(selectedUser?.id));
+      dispatch(postsActions.setSelectedPost(null));
+    }
+  }, [dispatch, selectedUser?.id]);
+
   const show = {
-    postsError: !loaded && hasError,
-    posts: !loaded && !hasError && !!posts.length,
-    noPosts: !loaded && !hasError && !posts.length && !!selectedUser,
-    noUserSelected: !loaded && !hasError && !posts.length && !selectedUser,
+    postsError: !loading && hasError,
+    posts: !loading && !hasError && !!posts.length,
+    noPosts: !loading && !hasError && !posts.length && !!selectedUser,
+    noUserSelected: !loading && !hasError && !posts.length && !selectedUser,
   };
 
   return (
@@ -47,7 +55,7 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loaded && <Loader />}
+                {loading && <Loader />}
 
                 {show.postsError && (
                   <div

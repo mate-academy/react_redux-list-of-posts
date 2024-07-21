@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as commentsActions from '../features/comments';
 
@@ -9,14 +9,14 @@ import { CommentData } from '../types/Comment';
 export const PostDetails: React.FC = memo(function PostDetailsComponent() {
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.posts);
-  const { comments, loaded, hasError, visibleForm } = useAppSelector(
+  const { comments, loading, hasError, visibleForm } = useAppSelector(
     state => state.comments,
   );
 
   const deletedComment = useCallback(
     (commentId: number) => {
+      dispatch(commentsActions.setDeleteComment(commentId));
       dispatch(commentsActions.deleteComment(commentId));
-      dispatch(commentsActions.initCommentDeleted(commentId));
     },
     [dispatch],
   );
@@ -24,7 +24,7 @@ export const PostDetails: React.FC = memo(function PostDetailsComponent() {
   const createComment = useCallback(
     async ({ name, email, body }: CommentData) => {
       dispatch(
-        commentsActions.initCommentCreat({
+        commentsActions.createComment({
           name,
           email,
           body,
@@ -36,11 +36,17 @@ export const PostDetails: React.FC = memo(function PostDetailsComponent() {
     [dispatch, selectedPost?.id],
   );
 
+  useEffect(() => {
+    if (selectedPost?.id) {
+      dispatch(commentsActions.fetchComments(selectedPost.id));
+    }
+  }, [dispatch, selectedPost?.id]);
+
   const show = {
-    commentsError: !loaded && hasError,
-    comments: !loaded && !hasError && !!comments.length,
-    noComments: !loaded && !hasError && !comments.length,
-    buttonWriteComment: !loaded && !hasError && !visibleForm,
+    commentsError: !loading && hasError,
+    comments: !loading && !hasError && !!comments.length,
+    noComments: !loading && !hasError && !comments.length,
+    buttonWriteComment: !loading && !hasError && !visibleForm,
   };
 
   return (
@@ -52,7 +58,7 @@ export const PostDetails: React.FC = memo(function PostDetailsComponent() {
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {loading && <Loader />}
 
         {show.commentsError && (
           <div className="notification is-danger" data-cy="CommentsError">

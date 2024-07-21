@@ -3,31 +3,21 @@ import cn from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/users';
-import * as postsActions from '../features/posts';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = memo(function UserSelectorComponent() {
   const dispatch = useAppDispatch();
 
-  const { users, selectedUser, selectedPost } = useAppSelector(state => ({
+  const { users, selectedUser } = useAppSelector(state => ({
     ...state.users,
     ...state.posts,
   }));
 
-  const selectUser = useCallback(
+  const getSelectedUser = useCallback(
     (newUser: User) => () => {
-      if (selectedUser?.id === newUser.id) {
-        return;
-      }
-
-      if (selectedPost) {
-        dispatch(postsActions.setSelectedPost(null));
-      }
-
       dispatch(usersActions.setSelectedUser(newUser));
-      dispatch(postsActions.initPosts(newUser.id));
     },
-    [dispatch, selectedPost, selectedUser?.id],
+    [dispatch],
   );
 
   const [expanded, setExpanded] = useState(false);
@@ -82,7 +72,7 @@ export const UserSelector: React.FC = memo(function UserSelectorComponent() {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={selectUser(user)}
+              onClick={getSelectedUser(user)}
               className={cn('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

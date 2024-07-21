@@ -12,11 +12,10 @@ export const PostsList: React.FC = memo(function PostsListComponent() {
     ...state.comments,
   }));
 
-  const getComments = (post: Post) => {
+  const getSelectedPost = (post: Post) => {
     if (selectedPost?.id === post.id) {
       dispatch(postsActions.setSelectedPost(null));
     } else {
-      dispatch(commentsActions.initComments(post.id));
       dispatch(postsActions.setSelectedPost(post));
     }
 
@@ -51,7 +50,7 @@ export const PostsList: React.FC = memo(function PostsListComponent() {
                   className={cn('button', 'is-link', {
                     'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => getComments(post)}
+                  onClick={() => getSelectedPost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

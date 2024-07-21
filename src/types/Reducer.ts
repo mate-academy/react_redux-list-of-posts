@@ -11,13 +11,13 @@ export interface PostsState {
   posts: Post[];
   selectedPost: null | Post;
   hasError: boolean;
-  loaded: boolean;
+  loading: boolean;
 }
 
 export interface CommentsState {
   comments: Comment[];
   hasError: boolean;
-  loaded: boolean;
+  loading: boolean;
   visibleForm: boolean;
   submitting: boolean;
 }
