@@ -1,14 +1,13 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { createNewComment } from '../features/users/commentsSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -50,17 +49,26 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors({
       name: !name,
       email: !email,
-      body: !body,
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (selectedPost?.id) {
+      await dispatch(
+        createNewComment({
+          name,
+          email,
+          body,
+          postId: selectedPost.id,
+        }),
+      );
+    }
 
     // and the spinner will disappear immediately
     setSubmitting(false);
@@ -114,7 +122,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
