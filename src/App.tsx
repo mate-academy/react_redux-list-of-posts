@@ -26,6 +26,11 @@ export const App: React.FC = () => {
   const { clear } = postsActions;
   const { setSelectedPost, clearSelectedPost } = selectPostActions;
 
+  const isNotUserSelected = !author || (author && author.id === 0);
+  const isLoad = author && loaded;
+  const isError = author && !loaded && hasError;
+  const isNotPosts = !loaded && !hasError && posts.length === 0;
+
   useEffect(() => {
     dispatch(clear());
 
@@ -53,13 +58,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {(!author || (author && author.id === 0)) && (
+                {isNotUserSelected && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {author && loaded && <Loader />}
+                {isLoad && <Loader />}
 
-                {author && !loaded && hasError && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -68,9 +73,9 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && author.id > 0 && (
+                {!isNotUserSelected && (
                   <>
-                    {!loaded && !hasError && posts.length === 0 && (
+                    {isNotPosts && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
@@ -79,7 +84,7 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {!loaded && !hasError && posts.length > 0 && (
+                    {!isNotPosts && !loaded && (
                       <PostsList
                         posts={posts}
                         selectedPostId={selectedPost.id}
