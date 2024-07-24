@@ -69,12 +69,7 @@ export const commentFormSlice = createSlice({
         body: '',
       };
     },
-    setErrors: (
-      state,
-      action?: PayloadAction<
-      ErrorPayload | undefined
-      >,
-    ) => {
+    setErrors: (state, action?: PayloadAction<ErrorPayload | undefined>) => {
       if (action?.payload) {
         state.errors = {
           ...state.errors,
