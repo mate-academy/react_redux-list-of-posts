@@ -39,6 +39,7 @@ const initialState: CommmentFormState = {
 };
 
 type ErrorPayload = { field: keyof FormObj; value: boolean };
+type InputPayload = { field: keyof FormObj; value: string };
 
 export const AsyncPostComment = createAsyncThunk(
   'commentForm/createComment',
@@ -83,7 +84,7 @@ export const commentFormSlice = createSlice({
         };
       }
     },
-    setInputs: (state, action: PayloadAction<ErrorPayload>) => {
+    setInputs: (state, action: PayloadAction<InputPayload>) => {
       state.value = {
         ...state.value,
         [action.payload.field]: action.payload.value,
