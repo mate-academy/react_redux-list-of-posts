@@ -28,7 +28,6 @@ export const asyncdeleteComment = createAsyncThunk(
     const value = await deleteComment(commentId).then(data => data);
 
     return value;
-
   },
 );
 
