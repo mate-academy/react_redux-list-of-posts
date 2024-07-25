@@ -40,20 +40,30 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     const { name, value } = event.target;
 
-    dispatch(setInputs({ field: name as keyof FormObj, value }));
-    dispatch(setErrors(undefined));
+    if (value.trim() !== '') {
+      dispatch(setInputs({ field: name as keyof FormObj, value }));
+      dispatch(setErrors({ field: name as keyof FormObj, value: false }));
+    } else {
+      dispatch(setErrors({ field: name as keyof FormObj, value: true }));
+    }
   };
 
   const { name, email, body } = commentForm.value;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    let isValid = true;
 
-    if (!name || !email || !body) {
-      return;
+    Object.entries(commentForm.value).forEach(([key, value]) => {
+      if (!value) {
+        dispatch(setErrors({ field: key as keyof FormObj, value: true }));
+        isValid = false;
+      }
+    });
+
+    if (isValid) {
+      onSubmit({ name, email, body });
     }
-
-    onSubmit({ name, email, body });
   };
 
   return (
@@ -104,7 +114,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

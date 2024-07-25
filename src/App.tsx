@@ -80,7 +80,7 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': !!selectedPost.value,
               },
             )}
           >

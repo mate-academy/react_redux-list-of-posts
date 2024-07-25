@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // import { fetchCount } from './counterAPI';
 import { Post } from '../../types/Post';
-import { getPosts } from '../../api/posts';
+import { getUserPosts } from '../../api/posts';
 
 export interface PostsState {
   value: Post[];
@@ -17,7 +17,7 @@ const initialState: PostsState = {
 export const asyncGetPosts = createAsyncThunk(
   'posts/getPosts',
   async (id: number) => {
-    const value = await getPosts().then(data => data);
+    const value = await getUserPosts(id).then(data => data);
 
     return value.filter(elem => elem.userId === id);
   },

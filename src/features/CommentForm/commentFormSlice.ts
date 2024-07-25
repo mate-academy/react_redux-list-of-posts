@@ -68,7 +68,7 @@ export const commentFormSlice = createSlice({
         body: '',
       };
     },
-    setErrors: (state, action?: PayloadAction<ErrorPayload | undefined>) => {
+    setErrors: (state, action: PayloadAction<ErrorPayload | null>) => {
       if (action?.payload) {
         state.errors = {
           ...state.errors,
@@ -97,8 +97,7 @@ export const commentFormSlice = createSlice({
       .addCase(AsyncPostComment.fulfilled, state => {
         state.status = 'idle';
         state.value = {
-          name: '',
-          email: '',
+          ...state.value,
           body: '',
         };
       })

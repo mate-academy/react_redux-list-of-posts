@@ -20,6 +20,7 @@ export const authorSlice = createSlice({
       state.value = action.payload;
     },
   },
+  extraReducers: {},
 });
 
 export const { setAuthor } = authorSlice.actions;

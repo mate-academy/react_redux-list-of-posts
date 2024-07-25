@@ -15,7 +15,9 @@ export const UserSelector: React.FC = ({}) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleSetAuthor = (user: User) => {
-    dispatch(setAuthor(user));
+    if (author.value?.id !== user.id) {
+      dispatch(setAuthor(user));
+    }
   };
 
   useEffect(() => {
