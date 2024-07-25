@@ -8,11 +8,11 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { AsyncGetUsers } from './features/Users/usersSlice';
+import { asyncGetUsers } from './features/Users/usersSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from './app/store';
 import { useAppDispatch } from './app/hooks';
-import { AsyncGetPosts } from './features/Posts/postsSlice';
+import { asyncGetPosts } from './features/Posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -24,12 +24,12 @@ export const App: React.FC = () => {
     author.value && posts.status === 'idle' && posts.value.length === 0;
 
   useEffect(() => {
-    dispatch(AsyncGetUsers());
+    dispatch(asyncGetUsers());
   }, []);
 
   useEffect(() => {
     if (author.value) {
-      dispatch(AsyncGetPosts(author.value.id));
+      dispatch(asyncGetPosts(author.value.id));
     }
   }, [author.value]);
 

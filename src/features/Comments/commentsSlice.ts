@@ -15,8 +15,8 @@ const initialState: CounterState = {
   status: 'loading',
 };
 
-export const AsyncGetCommnets = createAsyncThunk(
-  'comments/fetchCommnets',
+export const asyncGetCommnets = createAsyncThunk(
+  'comments/fetchComments',
   async (id: number) => {
     const value = await getPostComments(id).then(data => data);
 
@@ -24,8 +24,8 @@ export const AsyncGetCommnets = createAsyncThunk(
   },
 );
 
-export const AsyncdeleteComment = createAsyncThunk(
-  'comments/DeleteCommnet',
+export const asyncdeleteComment = createAsyncThunk(
+  'comments/DeleteComment',
   async (commentId: number) => {
     const value = await deleteComment(commentId).then(data => data);
 
@@ -46,23 +46,23 @@ export const commentsSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(AsyncGetCommnets.pending, state => {
+      .addCase(asyncGetCommnets.pending, state => {
         state.status = 'loading';
       })
-      .addCase(AsyncGetCommnets.fulfilled, (state, action) => {
+      .addCase(asyncGetCommnets.fulfilled, (state, action) => {
         state.status = 'idle';
         state.value = action.payload;
       })
-      .addCase(AsyncGetCommnets.rejected, state => {
+      .addCase(asyncGetCommnets.rejected, state => {
         state.status = 'failed';
       })
-      .addCase(AsyncdeleteComment.pending, state => {
+      .addCase(asyncdeleteComment.pending, state => {
         state.status = 'loading';
       })
-      .addCase(AsyncdeleteComment.fulfilled, state => {
+      .addCase(asyncdeleteComment.fulfilled, state => {
         state.status = 'idle';
       })
-      .addCase(AsyncdeleteComment.rejected, state => {
+      .addCase(asyncdeleteComment.rejected, state => {
         state.status = 'failed';
       });
   },

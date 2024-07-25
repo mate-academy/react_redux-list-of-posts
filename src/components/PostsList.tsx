@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Post } from '../types/Post';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
@@ -14,11 +14,18 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
   const selecetedPost = useSelector((state: RootState) => state.selecetedPost);
+  const author = useSelector((state: RootState) => state.author);
   const dispatch = useAppDispatch();
 
   const handleSelect = (post: Post | null) => {
-    dispatch(addPost(post));
+    if (post !== selecetedPost.value) {
+      dispatch(addPost(post));
+    }
   };
+
+  useEffect(() => {
+    handleSelect(null);
+  },[author])
 
   return (
     <div data-cy="PostsList">

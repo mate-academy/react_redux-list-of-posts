@@ -5,8 +5,8 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch } from '../app/hooks';
 import {
-  AsyncdeleteComment,
-  AsyncGetCommnets,
+  asyncdeleteComment,
+  asyncGetCommnets,
   delComment,
 } from '../features/Comments/commentsSlice';
 import { useSelector } from 'react-redux';
@@ -23,13 +23,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments = useSelector((state: RootState) => state.comments);
 
   useEffect(() => {
-    dispatch(AsyncGetCommnets(post.id));
-  }, [post.id]);
+    dispatch(asyncGetCommnets(post.id));
+  }, [post.id, dispatch]);
 
-  const deleteComment = (comment: Comment) => {
+  useEffect(() => {
+    setVisible(false)
+  },[post])
+  
+  const handleDelComment = (comment: Comment) => {
     dispatch(delComment(comment.id));
-    dispatch(AsyncdeleteComment(comment.id));
-  };
+    asyncdeleteComment(comment.id);
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -74,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment)}
+                    onClick={() => handleDelComment(comment)}
                   >
                     delete button
                   </button>

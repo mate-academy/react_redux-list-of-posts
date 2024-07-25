@@ -14,7 +14,7 @@ const initialState: PostsState = {
   status: 'idle',
 };
 
-export const AsyncGetPosts = createAsyncThunk(
+export const asyncGetPosts = createAsyncThunk(
   'posts/getPosts',
   async (id: number) => {
     const value = await getPosts().then(data => data);
@@ -26,22 +26,26 @@ export const AsyncGetPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    resetPosts: (state ) => {
+      state.value = [];
+    }
+  },
   extraReducers: builder => {
     builder
-      .addCase(AsyncGetPosts.pending, state => {
+      .addCase(asyncGetPosts.pending, state => {
         state.status = 'loading';
       })
-      .addCase(AsyncGetPosts.fulfilled, (state, action) => {
+      .addCase(asyncGetPosts.fulfilled, (state, action) => {
         state.status = 'idle';
         state.value = action.payload;
       })
-      .addCase(AsyncGetPosts.rejected, state => {
+      .addCase(asyncGetPosts.rejected, state => {
         state.status = 'failed';
       });
   },
 });
 
-// export const { } = counterSlice.actions;
+export const { resetPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;
