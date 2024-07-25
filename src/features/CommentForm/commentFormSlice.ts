@@ -42,7 +42,7 @@ type InputPayload = { field: keyof FormObj; value: string };
 export const AsyncPostComment = createAsyncThunk(
   'commentForm/createComment',
   async (comment: Omit<Comment, 'id'>, { dispatch }) => {
-    const value = await createComment(comment);
+    const value = await createComment(comment).then(data => data);
 
     if (value) {
       dispatch(addComment(value));
