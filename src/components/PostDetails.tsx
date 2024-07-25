@@ -5,7 +5,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch } from '../app/hooks';
 import {
-  asyncdeleteComment,
+  asyncDeleteComment,
   asyncGetCommnets,
   delComment,
 } from '../features/Comments/commentsSlice';
@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleDelComment = (comment: Comment) => {
     dispatch(delComment(comment.id));
-    asyncdeleteComment(comment.id);
+    dispatch(asyncDeleteComment(comment.id));
   };
 
   return (

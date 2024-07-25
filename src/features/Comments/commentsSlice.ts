@@ -22,7 +22,7 @@ export const asyncGetCommnets = createAsyncThunk(
   },
 );
 
-export const asyncdeleteComment = createAsyncThunk(
+export const asyncDeleteComment = createAsyncThunk(
   'comments/DeleteComment',
   async (commentId: number) => {
     const value = await deleteComment(commentId).then(data => data);
@@ -54,13 +54,13 @@ export const commentsSlice = createSlice({
       .addCase(asyncGetCommnets.rejected, state => {
         state.status = 'failed';
       })
-      .addCase(asyncdeleteComment.pending, state => {
+      .addCase(asyncDeleteComment.pending, state => {
         state.status = 'loading';
       })
-      .addCase(asyncdeleteComment.fulfilled, state => {
+      .addCase(asyncDeleteComment.fulfilled, state => {
         state.status = 'idle';
       })
-      .addCase(asyncdeleteComment.rejected, state => {
+      .addCase(asyncDeleteComment.rejected, state => {
         state.status = 'failed';
       });
   },
