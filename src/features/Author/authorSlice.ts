@@ -14,8 +14,8 @@ const initialState: CounterState = {
   status: 'idle',
 };
 
-export const counterSlice = createSlice({
-  name: 'counter',
+export const authorSlice = createSlice({
+  name: 'author',
   initialState,
   reducers: {
     setAuthor: (state, action: PayloadAction<User>) => {
@@ -24,8 +24,8 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { setAuthor } = counterSlice.actions;
+export const { setAuthor } = authorSlice.actions;
 
-export const selectCount = (state: RootState) => state.author;
+export const selectAuthor = (state: RootState) => state.author;
 
-export default counterSlice.reducer;
+export default authorSlice.reducer;

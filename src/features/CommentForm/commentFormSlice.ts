@@ -112,6 +112,6 @@ export const commentFormSlice = createSlice({
 
 export const { clearForm, setInputs, setErrors } = commentFormSlice.actions;
 
-export const selectCount = (state: RootState) => state.counter.value;
+export const selectCommentForm = (state: RootState) => state.commentForm.value;
 
 export default commentFormSlice.reducer;

@@ -69,5 +69,7 @@ export const commentsSlice = createSlice({
 });
 
 export const { delComment, addComment } = commentsSlice.actions;
-export const selectCount = (state: RootState) => state.counter.value;
+
+export const selectComments = (state: RootState) => state.comments.value;
+
 export default commentsSlice.reducer;

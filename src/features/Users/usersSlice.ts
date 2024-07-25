@@ -15,7 +15,7 @@ const initialState: UsersState = {
   status: 'idle',
 };
 
-export const AsyncGetUsers = createAsyncThunk('users/fetchUsers', async () => {
+export const asyncGetUsers = createAsyncThunk('users/fetchUsers', async () => {
   const value = await getUsers();
 
   return value;
@@ -27,20 +27,18 @@ export const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(AsyncGetUsers.pending, state => {
+      .addCase(asyncGetUsers.pending, state => {
         state.status = 'loading';
       })
-      .addCase(AsyncGetUsers.fulfilled, (state, action) => {
+      .addCase(asyncGetUsers.fulfilled, (state, action) => {
         state.status = 'idle';
         state.users = action.payload;
       })
-      .addCase(AsyncGetUsers.rejected, state => {
+      .addCase(asyncGetUsers.rejected, state => {
         state.status = 'failed';
       });
   },
 });
-
-// export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
 export const Users = (state: RootState) => state.counter.value;
 

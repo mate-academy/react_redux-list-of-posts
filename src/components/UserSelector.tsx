@@ -6,12 +6,7 @@ import { setAuthor } from '../features/Author/authorSlice';
 import { useAppDispatch } from '../app/hooks';
 import { User } from '../types/User';
 
-type Props = {
-  // value: User | null;
-  // onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({}) => {
+export const UserSelector: React.FC = ({}) => {
   const dispatch = useAppDispatch();
 
   const users = useSelector((state: RootState) => state.users);
