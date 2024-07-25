@@ -1,6 +1,8 @@
+import { User } from '../../types/User';
+
 // Create a promise that resolves with a given amount after 500ms
-export function fetchCount(amount = 1) {
-  return new Promise<number>(resolve => {
-    setTimeout(() => resolve(amount), 500);
+export function fetchUsers(users: User[]) {
+  return new Promise<User[]>(resolve => {
+    setTimeout(() => resolve(users), 500);
   });
 }
