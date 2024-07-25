@@ -1,7 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
 import { createComment } from '../../api/comments';
 import { Comment } from '../../types/Comment';
 import { addComment } from '../Comments/commentsSlice';
@@ -111,7 +109,5 @@ export const commentFormSlice = createSlice({
 });
 
 export const { clearForm, setInputs, setErrors } = commentFormSlice.actions;
-
-export const selectCommentForm = (state: RootState) => state.commentForm.value;
 
 export default commentFormSlice.reducer;

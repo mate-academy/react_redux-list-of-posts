@@ -27,9 +27,9 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    resetPosts: (state ) => {
+    resetPosts: state => {
       state.value = [];
-    }
+    },
   },
   extraReducers: builder => {
     builder

@@ -27,13 +27,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id, dispatch]);
 
   useEffect(() => {
-    setVisible(false)
-  },[post])
-  
+    setVisible(false);
+  }, [post]);
+
   const handleDelComment = (comment: Comment) => {
     dispatch(delComment(comment.id));
     asyncdeleteComment(comment.id);
-  }
+  };
 
   return (
     <div className="content" data-cy="PostDetails">

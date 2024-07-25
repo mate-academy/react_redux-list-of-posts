@@ -12,11 +12,7 @@ import {
   FormObj,
 } from '../features/CommentForm/commentFormSlice';
 
-type Props = {
-  // onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({}) => {
+export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const post = useSelector((state: RootState) => state.selecetedPost.value);
   const errors = useSelector((state: RootState) => state.commentForm.errors);

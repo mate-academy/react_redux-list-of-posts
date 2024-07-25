@@ -1,7 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
@@ -39,7 +37,5 @@ export const usersSlice = createSlice({
       });
   },
 });
-
-export const Users = (state: RootState) => state.counter.value;
 
 export default usersSlice.reducer;

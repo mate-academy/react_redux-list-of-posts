@@ -25,7 +25,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
 
   useEffect(() => {
     handleSelect(null);
-  },[author])
+  }, [author]);
 
   return (
     <div data-cy="PostsList">

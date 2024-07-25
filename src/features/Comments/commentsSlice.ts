@@ -1,7 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from '../../app/store';
 import { deleteComment, getPostComments } from '../../api/comments';
 import { Comment } from '../../types/Comment';
 
@@ -30,6 +28,7 @@ export const asyncdeleteComment = createAsyncThunk(
     const value = await deleteComment(commentId).then(data => data);
 
     return value;
+
   },
 );
 
@@ -69,7 +68,5 @@ export const commentsSlice = createSlice({
 });
 
 export const { delComment, addComment } = commentsSlice.actions;
-
-export const selectComments = (state: RootState) => state.comments.value;
 
 export default commentsSlice.reducer;
