@@ -54,9 +54,6 @@ export const commentsSlice = createSlice({
       .addCase(asyncGetCommnets.rejected, state => {
         state.status = 'failed';
       })
-      .addCase(asyncDeleteComment.pending, state => {
-        state.status = 'loading';
-      })
       .addCase(asyncDeleteComment.fulfilled, state => {
         state.status = 'idle';
       })
