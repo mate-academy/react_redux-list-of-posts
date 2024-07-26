@@ -154,7 +154,7 @@ export const CommentsSlice = createSlice({
     builder.addCase(addComment.fulfilled, (state, action) => {
       const currentState = state;
 
-      currentState.comments = [...state.comments, action.payload];
+      currentState.comments.push(action.payload);
       currentState.send = true;
       currentState.loadingNewComment = false;
     });
