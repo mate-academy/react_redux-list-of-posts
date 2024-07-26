@@ -1,75 +1,70 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addComment,
+  setName,
+  setEmail,
+  setBody,
+  setPostId,
+  setSend,
+  setClear,
+} from './slices/CommentsSlice';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const { selectedPost } = useAppSelector(state => state.userPosts);
+  const { newComment, send, loadingNewComment } = useAppSelector(
+    state => state.comments,
+  );
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setName(event.target.value));
   };
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
-
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setEmail(event.target.value));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleChangeBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(setBody(event.target.value));
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
-      return;
+    if (
+      newComment.postId &&
+      newComment.name.trim() &&
+      newComment.email.trim() &&
+      newComment.body.trim()
+    ) {
+      dispatch(
+        addComment({
+          postId: newComment.postId,
+          name: newComment.name,
+          email: newComment.email,
+          body: newComment.body,
+        }),
+      ).then(() => {
+        dispatch(setBody(''));
+      });
+    } else {
+      dispatch(setSend(false));
     }
-
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
+  useEffect(() => {
+    dispatch(setPostId(selectedPost!.id));
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={() => dispatch(setClear())}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -81,16 +76,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
-            value={name}
-            onChange={handleChange}
+            className={classNames('input', {
+              'is-danger': !newComment.name.trim() && !send,
+            })}
+            value={newComment.name}
+            onChange={handleChangeName}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {!newComment.name.trim() && !send && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -100,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.name && (
+        {!newComment.name.trim() && !send && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -118,16 +115,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
-            onChange={handleChange}
+            className={classNames('input', {
+              'is-danger': !newComment.email.trim() && !send,
+            })}
+            value={newComment.email}
+            onChange={handleChangeEmail}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {!newComment.email.trim() && !send && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -137,7 +136,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.email && (
+        {!newComment.email.trim() && !send && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -154,13 +153,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
-            onChange={handleChange}
+            className={classNames('textarea', {
+              'is-danger': !newComment.body.trim() && !send,
+            })}
+            value={newComment.body}
+            onChange={handleChangeBody}
           />
         </div>
 
-        {errors.body && (
+        {!newComment.body.trim() && !send && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -172,7 +173,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': loadingNewComment,
             })}
           >
             Add
