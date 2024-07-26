@@ -6,10 +6,13 @@ import { setAuthor } from '../features/Author/authorSlice';
 import { useAppDispatch } from '../app/hooks';
 import { User } from '../types/User';
 
-export const UserSelector: React.FC = ({}) => {
+interface Props {
+  users: User[];
+}
+
+export const UserSelector: React.FC<Props> = ({ users }) => {
   const dispatch = useAppDispatch();
 
-  const users = useSelector((state: RootState) => state.users);
   const author = useSelector((state: RootState) => state.author);
 
   const [expanded, setExpanded] = useState(false);
@@ -63,8 +66,8 @@ export const UserSelector: React.FC = ({}) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.status === 'idle' &&
-            users.users.map(user => (
+          {users &&
+            users.map(user => (
               <a
                 key={user.id}
                 href={`#user-${user.id}`}

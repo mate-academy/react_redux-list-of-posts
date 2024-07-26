@@ -1,22 +1,48 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import { useAppDispatch } from '../app/hooks';
 import { RootState } from '../app/store';
 import { useSelector } from 'react-redux';
-import {
-  AsyncPostComment,
-  setErrors,
-  clearForm,
-  setInputs,
-  FormObj,
-} from '../features/CommentForm/commentFormSlice';
+import { useAppDispatch } from '../app/hooks';
+import { addComment } from '../features/Comments/commentsSlice';
+import { Comment } from '../types/Comment';
+import { createComment } from '../api/comments';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const post = useSelector((state: RootState) => state.selecetedPost.value);
-  const errors = useSelector((state: RootState) => state.commentForm.errors);
-  const commentForm = useSelector((state: RootState) => state.commentForm);
+
+  const [comment, setComment] = useState({ name: '', email: '', body: '' });
+
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const cleanForm = () => {
+    setComment({ name: '', email: '', body: '' });
+    setErrors({ name: false, email: false, body: false });
+  };
+
+  async function createCommentRequest(
+    commentProp: Omit<Comment, 'id'>,
+  ): Promise<Comment | any> {
+    setLoading(true);
+
+    try {
+      const data = await createComment(commentProp);
+
+      if (data) {
+        dispatch(addComment(data));
+        cleanForm();
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const onSubmit = ({ name, email, body }: CommentData) => {
     if (name && email && body && post) {
@@ -27,12 +53,8 @@ export const NewCommentForm: React.FC = () => {
         postId: post.id,
       };
 
-      dispatch(AsyncPostComment(newComment));
+      createCommentRequest(newComment);
     }
-  };
-
-  const cleanForm = () => {
-    dispatch(clearForm());
   };
 
   const handleChange = (
@@ -41,22 +63,22 @@ export const NewCommentForm: React.FC = () => {
     const { name, value } = event.target;
 
     if (value.trim() !== '') {
-      dispatch(setInputs({ field: name as keyof FormObj, value }));
-      dispatch(setErrors({ field: name as keyof FormObj, value: false }));
+      setComment({ ...comment, [name]: value });
+      setErrors({ ...errors, [name]: false });
     } else {
-      dispatch(setErrors({ field: name as keyof FormObj, value: true }));
+      setErrors({ ...errors, [name]: true });
     }
   };
 
-  const { name, email, body } = commentForm.value;
+  const { name, email, body } = comment;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     let isValid = true;
 
-    Object.entries(commentForm.value).forEach(([key, value]) => {
+    Object.entries(comment).forEach(([key, value]) => {
       if (!value) {
-        dispatch(setErrors({ field: key as keyof FormObj, value: true }));
+        setErrors({ ...errors, [key]: true });
         isValid = false;
       }
     });
@@ -80,9 +102,9 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': commentForm.errors.name,
+              'is-danger': errors.name,
             })}
-            value={commentForm.value.name}
+            value={comment.name}
             onChange={handleChange}
           />
 
@@ -119,9 +141,9 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': commentForm.errors.email,
+              'is-danger': errors.email,
             })}
-            value={commentForm.value.email}
+            value={comment.email}
             onChange={handleChange}
           />
 
@@ -157,9 +179,9 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': commentForm.errors.body,
+              'is-danger': errors.body,
             })}
-            value={commentForm.value.body}
+            value={comment.body}
             onChange={handleChange}
           />
         </div>
@@ -176,7 +198,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': commentForm.status === 'loading',
+              'is-loading': loading,
             })}
           >
             Add
