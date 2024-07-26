@@ -23,7 +23,7 @@ export const NewCommentForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const cleanForm = () => {
-    setComment({ name: '', email: '', body: '' });
+    setComment({ ...comment, body: '' });
     setErrors({ name: false, email: false, body: false });
   };
 
