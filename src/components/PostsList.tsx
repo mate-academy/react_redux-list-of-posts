@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setClearSelectedPost, setSelectedPost } from './slices/PostsSlice';
+import { setSelectedPost } from './slices/PostsSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ export const PostsList: React.FC = () => {
 
   const handleSelect = (post: Post) => {
     if (selectedPostId && selectedPostId === post.id) {
-      dispatch(setClearSelectedPost());
+      dispatch(setSelectedPost(null));
     } else {
       dispatch(setSelectedPost(post));
     }

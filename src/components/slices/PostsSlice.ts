@@ -32,15 +32,10 @@ export const postsSlice = createSlice({
 
       currentState.posts = action.payload;
     },
-    setSelectedPost: (state, action: PayloadAction<Post>) => {
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       const currentState = state;
 
       currentState.selectedPost = action.payload;
-    },
-    setClearSelectedPost: state => {
-      const currentState = state;
-
-      currentState.selectedPost = null;
     },
   },
   extraReducers: builder => {
@@ -69,6 +64,5 @@ export const postsSlice = createSlice({
 export const {
   setPosts,
   setSelectedPost,
-  setClearSelectedPost,
 } = postsSlice.actions;
 export default postsSlice.reducer;

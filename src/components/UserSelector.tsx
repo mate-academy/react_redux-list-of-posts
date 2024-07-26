@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedUser } from './slices/UsersSlice';
-import { setClearSelectedPost } from './slices/PostsSlice';
+import { setSelectedPost } from './slices/PostsSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -66,7 +66,7 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={() => {
                 dispatch(setSelectedUser(user));
-                dispatch(setClearSelectedPost());
+                dispatch(setSelectedPost(null));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

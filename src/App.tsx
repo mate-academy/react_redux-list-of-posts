@@ -7,7 +7,7 @@ import './App.scss';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { users } from './components/slices/UsersSlice';
-import { fetchPosts, setClearSelectedPost } from './components/slices/PostsSlice';
+import { fetchPosts, setSelectedPost } from './components/slices/PostsSlice';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser?.id) {
       dispatch(fetchPosts(selectedUser.id));
-      dispatch(setClearSelectedPost());
+      dispatch(setSelectedPost(null));
     }
   }, [selectedUser]);
 
