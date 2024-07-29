@@ -1,23 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+// import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setUsers } from '../features/usersSlice';
+import { authorSlice } from '../features/authorSlice';
+import {} from '../features/authorSlice';
+
+import { getUsers } from '../api/users';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  // value: User | null;
+  // onChange: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC<Props> = (
+  {
+    // `value` and `onChange` are traditional names for the form field
+    // `selectedUser` represents what actually stored here
+    // value: selectedUser,
+    // onChange,
+  },
+) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.usersSlice.users);
+  const selectedUser = useAppSelector(state => state.authorSlice.author);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -41,6 +50,10 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    getUsers().then(response => dispatch(setUsers(response)));
+  }, [dispatch]);
 
   return (
     <div
@@ -73,7 +86,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(authorSlice.actions.setAuthor(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
