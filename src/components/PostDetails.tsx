@@ -27,11 +27,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    setVisible(false);
     dispatch(getPostDetailsAsync(post.id));
   }, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    dispatch(addPostDetailsAsync({ name, email, body, postId: post.id }));
+    await dispatch(addPostDetailsAsync({ name, email, body, postId: post.id }));
   };
 
   const deleteComment = async (commentId: number) => {

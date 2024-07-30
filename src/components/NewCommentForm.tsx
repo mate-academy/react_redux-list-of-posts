@@ -20,6 +20,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const submitting = useAppSelector(state => state.formSlice.submitting);
   const errors = useAppSelector(state => state.formSlice.errors);
 
+  console.log(submitting);
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -166,6 +168,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            // className={`button is-link ${submitting ? 'is-loading' : ''}`}
           >
             Add
           </button>
