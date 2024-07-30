@@ -106,7 +106,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="email" // Corrected type
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -166,7 +166,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
-            // className={`button is-link ${submitting ? 'is-loading' : ''}`}
           >
             Add
           </button>

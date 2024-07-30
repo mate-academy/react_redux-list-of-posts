@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-// import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-// eslint-disable-next-line max-len
 import {
   addPostDetailsAsync,
   deletePostDetailsAsync,
