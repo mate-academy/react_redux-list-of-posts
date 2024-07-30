@@ -17,26 +17,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
 
   const { name, email, body } = useAppSelector(state => state.formSlice.values);
-
   const submitting = useAppSelector(state => state.formSlice.submitting);
-
   const errors = useAppSelector(state => state.formSlice.errors);
-
-  // const clearForm = () => {
-  //   // setValues({
-  //   //   name: '',
-  //   //   email: '',
-  //   //   body: '',
-  //   // });
-  //   dispatch(setValue({ name: '', email: '', body: '' }));
-
-  //   // setErrors({
-  //   //   name: false,
-  //   //   email: false,
-  //   //   body: false,
-  //   // });
-  //   dispatch(setErrors({ name: false, email: false, body: false }));
-  // };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -44,41 +26,31 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     const { name: field, value } = event.target;
 
     dispatch(setValue({ [field]: value }));
-    dispatch(
-      setErrors({
-        name: false,
-        email: false,
-        body: false,
-      }),
-    );
-
-    // setValues(current => ({ ...current, [field]: value }));
-    // setErrors(current => ({ ...current, [field]: false }));
+    dispatch(setErrors({ ...errors, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // setErrors({
-    //   name: !name,
-    //   email: !email,
-    //   body: !body,
-    // });
-    dispatch(setErrors({ name: !name, email: !email, body: !body }));
+    const hasErrors = {
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
+    };
 
-    if (!name || !email || !body) {
+    dispatch(setErrors(hasErrors));
+
+    if (hasErrors.name || hasErrors.email || hasErrors.body) {
       return;
     }
 
-    // setSubmitting(true);
     dispatch(setSubmitting(true));
 
-    // it is very easy to forget about `await` keyword
+    // it is very easy to forget about await keyword
     await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
 
-    // setSubmitting(false);
     dispatch(setSubmitting(false));
     dispatch(setValue({ body: '' }));
     // We keep the entered name and email
@@ -134,7 +106,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email" // Corrected type
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -200,7 +172,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
