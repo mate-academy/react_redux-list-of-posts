@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setUsers } from '../features/usersSlice';
 import { authorSlice } from '../features/authorSlice';
-import {} from '../features/authorSlice';
 import { getUsers } from '../api/users';
 
 export const UserSelector: React.FC = () => {
