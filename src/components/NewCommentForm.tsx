@@ -1,75 +1,95 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { CommentData } from '../types/Comment';
+import {
+  setSubmitting,
+  setValue,
+  setErrors,
+  clearForm,
+} from '../features/counter/features/newCommentFormSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const { name, email, body } = useAppSelector(state => state.formSlice.values);
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const submitting = useAppSelector(state => state.formSlice.submitting);
 
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+  const errors = useAppSelector(state => state.formSlice.errors);
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+  // const clearForm = () => {
+  //   // setValues({
+  //   //   name: '',
+  //   //   email: '',
+  //   //   body: '',
+  //   // });
+  //   dispatch(setValue({ name: '', email: '', body: '' }));
+
+  //   // setErrors({
+  //   //   name: false,
+  //   //   email: false,
+  //   //   body: false,
+  //   // });
+  //   dispatch(setErrors({ name: false, email: false, body: false }));
+  // };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(setValue({ [field]: value }));
+    dispatch(
+      setErrors({
+        name: false,
+        email: false,
+        body: false,
+      }),
+    );
+
+    // setValues(current => ({ ...current, [field]: value }));
+    // setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    // setErrors({
+    //   name: !name,
+    //   email: !email,
+    //   body: !body,
+    // });
+    dispatch(setErrors({ name: !name, email: !email, body: !body }));
 
     if (!name || !email || !body) {
       return;
     }
 
-    setSubmitting(true);
+    // setSubmitting(true);
+    dispatch(setSubmitting(true));
 
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+
+    // setSubmitting(false);
+    dispatch(setSubmitting(false));
+    dispatch(setValue({ body: '' }));
     // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={() => dispatch(clearForm())}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
