@@ -1,4 +1,3 @@
-// import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { fetchUserPosts } from '../servises/api';
@@ -52,4 +51,3 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 export const { actions } = postsSlice;
-// export const { setSelectedUserPosts } = postsSlice.actions;
