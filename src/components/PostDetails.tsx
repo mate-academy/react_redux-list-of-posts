@@ -24,9 +24,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(setComments)
+      .catch(() => setError(true))
+      .finally(() => setLoaded(true));
   }
 
   useEffect(loadComments, [post.id]);
@@ -67,20 +67,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
     } catch (error) {
-      // we show an error message in case of any error
       setError(true);
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),
