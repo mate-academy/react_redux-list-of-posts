@@ -9,24 +9,15 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-// import { User } from './types/User';
-// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { postSlice } from './features/postSlice';
 import { selectedPostSlice } from './features/selectedPostSlice';
-// import { authorSlice } from './features/authorSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { hasError, items, loaded } = useAppSelector(state => state.postSlice);
   const { author } = useAppSelector(state => state.authorSlice);
   const { post } = useAppSelector(state => state.selectedPostSlice);
-  //   const [posts, setPosts] = useState<Post[]>([]);
-  //   const [loaded, setLoaded] = useState(false);
-  //   const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
     dispatch(postSlice.actions.setLoaded(false));
@@ -34,14 +25,10 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(response => dispatch(postSlice.actions.set(response)))
       .catch(() => dispatch(postSlice.actions.setHasError(true)))
-      // We disable the spinner in any case
       .finally(() => dispatch(postSlice.actions.setLoaded(true)));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    // setSelectedPost(null);
     dispatch(selectedPostSlice.actions.set(null));
 
     if (author) {
