@@ -24,15 +24,19 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(initUsers.pending, state => {
+      // eslint-disable-next-line no-param-reassign
       state.isLoading = true;
     });
 
     builder.addCase(initUsers.fulfilled, (state, action) => {
+      // eslint-disable-next-line no-param-reassign
       state.users = action.payload;
+      // eslint-disable-next-line no-param-reassign
       state.isLoading = false;
     });
 
     builder.addCase(initUsers.rejected, state => {
+      // eslint-disable-next-line no-param-reassign
       state.error = 'Error';
     });
   },
