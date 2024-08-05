@@ -17,11 +17,13 @@ export const Comment: React.FC<Props> = ({ comment }) => {
     dispatch(deleteCommentFromServer(commentId));
   };
 
+  const { name, id, email, body } = comment;
+
   return (
-    <article className="message is-small" key={comment.id} data-cy="Comment">
+    <article className="message is-small" key={id} data-cy="Comment">
       <div className="message-header">
-        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-          {comment.name}
+        <a href={`mailto:${email}`} data-cy="CommentAuthor">
+          {name}
         </a>
 
         <button
@@ -29,14 +31,14 @@ export const Comment: React.FC<Props> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => handleDeleteComment(comment.id)}
+          onClick={() => handleDeleteComment(id)}
         >
           delete button
         </button>
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        {comment.body}
+        {body}
       </div>
     </article>
   );
