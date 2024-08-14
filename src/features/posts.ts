@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
@@ -13,6 +14,10 @@ const initialState: PostsState = {
   loaded: false,
   error: false,
 };
+
+export const init = createAsyncThunk('posts/fetch', (userId: number) => {
+  return getUserPosts(userId);
+});
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -38,9 +43,5 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
-
-export const init = createAsyncThunk('posts/fetch', (userId: number) => {
-  return getUserPosts(userId);
-});
 
 export const { clearPosts } = postsSlice.actions;

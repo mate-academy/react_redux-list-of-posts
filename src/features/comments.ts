@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, getPostComments, deleteComment } from '../api/comments';
@@ -13,6 +14,24 @@ const initialState: CommentsState = {
   loaded: false,
   error: false,
 };
+
+export const addComment = createAsyncThunk(
+  'comments/addComment',
+  (data: Omit<Comment, 'id'>) => {
+    return createComment(data);
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comment/deleteComment',
+  (commentId: number) => {
+    return deleteComment(commentId);
+  },
+);
+
+export const init = createAsyncThunk('comments/fetch', (postId: number) => {
+  return getPostComments(postId);
+});
 
 const commentsSlice = createSlice({
   name: 'comments',
@@ -46,24 +65,6 @@ const commentsSlice = createSlice({
       state.error = true;
     });
   },
-});
-
-export const addComment = createAsyncThunk(
-  'comments/addComment',
-  (data: Omit<Comment, 'id'>) => {
-    return createComment(data);
-  },
-);
-
-export const removeComment = createAsyncThunk(
-  'comment/deleteComment',
-  (commentId: number) => {
-    return deleteComment(commentId);
-  },
-);
-
-export const init = createAsyncThunk('comments/fetch', (postId: number) => {
-  return getPostComments(postId);
 });
 
 export default commentsSlice.reducer;

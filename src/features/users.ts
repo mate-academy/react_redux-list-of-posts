@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
@@ -9,6 +10,10 @@ type UsersState = {
 const initialState: UsersState = {
   users: [],
 };
+
+export const init = createAsyncThunk('users/fetch', () => {
+  return getUsers();
+});
 
 const usersSlice = createSlice({
   name: 'users',
@@ -22,7 +27,3 @@ const usersSlice = createSlice({
 });
 
 export default usersSlice.reducer;
-
-export const init = createAsyncThunk('users/fetch', () => {
-  return getUsers();
-});
