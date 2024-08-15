@@ -14,6 +14,7 @@ import {
 
 const initialState = {
   items: [] as Comment[],
+  previousItems: [] as Comment[],
   loaded: true,
   hasError: false,
 };
@@ -54,7 +55,7 @@ export const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
 
-      return { ...state, items: newList };
+      return { ...state, previousItems: state.items, items: newList };
     },
   },
   extraReducers(builder) {
@@ -82,7 +83,7 @@ export const commentsSlice = createSlice({
     builder.addCase(removeComment.rejected, state => {
       alert('Failed to delete comment, please try again!');
 
-      return { ...state };
+      return { ...state, items: state.previousItems };
     });
   },
 });

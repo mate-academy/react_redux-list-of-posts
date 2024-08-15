@@ -33,12 +33,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
 
     dispatch(fetchComments(post.id));
-
-    // commentsApi
-    //   .getPostComments(post.id)
-    //   .then(setComments) // save the loaded comments
-    //   .catch(() => setError(true)) // show an error when something went wrong
-    //   .finally(() => setLoaded(true)); // hide the spinner
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const deleteComment = async (commentId: number) => {
     dispatch(takeComment(commentId));
-    dispatch(removeComment(commentId));
+    await dispatch(removeComment(commentId));
   };
 
   return (
