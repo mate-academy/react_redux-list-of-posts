@@ -40,7 +40,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({ ...current, [field]: value.trimStart() }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
@@ -48,12 +48,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name.trim(),
-      email: !email.trim(),
-      body: !body.trim(),
+      name: !name,
+      email: !email,
+      body: !body,
     });
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
+    if (!name || !email || !body) {
       return;
     }
 
