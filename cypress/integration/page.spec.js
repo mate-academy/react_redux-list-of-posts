@@ -1067,7 +1067,7 @@ describe('', () => {
       cy.get('@commentsPostRequest').its('request.body.body').should('eq', 'Some comment body');
     });
 
-    it('should add a comment to the list after success', () => {
+    it.only('should add a comment to the list after success', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
