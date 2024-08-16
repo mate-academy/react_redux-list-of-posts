@@ -32,9 +32,10 @@ export const commentsSlice = createSlice({
     setComments(state, action: PayloadAction<Comment>) {
       state.comments.push(action.payload);
     },
-    removeComment: (state, action: PayloadAction<number>) => {
-      state.comments.filter(comment => comment.id !== action.payload);
-    },
+    removeComment: (state, action: PayloadAction<number>) => ({
+      ...state,
+      comments: state.comments.filter(comment => comment.id !== action.payload),
+    }),
   },
   extraReducers: builder => {
     builder
