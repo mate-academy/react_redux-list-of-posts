@@ -19,7 +19,7 @@ import { Post } from './types/Post';
 export const App: React.FC = () => {
   const { loaded, hasError, posts } = useAppSelector(state => state.posts);
 
-  const author = useAppSelector(state => state.author) as User | null;
+  const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.post) as Post | null;
   const dispatch = useAppDispatch();
   const setAuthor = (user: User) => dispatch(userAction.setAuthor(user));

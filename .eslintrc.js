@@ -7,7 +7,7 @@ module.exports = {
     "no-param-reassign": [
       "error",
       {
-        "props": false // Disable the rule for properties of parameters
+        "props": false,
       }
     ]
   }

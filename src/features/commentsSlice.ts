@@ -62,19 +62,23 @@ export const commentsSlice = createSlice({
         hasError: 'Error load comments',
         loaded: false,
       }))
+
       .addCase(createsComment.pending, state => {
         state.loaded = false;
       })
       .addCase(createsComment.rejected, state => {
         state.hasError = 'Cant create comment';
       })
+
       .addCase(createsComment.fulfilled, (state, actions) => {
-        state.loaded = true;
+        state.loaded = false;
         state.comments.push(actions.payload);
       });
   },
 });
 export const { removeComment } = commentsSlice.actions;
+
+
 
 
 export const deleteComment = createAsyncThunk(
