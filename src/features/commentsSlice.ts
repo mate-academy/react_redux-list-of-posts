@@ -25,13 +25,19 @@ export const commentsAsync = createAsyncThunk(
   },
 );
 
+export const createsComment = createAsyncThunk(
+  'comment/post',
+  async (data: Pick<Comment, 'name' | 'email' | 'body' | 'postId'>) => {
+    const response = await createComment(data);
+
+    return response;
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setComments(state, action: PayloadAction<Comment>) {
-      state.comments.push(action.payload);
-    },
     removeComment: (state, action: PayloadAction<number>) => ({
       ...state,
       comments: state.comments.filter(comment => comment.id !== action.payload),
@@ -55,24 +61,21 @@ export const commentsSlice = createSlice({
         ...state,
         hasError: 'Error load comments',
         loaded: false,
-      }));
+      }))
+      .addCase(createsComment.pending, state => {
+        state.loaded = false;
+      })
+      .addCase(createsComment.rejected, state => {
+        state.hasError = 'Cant create comment';
+      })
+      .addCase(createsComment.fulfilled, (state, actions) => {
+        state.loaded = true;
+        state.comments.push(actions.payload);
+      });
   },
 });
-export const { setComments, removeComment } = commentsSlice.actions;
+export const { removeComment } = commentsSlice.actions;
 
-export const createsComment = createAsyncThunk(
-  'comment/post',
-  async (
-    data: Pick<Comment, 'name' | 'email' | 'body' | 'postId'>,
-    { dispatch },
-  ) => {
-    const response = await createComment(data);
-
-    dispatch(setComments(response));
-
-    return response;
-  },
-);
 
 export const deleteComment = createAsyncThunk(
   'comment/delete',
