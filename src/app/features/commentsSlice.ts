@@ -1,10 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-  // asyncThunkCreator,
-  // buildCreateSlice,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
   createComment,
