@@ -25,20 +25,6 @@ export const commentsAsync = createAsyncThunk(
   },
 );
 
-export const createsComment = createAsyncThunk(
-  'comment/post',
-  async (
-    data: Pick<Comment, 'name' | 'email' | 'body' | 'postId'>,
-    { dispatch },
-  ) => {
-    const response = await createComment(data);
-
-    dispatch(setComments(response));
-
-    return response;
-  },
-);
-
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
@@ -71,6 +57,21 @@ export const commentsSlice = createSlice({
       }));
   },
 });
+export const { setComments, removeComment } = commentsSlice.actions;
+
+export const createsComment = createAsyncThunk(
+  'comment/post',
+  async (
+    data: Pick<Comment, 'name' | 'email' | 'body' | 'postId'>,
+    { dispatch },
+  ) => {
+    const response = await createComment(data);
+
+    dispatch(setComments(response));
+
+    return response;
+  },
+);
 
 export const deleteComment = createAsyncThunk(
   'comment/delete',
@@ -82,7 +83,5 @@ export const deleteComment = createAsyncThunk(
     return response;
   },
 );
-
-export const { setComments, removeComment } = commentsSlice.actions;
 
 export default commentsSlice.reducer;

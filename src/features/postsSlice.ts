@@ -22,22 +22,30 @@ export const postsSlice = createSlice({
   name: 'items/post',
   initialState,
   reducers: {
-    clearPosts: state => {
-      state.posts = [];
-    },
+    clearPosts: state => ({
+      ...state,
+      posts: [],
+    }),
   },
   extraReducers: builder => {
     builder
-      .addCase(postsAsync.pending, state => {
-        state.loaded = true;
-      })
-      .addCase(postsAsync.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.loaded = false;
-        state.posts = action.payload;
-      })
-      .addCase(postsAsync.rejected, state => {
-        (state.loaded = false), (state.hasError = 'Error');
-      });
+      .addCase(postsAsync.pending, state => ({
+        ...state,
+        loaded: true,
+      }))
+      .addCase(
+        postsAsync.fulfilled,
+        (state, action: PayloadAction<Post[]>) => ({
+          ...state,
+          loaded: false,
+          posts: action.payload,
+        }),
+      )
+      .addCase(postsAsync.rejected, state => ({
+        ...state,
+        loaded: false,
+        hasError: 'Error',
+      }));
   },
 });
 

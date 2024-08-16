@@ -24,17 +24,20 @@ export const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(usersAsync.pending, state => {
-        state.loaded = true;
-      })
-      .addCase(usersAsync.fulfilled, (state, action) => {
-        state.loaded = false;
-        state.users = action.payload;
-      })
-      .addCase(usersAsync.rejected, state => {
-        state.loaded = false;
-        state.hasError = 'Error';
-      });
+      .addCase(usersAsync.pending, state => ({
+        ...state,
+        loaded: true,
+      }))
+      .addCase(usersAsync.fulfilled, (state, action) => ({
+        ...state,
+        loaded: false,
+        users: action.payload,
+      }))
+      .addCase(usersAsync.rejected, state => ({
+        ...state,
+        loade: false,
+        hasError: 'Error',
+      }));
   },
 });
 
