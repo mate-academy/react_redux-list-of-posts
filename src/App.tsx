@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,22 +9,20 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setLoaded, setError } from './features/posts';
-import { setAuthor } from './features/author';
 import { User } from './types/User';
+import { setLoaded, setError, setPosts } from './features/reduxSlices/posts';
+import { setAuthor } from './features/reduxSlices/author';
+import { setSelectedPost } from './features/reduxSlices/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const loaded = useAppSelector(state => state.users.loaded);
+  const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.users.error);
   const author = useAppSelector(state => state.author.author);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const posts = useAppSelector(state => state.posts.items);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   useEffect(() => {
     const loadUserPosts = async (userId: number) => {
@@ -33,7 +31,7 @@ export const App: React.FC = () => {
       try {
         const tempPosts = await getUserPosts(userId);
 
-        setPosts(tempPosts);
+        dispatch(setPosts(tempPosts));
       } catch {
         dispatch(setError(true));
       } finally {
@@ -44,7 +42,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
   }, [author, dispatch]);
 
@@ -86,7 +84,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => {
+                      dispatch(setSelectedPost(post));
+                    }}
                   />
                 )}
               </div>

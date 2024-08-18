@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setError, setLoaded } from '../features/posts';
-import { initUsers } from '../features/users';
+import { setError, setLoaded } from '../features/reduxSlices/posts';
+import { initUsers } from '../features/reduxSlices/users';
 
 type Props = {
   value: User | null;

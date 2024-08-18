@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
+import { Post } from '../../types/Post';
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -17,6 +17,10 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
+    setPosts(state, action) {
+      // eslint-disable-next-line no-param-reassign
+      state.items = action.payload;
+    },
     setLoaded(state, action) {
       // eslint-disable-next-line no-param-reassign
       state.loaded = action.payload;
@@ -28,5 +32,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setError, setLoaded } = postsSlice.actions;
+export const { setError, setLoaded, setPosts } = postsSlice.actions;
 export default postsSlice.reducer;
