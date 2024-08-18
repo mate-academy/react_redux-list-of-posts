@@ -10,7 +10,7 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from './counterSlice';
+} from '../counter/counterSlice';
 
 export function Counter() {
   const count = useAppSelector(selectCount);
