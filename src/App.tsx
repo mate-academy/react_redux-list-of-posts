@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(state => state.users.error);
+  const hasError = useAppSelector(state => state.posts.hasError);
   const author = useAppSelector(state => state.author.author);
   const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
@@ -39,6 +39,10 @@ export const App: React.FC = () => {
       }
     };
 
+    if (!author) {
+      dispatch(setPosts([]));
+    }
+
     if (author) {
       loadUserPosts(author.id);
     } else {
@@ -48,6 +52,7 @@ export const App: React.FC = () => {
 
   const handleUserChange = (user: User) => {
     dispatch(setAuthor(user));
+    dispatch(setSelectedPost(null));
   };
 
   return (
