@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable max-len */
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -11,46 +12,38 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { actions as authorActions } from './features/author/authorSlice';
 import { actions as postsActions } from './features/posts/postsSlice';
+import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
 import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
   const {
     items: posts,
     loaded,
     hasError,
   } = useAppSelector(state => state.posts);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
 
   const { author } = useAppSelector(state => state.author);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   function loadUserPosts(userId: number) {
-    // setLoaded(false);
     dispatch(postsActions.isLoaded(false));
 
     getUserPosts(userId)
       .then(userPosts => dispatch(postsActions.set(userPosts)))
-      // .catch(() => setError(true))
       .catch(() => dispatch(postsActions.isError(true)))
       // We disable the spinner in any case
-      // .finally(() => setLoaded(true));
       .finally(() => dispatch(postsActions.isLoaded(true)));
   }
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostActions.set(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      // setPosts([]);
       dispatch(postsActions.set([]));
     }
   }, [author]);
@@ -94,7 +87,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post =>
+                      dispatch(selectedPostActions.set(post))
+                    }
                   />
                 )}
               </div>
