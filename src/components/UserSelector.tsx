@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getUsers } from '../api/users';
-import { setUsers } from '../features/users/usersSlice';
+import { actions as usersActions } from '../features/users/usersSlice';
 import { User } from '../types/User';
 
 type Props = {
@@ -48,7 +48,7 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     getUsers().then(usersList => {
-      dispatch(setUsers(usersList));
+      dispatch(usersActions.set(usersList));
     });
   }, [dispatch]);
 
