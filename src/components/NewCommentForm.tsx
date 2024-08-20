@@ -95,11 +95,16 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
     }
 
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+      autoComplete="off"
+      noValidate
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -211,11 +216,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button
-            type="reset"
-            className="button is-link is-light"
-            onClick={() => clearForm()}
-          >
+          <button type="reset" className="button is-link is-light">
             Clear
           </button>
         </div>
