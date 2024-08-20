@@ -62,10 +62,19 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
+    const normalizedBody = body.trim();
 
-    dispatch(newCommentActions.setErrors({ name, email, body }));
+    dispatch(
+      newCommentActions.setErrors({
+        name: normalizedName,
+        email: normalizedEmail,
+        body: normalizedBody,
+      }),
+    );
 
-    if (!name || !email || !body) {
+    if (!normalizedName || !normalizedEmail || !normalizedBody) {
       return;
     }
 
@@ -135,7 +144,7 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
