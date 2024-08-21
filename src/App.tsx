@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -12,6 +11,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { actions as authorActions } from './features/author/authorSlice';
 import { actions as postsActions } from './features/posts/postsSlice';
+// eslint-disable-next-line max-len
 import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
 import { getUserPosts } from './api/posts';
 
