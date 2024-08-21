@@ -13,6 +13,7 @@ import { actions as authorActions } from './features/author/authorSlice';
 import { actions as postsActions } from './features/posts/postsSlice';
 // eslint-disable-next-line max-len
 import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
+import { actions as commentsActions } from './features/comments/commentsSlice';
 import { getUserPosts } from './api/posts';
 
 export const App: React.FC = () => {
@@ -87,9 +88,10 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={post =>
-                      dispatch(selectedPostActions.set(post))
-                    }
+                    onPostSelected={post => {
+                      dispatch(commentsActions.set([]));
+                      dispatch(selectedPostActions.set(post));
+                    }}
                   />
                 )}
               </div>
