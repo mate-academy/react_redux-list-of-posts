@@ -10,6 +10,7 @@ import {
   actions as newCommentActions,
 } from '../features/NewCommentFormSlice';
 import { actions as comentsActions } from '../features/commentsSlice';
+import { validateEmail } from '../utils/validateEmail';
 
 type Props = {
   post: Post;
@@ -65,11 +66,12 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
     const normalizedName = name.trim();
     const normalizedEmail = email.trim();
     const normalizedBody = body.trim();
+    const checkEmail = validateEmail(normalizedEmail);
 
     dispatch(
       newCommentActions.setErrors({
         name: normalizedName,
-        email: normalizedEmail,
+        email: checkEmail,
         body: normalizedBody,
       }),
     );
@@ -215,7 +217,6 @@ export const NewCommentForm: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
