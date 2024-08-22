@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({ value, onChange }) => {
-  const users = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
   const dispatch = useAppDispatch();
 
   const [expanded, setExpanded] = useState(false);
