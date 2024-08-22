@@ -4,6 +4,7 @@ import { authorSLice } from '../features/authorSlice';
 import { postsSlice } from '../features/postsSlice';
 import { selectedPostSlice } from '../features/selectedPostSlice';
 import { commentsSlice } from '../features/commentsSlice';
+import counterReducer from '../features/counter/counterSlice';
 // eslint-disable-next-line import/no-cycle
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     posts: postsSlice.reducer,
     selectedPost: selectedPostSlice.reducer,
     comments: commentsSlice.reducer,
+    counter: counterReducer,
   },
 });
 
