@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
 
 type PostsState = {
   posts: Post[];
@@ -25,16 +27,27 @@ export const postsSlice = createSlice({
     deletePosts: state => {
       state.posts = [];
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(init.pending, state => {
+      state.loaded = false;
+    });
 
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
-    },
+    builder.addCase(init.fulfilled, (state, action) => {
+      state.posts = action.payload;
+      state.loaded = true;
+    });
 
-    setError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
+    builder.addCase(init.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
+    });
   },
 });
 
 export default postsSlice.reducer;
-export const { actions } = postsSlice;
+export const { setPosts, deletePosts } = postsSlice.actions;
+
+export const init = createAsyncThunk('posts/fetch', (userId: number) => {
+  return getUserPosts(userId);
+});

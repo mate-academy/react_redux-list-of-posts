@@ -8,10 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/author/authorSlice';
-import { actions as postsActions } from './features/posts/postsSlice';
+import * as postsActions from './features/posts/postsSlice';
 import {
   deleteSelectedPost,
   setSelectedPost,
@@ -23,20 +22,11 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost[0]);
   const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    dispatch(postsActions.setLoaded(false));
-
-    getUserPosts(userId)
-      .then(serverPosts => dispatch(postsActions.setPosts(serverPosts)))
-      .catch(() => dispatch(postsActions.setError(true)))
-      .finally(() => dispatch(postsActions.setLoaded(true)));
-  }
-
   useEffect(() => {
     dispatch(deleteSelectedPost());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(postsActions.init(author.id));
     } else {
       dispatch(postsActions.deletePosts());
     }

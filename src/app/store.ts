@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import postsReducer from '../features/posts/postsSlice';
@@ -8,7 +7,6 @@ import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     users: usersReducer,
     author: authorReducer,
     posts: postsReducer,
