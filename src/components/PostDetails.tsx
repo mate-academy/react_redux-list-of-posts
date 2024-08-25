@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setVisible(false);
     dispatch(commentsActions.init(post.id));
   }, [dispatch, post.id]);
 
@@ -44,7 +45,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      dispatch(commentsActions.setErrorTrue);
+      dispatch(commentsActions.setErrorTrue());
     }
   };
 

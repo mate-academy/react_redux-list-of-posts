@@ -19,7 +19,10 @@ export const UserSelector: React.FC<Props> = ({
   // and now we can easily reuse the `UserSelector` in any form
   const dispatch = useAppDispatch();
 
-  dispatch(usersActions.init());
+  useEffect(() => {
+    dispatch(usersActions.init());
+  }, [dispatch]);
+
   const [expanded, setExpanded] = useState(false);
   const users = useAppSelector(state => state.users);
 
