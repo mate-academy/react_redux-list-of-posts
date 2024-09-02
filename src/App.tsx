@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import 'bulma/bulma.sass';
+import classNames from 'classnames';
+
+import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
