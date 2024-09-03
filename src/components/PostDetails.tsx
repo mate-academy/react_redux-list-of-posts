@@ -4,60 +4,52 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
+import {
+  addCommentSuccess,
+  deleteCommentSuccess,
+  fetchCommentsError,
+  fetchCommentsStart,
+  fetchCommentsSuccess,
+} from '../features/commentsSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
 
-type Props = {
-  post: Post;
-};
+export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const post = useAppSelector(state => state.selectedPost.post);
+  const comments = useAppSelector(state => state.comments.comments);
+  const loaded = useAppSelector(state => !state.comments.loading);
+  const hasError = useAppSelector(state => state.comments.error);
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
   useEffect(() => {
-    loadComments();
-  }, []);
+    setVisible(false);
+    const fetchComments = async () => {
+      if (!post) {
+        return;
+      }
 
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
+      dispatch(fetchCommentsStart());
+      try {
+        const commentsFromServer = await commentsApi.getPostComments(post.id);
+
+        dispatch(fetchCommentsSuccess(commentsFromServer));
+      } catch (error) {
+        dispatch(fetchCommentsError('Something went wrong'));
+      }
+    };
+
+    fetchComments();
+  }, [post, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
+    if (!post) {
+      return;
+    }
+
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -66,35 +58,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
+      dispatch(addCommentSuccess(newComment));
     } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
+      dispatch(fetchCommentsError(`${error}`));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
-
+    dispatch(deleteCommentSuccess(commentId));
     await commentsApi.deleteComment(commentId);
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">
