@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
-import 'bulma/bulma.sass';
+import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
