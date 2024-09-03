@@ -11,7 +11,7 @@ const initialState: UsersState = {
   users: [],
 };
 
-export const loadUser = createAsyncThunk('users/fetch', async () => {
+export const loadUsers = createAsyncThunk('users/fetch', async () => {
   return getUsers();
 });
 
@@ -21,7 +21,7 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(
-      loadUser.fulfilled,
+      loadUsers.fulfilled,
       (state, action: PayloadAction<User[]>) => {
         state.users = action.payload;
       },
