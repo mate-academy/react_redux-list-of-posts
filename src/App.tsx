@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
