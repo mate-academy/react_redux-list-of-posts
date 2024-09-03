@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import React, { useEffect } from 'react';
+import classNames from 'classnames';
+
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,7 +11,6 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts';
-import classNames from 'classnames';
 import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
