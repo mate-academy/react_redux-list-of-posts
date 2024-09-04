@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,16 +10,44 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppSelector } from './app/hooks';
+import {
+  changeHasError,
+  changeLoaded,
+  changePosts,
+} from './features/postSlice';
+import { useDispatch } from 'react-redux';
+import { changeSelectedPost } from './features/selectedPostSlice';
+
+type SelectedPostType = null | Post;
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const author = useAppSelector(store => store.author);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(store => store.posts);
+  const selectedPost = useAppSelector(store => store.selectedPost);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useDispatch();
+
+  const setPosts = (newPosts: Post[]) => {
+    dispatch(changePosts(newPosts));
+  };
+
+  const setLoaded = (val: boolean) => {
+    dispatch(changeLoaded(val));
+  };
+
+  const setError = (val: boolean) => {
+    dispatch(changeHasError(val));
+  };
+
+  const setSelectedPost = (value: SelectedPostType) => {
+    dispatch(changeSelectedPost(value));
+  };
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -50,7 +78,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">

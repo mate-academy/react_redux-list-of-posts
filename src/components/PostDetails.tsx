@@ -6,16 +6,39 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addCommentAction,
+  changeComments,
+  changeCommentsError,
+  changeCommentsLoaded,
+  deleteCommentAction,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
+  const dispatch = useAppDispatch();
+
+  const setComments = (newComments: Comment[]) => {
+    dispatch(changeComments(newComments));
+  };
+
+  const setLoaded = (value: boolean) => {
+    dispatch(changeCommentsLoaded(value));
+  };
+
+  const setError = (value: boolean) => {
+    dispatch(changeCommentsError(value));
+  };
 
   function loadComments() {
     setLoaded(false);
@@ -66,7 +89,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(addCommentAction(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,9 +105,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(deleteCommentAction(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
