@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/indent */
 import React, { useEffect } from 'react';
-import classNames from 'classnames';
-
-import 'bulma/css/bulma.css';
+import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
