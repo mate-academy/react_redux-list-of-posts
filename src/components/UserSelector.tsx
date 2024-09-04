@@ -1,51 +1,50 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
+import { setUser } from '../features/authorSlice';
+import { close } from '../features/selectedPostSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+export const UserSelector: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const author = useAppSelector(state => state.author.author);
+  const users = useAppSelector(state => state.users.users);
+  const [dropdownActive, setDropdownActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setDropdownActive(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!expanded) {
-      return;
-    }
+    document.addEventListener('click', handleClickOutside);
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('click', handleClickOutside);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
-  }, [expanded]);
+  }, [handleClickOutside]);
+
+  const handleUserClick = (user: User) => {
+    dispatch(setUser(user));
+    setDropdownActive(false);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownActive(prev => !prev);
+  };
 
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': dropdownActive })}
     >
       <div className="dropdown-trigger">
         <button
@@ -53,13 +52,10 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
+          aria-expanded={dropdownActive}
+          onClick={toggleDropdown}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
-
+          <span>{Boolean(author) ? author?.name : 'Choose a user'}</span>
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
@@ -73,10 +69,11 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                handleUserClick(user);
+                dispatch(close());
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}
