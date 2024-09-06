@@ -8,8 +8,8 @@ export const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState: null as InitType,
   reducers: {
-    changeSelectedPost: (post, action: PayloadAction<Post | null>) => {
-      post = action.payload;
+    changeSelectedPost: (_post, action: PayloadAction<Post | null>) => {
+      return action.payload;
     },
   },
 });
