@@ -1,13 +1,18 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+import { addCommentAsync } from '../features/comments/commentsSlice';
+import { LoadingStatus } from '../types/LoadingStatus';
+
+export const NewCommentForm = () => {
+  const dispatch = useAppDispatch();
+
+  const post = useAppSelector(state => state.posts.selectedPost);
+  const status = useAppSelector(state => state.comments.addStatus);
+
+  const isSubmitting = status === LoadingStatus.Loading;
 
   const [errors, setErrors] = useState({
     name: false,
@@ -57,15 +62,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
+    if (post) {
+      dispatch(addCommentAsync({ data: { name, email, body }, post }));
+    }
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -172,7 +173,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
@@ -180,7 +181,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
