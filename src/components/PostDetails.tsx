@@ -18,13 +18,16 @@ export const PostDetails = () => {
   const { selectedPost: post } = useAppSelector(state => state.posts);
   const { comments, status } = useAppSelector(state => state.comments);
 
-  const isLoaded = status !== LoadingStatus.Loading;
-  const hasError = status === LoadingStatus.Failed;
+  const isLoading = status === LoadingStatus.Loading;
+  const isError = status === LoadingStatus.Failed;
+  const isFine = status === LoadingStatus.Idle;
 
-  const [isVisible, setIsVisible] = useState(false);
+  const hasComments = Boolean(comments.length);
+
+  const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(false);
+    setIsCommentFormVisible(false);
 
     if (post) {
       dispatch(getCommentsAsync(post));
@@ -38,7 +41,7 @@ export const PostDetails = () => {
   };
 
   const showCommentForm = () => {
-    setIsVisible(true);
+    setIsCommentFormVisible(true);
   };
 
   return (
@@ -50,21 +53,21 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {!isLoaded && <Loader />}
+        {isLoading && <Loader />}
 
-        {isLoaded && hasError && (
+        {isError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {isLoaded && !hasError && comments.length === 0 && (
+        {isFine && !hasComments && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {isLoaded && !hasError && comments.length > 0 && (
+        {isFine && hasComments && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -96,7 +99,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {isLoaded && !hasError && !isVisible && (
+        {isFine && !isCommentFormVisible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -107,7 +110,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {isLoaded && !hasError && isVisible && <NewCommentForm />}
+        {isFine && isCommentFormVisible && <NewCommentForm />}
       </div>
     </div>
   );

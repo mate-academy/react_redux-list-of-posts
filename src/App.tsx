@@ -30,8 +30,12 @@ export const App: React.FC = () => {
     selectedPost: selectedPost,
   } = useAppSelector(state => state.posts);
 
-  const isLoaded = status !== LoadingStatus.Loading;
-  const hasError = status === LoadingStatus.Failed;
+  const isLoading = status === LoadingStatus.Loading;
+  const isError = status === LoadingStatus.Failed;
+  const isFine = status === LoadingStatus.Idle;
+
+  const isAuthorSelected = Boolean(author);
+  const hasPosts = Boolean(posts.length);
 
   useEffect(() => {
     dispatch(clearPostSelection());
@@ -54,11 +58,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!isAuthorSelected && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                {author && !isLoaded && <Loader />}
+                {isAuthorSelected && isLoading && <Loader />}
 
-                {author && isLoaded && hasError && (
+                {isAuthorSelected && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,15 +73,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && isLoaded && !hasError && posts.length === 0 && (
+                {isAuthorSelected && isFine && !hasPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && isLoaded && !hasError && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {isAuthorSelected && isFine && hasPosts && <PostsList />}
               </div>
             </div>
           </div>
