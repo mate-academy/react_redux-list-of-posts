@@ -37,6 +37,10 @@ export const PostDetails = () => {
     dispatch(deleteCommentAsync(comment));
   };
 
+  const showCommentForm = () => {
+    setIsVisible(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -81,9 +85,7 @@ export const PostDetails = () => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => deleteComment(comment)}
-                  >
-                    {/* delete button */}
-                  </button>
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
@@ -99,7 +101,7 @@ export const PostDetails = () => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setIsVisible(true)}
+            onClick={showCommentForm}
           >
             Write a comment
           </button>
