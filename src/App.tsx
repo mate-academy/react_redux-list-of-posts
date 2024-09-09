@@ -62,9 +62,9 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isAuthorSelected && isLoading && <Loader />}
+                {isLoading && <Loader />}
 
-                {isAuthorSelected && isError && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isAuthorSelected && isFine && hasPosts && <PostsList />}
+                {isFine && hasPosts && <PostsList />}
               </div>
             </div>
           </div>
