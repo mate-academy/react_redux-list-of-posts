@@ -1,30 +1,62 @@
 import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import { loadPosts } from './features/posts';
+import { useAppSelector } from './app/hooks';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from './app/store';
+import {
+  fetchPostsError,
+  fetchPostsStart,
+  fetchPostsSuccess,
+} from './features/postsSlice';
+import { getUserPosts } from './api/posts';
+import { getUsers } from './api/users';
+import { usersSlice } from './features/usersSlice';
+import classNames from 'classnames';
 
 export const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const {
-    items: posts,
-    loaded,
-    hasError,
-  } = useAppSelector(state => state.posts);
-  const { author } = useAppSelector(state => state.author);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const dispatch = useDispatch<AppDispatch>();
+  const author = useAppSelector(state => state.author.author);
+  const posts = useAppSelector(state => state.posts.posts);
+  const loaded = useAppSelector(state => !state.posts.loading);
+  const hasError = useAppSelector(state => state.posts.error);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   useEffect(() => {
-    if (author) {
-      dispatch(loadPosts(author.id));
-    }
+    getUsers()
+      .then(usersFromServer => {
+        dispatch(usersSlice.actions.set(usersFromServer));
+      })
+      .catch(error => {
+        /* eslint-disable no-console */
+        console.error('Failed to fetch users:', error);
+      });
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (!author) {
+        return;
+      }
+
+      dispatch(fetchPostsStart());
+      try {
+        const postsFromServer = await getUserPosts(author.id);
+
+        dispatch(fetchPostsSuccess(postsFromServer));
+      } catch (error) {
+        dispatch(fetchPostsError('Something went wrong'));
+      }
+    };
+
+    fetchPosts();
   }, [author, dispatch]);
 
   return (
@@ -77,7 +109,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

@@ -2,56 +2,79 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
+import * as commentsApi from '../api/comments';
+
 import { CommentData } from '../types/Comment';
-import { Post } from '../types/Post';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../app/hooks';
 import {
-  addNewComment,
-  loadComments,
-  removeComment,
-} from '../features/comments';
+  addCommentSuccess,
+  deleteCommentSuccess,
+  fetchCommentsError,
+  fetchCommentsStart,
+  fetchCommentsSuccess,
+} from '../features/commentsSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
 
-interface Props {
-  post: Post;
-}
+export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const post = useAppSelector(state => state.selectedPost.post);
+  const comments = useAppSelector(state => state.comments.comments);
+  const loaded = useAppSelector(state => !state.comments.loading);
+  const hasError = useAppSelector(state => state.comments.error);
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
-  const dispatch = useAppDispatch();
-  const {
-    items: comments,
-    loaded,
-    hasError,
-  } = useAppSelector(state => state.comments);
 
   useEffect(() => {
-    if (post) {
-      dispatch(loadComments(post.id));
-      setVisible(false);
-    }
+    setVisible(false);
+    const fetchComments = async () => {
+      if (!post) {
+        return;
+      }
+
+      dispatch(fetchCommentsStart());
+      try {
+        const commentsFromServer = await commentsApi.getPostComments(post.id);
+
+        dispatch(fetchCommentsSuccess(commentsFromServer));
+      } catch (error) {
+        dispatch(fetchCommentsError('Something went wrong'));
+      }
+    };
+
+    fetchComments();
   }, [post, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: post.id,
-    };
+    if (!post) {
+      return;
+    }
 
-    await dispatch(addNewComment(newComment));
+    try {
+      const newComment = await commentsApi.createComment({
+        name,
+        email,
+        body,
+        postId: post.id,
+      });
+
+      dispatch(addCommentSuccess(newComment));
+    } catch (error) {
+      dispatch(fetchCommentsError(`${error}`));
+    }
   };
 
-  const deleteComment = (commentId: number) => {
-    dispatch(removeComment(commentId));
+  const deleteComment = async (commentId: number) => {
+    dispatch(deleteCommentSuccess(commentId));
+    await commentsApi.deleteComment(commentId);
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">
@@ -90,9 +113,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
+                  ></button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">

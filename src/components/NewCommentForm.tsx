@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
-interface Props {
+type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
-}
+};
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
@@ -46,7 +46,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setSubmitting(true);
 
     setErrors({
       name: !name,
@@ -58,9 +57,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
+    setSubmitting(true);
+
     await onSubmit({ name, email, body });
-    setValues(current => ({ ...current, body: '' }));
+
     setSubmitting(false);
+    setValues(current => ({ ...current, body: '' }));
   };
 
   return (
@@ -175,7 +177,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>

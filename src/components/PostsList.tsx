@@ -2,18 +2,15 @@
 
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { clearPost, setPost } from '../features/selectedPost';
+import { useAppSelector } from '../app/hooks';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { close, set } from '../features/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
-  const { items: posts } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const dispatch = useAppDispatch();
-
-  const handleOnClick = (post: Post) => {
-    dispatch(post.id !== selectedPost?.id ? setPost(post) : clearPost());
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const posts = useAppSelector(state => state.posts.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   return (
     <div data-cy="PostsList">
@@ -41,7 +38,13 @@ export const PostsList: React.FC = () => {
                     'is-light': post.id !== selectedPost?.id,
                   })}
                   onClick={() => {
-                    handleOnClick(post);
+                    if (selectedPost === null || selectedPost.id !== post.id) {
+                      dispatch(set(post));
+                    }
+
+                    if (selectedPost !== null && selectedPost.id === post.id) {
+                      dispatch(close());
+                    }
                   }}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}

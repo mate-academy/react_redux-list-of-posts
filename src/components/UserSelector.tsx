@@ -1,47 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers } from '../features/users';
-import { setUser } from '../features/author';
-import { clearPost } from '../features/selectedPost';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
+import { setUser } from '../features/authorSlice';
+import { close } from '../features/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { users } = useAppSelector(state => state.users);
-  const { author } = useAppSelector(state => state.author);
-  const [expanded, setExpanded] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const author = useAppSelector(state => state.author.author);
+  const users = useAppSelector(state => state.users.users);
+  const [dropdownActive, setDropdownActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const selectUser = (user: User) => {
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setDropdownActive(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
+  const handleUserClick = (user: User) => {
     dispatch(setUser(user));
-    dispatch(clearPost());
+    setDropdownActive(false);
   };
 
-  useEffect(() => {
-    dispatch(loadUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!expanded) {
-      return;
-    }
-
-    const handleDocumentClick = () => {
-      setExpanded(false);
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [expanded]);
+  const toggleDropdown = () => {
+    setDropdownActive(prev => !prev);
+  };
 
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': dropdownActive })}
     >
       <div className="dropdown-trigger">
         <button
@@ -49,13 +52,10 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
+          aria-expanded={dropdownActive}
+          onClick={toggleDropdown}
         >
-          <span>{author?.name || 'Choose a user'}</span>
-
+          <span>{Boolean(author) ? author?.name : 'Choose a user'}</span>
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
@@ -68,7 +68,10 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => selectUser(user)}
+              onClick={() => {
+                handleUserClick(user);
+                dispatch(close());
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
