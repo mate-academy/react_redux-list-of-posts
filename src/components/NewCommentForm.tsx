@@ -7,6 +7,9 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -15,33 +18,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     body: false,
   });
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+    setName('');
+    setEmail('');
+    setBody('');
 
     setErrors({
       name: false,
       email: false,
       body: false,
     });
-  };
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
-
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -58,14 +44,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
+    setBody('');
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -83,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
-            onChange={handleChange}
+            onChange={event => setName(event.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -120,7 +102,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
-            onChange={handleChange}
+            onChange={event => setEmail(event.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -156,7 +138,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
-            onChange={handleChange}
+            onChange={event => setBody(event.target.value)}
           />
         </div>
 
