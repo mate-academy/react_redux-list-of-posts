@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { Loader } from './Loader';
 
-import { Post } from '../types/Post';
+// import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import { addComments, deleteComments } from '../features/comments/comments';
 
 type Props = {
-  post: Post;
+  // post: Post;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC<Props> = () => {
   const { comments, loaded, hasError } = useAppSelector(state => state.comment);
+  const post = useAppSelector(state => state.selectedPost.selectedPost);
 
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
@@ -38,9 +39,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">
@@ -79,9 +80,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => deleteCommentFunction(comment.id)}
-                  >
-                    delete button
-                  </button>
+                  ></button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
