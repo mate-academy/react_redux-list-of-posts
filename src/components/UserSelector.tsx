@@ -1,45 +1,46 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setAuthor } from '../features/authorSlice';
+import { useParams } from 'react-router-dom';
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author);
+
+  const { user: userFromParams } = useParams();
+  const authorId = userFromParams?.split('-')[1];
+
+  useEffect(() => {
+    if (author?.id !== authorId) {
+      const findUser = users.find(({ id }) => id === Number(authorId));
+
+      if (findUser) {
+        dispatch(setAuthor(findUser));
+      }
+    }
+  }, [authorId]);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (
@@ -73,7 +74,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setAuthor(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
