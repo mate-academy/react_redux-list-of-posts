@@ -17,7 +17,7 @@ type State = {
   comments: Comment[];
   limbo: ZombieComment[];
 
-  status: LoadingStatus;
+  batchStatus: LoadingStatus;
   addStatus: LoadingStatus;
 };
 
@@ -25,7 +25,7 @@ const initialState: State = {
   comments: [],
   limbo: [],
 
-  status: LoadingStatus.Idle,
+  batchStatus: LoadingStatus.Idle,
   addStatus: LoadingStatus.Idle,
 };
 
@@ -69,17 +69,18 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getCommentsAsync.pending, state => {
-        state.status = LoadingStatus.Loading;
+        state.batchStatus = LoadingStatus.Loading;
       })
       .addCase(getCommentsAsync.fulfilled, (state, action) => {
-        state.status = LoadingStatus.Idle;
+        state.batchStatus = LoadingStatus.Idle;
         state.comments = action.payload;
       })
       .addCase(getCommentsAsync.rejected, state => {
-        state.status = LoadingStatus.Failed;
+        state.batchStatus = LoadingStatus.Failed;
       })
       .addCase(deleteCommentAsync.pending, (state, action) => {
         const { comments, limbo } = state;
+
         const zombieId = action.meta.arg.id;
         const zombieIndex = comments.findIndex(item => item.id === zombieId);
 
@@ -93,23 +94,22 @@ const commentsSlice = createSlice({
       })
       .addCase(deleteCommentAsync.fulfilled, (state, action) => {
         const { limbo } = state;
+
         const zombieId = action.meta.arg.id;
 
         limbo.filter(([comment]) => comment.id !== zombieId);
       })
       .addCase(deleteCommentAsync.rejected, (state, action) => {
         const { comments, limbo } = state;
+
         const zombieId = action.meta.arg.id;
         const zombie = limbo.find(([item]) => item.id === zombieId);
 
         if (zombie) {
           const [comment, index] = zombie;
 
-          state.comments = [
-            ...comments.slice(0, index),
-            comment,
-            ...comments.slice(index),
-          ];
+          comments.splice(index, 0, comment);
+
           limbo.filter(([item]) => item.id !== zombieId);
         }
       })

@@ -24,11 +24,7 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const author = useAppSelector(state => state.users.selectedUser);
-  const {
-    posts,
-    status,
-    selectedPost,
-  } = useAppSelector(state => state.posts);
+  const { posts, status, selectedPost } = useAppSelector(state => state.posts);
 
   const isLoading = status === LoadingStatus.Loading;
   const isError = status === LoadingStatus.Failed;

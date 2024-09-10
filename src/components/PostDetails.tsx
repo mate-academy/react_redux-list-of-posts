@@ -16,11 +16,11 @@ export const PostDetails = () => {
   const dispatch = useAppDispatch();
 
   const { selectedPost: post } = useAppSelector(state => state.posts);
-  const { comments, status } = useAppSelector(state => state.comments);
+  const { comments, batchStatus } = useAppSelector(state => state.comments);
 
-  const isLoading = status === LoadingStatus.Loading;
-  const isError = status === LoadingStatus.Failed;
-  const isFine = status === LoadingStatus.Idle;
+  const isLoading = batchStatus === LoadingStatus.Loading;
+  const isError = batchStatus === LoadingStatus.Failed;
+  const isFine = batchStatus === LoadingStatus.Idle;
 
   const hasComments = Boolean(comments.length);
 
