@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,28 +9,15 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setSelectedPost } from './features/posts/selectedPostSlice';
+import { loadUserPosts, setPosts } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const selectedPost = useAppSelector(state => state.selectedPost);
   const author = useAppSelector(state => state.author);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -38,11 +25,11 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(loadUserPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -68,18 +55,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && loaded && !hasError && items.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>

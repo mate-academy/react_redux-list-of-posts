@@ -5,13 +5,13 @@ import { getUsers } from '../../api/users';
 
 type UsersState = {
   users: User[];
-  loading: boolean;
+  loaded: boolean;
   error: string;
 };
 
 const initialState: UsersState = {
   users: [],
-  loading: false,
+  loaded: false,
   error: '',
 };
 
@@ -29,16 +29,16 @@ export const usersSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(loadUsers.pending, state => {
-      state.loading = true;
+      state.loaded = false;
     });
 
     builder.addCase(loadUsers.fulfilled, (state, action) => {
       state.users = action.payload;
-      state.loading = false;
+      state.loaded = true;
     });
 
     builder.addCase(loadUsers.rejected, state => {
-      state.loading = false;
+      state.loaded = true;
       state.error = 'Error';
     });
   },

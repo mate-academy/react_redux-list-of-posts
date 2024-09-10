@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { User } from '../types/User';
 import { loadUsers } from '../features/posts/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/posts/authorSlice';
