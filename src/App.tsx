@@ -7,9 +7,6 @@ import './App.scss';
 
 import { PostDetails } from './components/PostDetails';
 import { Loader } from './components/Loader';
-// import { getUserPosts } from './api/posts';
-// import { User } from './types/User';
-// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { UserSelector } from './components/UserSelector';
 import { fetchUsers } from './features/users/UsersSlice';
@@ -17,12 +14,6 @@ import { PostsList } from './components/PostsList';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const { posts, hasError, loaded } = useAppSelector(state => state.posts);
   const users = useAppSelector(state => state.users.users);
