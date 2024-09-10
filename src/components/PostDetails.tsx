@@ -12,11 +12,13 @@ import {
   getCommentsAsync,
 } from '../features/comments/commentsSlice';
 
+import { selectComments, selectPosts } from '../app/selectors';
+
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
 
-  const { selectedPost: post } = useAppSelector(state => state.posts);
-  const { comments, batchStatus } = useAppSelector(state => state.comments);
+  const { selectedPost: post } = useAppSelector(selectPosts);
+  const { comments, batchStatus } = useAppSelector(selectComments);
 
   const isLoading = batchStatus === LoadingStatus.Loading;
   const isError = batchStatus === LoadingStatus.Failed;

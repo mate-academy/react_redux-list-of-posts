@@ -20,11 +20,13 @@ import {
 
 import { LoadingStatus } from './types/LoadingStatus';
 
+import { selectPosts, selectUsers } from './app/selectors';
+
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const author = useAppSelector(state => state.users.selectedUser);
-  const { posts, status, selectedPost } = useAppSelector(state => state.posts);
+  const { selectedUser: author } = useAppSelector(selectUsers);
+  const { posts, status, selectedPost } = useAppSelector(selectPosts);
 
   const isLoading = status === LoadingStatus.Loading;
   const isError = status === LoadingStatus.Failed;

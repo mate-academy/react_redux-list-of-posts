@@ -4,13 +4,16 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import { addCommentAsync } from '../features/comments/commentsSlice';
+
 import { LoadingStatus } from '../types/LoadingStatus';
+
+import { selectComments, selectPosts } from '../app/selectors';
 
 export const NewCommentForm = () => {
   const dispatch = useAppDispatch();
 
-  const post = useAppSelector(state => state.posts.selectedPost);
-  const status = useAppSelector(state => state.comments.addStatus);
+  const { selectedPost: post } = useAppSelector(selectPosts);
+  const { addStatus: status } = useAppSelector(selectComments);
 
   const isSubmitting = status === LoadingStatus.Loading;
 

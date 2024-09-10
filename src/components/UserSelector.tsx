@@ -3,11 +3,12 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getUsersAsync, selectUser } from '../features/users/usersSlice';
+import { selectUsers } from '../app/selectors';
 
 export const UserSelector = () => {
   const dispatch = useAppDispatch();
 
-  const { users, selectedUser } = useAppSelector(state => state.users);
+  const { users, selectedUser } = useAppSelector(selectUsers);
 
   const [expanded, setExpanded] = useState(false);
 

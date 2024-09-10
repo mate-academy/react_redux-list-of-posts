@@ -8,10 +8,12 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import { clearPostSelection, selectPost } from '../features/posts/postsSlice';
 
+import { selectPosts } from '../app/selectors';
+
 export const PostsList = () => {
   const dispatch = useAppDispatch();
 
-  const { posts, selectedPost } = useAppSelector(state => state.posts);
+  const { posts, selectedPost } = useAppSelector(selectPosts);
 
   const handlePostSelect = (post: Post) => {
     if (post.id === selectedPost?.id) {
