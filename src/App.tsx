@@ -12,14 +12,17 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setSelectedPost } from './features/posts/selectedPostSlice';
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const setSelectedPost = (post: Post | null) => dispatch(setCurrentPost(null));
+  const selectedPost = useAppSelector(state => state.currentPost);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -34,7 +37,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
