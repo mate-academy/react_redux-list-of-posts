@@ -21,7 +21,6 @@ export const App: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [author, setAuthor] = useState<User | null>(null);
-  // const setSelectedPost = (post: Post | null) => dispatch(setCurrentPost(null));
   const selectedPost = useAppSelector(state => state.currentPost);
 
   function loadUserPosts(userId: number) {
