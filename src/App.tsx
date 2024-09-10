@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   const {
     posts,
     status,
-    selectedPost: selectedPost,
+    selectedPost,
   } = useAppSelector(state => state.posts);
 
   const isLoading = status === LoadingStatus.Loading;
