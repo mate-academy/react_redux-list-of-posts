@@ -10,7 +10,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setSelectedPost } from './features/posts/selectedPostSlice';
@@ -20,8 +19,8 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
-  const [author, setAuthor] = useState<User | null>(null);
-  const selectedPost = useAppSelector(state => state.currentPost);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const author = useAppSelector(state => state.author);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -52,7 +51,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
