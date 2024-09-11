@@ -7,9 +7,11 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -19,9 +21,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const clearForm = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
 
     setErrors({
       name: false,
@@ -45,9 +49,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
     await onSubmit({ name, email, body });
-    setBody('');
+    setValues(prevValues => ({
+      ...prevValues,
+      body: '',
+    }));
 
     setSubmitting(false);
+  };
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: fieldName, value } = event.target;
+
+    setValues(prevValues => ({
+      ...prevValues,
+      [fieldName]: value,
+    }));
   };
 
   return (
@@ -65,7 +83,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
-            onChange={event => setName(event.target.value)}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -102,7 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
-            onChange={event => setEmail(event.target.value)}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -138,7 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
-            onChange={event => setBody(event.target.value)}
+            onChange={handleChange}
           />
         </div>
 
@@ -162,7 +180,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>

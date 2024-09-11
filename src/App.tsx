@@ -10,13 +10,21 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { UserSelector } from './components/UserSelector';
 import { fetchUsers } from './features/users/UsersSlice';
 import { PostsList } from './components/PostsList';
+import {
+  selectAuthor,
+  selectPosts,
+  selectPostsHasError,
+  selectPostsLoaded,
+  selectSelectedPost,
+} from './features/selectors';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-
-  const { posts, hasError, loaded } = useAppSelector(state => state.posts);
-  const author = useAppSelector(state => state.author.author);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const posts = useAppSelector(selectPosts);
+  const hasError = useAppSelector(selectPostsHasError);
+  const loaded = useAppSelector(selectPostsLoaded);
+  const author = useAppSelector(selectAuthor);
+  const selectedPost = useAppSelector(selectSelectedPost);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -62,15 +70,6 @@ export const App: React.FC = () => {
           <div
             data-cy="Sidebar"
             className="tile is-parent is-8-desktop Sidebar Sidebar--open"
-            // className={classNames(
-            //   'tile',
-            //   'is-parent',
-            //   'is-8-desktop',
-            //   'Sidebar',
-            //   {
-            //     'Sidebar--open': selectedPost,
-            //   },
-            // )}
           >
             <div className="tile is-child box is-success ">
               {selectedPost ? (

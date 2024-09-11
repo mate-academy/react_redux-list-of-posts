@@ -4,12 +4,13 @@ import { User } from '../types/User';
 import { setAuthor } from '../features/author/authorSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchPosts } from '../features/posts/postSlice';
+import { selectAuthor, selectUsers } from '../features/selectors';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
-  const selectedUser = useAppSelector(state => state.author.author);
-  const users = useAppSelector(state => state.users.users);
+  const selectedUser = useAppSelector(selectAuthor);
+  const users = useAppSelector(selectUsers);
 
   const setCurrentUser = (user: User) => {
     if (user.id !== selectedUser?.id) {

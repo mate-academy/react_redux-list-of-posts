@@ -6,14 +6,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import { addComments, deleteComments } from '../features/comments/comments';
+import { selectSelectedPost } from '../features/selectors';
 
-type Props = {
-  // post: Post;
-};
-
-export const PostDetails: React.FC<Props> = () => {
+export const PostDetails: React.FC = () => {
   const { comments, loaded, hasError } = useAppSelector(state => state.comment);
-  const post = useAppSelector(state => state.selectedPost.selectedPost);
+  const post = useAppSelector(selectSelectedPost);
 
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();

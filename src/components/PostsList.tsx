@@ -1,28 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
-import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import { setSelectedPost } from '../features/selectedPost/selectedPost';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchComments } from '../features/comments/comments';
+
+import { PostComponent } from './Post';
 type Props = {
   posts: Post[];
 };
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
-  const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
-
-  const setPostSelected = (post: Post) => {
-    if (post.id !== selectedPost?.id) {
-      dispatch(setSelectedPost(post));
-      dispatch(fetchComments(post.id));
-    } else {
-      dispatch(setSelectedPost(null));
-    }
-  };
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -38,24 +23,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
 
         <tbody>
           {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => {
-                    setPostSelected(post);
-                  }}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+            <PostComponent key={post.id} post={post} />
           ))}
         </tbody>
       </table>
