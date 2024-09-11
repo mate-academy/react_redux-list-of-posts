@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Loader } from './Loader';
-
-// import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
