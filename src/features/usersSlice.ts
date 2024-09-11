@@ -9,7 +9,7 @@ type UsersSlice = {
   hasError: boolean;
 };
 const initialState: UsersSlice = {
-  users: [] as User[],
+  users: [],
   isLoading: false,
   hasError: false,
 };

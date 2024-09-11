@@ -8,7 +8,7 @@ export const PostDetails: React.FC = () => {
   const post = useAppSelector(state => state.selectedPost);
 
   if (!post) {
-    return <></>;
+    return null;
   }
 
   return (

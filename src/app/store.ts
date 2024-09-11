@@ -1,4 +1,9 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  createSelector,
+} from '@reduxjs/toolkit';
 import usersReducer from '../features/usersSlice';
 import postsReducer from '../features/postsSlice';
 import authorReducer from '../features/authorSlice';
@@ -19,6 +24,7 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
+export const createAppSelector = createSelector.withTypes<RootState>;
 
 /* eslint-disable @typescript-eslint/indent */
 export type AppThunk<ReturnType = void> = ThunkAction<

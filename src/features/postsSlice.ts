@@ -11,7 +11,7 @@ type PostsSlice = {
 };
 
 const initialState: PostsSlice = {
-  items: [] as Post[],
+  items: [],
   isLoading: false,
   hasError: false,
 };

@@ -13,7 +13,7 @@ type CommentsSlice = {
 };
 
 const initialState: CommentsSlice = {
-  comments: [] as Comment[],
+  comments: [],
   isLoading: false,
   hasError: false,
   isSubmiting: false,
