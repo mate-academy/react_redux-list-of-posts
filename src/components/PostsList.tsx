@@ -15,6 +15,10 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
   const { activePost } = useAppSelector(state => state.posts);
   const dispatch = useDispatch();
 
+  const handleActivePost = (post: Post) => {
+    dispatch(setActivePost(post.id === activePost?.id ? null : post));
+  };
+
   useEffect(() => {
     dispatch(setActivePost(null));
   }, []);
@@ -44,11 +48,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== activePost?.id,
                   })}
-                  onClick={() =>
-                    dispatch(
-                      setActivePost(post.id === activePost?.id ? null : post),
-                    )
-                  }
+                  onClick={() => handleActivePost(post)}
                 >
                   {post.id === activePost?.id ? 'Close' : 'Open'}
                 </button>

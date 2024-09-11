@@ -37,6 +37,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     });
   };
 
+  const trimmedValues = {
+    name: name.trim(),
+    email: email.trim(),
+    body: body.trim(),
+  };
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -50,18 +56,25 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedValues.name,
+      email: !trimmedValues.email,
+      body: !trimmedValues.body,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedValues.name || !trimmedValues.email || !trimmedValues.body) {
       return;
     }
 
     setSubmitting(true);
 
-    await dispatch(addComment({ postId, name, email, body }));
+    await dispatch(
+      addComment({
+        postId,
+        name: trimmedValues.name,
+        email: trimmedValues.email,
+        body: trimmedValues.body,
+      }),
+    );
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));

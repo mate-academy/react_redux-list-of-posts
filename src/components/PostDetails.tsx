@@ -24,7 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const deleteCommentOnClick = (commentId: number) => {
+  const handleDelete = (commentId: number) => {
     dispatch(deleteCommentLocally(commentId));
     dispatch(deleteCommentById(commentId));
   };
@@ -35,6 +35,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   }, [post.id]);
 
+  const isLoading = commentsLoadingStatus === loading && !visible;
+  const isError = commentsLoadingStatus === error;
+  const isIdle = commentsLoadingStatus === idle;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -44,21 +48,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {commentsLoadingStatus === loading && !visible && <Loader />}
+        {isLoading && <Loader />}
 
-        {commentsLoadingStatus === error && (
+        {isError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {commentsLoadingStatus === idle && comments.length === 0 && (
+        {isIdle && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {commentsLoadingStatus === idle && comments.length > 0 && (
+        {isIdle && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -78,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteCommentOnClick(comment.id))}
+                    onClick={() => handleDelete(comment.id)}
                   >
                     delete button
                   </button>
@@ -92,7 +96,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {commentsLoadingStatus === idle && !visible && (
+        {isIdle && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -103,9 +107,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {commentsLoadingStatus === idle && visible && (
-          <NewCommentForm postId={post.id} />
-        )}
+        {isIdle && visible && <NewCommentForm postId={post.id} />}
       </div>
     </div>
   );
