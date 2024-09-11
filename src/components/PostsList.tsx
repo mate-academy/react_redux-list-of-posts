@@ -4,10 +4,12 @@ import React from 'react';
 import { useAppSelector } from '../app/hooks';
 
 import { PostItem } from './PostItem';
+import { selectPosts } from '../features/postsSlice';
+import { selectAuthor } from '../features/authorSlice';
 
 export const PostsList: React.FC = () => {
-  const { items: posts } = useAppSelector(state => state.posts);
-  const author = useAppSelector(state => state.author);
+  const { items: posts } = useAppSelector(selectPosts);
+  const author = useAppSelector(selectAuthor);
 
   if (!author || !posts.length) {
     return null;

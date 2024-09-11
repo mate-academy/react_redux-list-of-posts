@@ -113,3 +113,4 @@ const commentsSlice = createSlice({
 
 export default commentsSlice.reducer;
 export const { clearComment } = commentsSlice.actions;
+export const selectCommentsInfo = (state: RootState) => state.comments;

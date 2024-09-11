@@ -3,22 +3,22 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setAuthor } from '../features/authorSlice';
+import { selectAuthor, setAuthor } from '../features/authorSlice';
 import { useParams } from 'react-router-dom';
+import { selectUsers } from '../features/usersSlice';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector(state => state.users);
-  const selectedUser = useAppSelector(state => state.author);
-  const author = useAppSelector(state => state.author);
+  const { users } = useAppSelector(selectUsers);
+  const selectedUser = useAppSelector(selectAuthor);
 
   const { user: userFromParams } = useParams();
   const authorId = userFromParams?.split('-')[1];
 
   useEffect(() => {
-    if (author?.id !== authorId) {
+    if (selectedUser?.id !== authorId) {
       const findUser = users.find(({ id }) => id === Number(authorId));
 
       if (findUser) {

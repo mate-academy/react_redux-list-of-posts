@@ -12,12 +12,13 @@ import { UserSelector } from './components/UserSelector';
 import { loadUsersAsync } from './features/usersSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearPosts, loadPostsAsync } from './features/postsSlice';
-import { clearSelect } from './features/selectedPostSlice';
+import { clearSelect, selectSelectedPost } from './features/selectedPostSlice';
 import { MainContent } from './components/MainContent';
+import { selectAuthor } from './features/authorSlice';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const author = useAppSelector(selectAuthor);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

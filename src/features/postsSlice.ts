@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 import { createCommentAsync } from './commentsSlice';
+import { RootState } from '../app/store';
 
 type PostsSlice = {
   items: Post[];
@@ -57,3 +58,5 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 export const { clearPosts } = postsSlice.actions;
+
+export const selectPosts = (state: RootState) => state.posts;

@@ -3,9 +3,10 @@ import React from 'react';
 import { useAppSelector } from '../app/hooks';
 
 import { PostDetailsContent } from './PostDetailsContent';
+import { selectSelectedPost } from '../features/selectedPostSlice';
 
 export const PostDetails: React.FC = () => {
-  const post = useAppSelector(state => state.selectedPost);
+  const post = useAppSelector(selectSelectedPost);
 
   if (!post) {
     return null;

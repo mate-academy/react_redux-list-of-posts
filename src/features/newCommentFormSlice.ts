@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommentDataErrors, CommentFieldData } from '../types/Comment';
 import { selectPost } from './selectedPostSlice';
+import { RootState } from '../app/store';
 
 const initialState = {
   comment: {
@@ -39,3 +40,9 @@ const newCommentFormSlice = createSlice({
 export default newCommentFormSlice.reducer;
 export const { setValue, setAllErrors, clearAllData } =
   newCommentFormSlice.actions;
+
+export const selectFormData = (state: RootState) =>
+  state.newCommentForm.comment;
+
+export const selectFormErrors = (state: RootState) =>
+  state.newCommentForm.errors;

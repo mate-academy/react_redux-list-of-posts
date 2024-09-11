@@ -1,4 +1,8 @@
-import { clearSelect, selectPost } from '../features/selectedPostSlice';
+import {
+  clearSelect,
+  selectPost,
+  selectSelectedPost,
+} from '../features/selectedPostSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
@@ -7,7 +11,7 @@ type Props = {
   post: Post;
 };
 export const PostItem: React.FC<Props> = ({ post }) => {
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
 
   const handlePostSelected = (currentPost: Post) => {

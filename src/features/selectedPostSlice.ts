@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../app/store';
 import { Post } from '../types/Post';
 import { setAuthor } from './authorSlice';
 
@@ -18,3 +19,5 @@ const selectedPostSlice = createSlice({
 
 export default selectedPostSlice.reducer;
 export const { selectPost, clearSelect } = selectedPostSlice.actions;
+
+export const selectSelectedPost = (state: RootState) => state.selectedPost;

@@ -4,18 +4,21 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CommentData } from '../types/Comment';
 import {
   clearAllData,
+  selectFormData,
+  selectFormErrors,
   setAllErrors,
   setValue,
 } from '../features/newCommentFormSlice';
-import { createCommentAsync } from '../features/commentsSlice';
+import {
+  createCommentAsync,
+  selectCommentsInfo,
+} from '../features/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { name, email, body } = useAppSelector(
-    state => state.newCommentForm.comment,
-  );
-  const { errors } = useAppSelector(state => state.newCommentForm);
-  const { isSubmiting } = useAppSelector(state => state.comments);
+  const { name, email, body } = useAppSelector(selectFormData);
+  const errors = useAppSelector(selectFormErrors);
+  const { isSubmiting } = useAppSelector(selectCommentsInfo);
 
   const clearForm = () => {
     dispatch(clearAllData());

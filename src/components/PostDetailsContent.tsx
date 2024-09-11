@@ -4,16 +4,18 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadCommentsAsync } from '../features/commentsSlice';
+import {
+  loadCommentsAsync,
+  selectCommentsInfo,
+} from '../features/commentsSlice';
 import { CommentItem } from './CommentItem';
+import { selectSelectedPost } from '../features/selectedPostSlice';
 
 export const PostDetailsContent = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const post = useAppSelector(state => state.selectedPost);
-  const { comments, isLoading, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const post = useAppSelector(selectSelectedPost);
+  const { comments, isLoading, hasError } = useAppSelector(selectCommentsInfo);
 
   const dispatch = useAppDispatch();
 

@@ -1,15 +1,13 @@
 import { useAppSelector } from '../app/hooks';
+import { selectAuthor } from '../features/authorSlice';
+import { selectPosts } from '../features/postsSlice';
 
 import { Loader } from './Loader';
 import { PostsList } from './PostsList';
 
 export const MainContent = () => {
-  const {
-    items: posts,
-    isLoading,
-    hasError,
-  } = useAppSelector(state => state.posts);
-  const author = useAppSelector(state => state.author);
+  const { items: posts, isLoading, hasError } = useAppSelector(selectPosts);
+  const author = useAppSelector(selectAuthor);
 
   if (!author) {
     return <p data-cy="NoSelectedUser">No user selected</p>;
