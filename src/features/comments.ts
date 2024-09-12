@@ -29,7 +29,7 @@ export const removeComment = createAsyncThunk(
 );
 
 export const addComment = createAsyncThunk(
-  'comment/add',
+  'comments/add',
   (data: Omit<Comment, 'id'>) => {
     return createComment(data);
   },
