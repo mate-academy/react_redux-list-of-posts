@@ -3,21 +3,23 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
-import { setClear, setSelectedPost } from '../features/selectedPostSlice';
+// import { Post } from '../types/Post';
+import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  const handlePostClick = (post: Post) => {
-    if (post.id === selectedPost?.id) {
-      dispatch(setClear());
-    } else {
-      dispatch(setSelectedPost(post));
-    }
-  };
+  // const handlePostClick = (post: Post) => {
+  //   if (post.id === selectedPost?.id) {
+  //     dispatch(setClear());
+  //     // dispatch(setSelectedPost(post));
+  //   } else {
+  //     dispatch(setSelectedPost(post));
+  //     // dispatch(setClear());
+  //   }
+  // };
 
   return (
     <div data-cy="PostsList">
@@ -44,7 +46,13 @@ export const PostsList: React.FC = () => {
                   className={classNames('button', 'is-link', {
                     'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => handlePostClick(post)}
+                  onClick={() =>
+                    dispatch(
+                      setSelectedPost(
+                        post.id === selectedPost?.id ? null : post,
+                      ),
+                    )
+                  }
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>

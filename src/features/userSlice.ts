@@ -3,10 +3,12 @@ import { User } from '../types/User';
 
 type UserSlice = {
   users: User[];
+  error: boolean;
 };
 
 const initialState: UserSlice = {
   users: [],
+  error: false,
 };
 
 export const userSlice = createSlice({
@@ -16,8 +18,11 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<User[]>) => {
       return { ...state, users: action.payload };
     },
+    setError: (state, action: PayloadAction<boolean>) => {
+      return { ...state, error: action.payload };
+    },
   },
 });
 
 export const userReducer = userSlice.reducer;
-export const { setUser } = userSlice.actions;
+export const { setUser, setError } = userSlice.actions;

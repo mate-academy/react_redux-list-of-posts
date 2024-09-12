@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
+import { setError, setUser } from '../features/userSlice';
+import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
@@ -9,6 +11,14 @@ export const UserSelector: React.FC = () => {
   const { users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(usersFromServer => {
+        dispatch(setUser(usersFromServer));
+      })
+      .catch(() => dispatch(setError(true)));
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {

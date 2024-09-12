@@ -25,7 +25,7 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    dispatch(setLoadedComment(true));
+    dispatch(setLoadedComment(false));
     dispatch(setErrorComment(false));
     setVisible(false);
 
@@ -35,10 +35,12 @@ export const PostDetails: React.FC = () => {
         dispatch(setCommentPost(commnetFromServer));
       })
       .catch(() => dispatch(setErrorComment(true)))
-      .finally(() => dispatch(setLoadedComment(false)));
+      .finally(() => dispatch(setLoadedComment(true)));
   }
 
   useEffect(loadComments, [selectedPost?.id, dispatch]);
+
+  // The same useEffect with async/await
 
   const addComment = async ({ name, email, body }: CommentData) => {
     if (!selectedPost?.id) {
