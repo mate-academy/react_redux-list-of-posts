@@ -12,7 +12,6 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     dispatch(loadUsers());
-    // dispatch(setUsers()); ???
 
     if (!expanded) {
       return;

@@ -29,7 +29,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(setPosts([]));
     }
-  }, [author, dispatch]);
+  }, [author]);
 
   return (
     <main className="section">

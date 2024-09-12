@@ -22,15 +22,6 @@ export const loadUserPosts = createAsyncThunk(
   },
 );
 
-// function loadUserPosts(userId: number) {
-//   setLoaded(false);
-
-//   getUserPosts(userId)
-//     .then(setPosts)
-//     .catch(() => setError(true))
-//     .finally(() => setLoaded(true));
-// }
-
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
