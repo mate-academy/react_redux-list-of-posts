@@ -35,7 +35,11 @@ export const PostsList: React.FC = () => {
                     'is-light': post.id !== selectedPost?.id,
                   })}
                   onClick={() => {
-                    dispatch(selectedPostActions.set(post.id === selectedPost?.id ? null : post));
+                    dispatch(
+                      selectedPostActions.set(
+                        post.id === selectedPost?.id ? null : post,
+                      ),
+                    );
                   }}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
