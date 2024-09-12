@@ -12,7 +12,9 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     dispatch(loadUsers());
+  }, [dispatch]);
 
+  useEffect(() => {
     if (!expanded) {
       return;
     }
