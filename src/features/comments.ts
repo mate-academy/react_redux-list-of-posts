@@ -6,14 +6,18 @@ import { Comment } from '../types/Comment';
 
 export interface CommentsState {
   comments: Comment[] | [];
-  loading: string;
-  error: boolean;
+  isLoading: boolean; // Changed to boolean
+  isAdding: boolean; // Separate state for adding comments
+  isDeleting: boolean; // Separate state for deleting comments
+  hasError: boolean; // Boolean for error state
 }
 
 const initialState: CommentsState = {
   comments: [],
-  loading: '',
-  error: false,
+  isLoading: false, // Initial state set to false
+  isAdding: false,
+  isDeleting: false,
+  hasError: false,
 };
 
 export const commentsInit = createAsyncThunk('comments/fetch', (id: number) => {
@@ -44,44 +48,50 @@ export const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
+      // Fetching comments
       .addCase(commentsInit.pending, state => {
-        state.loading = 'loading';
+        state.isLoading = true;
+        state.hasError = false; // Reset error state on new request
       })
       .addCase(commentsInit.fulfilled, (state, action) => {
         state.comments = action.payload;
-        state.loading = '';
+        state.isLoading = false;
       })
       .addCase(commentsInit.rejected, state => {
-        state.loading = '';
-        state.error = true;
+        state.isLoading = false;
+        state.hasError = true;
       });
 
+    // Adding a new comment
     builder
       .addCase(addNewCommentFromServer.pending, state => {
-        state.loading = 'add';
+        state.isAdding = true;
+        state.hasError = false;
       })
       .addCase(addNewCommentFromServer.fulfilled, (state, action) => {
         state.comments = [...state.comments, action.payload];
-        state.loading = '';
+        state.isAdding = false;
       })
       .addCase(addNewCommentFromServer.rejected, state => {
-        state.loading = '';
-        state.error = true;
+        state.isAdding = false;
+        state.hasError = true;
       });
 
+    // Deleting a comment
     builder
       .addCase(deleteCommentFromServer.pending, state => {
-        state.loading = 'delete';
+        state.isDeleting = true;
+        state.hasError = false;
       })
       .addCase(deleteCommentFromServer.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(comment => {
-          return comment.id !== action.payload;
-        });
-        state.loading = '';
+        state.comments = state.comments.filter(
+          comment => comment.id !== action.payload,
+        );
+        state.isDeleting = false;
       })
       .addCase(deleteCommentFromServer.rejected, state => {
-        state.loading = '';
-        state.error = true;
+        state.isDeleting = false;
+        state.hasError = true;
       });
   },
 });

@@ -10,12 +10,21 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsAction from './features/posts';
+import {
+  selectAuthor,
+  selectPosts,
+  selectLoading,
+  selectError,
+  selectSelectedPost,
+} from './features/selectors';
 
 export const App: React.FC = () => {
-  const { author } = useAppSelector(state => state.author);
-  const { posts, loading, error } = useAppSelector(state => state.posts);
+  const author = useAppSelector(selectAuthor);
+  const posts = useAppSelector(selectPosts);
+  const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     if (author) {

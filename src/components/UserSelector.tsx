@@ -37,11 +37,7 @@ export const UserSelector: React.FC = () => {
   }, [expanded]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(usersActions.init());
-    };
-
-    fetchData();
+    dispatch(usersActions.init());
   }, [dispatch]);
 
   return (
