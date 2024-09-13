@@ -9,7 +9,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { loadUserPosts, setPost } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';

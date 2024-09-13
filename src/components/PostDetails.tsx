@@ -82,9 +82,7 @@ export const PostDetails: React.FC = () => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => dispatch(removeComment(comment.id))}
-                  >
-                    delete button
-                  </button>
+                  ></button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
