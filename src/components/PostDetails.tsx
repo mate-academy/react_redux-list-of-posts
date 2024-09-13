@@ -2,70 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  setCommentPost,
-  setErrorComment,
-  setLoadedComment,
+  addNewComment,
+  loadComments,
+  removeComment,
 } from '../features/commentSlice';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { comments, loaded, error } = useAppSelector(
-    state => state.commentPost,
-  );
+  const { items, loaded, error } = useAppSelector(state => state.commentPost);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    if (!selectedPost?.id) {
-      return;
+  useEffect(() => {
+    if (selectedPost) {
+      dispatch(loadComments(selectedPost.id));
+      setVisible(false);
     }
-
-    dispatch(setLoadedComment(false));
-    dispatch(setErrorComment(false));
-    setVisible(false);
-
-    commentsApi
-      .getPostComments(selectedPost?.id)
-      .then(commnetFromServer => {
-        dispatch(setCommentPost(commnetFromServer));
-      })
-      .catch(() => dispatch(setErrorComment(true)))
-      .finally(() => dispatch(setLoadedComment(true)));
-  }
-
-  useEffect(loadComments, [selectedPost?.id, dispatch]);
-
-  // The same useEffect with async/await
+  }, [selectedPost, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    if (!selectedPost?.id) {
+    if (!selectedPost) {
       return;
     }
 
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: selectedPost?.id,
-      });
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: selectedPost?.id,
+    };
 
-      dispatch(setCommentPost([...comments, newComment]));
-    } catch (err) {
-      dispatch(setErrorComment(true));
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    dispatch(
-      setCommentPost(comments.filter(comment => comment.id !== commentId)),
-    );
-    await commentsApi.deleteComment(commentId);
+    await dispatch(addNewComment(newComment));
   };
 
   return (
@@ -85,17 +55,17 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !error && comments.length === 0 && (
+        {loaded && !error && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !error && comments.length > 0 && (
+        {loaded && !error && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}
@@ -111,7 +81,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(removeComment(comment.id))}
                   >
                     delete button
                   </button>

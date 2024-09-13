@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,40 +9,26 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+// import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setError, setLoaded, setPost } from './features/postsSlice';
+import { loadUserPosts, setPost } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author } = useAppSelector(state => state.author);
-  const { posts, loaded, error } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
+  const { items, loaded, error } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-
-  const loadUserPosts = useCallback(
-    (userId: number) => {
-      dispatch(setLoaded(false));
-
-      getUserPosts(userId)
-        .then(postFromServer => {
-          dispatch(setPost(postFromServer));
-        })
-        .catch(() => dispatch(setError(true)))
-        .finally(() => dispatch(setLoaded(true)));
-    },
-    [dispatch],
-  );
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(loadUserPosts(author.id));
     } else {
       dispatch(setPost([]));
     }
-  }, [author, loadUserPosts, dispatch]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -68,13 +54,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length === 0 && (
+                {author && loaded && !error && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length > 0 && (
+                {author && loaded && !error && items.length > 0 && (
                   <PostsList />
                 )}
               </div>
