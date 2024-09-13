@@ -40,8 +40,20 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({
+      ...current,
+      [field]: value,
+    }));
     setErrors(current => ({ ...current, [field]: false }));
+  };
+
+  const handleBlur = (event: { target: { name: string; value?: string } }) => {
+    const { name: field, value } = event.target;
+
+    setValues(current => ({
+      ...current,
+      [field]: value?.replace(/ +/g, ' ').trim(),
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -84,6 +96,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
 
           <span className="icon is-small is-left">
@@ -114,7 +127,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -157,6 +170,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
 
