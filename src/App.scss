@@ -2,9 +2,21 @@ iframe {
   display: none;
 }
 
+.is-ancestor {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.is-parent {
+  width: 50%;
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
+  width: 100%;
+
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
@@ -25,3 +37,5 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+
