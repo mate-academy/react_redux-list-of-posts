@@ -41,7 +41,6 @@ export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
                   })}
                   onClick={() => {
                     dispatch(saveSelectedPost(post));
-                    // onPostSelected(post.id === selectedPostId ? null : post);
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
