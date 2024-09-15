@@ -225,28 +225,28 @@ describe('', () => {
         cy.get('@users').should('have.callCount', 1);
       });
 
-      // it('should not request posts from API', () => {
-      //   page.mockUsers();
-      //   page.spyOn('**/posts**', 'posts');
+      it('should not request posts from API', () => {
+        page.mockUsers();
+        page.spyOn('**/posts**', 'posts');
 
-      //   cy.visit('/');
-      //   cy.waitFor('@usersRequest');
-      //   cy.wait(500);
+        cy.visit('/');
+        cy.waitFor('@usersRequest');
+        cy.wait(500);
 
-      //   cy.get('@posts').should('not.be.called');
-      // });
+        cy.get('@posts').should('not.be.called');
+      });
 
-      // it('should not request comments from API', () => {
-      //   page.mockUsers();
-      //   page.mockUser1Posts();
-      //   page.spyOn('**/comments**', 'comments');
+      it('should not request comments from API', () => {
+        page.mockUsers();
+        page.mockUser1Posts();
+        page.spyOn('**/comments**', 'comments');
 
-      //   cy.visit('/');
-      //   cy.waitFor('@usersRequest');
-      //   cy.wait(500);
+        cy.visit('/');
+        cy.waitFor('@usersRequest');
+        cy.wait(500);
 
-      //   cy.get('@comments').should('not.be.called');
-      // });
+        cy.get('@comments').should('not.be.called');
+      });
     });
   })
 
