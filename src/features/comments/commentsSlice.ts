@@ -1,11 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Comment, CommentData2 } from '../../types/Comment';
-import {
-  createComment,
-  deleteComment,
-  getPostComments,
-} from '../../api/comments';
+import { Comment, CommentData } from '../../types/Comment';
+import { createComment, deleteComment, getPostComments } from './commentsAPI';
 
 type CommentsState = {
   comments: Comment[];
@@ -68,7 +64,7 @@ export const { setComment, clearComment, handleLoadedState, handleErrorState } =
 
 export const addComment = createAsyncThunk(
   'comments/postComment',
-  async ({ name, email, body, postId }: CommentData2, { dispatch }) => {
+  async ({ name, email, body, postId }: CommentData, { dispatch }) => {
     try {
       const newComment = await createComment({
         name,
@@ -83,19 +79,6 @@ export const addComment = createAsyncThunk(
     }
   },
 );
-
-// export const handleDeleteComment = createAsyncThunk(
-//   'comments/deleteComment',
-//   async (value: number, { dispatch }) => {
-//     try {
-//       deleteComment(value);
-
-//       dispatch(deleteComment(value));
-//     } catch {
-//       dispatch(handleErrorState(true));
-//     }
-//   },
-// );
 
 export const handleDeleteComment = createAsyncThunk(
   'comments/deleteComment',

@@ -6,11 +6,11 @@ import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
+import { PostsList } from './features/postsList/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { UserSelector } from './features/usersSelector/UserSelector';
 import { Loader } from './components/Loader';
-import * as postsActions from './features/posts/postsSlice';
+import * as postsActions from './features/postsList/postsSlice';
 import { handleSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
+import { getUserPosts } from './postsAPI';
 
 type PostsState = {
   loaded: boolean;

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUsers } from '../../api/users';
+import { getUsers } from './usersAPI';
 import { User } from '../../types/User';
 
 export const init = createAsyncThunk('users/fetch', getUsers);

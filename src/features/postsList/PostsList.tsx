@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { handleSelectedPost } from '../features/selectedPost/selectedPostSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { handleSelectedPost } from '../selectedPost/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
