@@ -53,7 +53,25 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    const newError = {
+      ...errors,
+    };
+
+    if (!name.trim()) {
+      newError.name = true;
+    }
+
+    if (!body.trim()) {
+      newError.email = true;
+    }
+
+    if (!email.trim()) {
+      newError.body = true;
+    }
+
+    if (!name.trim() || !email.trim() || !body.trim()) {
+      setErrors(newError);
+
       return;
     }
 
@@ -111,7 +129,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

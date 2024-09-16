@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     aria-label="delete"
                     onClick={() => dispatch(handleDeleteComment(comment.id))}
                   >
-                    delete button
+                    {/* delete button */}
                   </button>
                 </div>
 
