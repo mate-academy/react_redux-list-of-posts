@@ -61,11 +61,11 @@ export const NewCommentForm: React.FC = () => {
       newError.name = true;
     }
 
-    if (!body.trim()) {
+    if (!email.trim()) {
       newError.email = true;
     }
 
-    if (!email.trim()) {
+    if (!body.trim()) {
       newError.body = true;
     }
 
