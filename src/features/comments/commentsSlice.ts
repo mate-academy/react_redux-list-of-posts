@@ -19,12 +19,40 @@ export const init = createAsyncThunk('comments/fetchComments', (id: number) =>
   getPostComments(id),
 );
 
+// Асинхронне додавання коментаря
+export const addComment = createAsyncThunk(
+  'comments/postComment',
+  async ({ name, email, body, postId }: CommentData, { rejectWithValue }) => {
+    try {
+      const newComment = await createComment({
+        name,
+        email,
+        body,
+        postId,
+      });
+
+      return newComment;
+    } catch (error) {
+      return rejectWithValue(true);
+    }
+  },
+);
+
+export const handleDeleteComment = createAsyncThunk(
+  'comments/deleteComment',
+  async (value: number) => {
+    await deleteComment(value);
+
+    return value;
+  },
+);
+
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
     setComment: (state, action: PayloadAction<Comment>) => {
-      state.comments = [...state.comments, action.payload];
+      state.comments.push(action.payload);
     },
 
     clearComment: (state, action: PayloadAction<number>) => {
@@ -54,6 +82,19 @@ const commentsSlice = createSlice({
       .addCase(init.rejected, state => {
         state.hasError = true;
         state.loaded = true;
+      })
+
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.comments.push(action.payload);
+      })
+      .addCase(addComment.rejected, state => {
+        state.hasError = true;
+      })
+
+      .addCase(handleDeleteComment.fulfilled, (state, action) => {
+        state.comments = state.comments.filter(
+          comment => comment.id !== action.payload,
+        );
       });
   },
 });
@@ -61,30 +102,3 @@ const commentsSlice = createSlice({
 export default commentsSlice.reducer;
 export const { setComment, clearComment, handleLoadedState, handleErrorState } =
   commentsSlice.actions;
-
-export const addComment = createAsyncThunk(
-  'comments/postComment',
-  async ({ name, email, body, postId }: CommentData, { dispatch }) => {
-    try {
-      const newComment = await createComment({
-        name,
-        email,
-        body,
-        postId,
-      });
-
-      dispatch(setComment(newComment));
-    } catch {
-      dispatch(handleErrorState(true));
-    }
-  },
-);
-
-export const handleDeleteComment = createAsyncThunk(
-  'comments/deleteComment',
-  async (value: number, { dispatch }) => {
-    dispatch(clearComment(value));
-
-    await deleteComment(value);
-  },
-);
