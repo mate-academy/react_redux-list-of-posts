@@ -14,6 +14,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts(state, { payload }: PayloadAction<Post[]>) {
+      // eslint-disable-next-line no-param-reassign
       state.posts = payload;
     },
   },
