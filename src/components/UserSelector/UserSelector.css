@@ -1,0 +1,4 @@
+.max-height-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+}
