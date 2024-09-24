@@ -20,9 +20,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     (state: RootState) => state.comments,
   );
 
-  // const [comments, setComments] = useState<Comment[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
