@@ -1,6 +1,7 @@
 iframe {
   display: none;
 }
+
 .tile.is-ancestor {
   display: flex;
   gap: 1rem; // Добавляем промежутки между колонками
@@ -17,10 +18,24 @@ iframe {
   overflow: hidden;
   visibility: hidden;
 
+  // Переходы
+  transition-property: max-width, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+
+  // Модификатор для открытого состояния
   &--open {
     max-width: 50%;
     opacity: 1;
     visibility: visible;
+
+    @media (min-width: 769px) {
+      max-width: 50%; // Стили для открытого состояния на больших экранах
+    }
+  }
+
+  @media (min-width: 769px) {
+    max-width: 0; // Скрываем Sidebar по умолчанию на больших экранах
   }
 }
 
@@ -31,26 +46,6 @@ iframe {
 
   .Sidebar {
     max-width: 100%;
-  }
-}
-
-.Sidebar {
-  overflow: hidden;
-  opacity: 0;
-  transition-property: max-width, opacity;
-  transition-duration: 0.5s;
-  transition-timing-function: ease-in-out;
-
-  @media (min-width: 769px) {
-    max-width: 0;
-  }
-
-  &--open {
-    opacity: 1;
-
-    @media (min-width: 769px) {
-      max-width: 50%;
-    }
   }
 }
 
