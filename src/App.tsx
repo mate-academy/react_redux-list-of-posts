@@ -56,7 +56,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && posts.length === 0 && (
+                {author && !loading && posts.length === 0 && !error && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
