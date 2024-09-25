@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
+        <div className="tile is-ancestor" >
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
@@ -76,14 +76,13 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
               {
                 'Sidebar--open': selectedPost,
               },
             )}
           >
             <div className="tile is-child box is-success">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost ? <PostDetails post={selectedPost} /> : <p>Choose a post</p>}
             </div>
           </div>
         </div>
