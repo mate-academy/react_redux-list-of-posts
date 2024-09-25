@@ -2,23 +2,50 @@ iframe {
   display: none;
 }
 
+.tile.is-ancestor {
+  display: flex;
+  gap: 1rem; // Добавляем промежутки между колонками
+}
+
+.tile.is-parent {
+  flex-grow: 1; // Левая колонка занимает больше места
+}
+
 .Sidebar {
-  overflow: hidden;
+  max-width: 50%;
+  transition: all 0.3s ease;
   opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+
+  // Переходы
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
 
-  @media (min-width: 769px) {
-    max-width: 0;
-  }
-
+  // Модификатор для открытого состояния
   &--open {
+    max-width: 50%;
     opacity: 1;
+    visibility: visible;
 
     @media (min-width: 769px) {
-      max-width: 50%;
+      max-width: 50%; // Стили для открытого состояния на больших экранах
     }
+  }
+
+  @media (min-width: 769px) {
+    max-width: 0; // Скрываем Sidebar по умолчанию на больших экранах
+  }
+}
+
+@media (max-width: 1024px) {
+  .tile.is-parent {
+    flex-direction: column;
+  }
+
+  .Sidebar {
+    max-width: 100%;
   }
 }
 
