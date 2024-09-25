@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor" >
+        <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">

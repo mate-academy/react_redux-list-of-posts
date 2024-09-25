@@ -1,6 +1,38 @@
 iframe {
   display: none;
 }
+.tile.is-ancestor {
+  display: flex;
+  gap: 1rem; // Добавляем промежутки между колонками
+}
+
+.tile.is-parent {
+  flex-grow: 1; // Левая колонка занимает больше места
+}
+
+.Sidebar {
+  max-width: 50%;
+  transition: all 0.3s ease;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+
+  &--open {
+    max-width: 50%;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tile.is-parent {
+    flex-direction: column;
+  }
+
+  .Sidebar {
+    max-width: 100%;
+  }
+}
 
 .Sidebar {
   overflow: hidden;
