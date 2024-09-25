@@ -18,13 +18,13 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const dispatch = useAppDispatch()
-  const { loading, users, error } = useAppSelector(state => state.users)
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    dispatch(init())
-  }, [dispatch])
+    dispatch(init());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {

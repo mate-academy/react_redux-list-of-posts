@@ -63,12 +63,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    await onSubmit({ name: trimmedName, email: trimmedEmail, body: trimmedBody });
+    await onSubmit({
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
+    });
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
   };
-
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">

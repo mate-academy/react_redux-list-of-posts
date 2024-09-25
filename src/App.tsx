@@ -17,9 +17,9 @@ import { postsInit } from './features/posts';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const selectedPost = useAppSelector((state) => state.selectedPost.selectedPost);
-  const author = useAppSelector((state) => state.author.author);
-  const { posts, loading, error } = useAppSelector((state) => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const author = useAppSelector(state => state.author.author);
+  const { posts, loading, error } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
@@ -27,7 +27,7 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(postsInit(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -36,7 +36,10 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={user => dispatch(setAuthor(user))} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -63,7 +66,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={(post) => dispatch(setSelectedPost(post))}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
@@ -72,17 +75,16 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
+            className={classNames('tile', 'is-parent', 'is-8-desktop', {
+              'Sidebar--open': selectedPost,
+            })}
           >
             <div className="tile is-child box is-success">
-              {selectedPost ? <PostDetails post={selectedPost} /> : <p>Choose a post</p>}
+              {selectedPost ? (
+                <PostDetails post={selectedPost} />
+              ) : (
+                <p>Choose a post</p>
+              )}
             </div>
           </div>
         </div>
