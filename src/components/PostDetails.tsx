@@ -74,9 +74,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     onClick={() =>
                       dispatch(commentsActions.deleteComments(comment.id))
                     }
-                  >
-                    delete button
-                  </button>
+                  ></button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">

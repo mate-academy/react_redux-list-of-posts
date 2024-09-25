@@ -35,12 +35,20 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  function checkSpaces(str: string) {
+    if (str.startsWith(' ')) {
+      return str.trim();
+    }
+
+    return str;
+  }
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
+    setValues(current => ({ ...current, [field]: checkSpaces(value) }));
     setErrors(current => ({ ...current, [field]: false }));
   };
 
@@ -114,7 +122,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

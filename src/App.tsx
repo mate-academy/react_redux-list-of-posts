@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect } from 'react';
-import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -83,20 +81,13 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
-          >
+          <div data-cy="Sidebar" className="tile is-parent is-8-desktop">
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {!selectedPost ? (
+                <p>Choose a post</p>
+              ) : (
+                <PostDetails post={selectedPost} />
+              )}
             </div>
           </div>
         </div>
