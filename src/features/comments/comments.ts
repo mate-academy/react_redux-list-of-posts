@@ -18,6 +18,24 @@ export const fetchComments = createAsyncThunk(
   },
 );
 
+export const addNewComment = createAsyncThunk(
+  'comments/addComment',
+  async (data: Omit<Comment, 'id'>) => {
+    const comments = await commentsApi.createComment(data);
+
+    return comments;
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/removeComment',
+  async (commentId: number) => {
+    await commentsApi.deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
@@ -47,6 +65,28 @@ export const commentsSlice = createSlice({
       state.hasError = true;
       state.loaded = true;
     });
+    builder
+      .addCase(addNewComment.fulfilled, (state, action) => {
+        state.comments = [...state.comments, action.payload];
+      })
+      .addCase(addNewComment.rejected, state => {
+        return {
+          ...state,
+          hasError: true,
+        };
+      });
+    builder
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.comments = state.comments.filter(
+          comment => comment.id !== action.payload,
+        );
+      })
+      .addCase(removeComment.rejected, state => {
+        return {
+          ...state,
+          hasError: true,
+        };
+      });
   },
 });
 

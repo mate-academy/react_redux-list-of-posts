@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-import { commentsActions, fetchComments } from '../features/comments/comments';
+import {
+  addNewComment,
+  fetchComments,
+  removeComment,
+} from '../features/comments/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
@@ -52,37 +54,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   // effect can return only a function but not a Promise
   */
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      dispatch(commentsActions.setComments([...comments, newComment]));
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      dispatch(commentsActions.setHasError(true));
-    }
+  const addComment = async (newComment: CommentData) => {
+    await dispatch(addNewComment({ ...newComment, postId: post.id }));
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    dispatch(
-      commentsActions.setComments(
-        comments.filter(comment => comment.id !== commentId),
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+  const deleteComment = (commentId: number) => {
+    dispatch(removeComment(commentId));
   };
 
   return (
