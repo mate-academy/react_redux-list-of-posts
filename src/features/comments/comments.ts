@@ -9,15 +9,6 @@ const initialState = {
   hasError: false,
 };
 
-// export const fetchComments = createAsyncThunk(
-//   'posts/fetchUserPosts',
-//   async (postId: number) => {
-//     const comments = await commentsApi.getPostComments(postId);
-
-//     return comments;
-//   },
-// );
-
 export const fetchComments = createAsyncThunk(
   'comments/fetchUserComments',
   async (postId: number) => {
