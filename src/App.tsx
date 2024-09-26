@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
-import 'bulma/css/bulma.css';
+import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
@@ -9,34 +9,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './app/store';
 import { authorActions } from './features/author/author';
 import { selectedPostActions } from './features/selectedPost/selectedPost';
-import { postsActions } from './features/posts/posts';
+import { fetchUserPosts, postsActions } from './features/posts/posts';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
-  const { posts, loaded, hasError } = useSelector(
-    (state: RootState) => state.posts,
-  );
-
-  const author = useSelector((state: RootState) => state.author);
-  const selectedPost = useSelector((state: RootState) => state.selectedPost);
-
-  const loadUserPosts = useCallback(
-    (userId: number) => {
-      dispatch(postsActions.setLoaded(false));
-
-      getUserPosts(userId)
-        .then(readyPosts => dispatch(postsActions.setPosts(readyPosts)))
-        .catch(() => dispatch(postsActions.setHasError(true)))
-        .finally(() => dispatch(postsActions.setLoaded(true)));
-    },
-    [dispatch],
-  );
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -44,11 +27,11 @@ export const App: React.FC = () => {
     dispatch(selectedPostActions.setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchUserPosts(author.id));
     } else {
       dispatch(postsActions.setPosts([]));
     }
-  }, [author, dispatch, loadUserPosts]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -112,9 +95,11 @@ export const App: React.FC = () => {
               },
             )}
           >
-            <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success">
+                <PostDetails post={selectedPost} />
+              </div>
+            )}
           </div>
         </div>
       </div>

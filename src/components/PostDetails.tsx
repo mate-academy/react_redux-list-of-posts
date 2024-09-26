@@ -6,37 +6,25 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../app/store';
-import { commentsActions } from '../features/comments/comments';
+import { commentsActions, fetchComments } from '../features/comments/comments';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useDispatch();
-  const { comments, loaded, hasError } = useSelector(
-    (state: RootState) => state.comments,
+  const dispatch = useAppDispatch();
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.comments,
   );
 
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    dispatch(commentsActions.setLoaded(false));
-    dispatch(commentsActions.setHasError(false));
+  useEffect(() => {
     setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(readyComments =>
-        dispatch(commentsActions.setComments(readyComments)),
-      ) // save the loaded comments
-      .catch(() => dispatch(commentsActions.setHasError(true))) // show an error when something went wrong
-      .finally(() => dispatch(commentsActions.setLoaded(true))); // hide the spinner
-  }
-
-  useEffect(loadComments, [dispatch, post.id]);
+    dispatch(fetchComments(post.id));
+  }, [dispatch, post.id]);
 
   // The same useEffect with async/await
   /*
