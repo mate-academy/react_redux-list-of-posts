@@ -7,9 +7,9 @@ import './App.scss';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-// import { UserSelector } from './components/UserSelector';
+import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { authorActions } from './features/author/author';
+import { authorActions } from './features/author/author';
 import { selectedPostActions } from './features/selectedPost/selectedPost';
 import { fetchUserPosts, postsActions } from './features/posts/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
@@ -40,12 +40,12 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                {/* <UserSelector
+                <UserSelector
                   value={author}
                   onChange={newAuthor =>
                     dispatch(authorActions.setAuthor(newAuthor))
                   }
-                /> */}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
