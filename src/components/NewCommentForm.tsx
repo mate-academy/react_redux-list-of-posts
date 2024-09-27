@@ -60,13 +60,15 @@ export const NewCommentForm = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
+    const hasErrors = {
+      name: !name || name.trim().length === 0,
       email: !email,
       body: !body || body.trim().length === 0,
-    });
+    };
 
-    if (!name || !email || !body || body.trim().length === 0) {
+    setErrors(hasErrors);
+
+    if (Object.values(hasErrors).some(Boolean)) {
       return;
     }
 
