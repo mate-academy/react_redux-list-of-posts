@@ -84,5 +84,3 @@ export const incrementIfOdd = (amount: number): AppThunk => {
     }
   };
 };
-
-export default counterSlice.reducer;
