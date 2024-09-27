@@ -1,13 +1,26 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments';
 import { CommentData } from '../types/Comment';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm = () => {
   const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const postId = selectedPost?.id || 0;
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    await dispatch(
+      commentsActions.commentAdd({
+        name,
+        email,
+        body,
+        postId,
+      }),
+    );
+  };
 
   const [errors, setErrors] = useState({
     name: false,
@@ -47,20 +60,22 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
+    const hasErrors = {
+      name: !name || name.trim().length === 0,
       email: !email,
-      body: !body,
-    });
+      body: !body || body.trim().length === 0,
+    };
 
-    if (!name || !email || !body) {
+    setErrors(hasErrors);
+
+    if (Object.values(hasErrors).some(Boolean)) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await addComment({ name, email, body });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
@@ -114,7 +129,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
