@@ -23,6 +23,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loaded,
   } = useAppSelector(state => state.comment);
   const dispatch = useAppDispatch();
+
   async function loadComments() {
     setVisible(false);
     await dispatch(fetchPostComments(post.id));

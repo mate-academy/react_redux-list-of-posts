@@ -20,6 +20,7 @@ export const fetchUserPosts = createAsyncThunk<Post[], number>(
   async (id: number) => {
     try {
       const response = await getUserPosts(id);
+
       return response;
     } catch (error) {
       throw error;

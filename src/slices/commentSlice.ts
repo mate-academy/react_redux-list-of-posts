@@ -64,7 +64,8 @@ export const commentSlice = createSlice({
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(fetchPostComments.fulfilled,
+      .addCase(
+        fetchPostComments.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
           state.loaded = true;
           state.items = action.payload;
@@ -93,7 +94,8 @@ export const commentSlice = createSlice({
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(fetchDeletePostComment.fulfilled,
+      .addCase(
+        fetchDeletePostComment.fulfilled,
         (state, action: PayloadAction<number>) => {
           state.loaded = true;
           state.items = state.items.filter(
