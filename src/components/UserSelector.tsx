@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsers } from '../slices/userSlice';
 import { setUser } from '../slices/authorSlice';
+import { fetchAllUsers } from '../slices/userSlice';
 
-export const UserSelector: React.FC = ({}) => {
+export const UserSelector: React.FC = () => {
+  const [expanded, setExpanded] = useState(false);
+
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.user.users);
   const selectedUser = useAppSelector(state => state.author.user);
-  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      await dispatch(fetchAllUsers());
+    }
+
+    fetchUsers();
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    dispatch(fetchUsers());
     const handleDocumentClick = () => {
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
@@ -54,7 +61,7 @@ export const UserSelector: React.FC = ({}) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users?.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}

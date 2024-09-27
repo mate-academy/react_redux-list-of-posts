@@ -23,15 +23,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loaded,
   } = useAppSelector(state => state.comment);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    async function loadComments() {
-      setVisible(false);
-      await dispatch(fetchPostComments(post.id));
-    }
-
-    loadComments();
-  }, [post.id, dispatch]);
+  async function loadComments() {
+    setVisible(false);
+    await dispatch(fetchPostComments(post.id));
+  }
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
     const newComment = {
@@ -47,6 +42,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleDeleteComment = async (commentId: number) => {
     await dispatch(fetchDeletePostComment(commentId));
   };
+
+  useEffect(() => {
+    loadComments();
+  }, [post.id, dispatch]);
 
   return (
     <div className="content" data-cy="PostDetails">

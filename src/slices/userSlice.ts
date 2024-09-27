@@ -1,17 +1,17 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-import { getUser, getUsers } from '../api/users';
+import { getUsers } from '../api/users';
 
 type StateProps = {
-  users: User[];
+  users: User[] | null;
 };
 
 const initialState: StateProps = {
   users: [],
 };
 
-export const fetchUsers = createAsyncThunk<User[], void>(
+export const fetchAllUsers = createAsyncThunk<User[], void>(
   'users/fetchUsers',
   async () => {
     try {
@@ -24,30 +24,13 @@ export const fetchUsers = createAsyncThunk<User[], void>(
   },
 );
 
-export const fetchUsersById = createAsyncThunk<User[], number>(
-  'users/fetchUserById',
-  async (id: number) => {
-    try {
-      const response = await getUser(id);
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  },
-);
-
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(
-      fetchUsers.fulfilled,
+      fetchAllUsers.fulfilled,
       (state, action: PayloadAction<User[]>) => {
         state.users = action.payload;
       },
@@ -55,5 +38,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUsers } = userSlice.actions;
+export const {} = userSlice.actions;
 export default userSlice.reducer;

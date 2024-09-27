@@ -20,7 +20,6 @@ export const fetchUserPosts = createAsyncThunk<Post[], number>(
   async (id: number) => {
     try {
       const response = await getUserPosts(id);
-
       return response;
     } catch (error) {
       throw error;
@@ -36,6 +35,7 @@ export const postSlice = createSlice({
     builder
       .addCase(fetchUserPosts.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(
         fetchUserPosts.fulfilled,
@@ -45,10 +45,10 @@ export const postSlice = createSlice({
         },
       )
       .addCase(fetchUserPosts.rejected, state => {
+        state.loaded = true;
         state.hasError = true;
       });
   },
 });
 
-export const {} = postSlice.actions;
 export default postSlice.reducer;

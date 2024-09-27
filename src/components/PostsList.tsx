@@ -4,12 +4,17 @@ import classNames from 'classnames';
 import React from 'react';
 import { setSelectedPost } from '../slices/selectedPostSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
-  const dispatch = useAppDispatch();
-
   const selectedPostId = useAppSelector(state => state.selectedPost.post?.id);
   const posts = useAppSelector(state => state.post.items);
+
+  const dispatch = useAppDispatch();
+  const handlePostSelection = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPostId ? null : post));
+  };
+  
 
   return (
     <div data-cy="PostsList">
@@ -37,9 +42,7 @@ export const PostsList: React.FC = () => {
                     'is-light': post.id !== selectedPostId,
                   })}
                   onClick={() => {
-                    dispatch(
-                      setSelectedPost(post.id === selectedPostId ? null : post),
-                    );
+                    handlePostSelection(post)
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}

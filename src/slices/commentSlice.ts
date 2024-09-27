@@ -62,37 +62,38 @@ export const commentSlice = createSlice({
     builder
       .addCase(fetchPostComments.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
-      .addCase(
-        fetchPostComments.fulfilled,
+      .addCase(fetchPostComments.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
           state.loaded = true;
           state.items = action.payload;
         },
       )
       .addCase(fetchPostComments.rejected, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = true;
       })
       .addCase(fetchCreatePostComment.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(
         fetchCreatePostComment.fulfilled,
         (state, action: PayloadAction<Comment>) => {
-          state.loaded = false;
+          state.loaded = true;
           state.items = [...state.items, action.payload];
         },
       )
       .addCase(fetchCreatePostComment.rejected, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = true;
       })
       .addCase(fetchDeletePostComment.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
-      .addCase(
-        fetchDeletePostComment.fulfilled,
+      .addCase(fetchDeletePostComment.fulfilled,
         (state, action: PayloadAction<number>) => {
           state.loaded = true;
           state.items = state.items.filter(
@@ -101,7 +102,7 @@ export const commentSlice = createSlice({
         },
       )
       .addCase(fetchDeletePostComment.rejected, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = true;
       });
   },
