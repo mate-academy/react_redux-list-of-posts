@@ -63,10 +63,10 @@ export const NewCommentForm = () => {
     setErrors({
       name: !name,
       email: !email,
-      body: !body,
+      body: !body || body.trim().length === 0,
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body || body.trim().length === 0) {
       return;
     }
 
@@ -127,7 +127,7 @@ export const NewCommentForm = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

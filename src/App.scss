@@ -9,19 +9,31 @@ iframe {
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
 
-  @media (min-width: 769px) {
-    max-width: 0;
-  }
-
   &--open {
     opacity: 1;
 
     @media (min-width: 769px) {
       max-width: 50%;
     }
+
+    .tile {
+      height: 100%;
+    }
   }
 }
 
 .message-body {
   white-space: pre-line;
+}
+
+.tile {
+  &.is-ancestor {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  &.is-parent {
+    width: 50%;
+  }
 }
