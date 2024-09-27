@@ -2,6 +2,18 @@ iframe {
   display: none;
 }
 
+.tile {
+  &.is-ancestor {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  &.is-parent {
+    width: 50%;
+  }
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
@@ -24,16 +36,4 @@ iframe {
 
 .message-body {
   white-space: pre-line;
-}
-
-.tile {
-  &.is-ancestor {
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  &.is-parent {
-    width: 50%;
-  }
 }
