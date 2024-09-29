@@ -1,12 +1,11 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { addNewComment } from '../features/comments';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -47,25 +46,31 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    if (selectedPost) {
+      const newComment = {
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
+        postId: selectedPost?.id,
+      };
 
-    if (!name || !email || !body) {
-      return;
+      setErrors({
+        name: !newComment.name,
+        email: !newComment.email,
+        body: !newComment.body,
+      });
+
+      if (!newComment.name || !newComment.email || !newComment.body) {
+        return;
+      }
+
+      setSubmitting(true);
+
+      await dispatch(addNewComment(newComment));
+
+      setSubmitting(false);
+      setValues(current => ({ ...current, body: '' }));
     }
-
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -114,7 +119,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
