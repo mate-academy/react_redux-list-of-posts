@@ -3,15 +3,16 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState, AppThunk } from '../../app/store';
 import { fetchCount } from './counterAPI';
+import { LoadingStatus } from '../../types/LoadingStatus';
 
 export interface CounterState {
   value: number;
-  status: 'idle' | 'loading' | 'failed';
+  status: LoadingStatus;
 }
 
 const initialState: CounterState = {
   value: 0,
-  status: 'idle',
+  status: LoadingStatus.Idle,
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -54,14 +55,14 @@ export const counterSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(incrementAsync.pending, state => {
-        state.status = 'loading';
+        state.status = LoadingStatus.Loading;
       })
       .addCase(incrementAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = LoadingStatus.Idle;
         state.value += action.payload;
       })
       .addCase(incrementAsync.rejected, state => {
-        state.status = 'failed';
+        state.status = LoadingStatus.Failed;
       });
   },
 });
