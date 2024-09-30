@@ -7,13 +7,13 @@ import { Comment } from '../types/Comment';
 export interface CommentsState {
   comments: Comment[] | [];
   isLoading: boolean;
-  error: boolean;
+  isError: boolean;
 }
 
 const initialState: CommentsState = {
   comments: [],
   isLoading: false,
-  error: false,
+  isError: false,
 };
 
 // Thunk to fetch comments for a specific post
@@ -57,7 +57,7 @@ export const commentsSlice = createSlice({
       })
       .addCase(commentsInit.rejected, state => {
         state.isLoading = false;
-        state.error = true;
+        state.isError = true;
       });
 
     // Add new comment
@@ -71,7 +71,7 @@ export const commentsSlice = createSlice({
       })
       .addCase(addNewCommentFromServer.rejected, state => {
         state.isLoading = false;
-        state.error = true;
+        state.isError = true;
       });
 
     // Delete comment
@@ -87,7 +87,7 @@ export const commentsSlice = createSlice({
       })
       .addCase(deleteCommentFromServer.rejected, state => {
         state.isLoading = false;
-        state.error = true;
+        state.isError = true;
       });
   },
 });
