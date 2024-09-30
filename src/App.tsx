@@ -21,8 +21,8 @@ import {
 export const App: React.FC = () => {
   const author = useAppSelector(selectAuthor);
   const posts = useAppSelector(selectPosts);
-  const loading = useAppSelector(selectLoading);
-  const error = useAppSelector(selectError);
+  const isLoading = useAppSelector(selectLoading);
+  const isError = useAppSelector(selectError);
   const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
 
@@ -45,9 +45,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loading && <Loader />}
+                {author && isLoading && <Loader />}
 
-                {author && !loading && error && (
+                {author && !isLoading && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -56,13 +56,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && !isLoading && !isError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && !isLoading && !isError && posts.length > 0 && (
                   <PostsList posts={posts} />
                 )}
               </div>
