@@ -2,13 +2,14 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppSelector } from '../app/hooks';
+import { selectIsLoading } from '../features/selectors';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const { isLoading } = useAppSelector(state => state.comments);
+  const isLoading = useAppSelector(selectIsLoading);
 
   const [errors, setErrors] = useState({
     name: false,

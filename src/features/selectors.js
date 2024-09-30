@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
+// Existing selectors
 export const selectAuthor = createSelector(
   state => state.author,
   authorState => authorState.author,
@@ -23,4 +24,9 @@ export const selectError = createSelector(
 export const selectSelectedPost = createSelector(
   state => state.selectedPost,
   selectedPostState => selectedPostState.selectedPost,
+);
+
+export const selectIsLoading = createSelector(
+  state => state.comments,
+  commentsState => commentsState.isLoading,
 );
