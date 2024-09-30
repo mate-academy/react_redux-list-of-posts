@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,33 +9,33 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchUserPosts } from './slices/postsSlice';
+import { clearPosts, fetchUserPosts } from './slices/postsSlice';
+import { clearSelectedPost } from './slices/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { author } = useAppSelector(state => state.author);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const {
     loaded,
     hasError,
     item: posts,
   } = useAppSelector(state => state.posts);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  useEffect(() => {
+    dispatch(clearSelectedPost());
+  }, []);
 
   useEffect(() => {
     if (author) {
       dispatch(fetchUserPosts(author.id));
+      dispatch(clearSelectedPost());
+    } else {
+      dispatch(clearPosts());
+      dispatch(clearSelectedPost());
     }
   }, [dispatch, author]);
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-  }, [author]);
 
   return (
     <main className="section">
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -68,11 +68,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList posts={posts} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>

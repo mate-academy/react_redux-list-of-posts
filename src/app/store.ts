@@ -2,6 +2,8 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import usersSlice from '../slices/usersSlice';
 import postsSlice from '../slices/postsSlice';
 import commentsSlice from '../slices/commentsSlice';
+import authorSlice from '../slices/authorSlice';
+import selectedSlice from '../slices/selectedPost';
 // eslint-disable-next-line import/no-cycle
 
 export const store = configureStore({
@@ -9,6 +11,8 @@ export const store = configureStore({
     users: usersSlice,
     posts: postsSlice,
     comments: commentsSlice,
+    author: authorSlice,
+    selectedPost: selectedSlice,
   },
 });
 

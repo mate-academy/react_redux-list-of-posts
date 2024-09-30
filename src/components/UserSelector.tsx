@@ -4,16 +4,13 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchAllUsers } from '../slices/usersSlice';
+import { setAuthor } from '../slices/authorSlice';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
   const users = useAppSelector(state => state.users.users);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
@@ -79,7 +76,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setAuthor(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
