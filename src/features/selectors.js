@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-// Existing selectors
 export const selectAuthor = createSelector(
   state => state.author,
   authorState => authorState.author,
