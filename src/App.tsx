@@ -13,16 +13,16 @@ import * as postsAction from './features/posts';
 import {
   selectAuthor,
   selectPosts,
-  selectLoading,
-  selectError,
+  selectIsLoading,
+  selectIsError,
   selectSelectedPost,
 } from './features/selectors';
 
 export const App: React.FC = () => {
   const author = useAppSelector(selectAuthor);
   const posts = useAppSelector(selectPosts);
-  const isLoading = useAppSelector(selectLoading);
-  const isError = useAppSelector(selectError);
+  const isLoading = useAppSelector(selectIsLoading);
+  const isError = useAppSelector(selectIsError);
   const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
 
