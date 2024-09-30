@@ -6,20 +6,22 @@ import { Comment } from '../types/Comment';
 
 export interface CommentsState {
   comments: Comment[] | [];
-  loading: string;
+  isLoading: boolean;
   error: boolean;
 }
 
 const initialState: CommentsState = {
   comments: [],
-  loading: '',
+  isLoading: false,
   error: false,
 };
 
+// Thunk to fetch comments for a specific post
 export const commentsInit = createAsyncThunk('comments/fetch', (id: number) => {
   return getPostComments(id);
 });
 
+// Thunk to add a new comment
 export const addNewCommentFromServer = createAsyncThunk(
   'comments/add',
   async (newComment: Omit<Comment, 'id'>) => {
@@ -29,6 +31,7 @@ export const addNewCommentFromServer = createAsyncThunk(
   },
 );
 
+// Thunk to delete a comment
 export const deleteCommentFromServer = createAsyncThunk(
   'comments/delete',
   async (id: number) => {
@@ -43,44 +46,47 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    // Fetch comments
     builder
       .addCase(commentsInit.pending, state => {
-        state.loading = 'loading';
+        state.isLoading = true;
       })
       .addCase(commentsInit.fulfilled, (state, action) => {
         state.comments = action.payload;
-        state.loading = '';
+        state.isLoading = false;
       })
       .addCase(commentsInit.rejected, state => {
-        state.loading = '';
+        state.isLoading = false;
         state.error = true;
       });
 
+    // Add new comment
     builder
       .addCase(addNewCommentFromServer.pending, state => {
-        state.loading = 'add';
+        state.isLoading = true;
       })
       .addCase(addNewCommentFromServer.fulfilled, (state, action) => {
         state.comments = [...state.comments, action.payload];
-        state.loading = '';
+        state.isLoading = false;
       })
       .addCase(addNewCommentFromServer.rejected, state => {
-        state.loading = '';
+        state.isLoading = false;
         state.error = true;
       });
 
+    // Delete comment
     builder
       .addCase(deleteCommentFromServer.pending, state => {
-        state.loading = 'delete';
+        state.isLoading = true;
       })
       .addCase(deleteCommentFromServer.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(comment => {
-          return comment.id !== action.payload;
-        });
-        state.loading = '';
+        state.comments = state.comments.filter(
+          comment => comment.id !== action.payload,
+        );
+        state.isLoading = false;
       })
       .addCase(deleteCommentFromServer.rejected, state => {
-        state.loading = '';
+        state.isLoading = false;
         state.error = true;
       });
   },
