@@ -13,12 +13,11 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const { comments, isLoading, hasError } = useAppSelector(
-    state => state.comments,
-  ); // Use the correct state properties
+  const { comments, loading, error } = useAppSelector(state => state.comments);
 
   useEffect(() => {
     setVisible(false);
+
     dispatch(commentsAction.commentsInit(post.id));
   }, [dispatch, post]);
 
@@ -41,25 +40,26 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
       <div className="block">
-        {isLoading && <Loader />}
+        {loading === 'loading' && <Loader />}
 
-        {!isLoading && hasError && (
+        {!loading && error && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!isLoading && !hasError && comments.length === 0 && (
+        {!loading && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!isLoading && !hasError && comments.length > 0 && (
+        {!loading && !error && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -93,7 +93,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!isLoading && !hasError && !visible && (
+        {!loading && !error && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -104,7 +104,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!isLoading && !hasError && visible && (
+        {loading !== 'loading' && !error && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

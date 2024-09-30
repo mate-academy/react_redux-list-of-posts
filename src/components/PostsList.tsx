@@ -1,21 +1,19 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
+import classNames from 'classnames';
 import React from 'react';
-import { Post } from './Post';
-import { Post as PostType } from '../types/Post';
+import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectedPostSlice } from '../features/selectedPost';
 
 type Props = {
-  posts: PostType[];
+  posts: Post[];
 };
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
   const dispatch = useAppDispatch();
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const selectedPostId = selectedPost?.id;
-
-  const handlePostClick = (post: PostType | null) => {
-    dispatch(selectedPostSlice.actions.add(post));
-  };
 
   return (
     <div data-cy="PostsList">
@@ -32,12 +30,28 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
 
         <tbody>
           {posts.map(post => (
-            <Post
-              key={post.id}
-              post={post}
-              isSelected={post.id === selectedPostId}
-              onPostClick={handlePostClick}
-            />
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button', 'is-link', {
+                    'is-light': post.id !== selectedPostId,
+                  })}
+                  onClick={() => {
+                    dispatch(
+                      selectedPostSlice.actions.add(
+                        post.id === selectedPostId ? null : post,
+                      ),
+                    );
+                  }}
+                >
+                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>

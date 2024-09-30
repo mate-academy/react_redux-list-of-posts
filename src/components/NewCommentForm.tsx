@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const { isAdding } = useAppSelector(state => state.comments); // Use isAdding instead of loading
+  const { loading } = useAppSelector(state => state.comments);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -169,7 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': isAdding, // Use isAdding instead of loading
+              'is-loading': loading === 'add',
             })}
           >
             Add
@@ -177,6 +177,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
+          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
