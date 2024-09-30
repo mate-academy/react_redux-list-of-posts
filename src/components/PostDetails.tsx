@@ -13,7 +13,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const { comments, isLoading, error } = useAppSelector(
+  const { comments, isLoading, isError } = useAppSelector(
     state => state.comments,
   );
 
@@ -49,17 +49,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <Loader />
         ) : (
           <>
-            {error && (
+            {isError && (
               <div className="notification is-danger" data-cy="CommentsError">
                 Something went wrong
               </div>
             )}
-            {!error && comments.length === 0 && (
+            {!isError && comments.length === 0 && (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             )}
-            {!error && comments.length > 0 && (
+            {!isError && comments.length > 0 && (
               <>
                 <p className="title is-4">Comments:</p>
                 {comments.map(comment => (
@@ -92,7 +92,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 ))}
               </>
             )}
-            {!error && !visible && (
+            {!isError && !visible && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
@@ -102,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 Write a comment
               </button>
             )}
-            {!error && visible && <NewCommentForm onSubmit={addComment} />}
+            {!isError && visible && <NewCommentForm onSubmit={addComment} />}
           </>
         )}
       </div>
