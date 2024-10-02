@@ -64,13 +64,14 @@ export const NewCommentForm = () => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
+
     await addComment({ name, email, body });
 
     // and the spinner will disappear immediately
