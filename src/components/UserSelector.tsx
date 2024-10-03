@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useAppSelector } from '../app/hooks';
+import { useUsersQuery } from '../api/api';
 
 type Props = {
   value: User | null;
@@ -13,7 +13,7 @@ export const UserSelector: React.FC<Props> = ({
   onChange,
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const users = useAppSelector(state => state.users.users);
+  const { data: users = [], isSuccess } = useUsersQuery();
 
   useEffect(() => {
     if (!expanded) {
@@ -58,20 +58,21 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {isSuccess &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onClick={() => {
+                  onChange(user);
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>

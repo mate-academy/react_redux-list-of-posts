@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,9 +10,9 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { usePostsQuery, useUsersQuery } from './api/api';
+import { usePostsQuery } from './api/api';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setSelectedUser, setUsers } from './features/users/usersSlice';
+import { setSelectedUser } from './features/users/usersSlice';
 import { setSelectedPost } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
@@ -24,20 +24,13 @@ export const App: React.FC = () => {
     isSuccess,
   } = usePostsQuery();
   const dispatch = useAppDispatch();
-  const { data: usersFromServer = [], isSuccess: isDataReady } =
-    useUsersQuery();
+
   const selectedUser = useAppSelector(state => state.users.selectedUser);
   const selectedPost = useAppSelector(state => state.posts.selectedPost);
   const handleOnChange = (user: User) => {
     dispatch(setSelectedUser(user));
     dispatch(setSelectedPost(null));
   };
-
-  useEffect(() => {
-    if (isDataReady) {
-      dispatch(setUsers(usersFromServer));
-    }
-  });
 
   return (
     <main className="section">
