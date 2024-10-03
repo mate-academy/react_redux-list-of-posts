@@ -59,13 +59,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      await onSubmit({ name, email, body });
+      setValues(current => ({ ...current, body: '' }));
+    } catch (error) {
+      throw new Error('Error submitting comment:');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -84,6 +85,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
+            disabled={submitting}
           />
 
           <span className="icon is-small is-left">
@@ -180,8 +182,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            disabled={submitting}
+          >
             Clear
           </button>
         </div>
