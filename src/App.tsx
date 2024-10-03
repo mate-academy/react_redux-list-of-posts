@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,43 +10,33 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { Post } from './types/Post';
 import { usePostsQuery } from './api/api';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setSelectedUser } from './features/users/usersSlice';
+import { setSelectedPost } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  const { data, isUninitialized, isError, isLoading, isSuccess } =
-    usePostsQuery();
+  const {
+    data: posts = [],
+    isUninitialized,
+    isError,
+    isLoading,
+    isSuccess,
+  } = usePostsQuery();
   const dispatch = useAppDispatch();
   const selectedUser = useAppSelector(state => state.users.selectedUser);
+  const selectedPost = useAppSelector(state => state.posts.selectedPost);
   const handleOnChange = (user: User) => {
     dispatch(setSelectedUser(user));
+    dispatch(setSelectedPost(null));
   };
-
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     .finally(() => setLoaded(true));
-  // }
 
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
+        <div className="grid">
+          <div className="cell">
+            <div className="box is-success">
               <div className="block">
                 <UserSelector value={selectedUser} onChange={handleOnChange} />
               </div>
@@ -58,7 +48,7 @@ export const App: React.FC = () => {
 
                 {selectedUser && (isLoading || isUninitialized) && <Loader />}
 
-                {selectedUser && !isLoading && isError && (
+                {selectedUser && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -73,30 +63,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && isSuccess && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {selectedUser && isSuccess && posts.length > 0 && <PostsList />}
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
+            className={classNames('cell', 'Sidebar', {
+              'Sidebar--open': selectedPost,
+            })}
           >
-            <div className="tile is-child box is-success ">
+            <div className="box is-success ">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>

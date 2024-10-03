@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/indent */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
 const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://mate.academy/students-api',
-    timeout: 300,
   }),
+  tagTypes: ['User', 'Post', 'Comment'],
   endpoints: build => ({
     users: build.query<User[], void>({
       query: () => 'users',
@@ -27,7 +29,7 @@ const api = createApi({
     posts: build.query<Post[], void>({
       query: () => 'posts',
     }),
-    postComments: build.query<Comment, number>({
+    postComments: build.query<Comment[], number>({
       query(postId) {
         return {
           url: 'comments',
@@ -36,23 +38,23 @@ const api = createApi({
           },
         };
       },
+      providesTags: result =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Comment' as const, id })),
+              { type: 'Comment', id: 'LIST' },
+            ]
+          : [{ type: 'Comment', id: 'LIST' }],
     }),
     createComment: build.mutation<Comment, Omit<Comment, 'id'>>({
-      query({ data }) {
-        return {
-          url: 'comments',
-          method: 'POST',
-          data,
-        };
-      },
+      query: body => ({ url: 'comments', method: 'POST', body }),
+      invalidatesTags: [{ type: 'Comment', id: 'LIST' }],
     }),
     deleteComment: build.mutation<Comment, number>({
-      query(commentId) {
-        return {
-          url: `comments/${commentId}`,
-          method: 'DELETE',
-        };
-      },
+      query: commentId => ({ url: `comments/${commentId}`, method: 'DELETE' }),
+      invalidatesTags: (result, error, commentId) => [
+        { type: 'Comment', id: commentId },
+      ],
     }),
   }),
 });
