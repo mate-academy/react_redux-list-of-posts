@@ -4,10 +4,12 @@ import { User } from '../../types/User';
 
 export interface UsersState {
   selectedUser: User | null;
+  users: User[] | [];
 }
 
 const initialState: UsersState = {
   selectedUser: null,
+  users: [],
 };
 
 export const usersSlice = createSlice({
@@ -17,8 +19,11 @@ export const usersSlice = createSlice({
     setSelectedUser: (state, action: PayloadAction<User | null>) => {
       state.selectedUser = action.payload;
     },
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
+    },
   },
 });
 
-export const { setSelectedUser } = usersSlice.actions;
+export const { setSelectedUser, setUsers } = usersSlice.actions;
 export default usersSlice.reducer;

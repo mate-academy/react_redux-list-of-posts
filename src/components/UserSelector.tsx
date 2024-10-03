@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useUsersQuery } from '../api/api';
+import { useAppSelector } from '../app/hooks';
 
 type Props = {
   value: User | null;
@@ -12,13 +12,8 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  const {
-    data: users = [],
-    isUninitialized,
-    isError,
-    isLoading,
-  } = useUsersQuery();
   const [expanded, setExpanded] = useState(false);
+  const users = useAppSelector(state => state.users.users);
 
   useEffect(() => {
     if (!expanded) {
@@ -36,14 +31,6 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
-
-  if (isUninitialized || isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!isLoading && isError) {
-    return <p>Something went wrong</p>;
-  }
 
   return (
     <div
