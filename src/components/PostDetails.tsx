@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { add, featchComments, remove } from '../features/comments';
+import {
+  postComment,
+  fetchComments,
+  removeComment,
+} from '../features/comments';
 
 type Props = {
   post: Post;
@@ -24,28 +26,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setVisible(false);
-    dispatch(featchComments(post.id));
+    dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      dispatch(add(newComment));
-    } catch (error) {
-      // we show an error message in case of any error
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    dispatch(remove(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    dispatch(postComment({ name, email, body, postId: post.id }));
   };
 
   return (
@@ -91,7 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => dispatch(removeComment(comment.id))}
                   ></button>
                 </div>
 

@@ -36,22 +36,26 @@ export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {posts.map(({ id, userId, title, body }) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">{title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': id !== selectedPostId,
                   })}
                   onClick={() =>
-                    handleSelectPost(post.id === selectedPostId ? null : post)
+                    handleSelectPost(
+                      id === selectedPostId
+                        ? null
+                        : { id, userId, title, body },
+                    )
                   }
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
