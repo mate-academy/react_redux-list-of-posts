@@ -25,8 +25,6 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(clearSelectedPost());
 
     if (author) {
