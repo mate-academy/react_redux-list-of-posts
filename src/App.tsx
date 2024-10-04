@@ -37,9 +37,9 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
+        <div className="tile is-ancestor flex-container">
+          <div className="tile is-parent flex-item">
+            <div className="tile is-child box is-success flex-itemDown">
               <div className="block">
                 <UserSelector value={author} />
               </div>
@@ -74,16 +74,16 @@ export const App: React.FC = () => {
           <div
             data-cy="Sidebar"
             className={classNames(
+              'flex-item ',
               'tile',
               'is-parent',
-              'is-8-desktop',
               'Sidebar',
               {
                 'Sidebar--open': selectedPost,
               },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success flex-itemDown">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>

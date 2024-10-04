@@ -3,13 +3,8 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  postComment,
-  fetchComments,
-  removeComment,
-} from '../features/comments';
+import { addComment, fetchComments, removeComment } from '../features/comments';
 
 type Props = {
   post: Post;
@@ -29,8 +24,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    dispatch(postComment({ name, email, body, postId: post.id }));
+  const handleAddComment = (name: string, email: string, body: string) => {
+    dispatch(addComment({ name, email, body, postId: post.id }));
   };
 
   return (
@@ -100,7 +95,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
     </div>
