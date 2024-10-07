@@ -68,7 +68,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     {comment.name}
                   </a>
 
-                  <button
+                  {/*
+                 <button
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
@@ -77,6 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   >
                     delete button
                   </button>
+                  */}
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
