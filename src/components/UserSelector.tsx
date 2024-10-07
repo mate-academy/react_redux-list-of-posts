@@ -3,9 +3,7 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectAuthor } from '../features/author';
 
-type Props = {};
-
-export const UserSelector: React.FC<Props> = () => {
+export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
   const author = useAppSelector(state => state.author);
