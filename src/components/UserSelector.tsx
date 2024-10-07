@@ -5,7 +5,7 @@ import { selectAuthor } from '../features/author';
 
 type Props = {};
 
-export const UserSelector: React.FC<Props> = ({}) => {
+export const UserSelector: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
   const author = useAppSelector(state => state.author);
@@ -59,6 +59,7 @@ export const UserSelector: React.FC<Props> = ({}) => {
               href={`#user-${user.id}`}
               onClick={() => {
                 dispatch(selectAuthor(user));
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,

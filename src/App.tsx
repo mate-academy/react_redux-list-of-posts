@@ -35,6 +35,23 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
+  const noUserSelected = !author;
+  const isLoadingPosts = author && posts.isPostsLoading;
+  const hasLoadingError =
+    author &&
+    !posts.isPostsLoading &&
+    posts.errorMessageOnPostLoading.length > 0;
+  const noPostsYet =
+    author &&
+    !posts.isPostsLoading &&
+    posts.errorMessageOnPostLoading.length === 0 &&
+    posts.posts.length === 0;
+  const hasPosts =
+    author &&
+    !posts.isPostsLoading &&
+    posts.errorMessageOnPostLoading.length === 0 &&
+    posts.posts.length > 0;
+
   return (
     <main className="section">
       <div className="container">
@@ -46,37 +63,28 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {noUserSelected && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                {author && posts.isPostsLoading && <Loader />}
+                {isLoadingPosts && <Loader />}
 
-                {author &&
-                  !posts.isPostsLoading &&
-                  posts.errorMessageOnPostLoading.length > 0 && (
-                    <div
-                      className="notification is-danger"
-                      data-cy="PostsLoadingError"
-                    >
-                      Something went wrong!
-                    </div>
-                  )}
+                {hasLoadingError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                {author &&
-                  !posts.isPostsLoading &&
-                  posts.errorMessageOnPostLoading.length === 0 &&
-                  posts.posts.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {noPostsYet && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                {author &&
-                  !posts.isPostsLoading &&
-                  posts.errorMessageOnPostLoading.length === 0 &&
-                  posts.posts.length > 0 && <PostsList />}
+                {hasPosts && <PostsList />}
               </div>
             </div>
           </div>

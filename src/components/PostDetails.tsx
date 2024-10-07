@@ -17,16 +17,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(false);
-    dispatch(loadPostComments(selectedPost!.id));
+    if (selectedPost) {
+      setVisible(false);
+      dispatch(loadPostComments(selectedPost.id));
+    }
   }, [dispatch, selectedPost]);
+
+  const { id, title, body } = post;
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${id}: ${title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{body}</p>
       </div>
 
       <div className="block">

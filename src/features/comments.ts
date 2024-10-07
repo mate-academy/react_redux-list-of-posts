@@ -29,10 +29,7 @@ export const addComment = createAsyncThunk(
 export const removeComment = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number) => {
-    const delResponse = await deleteComment(commentId);
-
-    // eslint-disable-next-line no-console
-    console.log(delResponse);
+    await deleteComment(commentId);
 
     return commentId;
   },
