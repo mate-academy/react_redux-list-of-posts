@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch } from '../app/hooks';
@@ -7,7 +6,7 @@ import { Post } from '../types/Post';
 
 interface PostItemProps {
   post: Post;
-  isSelected: Post | null;
+  isSelected: boolean;
 }
 
 export const PostItem: React.FC<PostItemProps> = ({ post, isSelected }) => {
@@ -22,13 +21,13 @@ export const PostItem: React.FC<PostItemProps> = ({ post, isSelected }) => {
           type="button"
           data-cy="PostButton"
           className={classNames('button', 'is-link', {
-            'is-light': post.id !== isSelected?.id,
+            'is-light': !isSelected,
           })}
           onClick={() => {
-            dispatch(selectPost(post.id === isSelected?.id ? null : post));
+            dispatch(selectPost(isSelected ? null : post));
           }}
         >
-          {post.id === isSelected?.id ? 'Close' : 'Open'}
+          {isSelected ? 'Close' : 'Open'}
         </button>
       </td>
     </tr>

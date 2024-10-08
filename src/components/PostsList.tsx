@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { PostItem } from './PostItem';
@@ -22,7 +21,11 @@ export const PostsList: React.FC = () => {
 
         <tbody>
           {posts.map(post => (
-            <PostItem key={post.id} post={post} isSelected={selectedPost} />
+            <PostItem
+              key={post.id}
+              post={post}
+              isSelected={selectedPost?.id === post.id}
+            />
           ))}
         </tbody>
       </table>
