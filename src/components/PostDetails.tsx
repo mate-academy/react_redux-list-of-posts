@@ -71,6 +71,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
+                    disabled={comments.isCommetsLoading}
                     onClick={() => dispatch(removeComment(comment.id))}
                   />
                 </div>

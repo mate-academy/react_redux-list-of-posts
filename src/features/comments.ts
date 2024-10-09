@@ -42,73 +42,58 @@ export const commentsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(loadPostComments.pending, state => {
-        return { ...state, isCommetsLoading: true };
+        /* eslint-disable no-param-reassign */
+        state.isCommetsLoading = true;
       })
       .addCase(
         loadPostComments.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
-          return {
-            ...state,
-            comments: action.payload,
-            isCommetsLoading: false,
-          };
+          /* eslint-disable no-param-reassign */
+          state.comments = action.payload;
+          state.isCommetsLoading = false;
         },
       )
       .addCase(loadPostComments.rejected, state => {
-        return {
-          ...state,
-          errorMessageOnCommentsLoading: 'an error on comments loading',
-          isCommetsLoading: false,
-        };
+        /* eslint-disable no-param-reassign */
+        state.errorMessageOnCommentsLoading = 'an error on comments loading';
+        state.isCommetsLoading = false;
       });
 
     builder
       .addCase(addComment.pending, state => {
-        return {
-          ...state,
-          isSubmiting: true,
-        };
+        // eslint-disable-next-line no-param-reassign
+        state.isSubmiting = true;
       })
       .addCase(
         addComment.fulfilled,
         (state, action: PayloadAction<Comment>) => {
-          return {
-            ...state,
-            isSubmiting: false,
-            comments: [...state.comments, action.payload],
-          };
+          /* eslint-disable no-param-reassign */
+          state.isSubmiting = false;
+          state.comments = [...state.comments, action.payload];
         },
       )
       .addCase(addComment.rejected, state => {
-        return {
-          ...state,
-          errorMessageOnCommentsLoading: 'an error on a comment creating',
-          isSubmiting: false,
-        };
+        /* eslint-disable no-param-reassign */
+        state.errorMessageOnCommentsLoading = 'an error on a comment creating';
+        state.isSubmiting = false;
       });
 
     builder
-      .addCase(removeComment.pending, state => {
-        return { ...state, isCommetsLoading: true };
+      .addCase(removeComment.pending, (state, { meta: { arg: commentId } }) => {
+        /* eslint-disable no-param-reassign */
+        state.comments = state.comments.filter(
+          comment => comment.id !== commentId,
+        );
+        state.isCommetsLoading = false;
       })
-      .addCase(
-        removeComment.fulfilled,
-        (state, { payload }: PayloadAction<number>) => {
-          const newComments = state.comments.filter(({ id }) => id !== payload);
-
-          return {
-            ...state,
-            isCommetsLoading: false,
-            comments: newComments,
-          };
-        },
-      )
+      .addCase(removeComment.fulfilled, state => {
+        /* eslint-disable no-param-reassign */
+        state.isCommetsLoading = false;
+      })
       .addCase(removeComment.rejected, state => {
-        return {
-          ...state,
-          errorMessageOnCommentsLoading: 'an error on a comment deleting',
-          isCommetsLoading: false,
-        };
+        /* eslint-disable no-param-reassign */
+        state.errorMessageOnCommentsLoading = 'an error on a comment deleting';
+        state.isCommetsLoading = false;
       });
   },
 });
