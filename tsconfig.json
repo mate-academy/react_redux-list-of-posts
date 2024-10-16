@@ -1,10 +1,13 @@
 {
   "extends": "@mate-academy/students-ts-config",
   "include": [
-    "src"
+    "src",
+    "cypress.config.ts", // Добавьте файл конфигурации Cypress
+    "cypress/**/*.ts" // Если у вас есть тесты в cypress, добавьте их
   ],
   "compilerOptions": {
     "sourceMap": false,
-    "types": ["node", "cypress"]
+    "types": ["node", "cypress"],
+    "rootDir": "./" // Измените rootDir на корневую директорию проекта
   }
 }
