@@ -27,27 +27,27 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-    .addCase(loadUsers.pending, state => {
-      return {
-        ...state,
-        loaded: false,
-        hasError: false,
-      };
-    })
-    .addCase(loadUsers.fulfilled, (state, action) => {
-      return {
-        ...state,
-        items: action.payload,
-        loaded: true,
-      };
-    })
-    .addCase(loadUsers.rejected, state => {
-      return {
-        ...state,
-        hasError: true,
-        loaded: true,
-      };
-    });
+      .addCase(loadUsers.pending, state => {
+        return {
+          ...state,
+          loaded: false,
+          hasError: false,
+        };
+      })
+      .addCase(loadUsers.fulfilled, (state, action) => {
+        return {
+          ...state,
+          items: action.payload,
+          loaded: true,
+        };
+      })
+      .addCase(loadUsers.rejected, state => {
+        return {
+          ...state,
+          hasError: true,
+          loaded: true,
+        };
+      });
   },
 });
 
