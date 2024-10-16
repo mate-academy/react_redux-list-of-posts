@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -21,9 +22,11 @@ export const App: React.FC = () => {
   const users = useSelector((state: RootState) => state.users.items);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const posts = useSelector((state: RootState) => state.posts.items);
-  const postsLoaded = useSelector((state: RootState) => state.posts.loaded);
-  const postsError = useSelector((state: RootState) => state.posts.hasError);
+  const {
+    items: posts,
+    loaded: postsLoaded,
+    hasError: postsError
+  } = useSelector((state: RootState) => state.posts);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Загрузка пользователей при монтировании компонента

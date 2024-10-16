@@ -15,15 +15,14 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const handleDocumentClick = () => {
+    setExpanded(false);
+  };
+
   useEffect(() => {
     if (!expanded) {
       return;
     }
-
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      setExpanded(false);
-    };
 
     document.addEventListener('click', handleDocumentClick);
 

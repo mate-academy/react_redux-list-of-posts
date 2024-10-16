@@ -14,7 +14,7 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-// Асинхронный thunk для загрузки постов пользователя
+// Asynchronous Thunk for loading users
 export const fetchUserPosts = createAsyncThunk(
   'posts/fetchUserPosts',
   async (userId: number) => {
@@ -31,22 +31,25 @@ const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUserPosts.pending, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = false;
-        // eslint-disable-next-line no-param-reassign
-        state.hasError = false;
+        return {
+          ...state,
+          loaded: false,
+          hasError: false,
+        };
       })
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.items = action.payload;
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = true;
+        return {
+          ...state,
+          items: action.payload,
+          loaded: true,
+        };
       })
       .addCase(fetchUserPosts.rejected, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.hasError = true;
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = true;
+        return {
+          ...state,
+          hasError: true,
+          loaded: true,
+        };
       });
   },
 });

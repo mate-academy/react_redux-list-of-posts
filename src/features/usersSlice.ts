@@ -14,7 +14,7 @@ const initialState: UsersState = {
   hasError: false,
 };
 
-// Асинхронный thunk для загрузки пользователей
+// Asynchronous Thunk for loading users.
 export const loadUsers = createAsyncThunk('users/load', async () => {
   const response = await client.get<User[]>('/users');
 
@@ -27,24 +27,27 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(loadUsers.pending, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = false;
-        // eslint-disable-next-line no-param-reassign
-        state.hasError = false;
-      })
-      .addCase(loadUsers.fulfilled, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.items = action.payload;
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = true;
-      })
-      .addCase(loadUsers.rejected, state => {
-        // eslint-disable-next-line no-param-reassign
-        state.hasError = true;
-        // eslint-disable-next-line no-param-reassign
-        state.loaded = true;
-      });
+    .addCase(loadUsers.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
+    })
+    .addCase(loadUsers.fulfilled, (state, action) => {
+      return {
+        ...state,
+        items: action.payload,
+        loaded: true,
+      };
+    })
+    .addCase(loadUsers.rejected, state => {
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
+    });
   },
 });
 
