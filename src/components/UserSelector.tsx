@@ -1,24 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable react/display-name */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+
 import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { selectUser } from '../features/AuthorAPI/AuthorAPI';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+const UserSelector: React.FC = React.memo(() => {
   const [expanded, setExpanded] = useState(false);
+  const { users } = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author.user);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -41,6 +33,10 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  const handleSelectedAuthor = (user: User) => {
+    dispatch(selectUser({ user }));
+  };
 
   return (
     <div
@@ -73,7 +69,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                handleSelectedAuthor(user);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
@@ -86,4 +82,6 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+});
+
+export default UserSelector;
