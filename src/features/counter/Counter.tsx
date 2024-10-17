@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-
 import styles from './Counter.module.css';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-
+import { useAppSelector } from '../../hooks/useAppSelector.hook';
+import { useAppDispatch } from '../../hooks/useAppDispatch.hook';
 import {
   decrement,
   increment,
