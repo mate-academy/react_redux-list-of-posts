@@ -10,7 +10,7 @@ type Comments = {
 };
 
 const initialState: Comments = {
-  loaded: false,
+  loaded: true,
   hasError: false,
   items: [],
 };
@@ -40,17 +40,17 @@ const commentsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchPostComments.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(
       fetchPostComments.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
         state.items = action.payload;
-        state.loaded = false;
+        state.loaded = true;
       },
     );
     builder.addCase(fetchPostComments.rejected, state => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
   },

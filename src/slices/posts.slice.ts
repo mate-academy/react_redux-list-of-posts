@@ -10,7 +10,7 @@ type Posts = {
 };
 
 const initialState: Posts = {
-  loaded: false,
+  loaded: true,
   hasError: false,
   items: [],
 };
@@ -34,14 +34,14 @@ const postsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchPosts.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.loaded = false;
+      state.loaded = true;
       state.items = action.payload;
     });
     builder.addCase(fetchPosts.rejected, state => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
   },
