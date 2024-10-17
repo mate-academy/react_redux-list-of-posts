@@ -29,17 +29,13 @@ export const App: React.FC = () => {
   } = useSelector((state: RootState) => state.posts);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  // Загрузка пользователей при монтировании компонента
   useEffect(() => {
     dispatch(loadUsers());
   }, [dispatch]);
 
-  // Загружаем посты выбранного пользователя
   useEffect(() => {
-    // Очищаем выбранный пост, чтобы не путать пользователя
     setSelectedPost(null);
 
-    // Загружаем посты, если пользователь выбран
     if (selectedUser) {
       dispatch(fetchUserPosts(selectedUser.id));
     }
