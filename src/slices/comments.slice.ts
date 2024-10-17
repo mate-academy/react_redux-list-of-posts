@@ -25,7 +25,7 @@ export const fetchPostComments = createAsyncThunk<Comment[], number>(
 );
 
 const commentsSlice = createSlice({
-  name: 'usersList',
+  name: 'comments',
   initialState,
   reducers: {
     addNewComment: (state, action: PayloadAction<Comment>) => {

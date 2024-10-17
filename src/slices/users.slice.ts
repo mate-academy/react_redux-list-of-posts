@@ -14,13 +14,9 @@ const initialState: Users = {
 export const fetchAllUsers = createAsyncThunk<User[], void>(
   'users/fetchAllUsers',
   async () => {
-    try {
-      const result = await getUsers();
+    const result = await getUsers();
 
-      return result;
-    } catch (error) {
-      throw error;
-    }
+    return result;
   },
 );
 
@@ -38,5 +34,4 @@ const usersSlice = createSlice({
   },
 });
 
-export const {} = usersSlice.actions;
 export default usersSlice.reducer;

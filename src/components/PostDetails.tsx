@@ -26,8 +26,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-  // The same useEffect with async/await
-
   const loadComments = (newPostId: number) => {
     dispatch(fetchPostComments(newPostId));
   };
@@ -36,8 +34,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
     loadComments(post.id);
   }, [post]);
-
-  // effect can return only a function but not a Promise
 
   const addComment = async ({ name, email, body }: CommentData) => {
     if (post) {
@@ -51,16 +47,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
         dispatch(addNewComment(newComment));
       } catch (error) {
-        // we show an error message in case of any error
-        takeError();
+        dispatch(takeError());
       }
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
     dispatch(deleteChosenComment(commentId));
 
     await commentsApi.deleteComment(commentId);
