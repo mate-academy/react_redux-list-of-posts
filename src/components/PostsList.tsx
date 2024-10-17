@@ -7,13 +7,13 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
+  setSelectedPost: (newPost: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
-  onPostSelected,
+  setSelectedPost,
 }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
@@ -40,7 +40,7 @@ export const PostsList: React.FC<Props> = ({
                   'is-light': post.id !== selectedPostId,
                 })}
                 onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
+                  setSelectedPost(post.id === selectedPostId ? null : post);
                 }}
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}
