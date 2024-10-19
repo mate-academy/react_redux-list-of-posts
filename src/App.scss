@@ -8,6 +8,8 @@ iframe {
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 2px rgba(210, 210, 210, 0.65);
 
   @media (min-width: 769px) {
     max-width: 0;
@@ -24,4 +26,15 @@ iframe {
 
 .message-body {
   white-space: pre-line;
+}
+
+.flex-container {
+  display: flex;
+  width: 100%;
+  gap: 30px;
+}
+
+.child {
+  flex-basis: 50%;
+  box-sizing: border-box;
 }
