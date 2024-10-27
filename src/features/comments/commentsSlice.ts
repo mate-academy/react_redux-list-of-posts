@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   createComment,
-  deleteComment,
+  deleteComment as deleteCommentOnServer,
   getPostComments,
 } from '../../api/comments';
 import { Comment } from '../../types/Comment';
@@ -51,17 +51,10 @@ export const addComment = createAsyncThunk(
   },
 );
 
-// const delateComment = createAsyncThunk(
-//   'comments/delateComments',
-//   async (commentId: number) => {
-//     deleteComment(commentId);
-//   },
-// );
-
-export const delateComment = createAsyncThunk(
+export const deleteComment = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number) => {
-    await deleteComment(commentId);
+    await deleteCommentOnServer(commentId);
 
     return commentId;
   },
@@ -94,10 +87,10 @@ const commentsSlice = createSlice({
     });
 
     builder
-      .addCase(delateComment.fulfilled, (state, action) => {
+      .addCase(deleteComment.fulfilled, (state, action) => {
         state.items = state.items.filter(item => item.id !== action.payload);
       })
-      .addCase(delateComment.rejected, state => {
+      .addCase(deleteComment.rejected, state => {
         state.hasError = true;
       });
   },
