@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { commentsSelector } from '../features/comments/selectors';
 import {
   addNewComment,
   fetchComments,
   removeComment,
-} from '../features/comments/commentsSlice';
+} from '../features/comments/asyncActions';
 
 type Props = {
   post: Post;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   const [visible, setVisible] = useState(false);
 
-  const { hasError, loaded, comments } = useAppSelector(
-    state => state.comments,
-  );
+  const { hasError, loaded, comments } = useAppSelector(commentsSelector);
 
   useEffect(() => {
     setVisible(false);

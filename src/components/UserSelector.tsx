@@ -5,14 +5,16 @@ import { User } from '../types/User';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/users/asyncActions';
+import { usersSelector } from '../features/users/selectors';
 import { setAuthor } from '../features/author/authorSlice';
+import { authorSelector } from '../features/author/selectors';
 
 export const UserSelector: FC = () => {
-  const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
+  const [expanded, setExpanded] = useState(false);
 
-  const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.author.author);
+  const { users } = useAppSelector(usersSelector);
+  const { author: selectedUser } = useAppSelector(authorSelector);
 
   const handleChangeUser = (user: User) => {
     dispatch(setAuthor(user));

@@ -1,41 +1,14 @@
 /* eslint-disable no-param-reassign */
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
-import {
-  createComment,
-  deleteComment,
-  getPostComments,
-} from '../../api/comments';
+import { addNewComment, fetchComments, removeComment } from './asyncActions';
 
 type Comments = {
   comments: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
-
-export const fetchComments = createAsyncThunk(
-  'comments/fetchComments',
-  async (postId: number) => {
-    return getPostComments(postId);
-  },
-);
-
-export const addNewComment = createAsyncThunk(
-  'comments/addComment',
-  async (newComment: Omit<Comment, 'id'>) => {
-    return createComment(newComment);
-  },
-);
-
-export const removeComment = createAsyncThunk(
-  'comments/removeComment',
-  async (commentId: number) => {
-    await deleteComment(commentId);
-
-    return commentId;
-  },
-);
 
 const initialState: Comments = {
   comments: [],

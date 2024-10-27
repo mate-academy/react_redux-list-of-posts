@@ -5,11 +5,14 @@ import classNames from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost/selectedPost';
+import { selectedPostSelector } from '../features/selectedPost/selectors';
+import { postsSelector } from '../features/posts/selectors';
 
 export const PostsList: FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
+
+  const { posts } = useAppSelector(postsSelector);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
 
   return (
     <div data-cy="PostsList">

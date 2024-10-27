@@ -1,25 +1,28 @@
-import React, { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setSelectedPost } from './features/selectedPost/selectedPost';
+import { selectedPostSelector } from './features/selectedPost/selectors';
+import { resetPosts } from './features/posts/postsSlice';
+import { fetchPosts } from './features/posts/asyncActions';
+import { authorSelector } from './features/author/selectors';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setSelectedPost } from './features/selectedPost/selectedPost';
-import { fetchPosts, resetPosts } from './features/posts/postsSlice';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
   const dispatch = useAppDispatch();
 
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-
-  const author = useAppSelector(state => state.author.author);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const { author } = useAppSelector(authorSelector);
+  const { selectedPost } = useAppSelector(selectedPostSelector);
 
   useEffect(() => {
     dispatch(setSelectedPost(null));

@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
+import { fetchPosts } from './asyncActions';
 
 type PostsState = {
   posts: Post[];
@@ -15,13 +15,6 @@ const initialState: PostsState = {
   loaded: false,
   hasError: false,
 };
-
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
-  async (userId: number) => {
-    return getUserPosts(userId);
-  },
-);
 
 const postsSlice = createSlice({
   name: 'posts',
