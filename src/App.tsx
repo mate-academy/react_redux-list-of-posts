@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -16,6 +16,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
 
 export const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -24,15 +25,22 @@ export const App: FC = () => {
   const { author } = useAppSelector(authorSelector);
   const { selectedPost } = useAppSelector(selectedPostSelector);
 
-  useEffect(() => {
-    dispatch(setSelectedPost(null));
+  const handleAuthorsPosts = useCallback(
+    (commentAuthor: User | null) => {
+      dispatch(setSelectedPost(null));
 
-    if (author) {
-      dispatch(fetchPosts(author.id));
-    } else {
-      dispatch(resetPosts());
-    }
-  }, [author, dispatch]);
+      if (commentAuthor) {
+        dispatch(fetchPosts(commentAuthor.id));
+      } else {
+        dispatch(resetPosts());
+      }
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    handleAuthorsPosts(author);
+  }, [author, handleAuthorsPosts]);
 
   return (
     <main className="section">

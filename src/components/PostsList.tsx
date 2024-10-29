@@ -3,6 +3,8 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 
+import { Post } from '../types/Post';
+
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost/selectedPost';
 import { selectedPostSelector } from '../features/selectedPost/selectors';
@@ -13,6 +15,10 @@ export const PostsList: FC = () => {
 
   const { posts } = useAppSelector(postsSelector);
   const { selectedPost } = useAppSelector(selectedPostSelector);
+
+  const handleSelectTost = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPost?.id ? null : post));
+  };
 
   return (
     <div data-cy="PostsList">
@@ -39,13 +45,7 @@ export const PostsList: FC = () => {
                   className={classNames('button is-link', {
                     'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => {
-                    dispatch(
-                      setSelectedPost(
-                        post.id === selectedPost?.id ? null : post,
-                      ),
-                    );
-                  }}
+                  onClick={() => handleSelectTost(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
