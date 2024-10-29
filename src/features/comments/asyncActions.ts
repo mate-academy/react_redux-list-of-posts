@@ -9,14 +9,14 @@ import {
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
   async (postId: number) => {
-    return await getPostComments(postId);
+    return getPostComments(postId);
   },
 );
 
 export const addNewComment = createAsyncThunk(
   'comments/addComment',
   async (newComment: Omit<Comment, 'id'>) => {
-    return await createComment(newComment);
+    return createComment(newComment);
   },
 );
 
