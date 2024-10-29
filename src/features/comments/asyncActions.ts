@@ -16,7 +16,7 @@ export const fetchComments = createAsyncThunk(
 export const addNewComment = createAsyncThunk(
   'comments/addComment',
   async (newComment: Omit<Comment, 'id'>) => {
-    return createComment(newComment);
+    return await createComment(newComment);
   },
 );
 
