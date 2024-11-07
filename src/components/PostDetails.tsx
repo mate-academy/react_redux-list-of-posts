@@ -16,8 +16,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const dispatch = useAppDispatch();
   const {
-    items: comments,
-    loaded,
+    comments,
+    isLoaded,
     hasError,
   } = useAppSelector(state => state.comments);
 
@@ -26,11 +26,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
   }, [post.id]);
 
-  const addComment = ({ name, email, body }: CommentData) => {
+  const addComment = (commentData: CommentData) => {
     dispatch(commentsAction.addComment({
-      name,
-      email,
-      body,
+      ...commentData,
       postId: post.id,
     }));
   };
@@ -53,23 +51,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && (
+        {!isLoaded && (
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {isLoaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {isLoaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {isLoaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -103,7 +101,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {isLoaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -114,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {isLoaded && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

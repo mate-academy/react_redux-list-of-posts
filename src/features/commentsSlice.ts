@@ -5,15 +5,15 @@ import * as commentsApi from '../api/comments';
 import { Comment } from '../types/Comment';
 
 export interface CommentState {
-  items: Comment[],
-  loaded: boolean,
+  comments: Comment[],
+  isLoaded: boolean,
   hasError: boolean,
   newCommentLoaded: boolean,
 }
 
 const initialState: CommentState = {
-  items: [],
-  loaded: false,
+  comments: [],
+  isLoaded: false,
   hasError: false,
   newCommentLoaded: false,
 };
@@ -21,28 +21,14 @@ const initialState: CommentState = {
 export const fetchCommets = createAsyncThunk(
   'comments/fetch',
   async (id: number) => {
-    const comments: Comment[] = await commentsApi.getPostComments(id);
-
-    return comments;
+    return commentsApi.getPostComments(id);
   },
 );
 
 export const addComment = createAsyncThunk(
   'comments/add',
-  async ({
-    name,
-    email,
-    body,
-    postId,
-  }: Omit<Comment, 'id'>) => {
-    const newComment = await commentsApi.createComment({
-      name,
-      email,
-      body,
-      postId,
-    });
-
-    return newComment;
+  async (newComment: Omit<Comment, 'id'>) => {
+    return commentsApi.createComment(newComment);
   },
 );
 
@@ -58,20 +44,22 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     remove: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.comments = state.comments.filter(comment => {
+        return comment.id !== action.payload;
+      });
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchCommets.pending, state => {
-        state.loaded = false;
+        state.isLoaded = false;
       })
       .addCase(fetchCommets.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.items = action.payload;
+        state.isLoaded = true;
+        state.comments = action.payload;
       })
       .addCase(fetchCommets.rejected, state => {
-        state.loaded = true;
+        state.isLoaded = true;
         state.hasError = true;
       });
     builder
@@ -80,7 +68,7 @@ const commentsSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.newCommentLoaded = false;
-        state.items.push(action.payload);
+        state.comments.push(action.payload);
       });
   },
 });
