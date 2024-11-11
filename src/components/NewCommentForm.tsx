@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch } from '../app/hooks';
-import { initAddComment } from '../features/comentsSlice';
+import { initAddComment } from '../features/commentsSlice';
 
 type Props = {
   postId: number;
