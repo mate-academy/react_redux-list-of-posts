@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { CommentForm, setError, setValue } from '../features/commentForm';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -9,30 +11,21 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const dispatch = useAppDispatch();
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const errors = useAppSelector(state => state.commentForm.errors);
+  const { name, email, body } = useAppSelector(
+    state => state.commentForm.values,
+  );
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+    dispatch(setValue({ field: 'name', value: '' }));
+    dispatch(setValue({ field: 'email', value: '' }));
+    dispatch(setValue({ field: 'body', value: '' }));
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    dispatch(setError({ field: 'name', value: false }));
+    dispatch(setError({ field: 'email', value: false }));
+    dispatch(setError({ field: 'body', value: false }));
   };
 
   const handleChange = (
@@ -40,18 +33,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    if (['name', 'email', 'body'].includes(field)) {
+      dispatch(
+        setValue({ field: field as keyof CommentForm['values'], value: value }),
+      );
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    dispatch(setError({ field: 'name', value: !name }));
+    dispatch(setError({ field: 'email', value: !email }));
+    dispatch(setError({ field: 'body', value: !body }));
 
     if (!name || !email || !body) {
       return;
@@ -64,8 +58,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+
     // We keep the entered name and email
+    dispatch(setValue({ field: 'body', value: '' }));
   };
 
   return (
