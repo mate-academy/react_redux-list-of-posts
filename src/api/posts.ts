@@ -6,5 +6,5 @@ export const getUserPosts = (userId: number) => {
 };
 
 export const getPosts = () => {
-  return client.get<Post[]>('/posts');
+  return client.get<Post[]>('/posts1');
 };
