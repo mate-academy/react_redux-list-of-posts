@@ -12,6 +12,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/posts';
 import * as authorActions from './features/author/author';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,10 @@ export const App: React.FC = () => {
   const { posts, loaded, hasError, selectedPost } = useAppSelector(
     state => state.posts,
   );
+
+  const handlePostSelected = (post: Post | null) => {
+    dispatch(postsActions.setSelectedPost(post));
+  };
 
   useEffect(() => {
     dispatch(postsActions.setSelectedPost(null));
@@ -65,9 +70,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={post =>
-                      dispatch(postsActions.setSelectedPost(post))
-                    }
+                    onPostSelected={post => {
+                      handlePostSelected(post);
+                    }}
                   />
                 )}
               </div>

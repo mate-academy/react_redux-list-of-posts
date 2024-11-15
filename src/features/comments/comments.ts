@@ -57,7 +57,7 @@ const commentsSlice = createSlice({
     );
 
     builder.addCase(init.rejected, state => {
-      return { ...state, hasError: true };
+      return { ...state, hasError: true, loaded: true };
     });
 
     builder.addCase(
@@ -77,7 +77,7 @@ const commentsSlice = createSlice({
       (state, action: PayloadAction<Comment>) => {
         state.comments.push(action.payload);
 
-        return { ...state, hasError: false };
+        return { ...state, hasError: false, loaded: true };
       },
     );
 

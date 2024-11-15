@@ -45,7 +45,7 @@ const postsSlice = createSlice({
     });
 
     builder.addCase(init.rejected, state => {
-      return { ...state, hasError: true, loaded: false };
+      return { ...state, hasError: true, loaded: true };
     });
   },
 });
