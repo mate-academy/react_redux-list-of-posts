@@ -73,13 +73,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+{author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={setSelectedPost}
                   />
-                )}
+)}
               </div>
             </div>
           </div>
