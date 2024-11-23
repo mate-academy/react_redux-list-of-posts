@@ -106,7 +106,7 @@
 //   );
 // };
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -117,7 +117,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { User } from './types/User';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
@@ -125,26 +124,34 @@ import { setAuthor } from './features/author/authorSlice';
 import { Post } from './types/Post';
 import { fetchPosts } from './features/posts/postsSlice';
 import { clearPosts } from './features/posts/postsSlice';
+import { RootState } from './app/store';
 
-interface RootState {
-  selectedPost: Post | null;
-  posts: {
-    items: Post[];
-    loaded: boolean;
-    hasError: boolean;
-  };
-  author: User | null;
-}
+// interface RootState {
+//   selectedPost: Post | null;
+//   posts: {
+//     items: Post[];
+//     loaded: boolean;
+//     hasError: boolean;
+//   };
+//   author: User | null;
+// }
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const currentPost = useAppSelector(state => state.selectedPost);
-  const { items:posts, loaded, hasError } = useAppSelector(state => state.posts);
-  const author = useAppSelector(state => state.author);
+  const currentPost = useAppSelector((state: RootState) => state.selectedPost);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector((state: RootState) => state.posts);
+  const author = useAppSelector(
+    (state: RootState) => state.author.selectedAuthor,
+  );
   const handleAuthorChange = (newAuthor: User | null) => {
-    dispatch(setAuthor(newAuthor))
+    dispatch(setAuthor(newAuthor));
     dispatch(setSelectedPost(null));
-  }
+  };
+
   const handlePostSelect = (post: Post | null) => {
     dispatch(setSelectedPost(post));
   };
@@ -157,7 +164,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -221,4 +228,3 @@ export const App: React.FC = () => {
     </main>
   );
 };
-
