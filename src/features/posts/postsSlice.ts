@@ -13,33 +13,35 @@ const initialState: PostsSlice = {
   items: [],
   loaded: false,
   hasError: false,
-}
+};
 
 export const fetchPosts = createAsyncThunk<Post[], number | undefined>(
   'posts/fetchPosts',
   async (userId?: number) => {
     if (userId) {
-      return await getUserPosts(userId);
+      return getUserPosts(userId);
     }
-    return await getPosts();
-});
+
+    return getPosts();
+  },
+);
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.hasError = false;
     },
-    clearPosts: (state) => {
+    clearPosts: state => {
       state.items = [];
       state.loaded = false;
       state.hasError = false;
-    }
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchPosts.pending, (state) => {
+      .addCase(fetchPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
@@ -47,11 +49,12 @@ const postsSlice = createSlice({
         state.loaded = true;
         state.items = action.payload;
       })
-      .addCase(fetchPosts.rejected, (state) => {
+      .addCase(fetchPosts.rejected, state => {
         state.hasError = true;
         state.loaded = true;
       });
   },
 });
+
 export const { clearError, clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;
