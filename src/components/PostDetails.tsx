@@ -8,7 +8,6 @@ import {
   removeComment,
   addComment,
 } from '../features/comments/commentsSlice';
-import { useSelector } from 'react-redux';
 
 type Props = {
   post: Post;

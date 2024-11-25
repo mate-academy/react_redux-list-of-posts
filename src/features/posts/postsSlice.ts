@@ -1,18 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPosts } from '../../api/posts';
+import { getPosts, getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
 
 export interface PostsSlice {
   items: Post[];
   loaded: boolean;
-  hasError: boolean;
+  hasError: string;
 }
 
 const initialState: PostsSlice = {
   items: [],
   loaded: false,
-  hasError: false,
+  hasError: '',
 };
 
 export const fetchPosts = createAsyncThunk<Post[], number | undefined>(
@@ -31,26 +30,26 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     clearError: state => {
-      state.hasError = false;
+      state.hasError = '';
     },
     clearPosts: state => {
       state.items = [];
       state.loaded = false;
-      state.hasError = false;
+      state.hasError = '';
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
         state.loaded = false;
-        state.hasError = false;
+        state.hasError = '';
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loaded = true;
         state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.hasError = true;
+        state.hasError = 'Failed to load posts. Please try again later.';
         state.loaded = true;
       });
   },
