@@ -84,7 +84,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => {
-                      console.log(comment.id);
                       dispatch(deletePostComment(comment.id));
                     }}
                   >

@@ -16,13 +16,13 @@ const initialState: InitialState = {
 const usersSlice = createSlice({
   name: 'user',
   initialState,
+  // eslint-disable no-param-reassign
   reducers: {
     selectUser: (state, { payload }) => ({
       ...state,
       selectedUser: payload,
     }),
   },
-
   extraReducers(builder) {
     builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
       state.users = payload;

@@ -12,6 +12,7 @@ const initialState: InitialState = {
 const authorSlice = createSlice({
   name: 'author',
   initialState,
+  // eslint-disable no-param-reassign
   reducers: {
     setAuthor: (state, { payload }: PayloadAction<User | null>) => {
       state.author = payload;

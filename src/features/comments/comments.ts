@@ -40,6 +40,7 @@ const initialState: InitialState = {
 const postsSlice = createSlice({
   name: 'comments',
   initialState,
+  // eslint-disable no-param-reassign
   reducers: {
     clearComments: state => {
       state.comments = [];

@@ -35,13 +35,13 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author]);
+  }, [dispatch, author]);
 
   const handleSelectAuthor = (selectedAuthor: User | null) =>
     dispatch(setAuthor(selectedAuthor));
 
-  const handleSelectPost = (selectedPost: Post | null) =>
-    dispatch(setSelectedPost(selectedPost));
+  const handleSelectPost = (post: Post | null) =>
+    dispatch(setSelectedPost(post));
 
   return (
     <main className="section">

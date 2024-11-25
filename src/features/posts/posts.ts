@@ -24,6 +24,7 @@ const initialState: InitialState = {
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
+  // eslint-disable no-param-reassign
   reducers: {
     clearPosts: state => {
       state.posts = [];
