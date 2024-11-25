@@ -187,12 +187,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch()
   const { loaded, hasError, items: comments } = useAppSelector(state => state.comments)
   const [visible, setVisible] = useState(false);
+  // const [isFormVisible, setIsFormVisible ] = useState(false);
 
   useEffect(() => {
     dispatch(fetchComments(post.id));
   }, [dispatch, post.id]);
 
+  useEffect(() => {
+    setVisible(false);
+  }, [post.id])
+
   const handleAddComment = async ({ name, email, body }: CommentData) => {
+
     try {
       await dispatch(addComment({ name, email, body, postId: post.id })).unwrap();
       setVisible(false);

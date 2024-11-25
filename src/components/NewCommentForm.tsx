@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { Loader } from '../components/Loader/Loader';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -8,6 +9,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -59,14 +61,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    try {
+     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+    } finally {
+      setSubmitting(false);
+    }
+
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
+
+  if (isLoading) {
+    return <div><Loader /></div>
+  }
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">

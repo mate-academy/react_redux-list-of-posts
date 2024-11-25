@@ -130,16 +130,14 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   if (loading) {
-    return <div><Loader /></div>
+    return <div data-cy='UserSelector'><Loader /></div>
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div data-cy='UserSelector'>{error}</div>
   }
 
   return (
@@ -166,7 +164,8 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      {users.length > 0 && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => (
             <a
@@ -184,6 +183,7 @@ export const UserSelector: React.FC<Props> = ({
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 };
