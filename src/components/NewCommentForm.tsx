@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import { clear } from 'localforage';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -9,7 +8,6 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -60,26 +58,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-    setIsLoading(true);
 
     try {
       await onSubmit({ name, email, body });
-      clear();
+      clearForm();
     } finally {
       setSubmitting(false);
-      setIsLoading(false);
     }
 
     setValues(current => ({ ...current, body: '' }));
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <div>
-  //       <Loader />
-  //     </div>
-  //   );
-  // }
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
