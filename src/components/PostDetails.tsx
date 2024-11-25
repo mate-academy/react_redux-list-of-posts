@@ -165,13 +165,16 @@
 //   );
 // };
 
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Loader } from './Loader';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { NewCommentForm } from './NewCommentForm';
-import { Comment, CommentData } from '../types/Comment';
-import { fetchComments, removeComment, addComment } from '../features/comments/commentsSlice';
+import { CommentData } from '../types/Comment';
+import {
+  fetchComments,
+  removeComment,
+  addComment,
+} from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;
@@ -184,9 +187,14 @@ interface Post {
 }
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useAppDispatch()
-  const { loaded, hasError, items: comments } = useAppSelector(state => state.comments)
+  const dispatch = useAppDispatch();
+  const {
+    loaded,
+    hasError,
+    items: comments,
+  } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
+  const previousPostId = useRef(post.id);
   // const [isFormVisible, setIsFormVisible ] = useState(false);
 
   useEffect(() => {
@@ -195,22 +203,25 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setVisible(false);
-  }, [post.id])
+  }, [post.id]);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
-
     try {
-      await dispatch(addComment({ name, email, body, postId: post.id })).unwrap();
-      setVisible(false);
-    } catch (er){
+      await dispatch(
+        addComment({ name, email, body, postId: post.id }),
+      ).unwrap();
+    } catch (er) {
+    } finally {
+      if (post.id !== previousPostId.current) {
+        setVisible(false);
+      }
     }
   };
 
   const handleDeleteComment = async (commentId: number) => {
     try {
       await dispatch(removeComment(commentId)).unwrap();
-    } catch (eror: any) {
-    }
+    } catch (eror: any) {}
   };
 
   return (
