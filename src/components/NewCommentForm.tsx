@@ -60,11 +60,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
+    setIsLoading(true);
 
     try {
       await onSubmit({ name, email, body });
     } finally {
       setSubmitting(false);
+      setIsLoading(false);
     }
 
     setValues(current => ({ ...current, body: '' }));

@@ -165,16 +165,13 @@
 //   );
 // };
 
+
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment, CommentData } from '../types/Comment';
-import {
-  fetchComments,
-  removeComment,
-  addComment,
-} from '../features/comments/commentsSlice';
+import { fetchComments, removeComment, addComment } from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;
@@ -187,12 +184,8 @@ interface Post {
 }
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useAppDispatch();
-  const {
-    loaded,
-    hasError,
-    items: comments,
-  } = useAppSelector(state => state.comments);
+  const dispatch = useAppDispatch()
+  const { loaded, hasError, items: comments } = useAppSelector(state => state.comments)
   const [visible, setVisible] = useState(false);
   // const [isFormVisible, setIsFormVisible ] = useState(false);
 
@@ -202,21 +195,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setVisible(false);
-  }, [post.id]);
+  }, [post.id])
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
+
     try {
-      await dispatch(
-        addComment({ name, email, body, postId: post.id }),
-      ).unwrap();
+      await dispatch(addComment({ name, email, body, postId: post.id })).unwrap();
       setVisible(false);
-    } catch (er) {}
+    } catch (er){
+    }
   };
 
   const handleDeleteComment = async (commentId: number) => {
     try {
       await dispatch(removeComment(commentId)).unwrap();
-    } catch (eror: any) {}
+    } catch (eror: any) {
+    }
   };
 
   return (
