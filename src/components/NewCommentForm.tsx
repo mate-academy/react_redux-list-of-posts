@@ -62,8 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     try {
-     await onSubmit({ name, email, body });
-
+      await onSubmit({ name, email, body });
     } finally {
       setSubmitting(false);
     }
@@ -72,7 +71,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   if (isLoading) {
-    return <div><Loader /></div>
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   return (

@@ -4,6 +4,7 @@ import { User } from '../../types/User';
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await getUsers();
+
   return response;
 });
 
@@ -23,22 +24,22 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    resetUsers: (state) => {
+    resetUsers: state => {
       state.users = [];
       state.loading = false;
       state.error = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchUsers.pending, state => {
         state.loading = true;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
       })
-      .addCase(fetchUsers.rejected, (state) => {
+      .addCase(fetchUsers.rejected, state => {
         state.loading = false;
         state.error = 'Failed to load users';
       });
