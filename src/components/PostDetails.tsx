@@ -14,14 +14,14 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const disptach = useAppDispatch();
+  const dispatch = useAppDispatch();
   const { comments, loading, err } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setVisible(false);
-    disptach(CommentsActions.fetchComments(post.id));
-  }, [disptach, post.id]);
+    dispatch(CommentsActions.fetchComments(post.id));
+  }, [dispatch, post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      disptach(CommentsActions.add(newComment));
+      dispatch(CommentsActions.add(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      disptach(CommentsActions.enableErr());
+      dispatch(CommentsActions.enableErr());
     }
   };
 
@@ -48,7 +48,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    disptach(CommentsActions.remove(commentId));
+    dispatch(CommentsActions.remove(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
