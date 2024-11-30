@@ -1,4 +1,4 @@
-// import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,28 +9,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchUserPosts } from './features/posts/postsSlice';
-import * as selectedPostAction from './features/selectedPost/selectedPostSlice';
+import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const author = useAppSelector(state => state.users.selectedUser);
   const {
-    items: posts,
-    loaded,
-    hasError,
+    isLoading,
+    error: hasError,
+    posts,
+    selectedPost,
   } = useAppSelector(state => state.posts);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(selectedPostAction.clearPost());
-
-    if (author) {
-      dispatch(fetchUserPosts(author.id));
-    }
-  }, [author, dispatch]);
+  const loaded = !isLoading;
 
   return (
     <main className="section">
@@ -82,7 +71,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails />}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

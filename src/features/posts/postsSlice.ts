@@ -1,47 +1,60 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
-export interface PostsState {
-  items: Post[];
-  loaded: boolean;
-  hasError: string;
+export interface PostsUseState {
+  selectedPost: Post | null;
+  posts: Post[];
+  isLoading: boolean;
+  error: null | string;
 }
 
-const initialState: PostsState = {
-  items: [],
-  loaded: false,
-  hasError: '',
+const initialState: PostsUseState = {
+  selectedPost: null,
+  posts: [],
+  isLoading: false,
+  error: null,
 };
 
-export const fetchUserPosts = createAsyncThunk(
-  'posts/fetchUserPosts',
-  async (userId: number) => {
-    const posts = await getUserPosts(userId);
-
-    return posts;
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  (userId: number) => {
+    return getUserPosts(userId);
   },
 );
 
-const postsSlice = createSlice({
+export const postSlice = createSlice({
   name: 'posts',
-  initialState,
-  reducers: {},
-  extraReducers: builder => {
-    builder
-      .addCase(fetchUserPosts.pending, state => {
-        state.loaded = false;
-        state.hasError = '';
-      })
-      .addCase(fetchUserPosts.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loaded = true;
-      })
-      .addCase(fetchUserPosts.rejected, state => {
-        state.loaded = true;
-        state.hasError = 'Failed to load posts';
-      });
+  initialState: initialState,
+  reducers: {
+    setPosts: (state, action: PayloadAction<Post[]>) => {
+      state.posts = action.payload;
+    },
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
+    },
+  },
+  extraReducers(builder) {
+    builder.addCase(fetchPosts.pending, state => {
+      state.posts = [];
+      state.isLoading = true;
+    });
+
+    builder.addCase(fetchPosts.rejected, state => {
+      state.error = 'Something went wrong!';
+      state.isLoading = false;
+    });
+
+    builder.addCase(
+      fetchPosts.fulfilled,
+      (state, action: PayloadAction<Post[]>) => {
+        state.isLoading = false;
+
+        state.posts = action.payload;
+      },
+    );
   },
 });
 
-export default postsSlice.reducer;
+export const { setPosts, setSelectedPost } = postSlice.actions;
+export default postSlice.reducer;

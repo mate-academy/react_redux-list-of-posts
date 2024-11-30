@@ -1,41 +1,48 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+/* eslint-disable max-len */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
-export interface UsersState {
+export interface CounterUsersState {
   users: User[];
-  loading: boolean;
-  error: string;
+  selectedUser: User | null;
 }
 
-const initialState: UsersState = {
+const initialValue: CounterUsersState = {
   users: [],
-  loading: false,
-  error: '',
+  selectedUser: null,
 };
 
-export const fetchUsers = createAsyncThunk('users/fetch', () => {
-  return getUsers();
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
+  const response = await getUsers();
+
+  return response;
 });
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
   name: 'users',
-  initialState,
-  reducers: {},
-  extraReducers: builder => {
-    builder.addCase(fetchUsers.pending, state => {
-      state.loading = true;
-      state.error = '';
-    });
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.loading = false;
+  initialState: initialValue,
+  reducers: {
+    setUsers: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
-    });
-    builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message || 'Failed to fetch users';
+    },
+    setSelectedUser: (state, action: PayloadAction<User>) => {
+      state.selectedUser = action.payload;
+    },
+  },
+  extraReducers(builder) {
+    builder.addCase(
+      fetchUsers.fulfilled,
+      (state, action: PayloadAction<User[]>) => {
+        state.users = action.payload;
+      },
+    );
+
+    builder.addCase(fetchUsers.pending, state => {
+      state.users = [];
     });
   },
 });
 
+export const { setUsers, setSelectedUser } = usersSlice.actions;
 export default usersSlice.reducer;

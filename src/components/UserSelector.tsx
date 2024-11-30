@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsers } from '../features/users/usersSlice';
-import { setUser } from '../features/author/authorSlice';
+import { setSelectedUser } from '../features/users/usersSlice';
+import { User } from '../types/User';
+import { fetchPosts, setSelectedPost } from '../features/posts/postsSlice';
 
 export const UserSelector: React.FC = () => {
-  const [expanded, setExpanded] = useState(false);
-  const users = useAppSelector(state => state.users.users);
-  const author = useAppSelector(state => state.author);
+  // `users` are loaded from the API, so for the performance reasons
+  // we load them once in the `UsersContext` when the `App` is opened
+  // and now we can easily reuse the `UserSelector` in any form
   const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users.users);
+  const selectedUser = useAppSelector(state => state.users.selectedUser);
+  const [expanded, setExpanded] = useState(false);
+
+  function handleDispatchSelectedUser(user: User) {
+    dispatch(setSelectedUser(user));
+    dispatch(setSelectedPost(null));
+    dispatch(fetchPosts(user.id));
+    setExpanded(false);
+  }
 
   useEffect(() => {
     if (!expanded) {
@@ -32,10 +43,6 @@ export const UserSelector: React.FC = () => {
     // when the Dopdown is closed
   }, [expanded]);
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-
   return (
     <div
       data-cy="UserSelector"
@@ -52,7 +59,7 @@ export const UserSelector: React.FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>{author?.name || 'Choose a user'}</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -66,9 +73,9 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(setUser(user))}
+              onClick={() => handleDispatchSelectedUser(user)}
               className={classNames('dropdown-item', {
-                'is-active': user.id === author?.id,
+                'is-active': user.id === selectedUser?.id,
               })}
             >
               {user.name}
