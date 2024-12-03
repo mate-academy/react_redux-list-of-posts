@@ -22,6 +22,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   );
 
   useEffect(() => {
+    setVisible(false);
+
     if (post.id) {
       dispatch(setComments(post.id));
     }
@@ -35,11 +37,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       postId: post.id,
     };
 
-    dispatch(addComment(newComment));
-    setVisible(false);
+    try {
+      await dispatch(addComment(newComment));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to add comment:', error);
+    }
   };
 
-  const handleDeleteComment = async (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => {
     dispatch(removeComment(commentId));
   };
 
@@ -82,14 +88,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </a>
 
                   <button
-                    data-cy="CommentDelete"
+                    data-cy="DeleteCommentButton"
                     type="button"
                     className="delete is-small"
-                    aria-label="delete"
                     onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
