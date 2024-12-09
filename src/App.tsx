@@ -12,7 +12,11 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { loadUsers } from './features/users/usersSlice';
 import { selectAuthor } from './features/author/authorSlice';
-import { loadPosts, selectPosts, setPosts } from './features/posts/postsSlice';
+import {
+  clearPosts,
+  loadPosts,
+  selectPosts,
+} from './features/posts/postsSlice';
 import {
   selectSelectedPost,
   setSelectedPost,
@@ -35,7 +39,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      dispatch(setPosts());
+      dispatch(clearPosts());
     }
   }, [author, dispatch]);
 

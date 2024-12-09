@@ -48,9 +48,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(removeComment(commentId));
-
     await commentsApi.deleteComment(commentId);
+    dispatch(removeComment(commentId));
   };
 
   return (

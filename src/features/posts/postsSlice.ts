@@ -21,7 +21,7 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: state => {
+    clearPosts: state => {
       state.posts = [];
     },
   },
@@ -42,7 +42,7 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setPosts } = postsSlice.actions;
+export const { clearPosts } = postsSlice.actions;
 export const selectPosts = (state: RootState) => state.posts;
 
 export default postsSlice.reducer;

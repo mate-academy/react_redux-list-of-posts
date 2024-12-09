@@ -21,16 +21,16 @@ const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadUsers.pending, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = false;
       })
       .addCase(loadUsers.rejected, state => {
         state.hasError = true;
-        state.loaded = false;
+        state.loaded = true;
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
         state.users = action.payload;
-        state.loaded = false;
+        state.loaded = true;
       });
   },
 });
