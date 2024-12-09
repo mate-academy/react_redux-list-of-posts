@@ -10,7 +10,6 @@ import { PostDetails } from './components/PostDetails';
 import { Loader } from './components/Loader';
 import { useAppSelector } from './app/hooks';
 
-
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.users.selectedUser);
   const {

@@ -45,11 +45,8 @@ export const postSlice = createSlice({
       state.isLoading = false;
     });
 
-    builder.addCase(
-      fetchPosts.fulfilled,
-      (state, action: PayloadAction<Post[]>) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.isLoading = false;
-
         state.posts = action.payload;
       },
     );
