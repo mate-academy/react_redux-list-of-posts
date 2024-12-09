@@ -54,18 +54,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
 
     if (!name || !email || !body) {
-      return;
+      return; // Stop submission if validation fails
     }
 
-    setSubmitting(true);
+    setSubmitting(true); // Show spinner
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      await onSubmit({ name, email, body }); // Wait for parent handler
+      setValues(current => ({ ...current, body: '' })); // Reset the body field only
+    } catch (error) {
+    } finally {
+      setSubmitting(false); // Hide spinner
+    }
   };
 
   return (
