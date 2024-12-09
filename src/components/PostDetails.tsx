@@ -40,7 +40,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     try {
       const commentsFromServer = await commentsApi.getPostComments(post.id);
-
       setComments(commentsFromServer);
     } catch (error) {
       setError(true);
@@ -52,7 +51,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     loadComments();
   }, []);
-
   useEffect(loadComments, [post.id]); // Wrong!
   // effect can return only a function but not a Promise
   */
@@ -93,29 +91,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
-
       <div className="block">
         {!loaded && <Loader />}
-
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
-
         {loaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
-
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -145,7 +137,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             ))}
           </>
         )}
-
         {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
