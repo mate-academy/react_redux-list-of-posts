@@ -37,11 +37,11 @@ export const App: React.FC = () => {
     } else {
       dispatch(setPosts());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   useEffect(() => {
     dispatch(loadUsers());
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className="section">
