@@ -9,26 +9,29 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from './app/store';
+import {
+  clearPosts,
+  loadUserPostAsync,
+  setLoaded,
+} from './features/post/postSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const posts = useSelector((state: RootState) => state.posts.items);
+  const loaded = useSelector((state: RootState) => state.posts.loaded);
+  const hasError = useSelector((state: RootState) => state.posts.hasError);
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+    dispatch(setLoaded(false));
+    dispatch(loadUserPostAsync(userId));
   }
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
     }
   }, [author]);
 
