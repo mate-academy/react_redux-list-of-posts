@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
+import { RootState } from '../../app/store';
 
 export interface PostState {
   items: Post[];
@@ -14,48 +15,69 @@ const initialState: PostState = {
   hasError: false,
 };
 
+export const loadUserPostsAsync = createAsyncThunk(
+  'posts/loadPostAsync',
+  (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
     setLoaded: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
+      return {
+        ...state,
+        loaded: action.payload,
+      };
     },
     setError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
+      return {
+        ...state,
+        hasError: action.payload,
+      };
     },
 
-    clearPosts: state => {
-      state.items = [];
-      state.loaded = true;
-      state.hasError = false;
+    clearPosts: () => {
+      return {
+        items: [],
+        loaded: true,
+        hasError: false,
+      };
     },
   },
   extraReducers: builder => {
     builder
       .addCase(
-        loadUserPostAsync.fulfilled,
+        loadUserPostsAsync.fulfilled,
         (state, action: PayloadAction<Post[]>) => {
-          state.items = action.payload;
+          return {
+            ...state,
+            items: action.payload,
+          };
         },
       )
-      .addCase(loadUserPostAsync.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
+      .addCase(loadUserPostsAsync.pending, state => {
+        return {
+          ...state,
+          loaded: false,
+          hasError: false,
+        };
       })
-      .addCase(loadUserPostAsync.rejected, state => {
-        state.loaded = true;
-        state.hasError = true;
+      .addCase(loadUserPostsAsync.rejected, state => {
+        return {
+          ...state,
+          loaded: true,
+          hasError: true,
+        };
       });
   },
 });
 
-export const loadUserPostAsync = createAsyncThunk(
-  'posts/loadPostAsync',
-  async (userId: number) => {
-    return getUserPosts(userId);
-  },
-);
+export const selectPosts = (state: RootState) => state.posts.items;
+export const selectLoaded = (state: RootState) => state.posts.loaded;
+export const selectHasError = (state: RootState) => state.posts.hasError;
 
 export const { setLoaded, clearPosts, setError } = postsSlice.actions;
 export default postsSlice.reducer;
