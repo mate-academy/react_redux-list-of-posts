@@ -2,7 +2,7 @@
 
 import classNames from 'classnames';
 import React from 'react';
-import { selectPosts } from '../features/post/postSlice';
+import { selectPosts } from '../features/post/postsSlice';
 import { useSelector } from 'react-redux';
 import {
   selectSelectedPost,

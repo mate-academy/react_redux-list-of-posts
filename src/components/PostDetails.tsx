@@ -6,16 +6,14 @@ import * as commentsApi from '../api/comments';
 
 import { CommentData } from '../types/Comment';
 import { useSelector } from 'react-redux';
-import {
-  selectHasError,
-  selectLoaded,
-  setError,
-  setLoaded,
-} from '../features/post/postSlice';
+import { setError } from '../features/post/postsSlice';
 import {
   loadCommentsAsync,
   selectComments,
+  selectHasError,
+  selectLoadedComment,
   setComments,
+  setLoadedComment,
 } from '../features/comments/commentsSlice';
 import { useAppDispatch } from '../app/hooks';
 import { selectSelectedPost } from '../features/selectedPost/selectedPostSlice';
@@ -25,12 +23,12 @@ export const PostDetails: React.FC = () => {
 
   const post = useSelector(selectSelectedPost);
   const comments = useSelector(selectComments);
-  const loaded = useSelector(selectLoaded);
+  const loaded = useSelector(selectLoadedComment);
   const hasError = useSelector(selectHasError);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    dispatch(setLoaded(false));
+    dispatch(setLoadedComment(false));
     dispatch(setError(false));
     setVisible(false);
 

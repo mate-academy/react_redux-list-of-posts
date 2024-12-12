@@ -17,7 +17,7 @@ import {
   selectLoaded,
   selectPosts,
   setLoaded,
-} from './features/post/postSlice';
+} from './features/post/postsSlice';
 import { loadUsersAsync } from './features/users/usersSlice';
 import {
   selectSelectedPost,
