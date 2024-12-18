@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Comment } from '../../types/Comment';
-import { getPostComments } from '../../api/comments';
+import { Comment } from '../types/Comment';
+import { getPostComments } from '../api/comments';
 
 export interface CommetsState {
   items: Comment[];

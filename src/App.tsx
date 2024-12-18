@@ -11,8 +11,9 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { RootState } from './app/store';
-import * as postsAction from './features/posts/postsSlice';
-import * as postAction from './features/selectedPost/selectedPostSlice';
+import * as usersActions from './features/usersSlice';
+import * as postsAction from './features/postsSlice';
+import * as postAction from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector((state: RootState) => state.author);
@@ -22,14 +23,13 @@ export const App: React.FC = () => {
   const { items, loaded, hasError } = useAppSelector(
     (state: RootState) => state.posts,
   );
-  /* Для типізації dispatch використовуємо кастомний хук, це те саме, що і
-    useDispatch, але вже з типом, який дозволяє використовувати його не тільки
-    з actions, а й з функціями */
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
+    dispatch(usersActions.importUsersAsync());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(postAction.setSelectedPost(null));
 
     if (author) {

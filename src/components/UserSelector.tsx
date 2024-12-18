@@ -1,31 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { Loader } from './Loader';
 import { RootState } from '../app/store';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as usersActions from '../features/users/usersSlice';
-import * as authorActions from '../features/author/authorSlice';
+import * as authorActions from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
-  const { users, status } = useAppSelector((state: RootState) => state.users);
+  const { users } = useAppSelector((state: RootState) => state.users);
   const { author } = useAppSelector((state: RootState) => state.author);
   const dispatch = useAppDispatch();
-
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    dispatch(usersActions.importUsersAsync());
-  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -34,17 +24,7 @@ export const UserSelector: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
-
-  if (status === 'loading') {
-    return <Loader />;
-  }
-
-  if (status === 'failed') {
-    throw new Error('Something went wrong');
-  }
 
   return (
     <div
