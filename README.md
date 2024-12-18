@@ -22,7 +22,7 @@
 - Prettier
 - Cypress
 - Mochawesome
-- Babel
+- Vite
 
 ### Demo links
 
