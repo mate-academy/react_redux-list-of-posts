@@ -3,13 +3,13 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
 
-export interface CommetsState {
+export interface CommentsState {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
 
-const initialState: CommetsState = {
+const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,

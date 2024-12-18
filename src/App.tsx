@@ -12,8 +12,8 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { RootState } from './app/store';
 import * as usersActions from './features/usersSlice';
-import * as postsAction from './features/postsSlice';
-import * as postAction from './features/selectedPostSlice';
+import * as postsActions from './features/postsSlice';
+import * as postActions from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const { author } = useAppSelector((state: RootState) => state.author);
@@ -30,10 +30,10 @@ export const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(postAction.setSelectedPost(null));
+    dispatch(postActions.setSelectedPost(null));
 
     if (author) {
-      dispatch(postsAction.importPostsAsync(author.id));
+      dispatch(postsActions.importPostsAsync(author.id));
     }
   }, [author, dispatch]);
 
