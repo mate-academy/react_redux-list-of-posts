@@ -4,32 +4,59 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { RootState } from '../app/store';
+import * as commentsAction from '../features/comments/commentsSlice';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
+  const { selectedPost } = useAppSelector(
+    (state: RootState) => state.selectedPost,
+  );
+  const { items, loaded, hasError } = useAppSelector(
+    (state: RootState) => state.comments,
+  );
+  const dispatch = useAppDispatch();
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
+  useEffect(() => {
     setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
+    if (selectedPost) {
+      dispatch(commentsAction.importCommentsAsync(selectedPost?.id));
+    }
+  }, [dispatch, selectedPost]);
 
-  useEffect(loadComments, [post.id]);
+  const addComment = async ({ name, email, body }: CommentData) => {
+    const newComment = await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: selectedPost?.id || 0,
+    });
+
+    dispatch(commentsAction.addComment(newComment));
+  };
+
+  const deleteComment = async (commentId: number) => {
+    await commentsApi.deleteComment(commentId);
+
+    dispatch(commentsAction.deleteComment(commentId));
+  };
+
+  // function loadComments() {
+  //   setLoaded(false);
+  //   setError(false);
+  //   setVisible(false);
+
+  //   commentsApi
+  //     .getPostComments(post.id = 0)
+  //     .then(setComments) // save the loaded comments
+  //     .catch(() => setError(true)) // show an error when something went wrong
+  //     .finally(() => setLoaded(true)); // hide the spinner
+  // }
+
+  // useEffect(loadComments, [post.id]);
 
   // The same useEffect with async/await
   /*
@@ -57,44 +84,44 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   // effect can return only a function but not a Promise
   */
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+  // const addComment = async ({ name, email, body }: CommentData) => {
+  //   try {
+  //     const newComment = await commentsApi.createComment({
+  //       name,
+  //       email,
+  //       body,
+  //       postId: selectedPost?.id || 0,
+  //     });
 
-      setComments(currentComments => [...currentComments, newComment]);
+  // setComments(currentComments => [...currentComments, newComment]);
 
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
+  // setComments([...comments, newComment]);
+  // works wrong if we wrap `addComment` with `useCallback`
+  // because it takes the `comments` cached during the first render
+  // not the actual ones
+  // } catch (error) {
+  // we show an error message in case of any error
+  // setError(true);
+  //   }
+  // };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+  // const deleteComment = async (commentId: number) => {
+  //   // we delete the comment immediately so as
+  //   // not to make the user wait long for the actual deletion
+  //   // eslint-disable-next-line max-len
+  //   setComments(currentComments =>
+  //     currentComments.filter(comment => comment.id !== commentId),
+  //   );
 
-    await commentsApi.deleteComment(commentId);
-  };
+  //   await commentsApi.deleteComment(commentId);
+  // };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">
@@ -106,17 +133,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}
@@ -132,7 +159,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => {
+                      deleteComment(comment.id);
+                    }}
                   >
                     delete button
                   </button>
