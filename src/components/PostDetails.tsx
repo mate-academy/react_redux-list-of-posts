@@ -5,52 +5,47 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addComment, deleteComment, setComments } from '../features/commentsSlice';
+import {
+  addComment,
+  deleteComment,
+  setComments,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const {comments, loaded, hasError} = useAppSelector(state =>state.comments)
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.comments,
+  );
   const dispatch = useAppDispatch();
 
-  const [error, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(false)
-    dispatch(setComments(post.id))
+    setVisible(false);
+    dispatch(setComments(post.id));
   }, [post.id]);
 
   const addNewComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+    const newComment = await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: post.id,
+    });
 
-      dispatch(addComment(newComment))
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
+    dispatch(addComment(newComment));
   };
 
   const deleteC = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    dispatch(deleteComment(commentId))
+    dispatch(deleteComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };

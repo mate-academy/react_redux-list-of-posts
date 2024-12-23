@@ -11,16 +11,13 @@ type Props = {
   selectedPostId?: number;
 };
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-}) => {
+export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
   const dispatch = useAppDispatch();
 
-  const handleSelectedPost = (post: Post | null) =>{
-    dispatch(setSelectedPost(post))
-  }
-  
+  const handleSelectedPost = (post: Post | null) => {
+    dispatch(setSelectedPost(post));
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -47,7 +44,9 @@ export const PostsList: React.FC<Props> = ({
                     'is-light': post.id !== selectedPostId,
                   })}
                   onClick={() => {
-                    handleSelectedPost(post.id === selectedPostId ? null : post);
+                    handleSelectedPost(
+                      post.id === selectedPostId ? null : post,
+                    );
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
@@ -58,5 +57,5 @@ export const PostsList: React.FC<Props> = ({
         </tbody>
       </table>
     </div>
-  )
+  );
 };

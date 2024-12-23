@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { Post } from "../types/Post";
+import { createSlice } from '@reduxjs/toolkit';
+import { Post } from '../types/Post';
 
 const initialState = null as Post | null;
 
@@ -8,10 +8,10 @@ const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     setSelectedPost: (_, action) => action.payload,
-    clearSelectedPost: () => null
-  }
-})
+    clearSelectedPost: () => null,
+  },
+});
 
-export const {setSelectedPost, clearSelectedPost} = selectedPostSlice.actions;
+export const { setSelectedPost, clearSelectedPost } = selectedPostSlice.actions;
 
 export default selectedPostSlice.reducer;

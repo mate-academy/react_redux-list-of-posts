@@ -6,13 +6,13 @@ import { setUsers } from '../features/usersSlice';
 import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector = () => {
-  const {users} = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
   const author = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    dispatch(setUsers())
+    dispatch(setUsers());
   }, []);
 
   useEffect(() => {
@@ -34,8 +34,8 @@ export const UserSelector = () => {
 
   const handleUser = (user: User) => {
     setExpanded(false);
-    dispatch(setAuthor(user))
-  }
+    dispatch(setAuthor(user));
+  };
 
   return (
     <div
