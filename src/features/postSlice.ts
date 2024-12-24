@@ -3,52 +3,56 @@ import {
   createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
+import { RootState } from '../app/store';
+import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 import { User } from '../types/User';
-import { Post } from '../types/Post';
-import { RootState } from '../app/store';
 
 type PostsState = {
-  posts: Post[];
-  loading: boolean;
-  error: string;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const fetchPosts = createAsyncThunk<Post[], User['id']>(
   'posts/fetch',
-  userId => {
-    return getUserPosts(userId);
-  },
+  userId => getUserPosts(userId),
 );
 
-export const postSlice = createSlice({
+export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchPosts.pending, state => {
-        return { ...state, loading: true };
-      })
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        return { ...state, posts: action.payload, loading: false };
+        return {
+          ...state,
+          items: action.payload,
+        };
+      })
+      .addCase(fetchPosts.pending, state => {
+        return { ...state, loaded: false };
       })
       .addCase(fetchPosts.rejected, state => {
-        return { ...state, error: 'Error', loading: false };
+        return { ...state, hasError: true };
+      })
+      .addMatcher(fetchPosts.settled, state => {
+        return { ...state, loaded: true };
       });
   },
 });
 
-export default postSlice.reducer;
+export default postsSlice.reducer;
 
 const posts = (state: RootState) => state.posts;
 
 export const postsSelector = createSelector([posts], value => value);
 
-export const { actions } = postSlice;
+export const { actions } = postsSlice;

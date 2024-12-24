@@ -9,15 +9,30 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/userSlice';
+import { fetchPosts, postsSelector } from './features/postSlice';
+import { authorSelector } from './features/authorSlice';
+import { selectedPostSelector } from './features/selectedPostSlice';
+import { set } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { items: posts, loaded, hasError } = useAppSelector(postsSelector);
+  const author = useAppSelector(authorSelector);
+  const selectedPost = useAppSelector(selectedPostSelector);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(set(null));
+
+    if (author) {
+      dispatch(fetchPosts(author.id));
+    }
+  }, [author, dispatch]);
 
   return (
     <main className="section">
