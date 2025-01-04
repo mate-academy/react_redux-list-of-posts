@@ -27,17 +27,19 @@ export const App: React.FC = () => {
   function loadUserPosts(userId: number) {
     dispatch(postsActions.setLoaded(false));
 
-    getUserPosts(userId)
-      .then(postFromServer => dispatch(postsActions.setPosts(postFromServer)))
-      .catch(() => dispatch(postsActions.setHasError(true)))
-      // We disable the spinner in any case
-      .finally(() => dispatch(postsActions.setLoaded(true)));
+    if (userId) {
+      getUserPosts(userId)
+        .then(postFromServer => dispatch(postsActions.setPosts(postFromServer)))
+        .catch(() => dispatch(postsActions.setHasError(true)))
+        // We disable the spinner in any case
+        .finally(() => dispatch(postsActions.setLoaded(true)));
+    }
   }
 
   useEffect(() => {
     dispatch(selectedPostActions.set(null));
 
-    if (author) {
+    if (author?.id) {
       loadUserPosts(author.id);
     } else {
       dispatch(postsActions.setPosts([]));

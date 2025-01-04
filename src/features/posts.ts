@@ -8,7 +8,7 @@ const initialState = {
   hasError: false,
 };
 
-const postsSlise = createSlice({
+const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
@@ -24,5 +24,5 @@ const postsSlise = createSlice({
   },
 });
 
-export default postsSlise.reducer;
-export const { setHasError, setLoaded, setPosts } = postsSlise.actions;
+export default postsSlice.reducer;
+export const { setHasError, setLoaded, setPosts } = postsSlice.actions;

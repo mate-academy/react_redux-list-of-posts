@@ -5,13 +5,14 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
 import * as commentsActions from '../features/comments';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
 
-  const post = useAppSelector(state => state.selectedPost.selectedPost) as Post;
+  const post = useAppSelector(
+    state => state.selectedPost.selectedPost || state.posts.items[0],
+  );
 
   const { comments, loaded, hasError } = useAppSelector(
     state => state.comments,
