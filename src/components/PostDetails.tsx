@@ -20,13 +20,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   );
 
   useEffect(() => {
-    async function loadComents() {
+    async function loadComments() {
       setVisible(false);
 
       await dispatch(commentsSlice.actions.loadPostComments(post.id));
     }
 
-    loadComents();
+    loadComments();
   }, [post.id, dispatch]);
 
   const addComment = async ({
