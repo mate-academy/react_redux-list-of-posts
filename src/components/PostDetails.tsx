@@ -12,24 +12,12 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
   const { comments, loaded, hasError } = useAppSelector(
     state => state.comments,
   );
-
-  // const loadComments = async () => {
-  // setLoaded(false);
-  // setError(false);
-  // setVisible(false);
-
-  // dispatch(commentsSlice.actions.loadPostComments(post.id));
-  // .catch(() => setError(true))
-  // .finally(() => setLoaded(true));
-  // };
 
   useEffect(() => {
     async function loadComents() {
