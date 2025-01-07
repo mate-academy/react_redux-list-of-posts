@@ -10,7 +10,7 @@ type InitialState = {
 
 const initialState: InitialState = {
   posts: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 
@@ -26,7 +26,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     userPosts: (state, { payload }: PayloadAction<Post[]>) => {
-      return { ...state, items: payload };
+      return { ...state, posts: payload };
     },
   },
   extraReducers: builder => {

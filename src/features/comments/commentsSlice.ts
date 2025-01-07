@@ -14,7 +14,7 @@ type InitialState = {
 
 const initialState: InitialState = {
   comments: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 
@@ -28,9 +28,9 @@ export const fetchComments = createAsyncThunk(
 export const addComment = createAsyncThunk(
   'comments/addComment',
   async (comment: Omit<Comment, 'id'>) => {
-    const responce = await createComment(comment);
+    const response = await createComment(comment);
 
-    return responce;
+    return response;
   },
 );
 
