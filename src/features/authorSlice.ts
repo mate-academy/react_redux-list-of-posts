@@ -14,3 +14,4 @@ export const authorSlice = createSlice({
 });
 
 export const { select } = authorSlice.actions;
+export const authorReducer = authorSlice.reducer;

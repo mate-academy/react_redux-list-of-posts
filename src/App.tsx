@@ -15,7 +15,8 @@ import * as selectedPostSlice from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { author, selectedPost } = useAppSelector(state => state);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
   const {
     items: posts,
     loaded,

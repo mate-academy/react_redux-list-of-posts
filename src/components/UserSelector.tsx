@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as usersSlice from '../features/usersSlice';
+import * as userSlice from '../features/usersSlice';
 import * as authorSlice from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
@@ -10,11 +10,12 @@ export const UserSelector: React.FC = () => {
 
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the Redux 'RootState'  when the `App` is opened
-  const { users, author: selectedUser } = useAppSelector(state => state);
+  const users = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    dispatch(usersSlice.initUsers());
+    dispatch(userSlice.initUsers());
   }, []);
 
   useEffect(() => {

@@ -14,3 +14,4 @@ export const selectedPostSlice = createSlice({
 });
 
 export const { select } = selectedPostSlice.actions;
+export const selectedPostReducer = selectedPostSlice.reducer;

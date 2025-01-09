@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
-
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
@@ -24,31 +22,21 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     setVisible(false);
     dispatch(commentsSlice.fetchPostComments(post.id));
-  }, [post.id]);
+  }, [dispatch, post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    // we try to send a new comment to the server
-    try {
-      const newComment = await commentsApi.createComment({
+    return dispatch(
+      commentsSlice.createComment({
         name,
         email,
         body,
         postId: post.id,
-      });
-
-      dispatch(commentsSlice.add(newComment));
-    } catch (error) {
-      // we show an error message in case of any error
-      dispatch(commentsSlice.setError(true));
-    }
+      }),
+    );
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    dispatch(commentsSlice.remove(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    return dispatch(commentsSlice.removeComment(commentId));
   };
 
   return (
