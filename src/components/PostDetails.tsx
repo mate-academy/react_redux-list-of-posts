@@ -65,9 +65,7 @@ export const PostDetails: React.FC = React.memo(() => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => dispatch(commentDelete(comment.id))}
-                  >
-                    delete button
-                  </button>
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">

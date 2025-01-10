@@ -24,7 +24,6 @@ export const App: React.FC = () => {
       dispatch(setPost(null));
       dispatch(userPostsFetch(author.id));
     }
-    // else {dispatch(clearPosts());}
   }, [author, dispatch]);
 
   return (

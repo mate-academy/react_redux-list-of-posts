@@ -3,14 +3,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 import { commentCreate, commentDelete } from './newCommentFormSlice';
+import { cloneDeep } from 'lodash';
 
-type CommetsFromServer = {
+type CommentsFromServer = {
   comments: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
 
-export const initialState: CommetsFromServer = {
+export const initialState: CommentsFromServer = {
   comments: [],
   loaded: false,
   hasError: false,
@@ -49,7 +50,7 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(commentDelete.pending, (state, action) => {
-      previousState = JSON.parse(JSON.stringify(state.comments));
+      previousState = cloneDeep(state.comments);
       state.comments = state.comments.filter(
         comment => comment.id !== action.meta.arg,
       );
