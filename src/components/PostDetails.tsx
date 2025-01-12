@@ -17,6 +17,7 @@ export const PostDetails: React.FC = React.memo(() => {
 
   useEffect(() => {
     if (post?.id) {
+      setVisible(false);
       dispatch(commentsFetch(post?.id));
     }
   }, [dispatch, post?.id]);
