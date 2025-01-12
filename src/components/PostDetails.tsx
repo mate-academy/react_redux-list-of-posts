@@ -25,7 +25,7 @@ export const PostDetails: React.FC = () => {
     setVisible(false);
     dispatch(setError(false));
 
-    if (!post) {
+    if (!post || !post.id) {
       return null;
     }
 
@@ -66,7 +66,11 @@ export const PostDetails: React.FC = () => {
   const deleteComment = async (commentId: number) => {
     dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
 
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+    } catch (error) {
+      dispatch(setError(true));
+    }
   };
 
   return (

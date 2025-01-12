@@ -45,7 +45,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     dispatch(setSelectedPost(null));
 
-    if (author) {
+    if (author && author.id) {
       loadUserPosts(author.id);
     } else {
       dispatch(setPosts([]));
