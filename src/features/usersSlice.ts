@@ -9,7 +9,7 @@ type UsersTypeSlice = {
   error: string;
 };
 
-export const initialState: UsersTypeSlice = {
+const initialState: UsersTypeSlice = {
   users: [],
   loading: false,
   error: '',
