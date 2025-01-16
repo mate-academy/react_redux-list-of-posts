@@ -1,121 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
-
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchComments, removeComment } from '../features/comments';
+export const PostDetails: FC = () => {
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.comments,
+  );
+  const post = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
-
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
+  const loadComments = useCallback(() => {
     setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
+    if (post) {
+      dispatch(fetchComments(post.id));
     }
-  };
+  }, [post, dispatch]);
 
   useEffect(() => {
     loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
-
-    await commentsApi.deleteComment(commentId);
-  };
+  }, [loadComments]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
-        <p data-cy="PostBody">{post.body}</p>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">
         {!loaded && <Loader />}
-
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
-
         {loaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
-
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -126,16 +53,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
+                    onClick={() => dispatch(removeComment(comment.id))}
+                  ></button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
@@ -145,7 +69,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             ))}
           </>
         )}
-
         {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
@@ -156,10 +79,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             Write a comment
           </button>
         )}
-
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
+        {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );
