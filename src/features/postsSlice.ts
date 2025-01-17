@@ -21,7 +21,7 @@ export const fetchUserPosts = createAsyncThunk(
 );
 
 const postsSlice = createSlice({
-  name: 'author',
+  name: 'posts',
   initialState,
   reducers: {
     clearPosts: state => {

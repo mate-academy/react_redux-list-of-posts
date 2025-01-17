@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const disptach = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
   const {
@@ -25,8 +25,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setVisible(false);
-    disptach(CommentsActions.fetchComments(post.id));
-  }, [disptach, post.id]);
+    dispatch(CommentsActions.fetchComments(post.id));
+  }, [dispatch, post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -37,14 +37,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      disptach(CommentsActions.addComment(newComment));
+      dispatch(CommentsActions.addComment(newComment));
     } catch (error) {
-      disptach(CommentsActions.setCommentsError(true));
+      dispatch(CommentsActions.setCommentsError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    disptach(CommentsActions.removeComment(commentId));
+    dispatch(CommentsActions.removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
