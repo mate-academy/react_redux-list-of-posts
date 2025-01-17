@@ -12,7 +12,7 @@ const initialState: NewCommentFormState = {
   submitting: false,
 };
 
-export const NewCommentFormSlice = createSlice({
+export const newCommentFormSlice = createSlice({
   name: 'NewCommentForm',
   initialState,
   reducers: {
@@ -35,5 +35,5 @@ export const NewCommentFormSlice = createSlice({
 });
 
 export const { setValues, setErrors, setSubmitting } =
-  NewCommentFormSlice.actions;
-export default NewCommentFormSlice.reducer;
+  newCommentFormSlice.actions;
+export default newCommentFormSlice.reducer;

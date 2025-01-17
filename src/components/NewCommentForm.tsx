@@ -7,7 +7,7 @@ import {
   setValues,
   setErrors,
   setSubmitting,
-} from '../features/NewCommentFormSlice';
+} from '../features/newCommentFormSlice';
 
 export const NewCommentForm: React.FC = () => {
   const { values, errors, submitting } = useAppSelector(

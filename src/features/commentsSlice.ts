@@ -44,7 +44,7 @@ export const commentsSlice = createSlice({
     deleteComment: (state, action: PayloadAction<number>) => {
       return {
         ...state,
-        items: state.items.filter(item => item.id != action.payload),
+        items: state.items.filter(item => item.id !== action.payload),
       };
     },
   },

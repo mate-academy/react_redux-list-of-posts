@@ -31,9 +31,9 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author?.id);
+      loadUserPosts(author.id);
     } else {
-      setAuthor(null);
+      dispatch(setAuthor(null));
     }
   }, [author]);
 
