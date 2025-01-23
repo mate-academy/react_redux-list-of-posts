@@ -17,7 +17,7 @@ const initialState: CommentState = {
 
 export const loadComments = createAsyncThunk(
   'loadComments/fetch',
-  getPostComments,
+  (postId: number) => getPostComments(postId),
 );
 
 const commentSlice = createSlice({
@@ -28,7 +28,7 @@ const commentSlice = createSlice({
       state.comments.push(payload);
     },
     deleteComment: (state, { payload }: PayloadAction<number>) => {
-      state.comments.filter(({ id }) => id !== payload);
+      state.comments = state.comments.filter(({ id }) => id !== payload);
     },
     setCommentsError: (state, { payload }: PayloadAction<boolean>) => {
       state.hasError = payload;
@@ -40,10 +40,13 @@ const commentSlice = createSlice({
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(loadComments.fulfilled, (state, { payload }) => {
-        state.comments = payload;
-        state.loaded = true;
-      })
+      .addCase(
+        loadComments.fulfilled,
+        (state, { payload }: PayloadAction<Comment[]>) => {
+          state.comments = payload;
+          state.loaded = true;
+        },
+      )
       .addCase(loadComments.rejected, state => {
         state.hasError = true;
         state.loaded = true;
