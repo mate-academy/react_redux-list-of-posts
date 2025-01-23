@@ -15,7 +15,7 @@ import { setSelectedPost } from './features/SelectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { posts, loaded, hasError } = useAppSelector(state => state.post);
   const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selected);
 
