@@ -70,7 +70,6 @@ export const App: React.FC = () => {
                 {author && loaded && !hasError && posts.length > 0 && (
                   <>
                     <PostsList />
-                    <p>Hello</p>
                   </>
                 )}
               </div>

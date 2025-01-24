@@ -3,7 +3,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import postsReducer from '../features/posts/postsSlice';
-import commentsReducer from '../features/comments//commentSlice';
+import commentsReducer from '../features/comments/commentSlice';
 
 export const store = configureStore({
   reducer: {
