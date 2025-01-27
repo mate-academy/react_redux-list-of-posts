@@ -44,18 +44,7 @@ export const NewCommentForm = () => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
-  const addComment = () => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: post.id,
-    };
-
-    dispatch(addPostComment(newComment));
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
@@ -69,14 +58,11 @@ export const NewCommentForm = () => {
     }
 
     setSubmitting(true);
+    dispatch(addPostComment({ name, email, body, postId: post.id })).finally(
+      () => setSubmitting(false),
+    );
 
-    // it is very easy to forget about `await` keyword
-    addComment();
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
