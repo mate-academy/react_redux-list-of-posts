@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import { useAppSelector } from '../app/hooks';
+import { CommentItem } from './CommentItem';
 
 export const PostDetails: React.FC = () => {
   const postSelect = useAppSelector(state => state.postSelect);
@@ -79,31 +80,11 @@ export const PostDetails: React.FC = () => {
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article
-                  className="message is-small"
+                <CommentItem
                   key={comment.id}
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => deleteComment(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
+                  comment={comment}
+                  deleteComment={deleteComment}
+                />
               ))}
             </>
           )}
