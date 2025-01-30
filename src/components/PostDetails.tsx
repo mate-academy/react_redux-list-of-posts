@@ -42,9 +42,12 @@ export const PostDetails = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.deleteComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+      dispatch(commentsActions.deleteComment(commentId));
+    } catch (hasError) {
+      dispatch(commentsActions.setError(true));
+    }
   };
 
   return (

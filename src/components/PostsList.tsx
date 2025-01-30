@@ -9,6 +9,7 @@ export const PostsList = () => {
   const { posts } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
+  const { visible } = useAppSelector(state => state.comments);
 
   return (
     <div data-cy="PostsList">
@@ -40,8 +41,8 @@ export const PostsList = () => {
                       SelectedPostActions.set(
                         post.id === selectedPost.selectedPost?.id ? null : post,
                       ),
-                      dispatch(commentsActions.setVisible(false)),
                     );
+                    dispatch(commentsActions.setVisible(false));
                   }}
                 >
                   {post.id === selectedPost.selectedPost?.id ? 'Close' : 'Open'}

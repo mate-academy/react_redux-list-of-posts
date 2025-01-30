@@ -17,7 +17,7 @@ const initialState: CommentsState = {
   visible: false,
 };
 
-export const init = createAsyncThunk('commments/fetch', (postId: number) => {
+export const init = createAsyncThunk('comments/fetch', (postId: number) => {
   return getPostComments(postId);
 });
 
