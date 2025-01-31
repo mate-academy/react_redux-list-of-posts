@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       dispatch(addCom(newComment));
     } catch (error) {
-      setCommentError(true);
+      dispatch(setCommentError(true));
     }
   };
 

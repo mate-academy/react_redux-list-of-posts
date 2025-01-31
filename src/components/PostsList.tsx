@@ -1,16 +1,8 @@
-import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Post } from '../types/Post';
-import { setSelectedPost } from '../features/selectedPostSlice';
+import { useAppSelector } from '../app/hooks';
+import { PostItem } from './PostItem';
 
 export const PostsList = () => {
-  const dispatch = useAppDispatch();
   const { posts } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-
-  const handleSelectPost = (id: number, post: Post) => {
-    dispatch(setSelectedPost(id === selectedPost?.id ? null : post));
-  };
 
   return (
     <div data-cy="PostsList">
@@ -27,24 +19,7 @@ export const PostsList = () => {
 
         <tbody>
           {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => {
-                    handleSelectPost(post.id, post);
-                  }}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+            <PostItem post={post} key={post.id} />
           ))}
         </tbody>
       </table>
