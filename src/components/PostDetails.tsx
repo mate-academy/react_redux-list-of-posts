@@ -47,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       await commentsApi.deleteComment(commentId);
       dispatch(deleteCom(commentId));
     } catch (error) {
-      setCommentError(true);
+      dispatch(setCommentError(true));
     }
   };
 
