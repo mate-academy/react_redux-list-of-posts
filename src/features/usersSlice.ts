@@ -10,7 +10,7 @@ const initialState: UsersState = {
   users: [],
 };
 
-export const setUsers = createAsyncThunk('users/feth', () => {
+export const setUsers = createAsyncThunk('users/fetch', () => {
   return getUsers();
 });
 
@@ -26,4 +26,5 @@ export const usersSlice = createSlice({
   },
 });
 
-export const usersActons = usersSlice.actions;
+export default usersSlice.reducer;
+export const usersActions = usersSlice.actions;

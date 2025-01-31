@@ -20,4 +20,5 @@ export const selectedPostSlice = createSlice({
   },
 });
 
-export const selectedPostActions = selectedPostSlice.actions;
+export default selectedPostSlice.reducer;
+export const { setSelectedPost } = selectedPostSlice.actions;

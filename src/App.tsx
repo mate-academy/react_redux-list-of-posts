@@ -11,15 +11,14 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { postsActions, setUserPosts } from './features/postsSlice';
-import { selectedPostActions } from './features/selectedPostSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.author) || null;
+  const { author } = useAppSelector(state => state.author);
   const { clearPosts } = postsActions;
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { setSelectedPost } = selectedPostActions;
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
@@ -29,7 +28,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author, clearPosts, dispatch, setSelectedPost]);
+  }, [author, clearPosts, dispatch]);
 
   return (
     <main className="section">
