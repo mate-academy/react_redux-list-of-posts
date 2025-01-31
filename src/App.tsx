@@ -29,7 +29,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author, dispatch]);
+  }, [author, clearPosts, dispatch, setSelectedPost]);
 
   return (
     <main className="section">
