@@ -1,18 +1,16 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
+/* eslint-disable no-param-reassign */
+/* eslint-disable max-len */
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedPost } from '../features/posts/postSlice';
+import * as selectPostActions from '../features/selectedPostSlice/selectedPostSlice';
+import * as commentsActions from '../features/comments/commentsSlice';
 
 export const PostsList: React.FC = () => {
-  const { posts, selectedPost } = useAppSelector(state => state.posts);
+  const posts = useAppSelector(state => state.posts.items);
+  const selectedPostId = useAppSelector(state => state.selectedPost?.id);
   const dispatch = useAppDispatch();
-
-  const handlePostSelect = (post: Post | null) => {
-    dispatch(setSelectedPost(post));
-  };
 
   return (
     <div data-cy="PostsList">
@@ -28,28 +26,35 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
-                  })}
-                  onClick={() => {
-                    handlePostSelect(
-                      post.id === selectedPost?.id ? null : post,
-                    );
-                  }}
-                >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {posts.map(post => {
+            const isSelected = post.id === selectedPostId;
+
+            return (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button', 'is-link', {
+                      'is-light': post.id !== selectedPostId,
+                    })}
+                    onClick={() => {
+                      if (isSelected) {
+                        dispatch(selectPostActions.clearPost());
+                        dispatch(commentsActions.clear());
+                      } else {
+                        dispatch(selectPostActions.setPost(post));
+                      }
+                    }}
+                  >
+                    {isSelected ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

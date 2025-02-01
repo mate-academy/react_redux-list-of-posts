@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { User } from '../types/User';
-import { setSelectedUser } from '../features/users/usersSlice';
-import { fetchPosts, setSelectedPost } from '../features/posts/postSlice';
+import { fetchUsers } from '../features/users/usersSlice';
+import { setUser } from '../features/author/authorSlice';
 
 export const UserSelector: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.users.selectedUser);
   const [expanded, setExpanded] = useState(false);
-
-  const handleSelectedUser = (user: User) => {
-    dispatch(setSelectedUser(user));
-    dispatch(setSelectedPost(null));
-    dispatch(fetchPosts(user.id));
-    setExpanded(false);
-  };
+  const users = useAppSelector(state => state.users.users);
+  const author = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -40,6 +32,10 @@ export const UserSelector: React.FC = () => {
     // when the Dopdown is closed
   }, [expanded]);
 
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
   return (
     <div
       data-cy="UserSelector"
@@ -56,7 +52,7 @@ export const UserSelector: React.FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -70,9 +66,9 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => handleSelectedUser(user)}
+              onClick={() => dispatch(setUser(user))}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

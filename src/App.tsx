@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable max-len */
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,17 +10,27 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppSelector } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchPosts } from './features/posts/postSlice';
+import * as selectedPostAction from './features/selectedPostSlice/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.users.selectedUser);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
   const {
-    isLoading,
-    error: hasError,
-    posts,
-    selectedPost,
+    items: posts,
+    loaded,
+    hasError,
   } = useAppSelector(state => state.posts);
-  const loaded = !isLoading;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(selectedPostAction.clearPost());
+
+    if (author) {
+      dispatch(fetchPosts(author.id));
+    }
+  }, [author, dispatch]);
 
   return (
     <main className="section">
