@@ -1,81 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import * as commentsActions from '../features/comments';
 
-import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsSlice } from '../features/comments/commentsSlice';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
+  const { selectedPost } = useAppSelector(state => state.posts);
   const [visible, setVisible] = useState(false);
 
-  const dispatch = useAppDispatch();
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  function loadComments() {
+    setVisible(false);
 
-  useEffect(() => {
-    async function loadComments() {
-      setVisible(false);
-
-      await dispatch(commentsSlice.actions.loadPostComments(post.id));
+    if (selectedPost) {
+      dispatch(commentsActions.fetchComments(selectedPost.id));
     }
+  }
 
-    loadComments();
-  }, [post.id, dispatch]);
+  useEffect(loadComments, [selectedPost, dispatch]);
 
-  const addComment = async ({
-    name,
-    email,
-    body,
-  }: CommentData): Promise<void> => {
-    await dispatch(
-      commentsSlice.actions.addComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      }),
-    );
+  const addComment = async (commentData: CommentData) => {
+    if (selectedPost) {
+      await dispatch(
+        commentsActions.addComment({ ...commentData, postId: selectedPost.id }),
+      );
+    }
   };
 
   const deleteComment = async (commentId: number) => {
-    await dispatch(commentsSlice.actions.removeComment(commentId));
+    await dispatch(commentsActions.deleteComments(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loaded && <Loader />}
 
-        {loaded && hasError && (
+        {!loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}
@@ -93,7 +79,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     aria-label="delete"
                     onClick={() => deleteComment(comment.id)}
                   >
-                    delete button
+                    {/* delete button */}
                   </button>
                 </div>
 
@@ -105,7 +91,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -116,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {!loaded && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
