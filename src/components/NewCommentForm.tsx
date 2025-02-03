@@ -1,13 +1,25 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../app/store';
+import {
+  cleanCommentsForm,
+  saveCommentsForm,
+  setCommentsForm,
+} from '../features/newComentsForm';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: CommentData) => void;
+  submitting: boolean;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, submitting }) => {
+  const { name, email, body } = useSelector(
+    (state: RootState) => state.newCommentForm,
+  );
+
+  const dispatch: AppDispatch = useDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -15,18 +27,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     body: false,
   });
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+    dispatch(cleanCommentsForm());
 
     setErrors({
       name: false,
@@ -35,13 +37,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
+  const handleChange = (key: string, value: string) => {
+    dispatch(setCommentsForm({ key, value }));
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setErrors(current => ({ ...current, key: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -57,14 +56,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
-
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    dispatch(saveCommentsForm());
     // We keep the entered name and email
   };
 
@@ -83,7 +78,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
-            onChange={handleChange}
+            onChange={e => handleChange('name', e.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -120,7 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
-            onChange={handleChange}
+            onChange={e => handleChange('email', e.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -156,7 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
-            onChange={handleChange}
+            onChange={e => handleChange('body', e.target.value)}
           />
         </div>
 
