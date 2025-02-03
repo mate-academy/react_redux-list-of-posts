@@ -114,12 +114,10 @@ export const commentsSlice = createSlice({
       state.hasError = false;
     });
 
-    // builder.addCase(deletePostComment.fulfilled, (state, action) => {
-    //   // eslint-disable-next-line no-param-reassign
-    //   state.comments = state.comments.filter(
-    //     comment => comment.id !== action.payload,
-    //   );
-    // });
+    builder.addCase(deletePostComment.fulfilled, state => {
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = true;
+    });
 
     builder.addCase(deletePostComment.rejected, state => {
       // eslint-disable-next-line no-param-reassign

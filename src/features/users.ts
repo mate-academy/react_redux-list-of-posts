@@ -14,8 +14,14 @@ const initialState: Init = {
   error: '',
 };
 
-export const fetchUsers = createAsyncThunk('fetch/users', () => {
-  return getUsers();
+export const fetchUsers = createAsyncThunk('fetch/users', async () => {
+  try {
+    const respons = await getUsers();
+
+    return respons;
+  } catch (error) {
+    throw new Error('Failed to fetch users');
+  }
 });
 
 export const usersSlice = createSlice({
@@ -42,6 +48,8 @@ export const usersSlice = createSlice({
     builder.addCase(fetchUsers.rejected, state => {
       // eslint-disable-next-line no-param-reassign
       state.error = 'we have some errors';
+      // eslint-disable-next-line no-param-reassign
+      state.loading = false;
     });
   },
 });

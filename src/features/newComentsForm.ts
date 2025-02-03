@@ -12,7 +12,7 @@ const initialState: Init = {
   body: '',
 };
 
-export const NewCommentFormSlice = createSlice({
+export const newCommentsFormSlice = createSlice({
   name: 'commentsForm',
   initialState,
   reducers: {
@@ -42,4 +42,4 @@ export const NewCommentFormSlice = createSlice({
 });
 
 export const { saveCommentsForm, setCommentsForm, cleanCommentsForm } =
-  NewCommentFormSlice.actions;
+  newCommentsFormSlice.actions;

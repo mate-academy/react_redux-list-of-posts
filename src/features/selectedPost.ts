@@ -7,14 +7,14 @@ export const selectedPostSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    getPost: (state, acton: PayloadAction<Post>) => {
-      if (state?.id === acton.payload.id) {
+    getPost: (state, action: PayloadAction<Post>) => {
+      if (state?.id === action.payload.id) {
         return null;
       } else {
-        return acton.payload;
+        return action.payload;
       }
     },
-    cleanPost: state => {
+    cleanPost: () => {
       return null;
     },
   },

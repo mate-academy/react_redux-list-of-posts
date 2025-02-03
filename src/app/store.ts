@@ -12,19 +12,19 @@ import { userSlice } from '../features/user';
 import { postsSlice } from '../features/posts';
 import { selectedPostSlice } from '../features/selectedPost';
 import { commentsSlice } from '../features/comments';
-import { NewCommentFormSlice } from '../features/newComentsForm';
+import { newCommentsFormSlice } from '../features/newComentsForm';
 
-const rootReducr = combineReducers({
+const rootReducer = combineReducers({
   users: usersSlice.reducer,
   user: userSlice.reducer,
   posts: postsSlice.reducer,
   post: selectedPostSlice.reducer,
   comments: commentsSlice.reducer,
-  newCommentForm: NewCommentFormSlice.reducer,
+  newCommentForm: newCommentsFormSlice.reducer,
 });
 
 export const store = configureStore({
-  reducer: rootReducr,
+  reducer: rootReducer,
 });
 
 export type AppDispatch = typeof store.dispatch;

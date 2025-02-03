@@ -24,12 +24,7 @@ export const App: React.FC = () => {
   const author = useSelector((state: RootState) => state.user);
   const selectedPost = useSelector((state: RootState) => state.post);
 
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    // setSelectedPost(null);
     dispatch(cleanPost());
 
     if (author) {

@@ -40,7 +40,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, submitting }) => {
   const handleChange = (key: string, value: string) => {
     dispatch(setCommentsForm({ key, value }));
 
-    setErrors(current => ({ ...current, key: false }));
+    setErrors(current => ({ ...current, [key]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
