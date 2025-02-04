@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../app/store';
-import { init } from '../features/users/usersSlice';
-import { Loader } from '../components/Loader';
+import { fetchUsers } from '../features/users/usersSlice';
 
 
 type Props = {
@@ -22,14 +21,14 @@ export const UserSelector: React.FC<Props> = ({
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const dispatch = useDispatch<AppDispatch>();
-  const { users, loading, error } = useSelector((state: RootState) => state.users)
+  const { users, loaded, hasError } = useSelector((state: RootState) => state.users)
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    if (users.length === 0 && !loading && !error) {
-      dispatch(init());
+    if (!loaded) {
+      dispatch(fetchUsers());
     }
-  }, [dispatch, users, loading, error]);
+  }, [dispatch])
 
   useEffect(() => {
     if (!expanded) {

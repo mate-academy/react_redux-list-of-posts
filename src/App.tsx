@@ -9,27 +9,18 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from './app/store';
+import { fetchUserPosts } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const { posts, loaded, hasError } = useSelector((state: RootState) => state.posts)
+  const dispatch = useDispatch<AppDispatch>();
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -37,11 +28,9 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(fetchUserPosts(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -78,6 +67,7 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={setSelectedPost}
+                    userId={author.id}
                   />
                 )}
               </div>
