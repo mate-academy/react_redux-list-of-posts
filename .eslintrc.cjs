@@ -89,7 +89,7 @@ module.exports = {
         assert: 'either',
       },
     ],
-    'jsx-a11y/label-has-for': [
+    'jsx-a11y/label-has-associated-control': [
       2,
       {
         components: ['Label'],

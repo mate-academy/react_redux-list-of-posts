@@ -27,7 +27,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(hidePosts());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
