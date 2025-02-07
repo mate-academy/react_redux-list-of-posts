@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     return () => {
       setVisible(false);
     };
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   return (
     <div className="content" data-cy="PostDetails">
