@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComments, loadComments } from '../features/CommentsSlice';
+import { deleteComments, loadComments } from '../features/commentsSlice';
 
 type Props = {
   post: Post;

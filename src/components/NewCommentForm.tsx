@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { createComments } from '../features/CommentsSlice';
+import { createComments } from '../features/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
