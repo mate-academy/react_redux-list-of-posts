@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loadUsers } from '../features/usersSlice';
@@ -12,7 +12,7 @@ export const UserSelector = () => {
 
   useEffect(() => {
     dispatch(loadUsers());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
