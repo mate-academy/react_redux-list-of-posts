@@ -44,7 +44,7 @@ export const userPostsSlice = createSlice({
     });
     builder.addCase(init.rejected, state => {
       state.loading = false;
-      state.error = 'Ошибка загрузки постов';
+      state.error = 'Error loading posts';
     });
     /* eslint-enable no-param-reassign */
   },

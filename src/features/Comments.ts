@@ -66,7 +66,7 @@ export const CommentsSlice = createSlice({
     );
     builder.addCase(fetchComments.rejected, state => {
       state.loading = false;
-      state.error = 'Ошибка загрузки коментрием';
+      state.error = 'Error loading comments';
     });
     builder.addCase(
       deleteCommentById.fulfilled,
@@ -77,7 +77,7 @@ export const CommentsSlice = createSlice({
       },
     );
     builder.addCase(deleteCommentById.rejected, state => {
-      state.error = 'Ошибка загрузки коментрием';
+      state.error = 'Error loading comments';
     });
     builder.addCase(
       addComment.fulfilled,
