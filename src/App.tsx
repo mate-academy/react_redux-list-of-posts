@@ -43,9 +43,10 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!Object.keys(author).length && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                )}
+                {!author ||
+                  (!Object.keys(author).length && (
+                    <p data-cy="NoSelectedUser">No user selected</p>
+                  ))}
 
                 {author && !loaded && <Loader />}
 

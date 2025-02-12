@@ -6,7 +6,7 @@ export const commentsSlice = createSlice({
   initialState: {
     loaded: false,
     hasError: false,
-    items: [] as Comment[],
+    comments: [] as Comment[],
   },
   reducers: {
     setLoaded: (state, action: PayloadAction<boolean>) => {
@@ -15,11 +15,11 @@ export const commentsSlice = createSlice({
     setError: (state, action: PayloadAction<boolean>) => {
       return { ...state, hasError: action.payload };
     },
-    setItems: (state, action: PayloadAction<Comment[]>) => {
-      return { ...state, items: action.payload };
+    setComments: (state, action: PayloadAction<Comment[]>) => {
+      return { ...state, comments: action.payload };
     },
   },
 });
 
-export const { setLoaded, setError, setItems } = commentsSlice.actions;
+export const { setLoaded, setError, setComments } = commentsSlice.actions;
 export default commentsSlice.reducer;

@@ -2,8 +2,7 @@
 
 import classNames from 'classnames';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 import { Post } from '../types/Post';
 
@@ -13,7 +12,7 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
   const selectedPostId = useAppSelector(state => state.selectedPost?.id);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div data-cy="PostsList">

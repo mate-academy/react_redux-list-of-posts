@@ -1,20 +1,24 @@
 import classNames from 'classnames';
 import { FC, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { getUsers } from '../api/users';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/author/authorSlice';
 import { setUsers } from '../features/users/usersSlice';
+import { setError } from '../features/userSelector/userSelectorSlice';
 
 export const UserSelector: FC = () => {
   const [expanded, setExpanded] = useState(false);
   const users = useAppSelector(state => state.users);
   const author = useAppSelector(state => state.author);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getUsers().then(data => dispatch(setUsers(data)));
+    getUsers()
+      .then(data => dispatch(setUsers(data)))
+      .catch(() =>
+        dispatch(setError('Something went wrong while fetching users.')),
+      );
   }, [dispatch]);
 
   useEffect(() => {
@@ -22,10 +26,7 @@ export const UserSelector: FC = () => {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -35,8 +36,6 @@ export const UserSelector: FC = () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (
