@@ -19,7 +19,7 @@ export const UserSelector = () => {
   useEffect(() => {
     getUsers()
       .then(result => dispatch(addUsers(result)))
-      .catch(err => addError(err));
+      .catch(err => dispatch(addError(err)));
   }, [dispatch]);
 
   useEffect(() => {

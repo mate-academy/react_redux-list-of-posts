@@ -33,7 +33,7 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(fetchUserPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
   }, [author]);
 
