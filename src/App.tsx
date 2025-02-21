@@ -8,17 +8,20 @@ import './App.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { fetchUsers } from './components/usersSlice';
+import { fetchPosts } from './components/postsSlice';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  const author = useAppSelector(state => state.author.author);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
