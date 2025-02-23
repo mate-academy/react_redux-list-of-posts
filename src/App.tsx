@@ -9,39 +9,40 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import * as postsActions from './features/postsSlice';
+import { actions as selectedActions } from './features/selectedPostSlice';
+import { getUsers } from './api/users';
+import { actions as usersActions } from './features/usersSlice.ts';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const dispatch = useAppDispatch();
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedActions.set(null));
+
+    getUsers().then(usersFromServer => {
+      dispatch(usersActions.set(usersFromServer));
+    });
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(postsActions.userPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(postsActions.setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -77,7 +78,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(selectedActions.set(post))}
                   />
                 )}
               </div>
