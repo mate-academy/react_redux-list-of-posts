@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../features/commentsSlice';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const [submitting, setSubmitting] = useState(false);
+  const dispatch = useDispatch();
 
   const [errors, setErrors] = useState({
     name: false,
@@ -35,6 +37,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const trimmedValues = {
+    name: name.trim(),
+    email: email.trim(),
+    body: body.trim(),
+  };
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -48,24 +56,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !trimmedValues.name,
+      email: !trimmedValues.email,
+      body: !trimmedValues.body,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmedValues.name || !trimmedValues.email || !trimmedValues.body) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await dispatch(
+      addComment({
+        postId,
+        name: trimmedValues.name,
+        email: trimmedValues.email,
+        body: trimmedValues.body,
+      }),
+    );
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
