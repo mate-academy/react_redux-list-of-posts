@@ -3,22 +3,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 
 export type SelectedPostState = {
-  post: Post | null;
+  selectedPost: Post | null;
 };
 
 const initialState: SelectedPostState = {
-  post: null,
+  selectedPost: null,
 };
 
 const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
   reducers: {
-    getSelectPost: (state, action: PayloadAction<Post>) => {
-      state.post = action.payload as Post;
+    getSelectPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
     },
     clearSelectedPost: state => {
-      state.post = null;
+      state.selectedPost = null;
     },
   },
 });
