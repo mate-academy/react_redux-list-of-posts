@@ -8,7 +8,7 @@ export type AuthorState = {
 
 const initialState: AuthorState = { author: null };
 
-const authorSlcie = createSlice({
+const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
@@ -18,4 +18,5 @@ const authorSlcie = createSlice({
   },
 });
 
-export default authorSlcie.reducer;
+export default authorSlice.reducer;
+export const { getAuthor } = authorSlice.actions;
