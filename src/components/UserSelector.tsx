@@ -6,6 +6,7 @@ import { useAppSelector } from '../app/hooks';
 type Props = {
   value: User | null;
   onChange: (user: User) => void;
+  users: User[];
 };
 
 export const UserSelector: React.FC<Props> = ({
