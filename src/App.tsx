@@ -37,35 +37,29 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {author.id === 0 && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                                 
+                {author && !loaded && <Loader />}
+
+                {author && loaded && hasError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
                 )}
 
-                {author.id !== 0 && (
-                  <>
-                    {loaded && <Loader />}
-
-                    {!loaded && hasError && (
-                      <div
-                        className="notification is-danger"
-                        data-cy="PostsLoadingError"
-                      >
-                        Something went wrong!
-                      </div>
-                    )}
-
-                    {!loaded && !hasError && posts.length === 0 && (
-                      <div
-                        className="notification is-warning"
-                        data-cy="NoPostsYet"
-                      >
-                        No posts yet
-                      </div>
-                    )}
-
-                    {!loaded && !hasError && posts.length > 0 && <PostsList />}
-                  </>
+                {author && loaded && !hasError && posts.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
                 )}
+
+                {author && loaded && !hasError && posts.length > 0 && <PostsList />}
               </div>
             </div>
           </div>
