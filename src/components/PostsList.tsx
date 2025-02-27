@@ -1,29 +1,25 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchPosts, postsLists } from '../features/postList';
 import { Post } from '../types/Post';
 import { setCurrentPost } from '../features/currentPost';
-import { selectedAuthor } from '../features/author';
+import { userPostsList } from '../features/userPostSlice';
+import { Loader } from './Loader';
 
-export const PostsList: React.FC = ({}) => {
-  const posts = useAppSelector(postsLists);
+export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentPost = useAppSelector(state => state.currentPost);
-  const author = useAppSelector(selectedAuthor);
-
-  useEffect(() => {
-    if (author?.id) {
-      dispatch(fetchPosts(author.id));
-    }
-  }, [dispatch, author]);
-  console.log(posts);
-
+  const status = useAppSelector(state => state.userPosts.status);
+  const posts = useAppSelector(userPostsList);
   const handleCurrentPost = (post: Post | null) => {
     dispatch(setCurrentPost(post));
   };
+
+  if (status === 'loading') {
+    <Loader />;
+  }
 
   return (
     <div data-cy="PostsList">

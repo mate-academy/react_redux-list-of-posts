@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -13,7 +14,7 @@ import {
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentPost = useAppSelector(state => state.currentPost.currentPost);
-  const { comments, status, error } = useAppSelector(state => state.comments);
+  const { comments, status } = useAppSelector(state => state.comments);
   const isLoading = status === 'loading';
   const hasError = status === 'failed';
   const [visible, setVisible] = useState(false);
@@ -21,6 +22,7 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     if (currentPost?.id) {
       dispatch(fetchComments(currentPost.id));
+      setVisible(false);
     }
   }, [dispatch, currentPost?.id]);
 
@@ -60,10 +62,14 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {isLoading && <Loader />}
+        {isLoading && (
+          <>
+            <Loader />
+          </>
+        )}
         {hasError && (
-          <div className="notification is-danger">
-            Something went wrong: {error}
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
           </div>
         )}
 
@@ -118,9 +124,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {!isLoading && !hasError && visible && (
-          <NewCommentForm onSubmit={handleAddComment} />
-        )}
+        {visible && <NewCommentForm onSubmit={handleAddComment} />}
       </div>
     </div>
   );

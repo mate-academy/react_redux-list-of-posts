@@ -80,7 +80,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success">
-              {currentPost && <PostDetails />}
+              {<PostDetails />}
             </div>
           </div>
         </div>
