@@ -43,8 +43,8 @@ export const PostDetails: React.FC = () => {
 
   const handleDeleteComment = async (commentId: number) => {
     try {
-      dispatch(deleteComment(commentId));
       await commentsApi.deleteComment(commentId);
+      dispatch(deleteComment(commentId));
     } catch (error) {
       console.error('Failed to delete comment:', error);
     }

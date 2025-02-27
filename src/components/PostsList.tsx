@@ -18,7 +18,7 @@ export const PostsList: React.FC = () => {
   };
 
   if (status === 'loading') {
-    <Loader />;
+    return <Loader />;
   }
 
   return (

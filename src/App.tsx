@@ -8,7 +8,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPosts, userPostsList } from './features/userPostSlice';
+import { fetchUserPosts, userPostsList } from './features/userPostSlice';
 import { selectedAuthor } from './features/author';
 import { clearCurrentPost } from './features/currentPost';
 
@@ -22,7 +22,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (author) {
-      dispatch(fetchPosts(author.id));
+      dispatch(fetchUserPosts(author.id));
     }
 
     dispatch(clearCurrentPost());

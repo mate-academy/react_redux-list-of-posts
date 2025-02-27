@@ -25,7 +25,7 @@ export const fetchComments = createAsyncThunk(
 
       return comments;
     } catch (error) {
-      return rejectWithValue('Unable to load posts');
+      return rejectWithValue('Unable to load comments');
     }
   },
 );

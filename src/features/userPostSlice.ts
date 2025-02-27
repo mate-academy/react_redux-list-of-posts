@@ -16,7 +16,7 @@ const initialState: UserPostsState = {
   error: '',
 };
 
-export const fetchPosts = createAsyncThunk(
+export const fetchUserPosts = createAsyncThunk(
   'userPosts/fetchPosts',
   async (userId: number, { rejectWithValue }) => {
     try {
@@ -35,14 +35,14 @@ const userPostsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchPosts.pending, state => {
+      .addCase(fetchUserPosts.pending, state => {
         state.status = 'loading';
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchUserPosts.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.posts = action.payload;
       })
-      .addCase(fetchPosts.rejected, (state, action) => {
+      .addCase(fetchUserPosts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });
