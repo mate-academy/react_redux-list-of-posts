@@ -20,17 +20,13 @@ export const App: React.FC = () => {
   const currentPost = useAppSelector(state => state.currentPost.currentPost);
   const author = useAppSelector(selectedAuthor);
 
-  function loadUserPosts(userId: number) {
-    dispatch(fetchPosts(userId));
-  }
-
   useEffect(() => {
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPosts(author.id));
     }
 
     dispatch(clearCurrentPost());
-  }, [author, dispatch, loadUserPosts]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
