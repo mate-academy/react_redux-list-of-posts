@@ -9,27 +9,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { getPostsThunk } from './app/postSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispath = useAppDispatch();
+  const { posts, hasError, loaded } = useAppSelector(state => state.post);
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -37,11 +27,9 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispath(getPostsThunk(author.id));
     }
-  }, [author]);
+  }, [author, dispath]);
 
   return (
     <main className="section">
