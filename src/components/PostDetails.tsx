@@ -4,8 +4,8 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   post: Post;
