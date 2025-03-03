@@ -69,8 +69,9 @@ export const commentsSlice = createSlice({
       )
       .addCase(initComments.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          `Error comments: ${action.error?.message}` || 'Something went wrong';
+        state.error = action.error.message
+          ? `Error comments: ${action.error?.message}`
+          : 'Something went wrong';
       })
       .addCase(addComment.pending, state => {
         state.buttonLoading = true;
@@ -86,12 +87,14 @@ export const commentsSlice = createSlice({
       )
       .addCase(addComment.rejected, (state, action) => {
         state.buttonLoading = false;
-        state.error =
-          `Error comments: ${action.error?.message}` || 'Something went wrong';
+        state.error = action.error.message
+          ? `Error comments: ${action.error?.message}`
+          : 'Something went wrong';
       })
       .addCase(removeComment.rejected, (state, action) => {
-        state.error =
-          `Error comments: ${action.error?.message}` || 'Something went wrong';
+        state.error = action.error.message
+          ? `Error comments: ${action.error?.message}`
+          : 'Something went wrong';
       });
   },
 });

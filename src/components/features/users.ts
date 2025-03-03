@@ -35,8 +35,9 @@ export const usersSlice = createSlice({
       })
       .addCase(initUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          `Error users: ${action.error?.message}` || 'Something went wrong';
+        state.error = action.error.message
+          ? `Error comments: ${action.error?.message}`
+          : 'Something went wrong';
       });
   },
 });
