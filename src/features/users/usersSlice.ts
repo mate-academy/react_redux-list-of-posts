@@ -6,15 +6,16 @@ import { User } from '../../types/User';
 
 export interface UserState {
   users: User[];
-  loading: boolean;
+  loaded: boolean;
+  hasError: string;
 }
 
 const initialState: UserState = {
   users: [],
-  loading: false,
+  loaded: true,
+  hasError: '',
 };
 
-// fetchUsers
 export const usersAsync = createAsyncThunk('users/fetchUsers', async () => {
   const users = await getUsers();
 
@@ -28,11 +29,11 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(usersAsync.pending, state => {
-        state.loading = true;
+        state.loaded = false;
       })
 
       .addCase(usersAsync.fulfilled, (state, action: PayloadAction<User[]>) => {
-        state.loading = false;
+        state.loaded = true;
         state.users = action.payload;
       });
   },
