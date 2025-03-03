@@ -19,11 +19,7 @@ export const App: React.FC = () => {
   const { currentPost: selectedPost } = useAppSelector(
     state => state.selectedPost,
   );
-  const {
-    error: hasError,
-    loading: loaded,
-    posts,
-  } = useAppSelector(state => state.posts);
+  const { error, loading, posts } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -50,9 +46,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loaded && <Loader />}
+                {author && loading && <Loader />}
 
-                {author && !loaded && hasError && (
+                {author && !loading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -61,13 +57,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
+                {author && !loading && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
+                {author && !loading && !error && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>

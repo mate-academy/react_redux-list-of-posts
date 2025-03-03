@@ -17,7 +17,7 @@ export const getUsers = async () => {
 
 export const getUser = async (id: number) => {
   try {
-    const user = await client.get<User[]>(`/users/${id}`);
+    const user = await client.get<User>(`/users/${id}`);
 
     return user;
   } catch (error: unknown) {

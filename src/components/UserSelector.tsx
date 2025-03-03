@@ -47,14 +47,14 @@ export const UserSelector: React.FC = () => {
     >
       <div className="dropdown-trigger">
         <button
-          disabled={error ? true : false}
+          disabled={!!error}
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={e => {
             e.stopPropagation();
-            setExpanded(current => !current);
+            setExpanded(prev => !prev);
           }}
         >
           <span>
