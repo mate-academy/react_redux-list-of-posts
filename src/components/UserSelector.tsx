@@ -18,7 +18,7 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     dispatch(usersAsync());
-  }, []);
+  }, [dispatch]);
 
   const [expanded, setExpanded] = useState(false);
 
