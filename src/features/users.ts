@@ -3,6 +3,7 @@ import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
 interface UserState {
+  fetched: boolean;
   users: User[];
   author: User | null;
   loading: boolean;
@@ -10,6 +11,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  fetched: false,
   users: [],
   author: null,
   loading: false,
@@ -21,16 +23,20 @@ export const getAllUsers = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const state = getState();
 
-    if (state.users.users.length > 0) {
-      return rejectWithValue('Users already loaded');
-    }
+    if (state.users.fetched) {
+      return rejectWithValue('Users already fetched');
+    } else {
+      if (state.users.users.length > 0) {
+        return rejectWithValue('Users already loaded');
+      }
 
-    try {
-      const response = await getUsers();
+      try {
+        const response = await getUsers();
 
-      return response;
-    } catch (error) {
-      throw new Error(`Problem with fetching users: ${error}`);
+        return response;
+      } catch (error) {
+        throw new Error(`Problem with fetching users: ${error}`);
+      }
     }
   },
 );
@@ -55,6 +61,7 @@ const usersSlice = createSlice({
       .addCase(
         getAllUsers.fulfilled,
         (state, action: PayloadAction<User[]>) => {
+          state.fetched = true;
           state.error = '';
           state.loading = false;
           state.users = action.payload;
