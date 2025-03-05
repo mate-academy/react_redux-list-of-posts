@@ -12,6 +12,7 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
+    setVisible(false);
     if (selectedPost) {
       dispatch(commentsActions.fetchComments(selectedPost.id));
     }
@@ -88,7 +89,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -99,7 +100,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {!loaded && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
