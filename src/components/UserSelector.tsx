@@ -8,13 +8,13 @@ import { set } from '../features/usersSlice';
 import { setAuthor } from '../features/authorSlice';
 
 type Props = {
-  value: User | null;
+  selectedUser: User | null;
 };
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
-  value: selectedUser,
+  selectedUser,
 }) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened

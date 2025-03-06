@@ -59,7 +59,7 @@ export const commentsSlice = createSlice({
     builder.addCase(commentsInit.fulfilled, (state, action) => {
       return {
         ...state,
-        posts: action.payload,
+        comments: action.payload,
         loaded: true,
       };
     });
