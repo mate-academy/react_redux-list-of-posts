@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
@@ -11,9 +11,16 @@ export const commentsInit = createAsyncThunk(
 );
 
 export const addCommentInit = createAsyncThunk(
-  'comments/AddComments',
+  'comments/addComment',
   (data: Omit<Comment, 'id'>) => {
     return createComment(data);
+  },
+);
+
+export const deleteCommentInit = createAsyncThunk(
+  'comments/deleteComment',
+  (commentId: number) => {
+    return deleteComment(commentId);
   },
 );
 
@@ -28,11 +35,10 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    commentDelete(state, action: PayloadAction<number>) {
+    deleteComment: (state, action) => {
       state.comments = state.comments.filter(
         comment => comment.id !== action.payload,
       );
-      deleteComment(action.payload);
     },
   },
   extraReducers: builder => {

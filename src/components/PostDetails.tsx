@@ -3,7 +3,11 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsInit, commentsSlice } from '../features/comments';
+import {
+  commentsInit,
+  commentsSlice,
+  deleteCommentInit,
+} from '../features/comments';
 
 export const PostDetails = () => {
   const selectedPost = useAppSelector(state => state.selectedPost);
@@ -17,8 +21,12 @@ export const PostDetails = () => {
     if (selectedPost) {
       dispatch(commentsInit(selectedPost.id));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPost?.id]);
+  }, [selectedPost, dispatch]);
+
+  const deleteComment = (commentId: number) => {
+    dispatch(commentsSlice.actions.deleteComment(commentId));
+    dispatch(deleteCommentInit(commentId));
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -63,12 +71,8 @@ export const PostDetails = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() =>
-                      dispatch(commentsSlice.actions.commentDelete(comment.id))
-                    }
-                  >
-                    delete button
-                  </button>
+                    onClick={() => deleteComment(comment.id)}
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">

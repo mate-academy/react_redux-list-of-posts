@@ -61,7 +61,7 @@ export const NewCommentForm = () => {
         name,
         email,
         body,
-        postId: selectedPost ? selectedPost?.id : 0,
+        postId: selectedPost ? selectedPost?.id : +new Date(),
       }),
     );
 

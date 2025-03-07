@@ -11,7 +11,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { postsInit } from './features/posts';
-import { selectedPostSlice } from './features/selectedPost';
+import { setSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
@@ -24,9 +24,8 @@ export const App: React.FC = () => {
       dispatch(postsInit(author.id));
     }
 
-    dispatch(selectedPostSlice.actions.setSelectedPost(null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [author]);
+    dispatch(setSelectedPost(null));
+  }, [author, dispatch]);
 
   return (
     <main className="section">
