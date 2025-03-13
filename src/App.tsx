@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
   const author = useAppSelector(state => state.author);
-  const selectedPost = useAppSelector(state => state.setSelectedPost);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   const dispatch = useAppDispatch();
 
