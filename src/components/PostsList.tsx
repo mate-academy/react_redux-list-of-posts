@@ -17,7 +17,6 @@ export const PostsList = () => {
     }
   };
 
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>

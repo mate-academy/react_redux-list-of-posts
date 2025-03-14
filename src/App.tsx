@@ -24,8 +24,8 @@ export const App: React.FC = () => {
       return;
     }
 
-    dispatch(postsActions.init(author.id));
     dispatch(postsActions.reject());
+    dispatch(postsActions.init(author.id));
   }, [author, dispatch]);
 
   return (

@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         name,
         email,
         body,
-        id: 0,
+        id: Date.now(),
         postId: post.id,
       }),
     );
