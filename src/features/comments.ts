@@ -58,9 +58,6 @@ export const commentsSlice = createSlice({
         state.hasError = true;
         state.loaded = true;
       })
-      .addCase(postComment.pending, state => {
-        state.hasError = false;
-      })
       .addCase(postComment.fulfilled, (state, action) => {
         state.items.push(action.payload);
       })
@@ -72,6 +69,9 @@ export const commentsSlice = createSlice({
           state.items.findIndex(comment => comment.id === action.meta.arg),
           1,
         );
+      })
+      .addCase(removeComment.rejected, state => {
+        state.hasError = true;
       });
   },
 });
