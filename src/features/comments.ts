@@ -68,10 +68,10 @@ export const commentsSlice = createSlice({
         state.hasError = true;
       })
       .addCase(removeComment.pending, (state, action) => {
-        return {
-          ...state,
-          items: state.items.filter(comment => comment.id !== action.meta.arg),
-        };
+        state.items.splice(
+          state.items.findIndex(comment => comment.id === action.meta.arg),
+          1,
+        );
       });
   },
 });

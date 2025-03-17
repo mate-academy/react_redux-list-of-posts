@@ -5,8 +5,8 @@ import { authorSlice } from '../features/author';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
-  const selectedUser = useAppSelector(state => state.posts.author.value);
-  const users = useAppSelector(state => state.posts.users.value);
+  const selectedUser = useAppSelector(state => state.author.value);
+  const users = useAppSelector(state => state.users.value);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {

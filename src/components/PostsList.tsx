@@ -7,10 +7,8 @@ import { selectedPostSlice } from '../features/selectedPost';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const posts = useAppSelector(state => state.posts.posts.items);
-  const selectedPostId = useAppSelector(
-    state => state.posts.selectedPost.value,
-  )?.id;
+  const posts = useAppSelector(state => state.posts.items);
+  const selectedPostId = useAppSelector(state => state.selectedPost.value)?.id;
 
   return (
     <div data-cy="PostsList">

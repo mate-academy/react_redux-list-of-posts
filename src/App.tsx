@@ -16,13 +16,13 @@ import { selectedPostSlice } from './features/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.posts.author.value);
+  const author = useAppSelector(state => state.author.value);
   const {
     items: posts,
     loaded,
     hasError,
-  } = useAppSelector(state => state.posts.posts);
-  const selectedPost = useAppSelector(state => state.posts.selectedPost.value);
+  } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
 
   useEffect(() => {
     dispatch(selectedPostSlice.actions.clearSelection());

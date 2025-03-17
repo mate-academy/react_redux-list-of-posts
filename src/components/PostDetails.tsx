@@ -6,12 +6,12 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchComments, removeComment } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
-  const post = useAppSelector(state => state.posts.selectedPost.value);
+  const post = useAppSelector(state => state.selectedPost.value);
   const {
     items: comments,
     loaded,
     hasError,
-  } = useAppSelector(state => state.posts.comments);
+  } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 

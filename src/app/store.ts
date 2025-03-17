@@ -4,15 +4,13 @@ import {
   Action,
   combineSlices,
 } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import counterReducer from '../features/counter/counterSlice';
 import { usersSlice } from '../features/users';
 import { authorSlice } from '../features/author';
 import { postsSlice } from '../features/posts';
 import { selectedPostSlice } from '../features/selectedPost';
 import { commentsSlice } from '../features/comments';
 
-const postsReducer = combineSlices(
+const rootReducer = combineSlices(
   usersSlice,
   authorSlice,
   postsSlice,
@@ -21,10 +19,7 @@ const postsReducer = combineSlices(
 );
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    posts: postsReducer,
-  },
+  reducer: rootReducer,
 });
 
 export type AppDispatch = typeof store.dispatch;
