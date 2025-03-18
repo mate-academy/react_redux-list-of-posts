@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { Dispatch } from '@reduxjs/toolkit';
 import { fetchCommentsFailed } from './commentsThunk';
 import {
