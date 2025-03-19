@@ -19,7 +19,6 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-// Define the createComment action
 export const createComment = createAsyncThunk(
   'comments/createComment',
   async (comment: Comment) => {
