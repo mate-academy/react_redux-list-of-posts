@@ -5,7 +5,6 @@ import {
   combineReducers,
 } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-// import counterReducer from '../features/counter/counterSlice';
 import { usersSlice } from '../features/users';
 import { authorSlice } from '../features/author';
 import { postsSlice } from '../features/posts';
