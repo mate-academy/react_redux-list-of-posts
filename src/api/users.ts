@@ -1,10 +1,9 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../utils/fetchClient';
 import { User } from '../types/User';
 
-export const getUsers = () => {
-  return client.get<User[]>('/users');
-};
+export const getUsers = createAsyncThunk('users/getUsers', async () => {
+  const users = await client.get<User[]>('/users');
 
-export const getUser = (id: number) => {
-  return client.get<User[]>(`/users/${id}`);
-};
+  return users;
+});

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // function wait(delay: number) {
 //   return new Promise(done => setTimeout(done, delay));
 // }

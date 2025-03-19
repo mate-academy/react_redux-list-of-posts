@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';

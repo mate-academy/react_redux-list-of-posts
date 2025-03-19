@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export interface Comment {
   id: number;
   postId: number;

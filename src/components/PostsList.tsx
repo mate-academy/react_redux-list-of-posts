@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';

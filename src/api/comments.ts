@@ -1,15 +1,30 @@
-// import { client } from '../utils/axiosClient';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
-export const getPostComments = (postId: number) => {
-  return client.get<Comment[]>(`/comments?postId=${postId}`);
-};
+export const getPostComments = createAsyncThunk(
+  'comments/getPostComments',
+  async (postId: number) => {
+    const comments = await client.get<Comment[]>(`/comments?postId=${postId}`);
 
-export const createComment = (data: Omit<Comment, 'id'>) => {
-  return client.post<Comment>('/comments', data);
-};
+    return comments;
+  },
+);
+export const deleteComment = createAsyncThunk(
+  'comments/deleteComment',
+  async (commentId: number) => {
+    await client.delete(`/comments/${commentId}`);
 
-export const deleteComment = (commentId: number) => {
-  return client.delete(`/comments/${commentId}`);
-};
+    return commentId;
+  },
+);
+
+// Define the createComment action
+export const createComment = createAsyncThunk(
+  'comments/createComment',
+  async (comment: Comment) => {
+    const newComment = await client.post<Comment>('/comments', comment);
+
+    return newComment;
+  },
+);

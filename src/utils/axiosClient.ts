@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // axios docs https://axios-http.com/docs/intro
 import axios from 'axios';
 
