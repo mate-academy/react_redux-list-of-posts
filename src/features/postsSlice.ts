@@ -1,10 +1,19 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchClient } from '../utils/fetchClient';
 import { Post } from '../types/Post';
-import { getUserPosts } from '../api/posts';
+
+// Define fetchPosts thunk
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  async (userId: number) => {
+    const response = await fetchClient.get<Post[]>(`/users/${userId}/posts`);
+
+    return response;
+  },
+);
 
 export interface PostsState {
-  // Export the state type
   items: Post[];
   loaded: boolean;
   hasError: boolean;
@@ -22,17 +31,17 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(getUserPosts.pending, state => {
+      .addCase(fetchPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(getUserPosts.fulfilled, (state, action) => {
+      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.items = action.payload;
         state.loaded = true;
       })
-      .addCase(getUserPosts.rejected, state => {
-        state.hasError = true;
+      .addCase(fetchPosts.rejected, state => {
         state.loaded = true;
+        state.hasError = true;
       });
   },
 });

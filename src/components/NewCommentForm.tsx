@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  onSubmit: (comment: Comment) => void; // Accept full Comment object
+  postId: number;
+  onSubmit: (comment: Comment) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -14,8 +15,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     e.preventDefault();
 
     onSubmit({
-      id: 0, // Temporary ID (will be replaced by the server)
-      postId: 0, // Temporary postId (should be set based on the current post)
+      id: 0, // Temporary ID (will be replaced by the backend)
+      postId, // Use the passed postId
       name,
       email,
       body,

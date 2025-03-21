@@ -1,51 +1,42 @@
 import React, { useEffect } from 'react';
-import { deleteComment, createComment } from './api/comments';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import { getUsers } from './api/users';
-import { getUserPosts } from './api/posts';
+import { useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
+import { RootState, AppDispatch } from './app/store';
+import { fetchPosts } from './features/postsSlice';
 import { setAuthor } from './features/authorSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
-import { getPostComments } from './api/comments';
-import { UserSelector } from './components/UserSelector';
-import { PostsList } from './components/PostsList';
+import PostsList from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Comment } from './types/Comment';
+import { User } from './types/User';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { items: users } = useAppSelector(state => state.users);
-  const author = useAppSelector(state => state.author.value);
+  const dispatch = useDispatch<AppDispatch>();
+  const author = useSelector((state: RootState) => state.author);
   const {
     items: posts,
     loaded,
     hasError,
-  } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPost.value);
-  const { items: comments } = useAppSelector(state => state.comments);
-
-  useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+  } = useSelector((state: RootState) => state.posts);
+  const selectedPost = useSelector(
+    (state: RootState) => state.selectedPost.selectedPost,
+  );
 
   useEffect(() => {
     if (author) {
-      dispatch(getUserPosts(author.id));
+      dispatch(fetchPosts(author.id));
     }
   }, [author, dispatch]);
 
-  useEffect(() => {
-    if (selectedPost) {
-      dispatch(getPostComments(selectedPost.id));
-    }
-  }, [selectedPost, dispatch]);
-
-  const handleDeleteComment = async (commentId: number) => {
-    await dispatch(deleteComment(commentId));
+  const handleAuthorChange = (newAuthor: User | null) => {
+    dispatch(setAuthor(newAuthor));
+    dispatch(setSelectedPost(null));
   };
 
-  const handleAddComment = async (comment: Comment) => {
-    await dispatch(createComment(comment));
+  const handlePostSelect = (post: Post | null) => {
+    dispatch(setSelectedPost(post));
   };
 
   return (
@@ -56,9 +47,9 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
                   value={author}
-                  onChange={user => dispatch(setAuthor(user))}
+                  onChange={handleAuthorChange}
+                  users={[]}
                 />
               </div>
 
@@ -85,24 +76,28 @@ export const App: React.FC = () => {
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={post => dispatch(setSelectedPost(post))}
+                    selectedPostId={selectedPost?.id || null}
+                    onPostSelected={handlePostSelect}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          <div className="tile is-parent is-8-desktop Sidebar">
-            <div className="tile is-child box is-success">
-              {selectedPost && (
-                <PostDetails
-                  post={selectedPost}
-                  comments={comments}
-                  onDeleteComment={handleDeleteComment}
-                  onAddComment={handleAddComment}
-                />
-              )}
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': selectedPost,
+              },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

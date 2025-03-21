@@ -1,18 +1,26 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
-import { getPostComments } from '../api/comments';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { NewComment, Comment } from '../types/Comment';
+import { createComment } from '../utils/fetchClient'; // Import createComment directly
 
-export interface CommentsState {
-  // Export the state type
+export const addComment = createAsyncThunk(
+  'comments/addComment',
+  async (comment: NewComment) => {
+    const response = await createComment(comment);
+
+    return response;
+  },
+);
+
+interface CommentsState {
   items: Comment[];
-  loaded: boolean;
+  loading: boolean;
   hasError: boolean;
 }
 
 const initialState: CommentsState = {
   items: [],
-  loaded: false,
+  loading: false,
   hasError: false,
 };
 
@@ -22,17 +30,17 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(getPostComments.pending, state => {
-        state.loaded = false;
+      .addCase(addComment.pending, state => {
+        state.loading = true;
         state.hasError = false;
       })
-      .addCase(getPostComments.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loaded = true;
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+        state.loading = false;
       })
-      .addCase(getPostComments.rejected, state => {
+      .addCase(addComment.rejected, state => {
+        state.loading = false;
         state.hasError = true;
-        state.loaded = true;
       });
   },
 });
