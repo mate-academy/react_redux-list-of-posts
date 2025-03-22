@@ -10,8 +10,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { loadPosts, setPosts } from './features/posts/postsSlice';
-import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { loadPosts, setPosts } from './features/postsSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();

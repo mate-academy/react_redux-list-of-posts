@@ -3,7 +3,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
+import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();

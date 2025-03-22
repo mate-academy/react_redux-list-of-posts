@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers } from '../features/users/usersSlice';
-import { setAuthor } from '../features/author/authorSlice';
+import { loadUsers } from '../features/usersSlice';
+import { setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();

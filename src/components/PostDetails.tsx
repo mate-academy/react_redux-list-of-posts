@@ -7,7 +7,7 @@ import {
   addNewComment,
   loadComments,
   removeComment,
-} from '../features/comments/commentsSlice';
+} from '../features/commentsSlice';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
