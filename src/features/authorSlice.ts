@@ -11,7 +11,7 @@ const initialState: AuthorState = {
 };
 
 export const authorSlice = createSlice({
-  name: 'users',
+  name: 'author',
   initialState,
   reducers: {
     selectAuthor: (state, action: PayloadAction<User>) => {
