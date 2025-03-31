@@ -5,7 +5,6 @@ import {
   combineSlices,
 } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import { counterSlice } from '../features/counter/counterSlice';
 import { UsersSlice } from '../features/UsersSlice';
 import { authorSlice } from '../features/AuthorSlice';
 import { PostsSlice } from '../features/PostsSlice';
@@ -14,7 +13,6 @@ import { CommentSlice } from '../features/CommentsSlice';
 
 const rootReducer = combineSlices(
   UsersSlice,
-  counterSlice,
   authorSlice,
   PostsSlice,
   SelectedPostSlice,
