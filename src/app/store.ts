@@ -15,7 +15,7 @@ export const store = configureStore({
     author: authorSlice.reducer,
     posts: postsSlice.reducer,
     selectedPost: selectedPostSlice.reducer,
-    commets: commentsSlice.reducer,
+    comments: commentsSlice.reducer,
     newCommentForm: newCommentFormSlice.reducer,
   },
 });

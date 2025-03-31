@@ -15,7 +15,8 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     set(state, { payload }: PayloadAction<User[]>) {
-      state.users.push(...payload);
+      // eslint-disable-next-line no-param-reassign
+      state.users = payload;
     },
   },
   extraReducers(builder) {

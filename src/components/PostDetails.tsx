@@ -15,7 +15,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const { comments, loading, error } = useAppSelector(state => state.commets);
+  const { comments, loading, error } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const visible = useAppSelector(state => state.newCommentForm.visible);
 
