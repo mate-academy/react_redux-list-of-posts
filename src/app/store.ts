@@ -5,7 +5,7 @@ import postReducer from '../features/post';
 import userReducer from '../features/user';
 import authorReducer from '../features/author';
 import selectedPostReducer from '../features/selectedPost';
-
+import comentstReducer from '../features/coments';
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +13,8 @@ export const store = configureStore({
     posts: postReducer,
     user: userReducer,
     author: authorReducer,
-    selectedPost: selectedPostReducer
+    selectedPost: selectedPostReducer,
+    coments: comentstReducer,
   },
 });
 
