@@ -43,7 +43,7 @@ export const postSlice = createSlice({
       state.items = action.payload;
       state.error = false;
     });
-    
+
     builder.addCase(fetchPosts.rejected, state => {
       state.loader = false;
       state.error = true;

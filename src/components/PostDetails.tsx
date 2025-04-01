@@ -107,7 +107,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loading && !hasError && !visible && (
+        {!loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -118,7 +118,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loading && !hasError && visible && (
+        {!loading && !hasError && visible && (
           <NewCommentForm onSubmit={addNewComment} />
         )}
       </div>
