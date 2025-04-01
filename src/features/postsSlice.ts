@@ -4,7 +4,7 @@ import { User } from '../types/User';
 import { Post } from '../types/Post';
 import { getUsers } from '../api/users';
 import { getUserPosts } from '../api/posts';
-import { createComment, getPostComments } from '../api/comments';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import { RootState } from '../app/store';
 
@@ -64,7 +64,7 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const deleteComment = createAsyncThunk(
+export const removeComment = createAsyncThunk(
   'posts/deleteComment',
   async (commentId: number) => {
     await deleteComment(commentId);
@@ -142,7 +142,7 @@ export const postsSlice = createSlice({
         state.comments.hasError = true;
       })
 
-      .addCase(deleteComment.fulfilled, (state, action) => {
+      .addCase(removeComment.fulfilled, (state, action) => {
         state.comments.items = state.comments.items.filter(
           item => item.id !== action.payload,
         );

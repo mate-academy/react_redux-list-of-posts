@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComment, fetchComments } from '../features/postsSlice';
+import { removeComment, fetchComments } from '../features/postsSlice';
 
 export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
@@ -89,7 +89,7 @@ export const PostDetails = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteComment(comment.id))}
+                    onClick={() => dispatch(removeComment(comment.id))}
                   >
                     delete button
                   </button>
