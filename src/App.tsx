@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -19,13 +17,11 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { items: posts, loader, error } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.author.author);
-  const selectedPost = useAppSelector(
-    state => state.selectedPost.selectedPost,
-  );
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  console.log(selectedPost, 'selectedPost');
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
-
     if (author) {
       dispatch(fetchPosts(author.id));
     } else {
@@ -45,12 +41,9 @@ export const App: React.FC = () => {
                   onChange={(user: User) => dispatch(setAuthor(user))}
                 />
               </div>
-
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
-
-                {author && !loader && <Loader />}
-
+                {loader && <Loader />}
                 {author && loader && error && (
                   <div
                     className="notification is-danger"
@@ -59,24 +52,24 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-
-                {author && loader && !error && posts.length === 0 && (
+                {author && !loader && !error && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-
-                {author && loader && !error && posts.length > 0 && (
+                { !loader && !error && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => {
+                      dispatch(setSelectedPost(post));
+                      console.log(post, 'callback');
+                    }}
                   />
                 )}
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(

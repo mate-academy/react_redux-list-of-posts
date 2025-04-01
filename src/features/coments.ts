@@ -66,6 +66,7 @@ export const commentSlice = createSlice({
       .addCase(fetchComments.rejected, state => {
         state.loader = false;
         state.error = true;
+        state.comments = [];
       })
       .addCase(
         addComment.fulfilled,

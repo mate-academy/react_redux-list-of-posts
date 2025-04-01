@@ -7,7 +7,11 @@ import * as commentsApi from '../api/comments';
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchComments } from '../features/coments';
+import {
+  addComment,
+  deleteCommentThunk,
+  fetchComments,
+} from '../features/coments';
 
 type Props = {
   post: Post;
@@ -17,8 +21,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   const {
-    items: comments,
-    loader: loaded,
+    comments,
+    loader: loading,
     error: hasError,
   } = useAppSelector(state => state.coments);
 
@@ -28,19 +32,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
-    const newComment = {
-      name,
-      email,
-      body,
-      postId: post.id,
-    };
+  const addNewComment = async ({ name, email, body }: CommentData) => {
+    // const newComment = {
+    //   name,
+    //   email,
+    //   body,
+    //   postId: post.id,
+    // };
 
-    dispatch(addComment(newComment));
+    await dispatch(
+      addComment({ postId: post.id, data: { name, email, body } }),
+    );
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(deleteComment(commentId));
+    dispatch(deleteCommentThunk(commentId));
     await commentsApi.deleteComment(commentId);
   };
 
@@ -53,21 +59,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loading && <Loader />}
 
-        {loaded && hasError && (
+        {!loading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -101,7 +107,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -112,8 +118,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {loading && !hasError && visible && (
+          <NewCommentForm onSubmit={addNewComment} />
         )}
       </div>
     </div>

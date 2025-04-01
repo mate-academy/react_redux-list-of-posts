@@ -31,20 +31,21 @@ export const postSlice = createSlice({
       state.items = action.payload;
     },
   },
+
   extraReducers: builder => {
     builder.addCase(fetchPosts.pending, state => {
-      state.loader = false;
+      state.loader = true;
       state.error = false;
     });
 
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.loader = false;
       state.items = action.payload;
-      state.error = true;
+      state.error = false;
     });
-
+    
     builder.addCase(fetchPosts.rejected, state => {
-      state.loader = true;
+      state.loader = false;
       state.error = true;
     });
   },

@@ -15,6 +15,7 @@ export const selectedPostSlice = createSlice({
   reducers: {
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
+      console.log(action.payload);
     },
   },
 });
