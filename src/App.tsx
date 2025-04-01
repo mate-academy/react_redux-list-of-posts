@@ -18,7 +18,6 @@ export const App: React.FC = () => {
   const { items: posts, loader, error } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.author.author);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
-  console.log(selectedPost, 'selectedPost');
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
@@ -57,13 +56,12 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-                { !loader && !error && posts.length > 0 && (
+                {!loader && !error && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={post => {
                       dispatch(setSelectedPost(post));
-                      console.log(post, 'callback');
                     }}
                   />
                 )}
