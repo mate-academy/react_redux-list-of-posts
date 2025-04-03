@@ -16,6 +16,7 @@ export const App: React.FC = () => {
   const [hasError, setError] = useState(false);
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
   function loadUserPosts(userId: number) {
     setLoaded(false);
     getUserPosts(userId)
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
       setPosts([]);
     }
   }, [author]);
+
   return (
     <main className="section">
       <div className="container">
@@ -43,7 +45,7 @@ export const App: React.FC = () => {
                 <UserSelector value={author} onChange={setAuthor} />
               </div>
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!author && <p data-cy="NoSelectedUser">No userr selected</p>}
                 {author && !loaded && <Loader />}
                 {author && loaded && hasError && (
                   <div
