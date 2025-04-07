@@ -1,11 +1,12 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { addComment } from '../features/postsSlice';
 import { useAppDispatch } from '../app/hooks';
 
 export const NewCommentForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -51,7 +52,13 @@ export const NewCommentForm = () => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!name || !email || !body.trim()) {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+      }
+
+      setValues(current => ({ ...current, body: '' }));
+
       return;
     }
 
@@ -112,7 +119,7 @@ export const NewCommentForm = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -152,6 +159,7 @@ export const NewCommentForm = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
+            ref={textAreaRef}
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
