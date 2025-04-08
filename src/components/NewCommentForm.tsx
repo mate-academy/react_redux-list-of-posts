@@ -1,11 +1,10 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import { addPostComment } from '../features/commentsSlice';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const postId = useAppSelector(state => state.selectedPost.post?.id);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -53,13 +52,13 @@ export const NewCommentForm: React.FC = () => {
       body: !body,
     });
 
-    if (!name || !email || !body || !postId) {
+    if (!name || !email || !body) {
       return;
     }
 
     setSubmitting(true);
 
-    dispatch(addPostComment({ name, email, body, postId }));
+    dispatch(addPostComment({ name, email, body }));
 
     // and the spinner will disappear immediately
     setSubmitting(false);

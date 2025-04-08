@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import * as commentsApi from '../api/comments';
+import { RootState } from '../app/store';
 
 const initialState: { items: Comment[]; hasError: string; loaded: boolean } = {
   items: [],
@@ -18,8 +19,18 @@ export const loadPostComments = createAsyncThunk(
 
 export const addPostComment = createAsyncThunk(
   `comments/add`,
-  async (newComment: Omit<Comment, 'id'>) => {
-    return commentsApi.createComment(newComment) as Promise<Comment>;
+  async (newComment: Omit<Comment, 'id' | 'postId'>, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const selectedPostId = state.selectedPost.post?.id;
+
+    if (!selectedPostId) {
+      throw new Error('Something went wrong');
+    }
+
+    return commentsApi.createComment({
+      ...newComment,
+      postId: selectedPostId,
+    }) as Promise<Comment>;
   },
 );
 
