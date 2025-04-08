@@ -17,10 +17,11 @@ import { clearSelectedPost } from './features/selectedPostSlice';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const posts = useAppSelector(state => state.posts.items);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(state => state.posts.hasError);
-
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.author.user);
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
