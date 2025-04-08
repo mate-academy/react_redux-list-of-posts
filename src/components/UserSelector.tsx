@@ -1,23 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
 
-type Props = {
+interface Props {
   value: User | null;
   onChange: (user: User) => void;
-};
+  users: User[];
+  isLoading?: boolean;
+  hasError?: boolean;
+}
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
+  users,
+  isLoading = false,
+  hasError = false,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -50,7 +51,10 @@ export const UserSelector: React.FC<Props> = ({
       <div className="dropdown-trigger">
         <button
           type="button"
-          className="button"
+          className={classNames('button', {
+            'is-loading': isLoading,
+            'is-danger': hasError,
+          })}
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={e => {
@@ -66,22 +70,34 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className={classNames('dropdown-menu', { 'is-active': expanded })}
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {hasError && (
+            <div className="dropdown-item">
+              <div className="notification is-danger">Failed to load users</div>
+            </div>
+          )}
+
+          {!hasError &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onClick={() => {
+                  onChange(user);
+                  setExpanded(false);
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>
