@@ -27,7 +27,6 @@ export const deleteComment = createAsyncThunk<number, number>(
   'comments/deleteComment',
   async commentId => {
     await deleteCommentById(commentId);
-
     return commentId;
   },
 );
