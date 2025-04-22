@@ -12,7 +12,7 @@ import { Loader } from './components/Loader';
 import { fetchUsers } from './features/users/usersSlice';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
-import * as selectedPostsActions from './features/selectedPost/selectedPost';
+import * as selectedPostAction from './features/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(selectedPostsActions.clearSelectedPost());
+    dispatch(selectedPostAction.clearSelectedPost());
 
     if (author) {
       dispatch(postsActions.fetchUserPosts(author.id));

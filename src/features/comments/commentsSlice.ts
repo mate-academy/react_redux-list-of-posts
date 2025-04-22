@@ -5,7 +5,7 @@ import { Comment } from '../../types/Comment';
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
   async (postId: number) => {
-    const data = getPostComments(postId);
+    const data = await getPostComments(postId);
 
     return data;
   },
