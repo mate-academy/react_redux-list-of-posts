@@ -25,7 +25,7 @@ export const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(loadUsers.pending, state => {
-      state.loading = true;
+      state.loading = false;
     });
 
     builder.addCase(loadUsers.fulfilled, (state, action) => {
