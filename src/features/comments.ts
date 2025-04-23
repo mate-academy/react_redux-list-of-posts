@@ -36,7 +36,7 @@ export const commentSlice = createSlice({
 
     builder.addCase(loadComments.rejected, state => {
       state.loaded = false;
-      state.hasError = false;
+      state.hasError = true;
     });
   },
 });

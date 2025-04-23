@@ -10,8 +10,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { loadPosts, setPosts } from './features/posts';
-import { setSelectedPosts, clearSelectedPost } from './features/selectedPost';
+import { loadPosts } from './features/posts';
+import { setSelectedPost, clearSelectedPost } from './features/selectedPost';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
@@ -29,14 +29,12 @@ export const App: React.FC = () => {
 
     if (author) {
       loadUserPosts(author.id);
-    } else {
-      setPosts([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [author]);
 
   const handleSetSelectedPost = (post: Post | null) => {
-    dispatch(setSelectedPosts(post));
+    dispatch(setSelectedPost(post));
   };
 
   return (
