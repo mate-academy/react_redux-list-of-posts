@@ -1,24 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { useGetUsersQuery } from '../api/apiRTKQuery';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setAuthor } from '../features/author/authorSlice';
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+type Props = {};
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector: React.FC<Props> = () => {
+  const { data: users = [], isSuccess } = useGetUsersQuery(undefined, {
+    refetchOnMountOrArgChange: false,
+    refetchOnReconnect: false,
+    refetchOnFocus: false,
+  });
+
   const [expanded, setExpanded] = useState(false);
+  const selectedUser = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -68,20 +66,22 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {isSuccess &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onClick={() => {
+                  dispatch(setAuthor(user));
+                  dispatch(setSelectedPost(null));
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>
