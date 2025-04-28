@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedUser } from '../features/counter/usersSlice';
+import { setSelectedUser } from '../features/users/usersSlice';
 import { User } from '../types/User';
-import { fetchPosts, setSelectedPost } from '../features/counter/postSlice';
+import { fetchPosts, setSelectedPost } from '../features/post/postSlice';
 
 export const UserSelector: React.FC = () => {
   // `value` and `onChange` are traditional names for the form field

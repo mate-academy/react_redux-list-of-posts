@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedPost } from '../features/counter/postSlice';
+import { setSelectedPost } from '../features/post/postSlice';
 
 export const PostsList: React.FC = () => {
   const { selectedPost, posts } = useAppSelector(state => state.posts);
