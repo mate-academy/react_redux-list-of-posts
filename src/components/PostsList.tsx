@@ -2,21 +2,14 @@
 
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectPosts } from '../features/postsSlice';
+import { selectPost, setSelectedPost } from '../features/selectedPostsSlice';
 
-type Props = {
-  posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
-
-export const PostsList: React.FC<Props> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
-  const { posts, loaded, hasError } = useAppSelector(selectPosts);
+export const PostsList: React.FC = () => {
+  const { posts } = useAppSelector(selectPosts);
+  const { selectedPost } = useAppSelector(selectPost);
+  const dispatch = useAppDispatch();
 
   return (
     <div data-cy="PostsList">
@@ -41,13 +34,16 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': post.id !== selectedPost?.id,
                   })}
                   onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                    post.id === selectedPost?.id
+                      ? dispatch(setSelectedPost(null))
+                      : dispatch(setSelectedPost(post));
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
@@ -55,5 +51,5 @@ export const PostsList: React.FC<Props> = ({
         </tbody>
       </table>
     </div>
-  )
+  );
 };

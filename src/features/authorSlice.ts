@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-import { getUser } from '../api/users';
 import { RootState } from '../app/store';
 
 interface UsersState {
@@ -11,25 +10,25 @@ const initialState: UsersState = {
   author: null,
 };
 
-export const fetchAuthor = createAsyncThunk(
-  'author/fetch',
-  async (id: number) => {
-    const author = await getUser(id);
+// export const fetchAuthor = createAsyncThunk(
+//   'author/fetch',
+//   async (id: number) => {
+//     const author = await getUser(id);
 
-    return author;
-  },
-);
+//     return author;
+//   },
+// );
 
 export const authorSlice = createSlice({
   name: 'author',
   initialState,
-  reducers: {},
-  extraReducers: builder => {
-    builder.addCase(fetchAuthor.fulfilled, (state, action) => {
+  reducers: {
+    setAuthor: (state, action: PayloadAction<User | null>) => {
       state.author = action.payload;
-    });
+    },
   },
 });
 
 export const selectAuthor = (state: RootState) => state.author;
+export const { setAuthor } = authorSlice.actions;
 export default authorSlice.reducer;

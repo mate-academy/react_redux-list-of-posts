@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { fetchUsers, selectUsers } from '../features/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchAuthor, selectAuthor } from '../features/authorSlice';
+import { selectAuthor, setAuthor } from '../features/authorSlice';
 
 export const UserSelector: React.FC = ({}) => {
   // `users` are loaded from the API, so for the performance reasons
@@ -73,10 +73,7 @@ export const UserSelector: React.FC = ({}) => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              // onClick={() => {
-              //   onChange(user);
-              // }}
-              onClick={() => dispatch(fetchAuthor(user.id))}
+              onClick={() => dispatch(setAuthor(user))}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,
               })}
