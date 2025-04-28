@@ -84,7 +84,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="email"
+            type="text"
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"

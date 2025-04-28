@@ -39,6 +39,7 @@ export const postSlice = createSlice({
     builder.addCase(fetchPosts.pending, state => {
       state.posts = [];
       state.isLoading = true;
+      state.error = null;
     });
 
     builder.addCase(fetchPosts.rejected, state => {
@@ -50,7 +51,7 @@ export const postSlice = createSlice({
       fetchPosts.fulfilled,
       (state, action: PayloadAction<Post[]>) => {
         state.isLoading = false;
-
+        state.error = null;
         state.posts = action.payload;
       },
     );
