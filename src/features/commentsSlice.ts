@@ -30,11 +30,11 @@ const commentsSlice = createSlice({
   reducers: {
     addComment: (state, action: PayloadAction<Comment>) => ({
       ...state,
-      items: [...state.comments, action.payload],
+      comments: [...state.comments, action.payload],
     }),
     deleteComment: (state, action: PayloadAction<number>) => ({
       ...state,
-      items: state.comments.filter(comment => comment.id !== action.payload),
+      comments: state.comments.filter(comment => comment.id !== action.payload),
     }),
   },
   extraReducers: builder => {
@@ -49,7 +49,7 @@ const commentsSlice = createSlice({
       (state, action: PayloadAction<Comment[]>) => ({
         ...state,
         loaded: true,
-        items: action.payload,
+        comments: action.payload,
       }),
     );
 
