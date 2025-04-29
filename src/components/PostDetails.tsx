@@ -74,7 +74,7 @@ export const PostDetails: React.FC = () => {
   };
 
   if (!post) {
-    return;
+    return null;
   }
 
   return (

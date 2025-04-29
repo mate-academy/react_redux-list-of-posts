@@ -6,13 +6,13 @@ import { getUserPosts } from '../../api/posts';
 export type PostsState = {
   items: Post[];
   loaded: boolean;
-  hasError: string | null;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
   items: [],
   loaded: false,
-  hasError: null,
+  hasError: false,
 };
 
 export const fetchUserPosts = createAsyncThunk(
@@ -34,14 +34,14 @@ export const postsSlice = createSlice({
     builder
       .addCase(fetchUserPosts.pending, state => {
         state.loaded = false;
-        state.hasError = null;
+        state.hasError = false;
       })
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
         state.items = action.payload;
         state.loaded = true;
       })
-      .addCase(fetchUserPosts.rejected, (state, action) => {
-        state.hasError = action.error.message || 'Something went wrong';
+      .addCase(fetchUserPosts.rejected, state => {
+        state.hasError = true;
         state.loaded = true;
       });
   },

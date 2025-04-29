@@ -22,7 +22,7 @@ export const NewCommentForm: React.FC = () => {
   });
 
   if (!post) {
-    return;
+    return null;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
