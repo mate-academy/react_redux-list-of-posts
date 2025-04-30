@@ -26,7 +26,7 @@ export const PostDetails = () => {
   const post = useAppSelector(state => state.selectedPost.selectedPost);
   const {
     items: comments,
-    loaded,
+    loadingInProgress,
     hasError,
   } = useAppSelector(state => state.comments);
 
@@ -125,27 +125,27 @@ export const PostDetails = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+        <h2 data-cy="PostTitle">{`Post #${post?.id} Title: ${post?.title}`}</h2>
 
-        <p data-cy="PostBody">{post?.body}</p>
+        <p data-cy="PostBody">Content: {post?.body}</p>
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {loadingInProgress && <Loader />}
 
-        {!loaded && hasError && (
+        {!loadingInProgress && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {!loadingInProgress && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {!loadingInProgress && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -179,7 +179,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {!loadingInProgress && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -190,7 +190,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && (
+        {!loadingInProgress && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>

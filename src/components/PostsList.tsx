@@ -32,7 +32,7 @@ export const PostsList: React.FC = () => {
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            <th> </th>
+            <th className="has-text-right is-vcentered">Open/Close</th>
           </tr>
         </thead>
 

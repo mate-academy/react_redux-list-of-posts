@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const {
     items: posts,
     hasError,
-    loading: loaded,
+    loading: loadingInProgress,
   } = useAppSelector(state => state.posts);
 
   // function loadUserPosts(userId: number) {
@@ -73,9 +73,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loaded && <Loader />}
+                {author && loadingInProgress && <Loader />}
 
-                {author && !loaded && hasError && (
+                {author && !loadingInProgress && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -84,15 +84,22 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {author &&
+                  !loadingInProgress &&
+                  !hasError &&
+                  posts.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
-                  <PostsList />
-                )}
+                {author &&
+                  !loadingInProgress &&
+                  !hasError &&
+                  posts.length > 0 && <PostsList />}
                 {/*} <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}

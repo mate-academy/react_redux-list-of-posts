@@ -6,13 +6,13 @@ import { Comment } from '../types/Comment';
 
 export interface CommentsState {
   items: Comment[];
-  loaded: boolean;
+  loadingInProgress: boolean;
   hasError: boolean;
 }
 
 const initialState: CommentsState = {
   items: [],
-  loaded: false,
+  loadingInProgress: false,
   hasError: false,
 };
 
@@ -55,15 +55,15 @@ export const commentsSlice = createSlice({
     builder
       .addCase(loadComments.pending, state => {
         state.hasError = false;
-        state.loaded = true;
+        state.loadingInProgress = true;
       })
       .addCase(loadComments.fulfilled, (state, action) => {
         state.items = action.payload;
-        state.loaded = false;
+        state.loadingInProgress = false;
       })
       .addCase(loadComments.rejected, state => {
         state.hasError = true;
-        state.loaded = false;
+        state.loadingInProgress = false;
       })
       .addCase(addNewComment.fulfilled, (state, action) => {
         state.items.push(action.payload);
