@@ -58,14 +58,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
+    setSubmitting(false);
     // We keep the entered name and email
+
+    // and the spinner will disappear immediately
+    // We keep the entered name and email
+
+    // We can use `onSubmit` prop to send the comment to the server
   };
 
   return (
@@ -171,6 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
+            data-sumbiting={submitting}
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
