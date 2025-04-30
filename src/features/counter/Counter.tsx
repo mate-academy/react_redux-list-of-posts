@@ -15,7 +15,7 @@ import {
 export function Counter() {
   const count = useAppSelector(selectCount);
   const dispatch = useAppDispatch();
-  const [incrementAmount, setIncrementAmount] = useState(2);
+  const [incrementAmount, setIncrementAmount] = useState(1);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIncrementAmount(+event.target.value);
@@ -49,6 +49,7 @@ export function Counter() {
         <input
           className={styles.textbox}
           aria-label="Set increment amount"
+          type="number"
           value={incrementAmount}
           onChange={handleAmountChange}
         />
