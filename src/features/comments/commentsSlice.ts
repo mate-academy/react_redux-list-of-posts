@@ -28,7 +28,9 @@ export const incrementComments = createAsyncThunk(
 export const removeComment = createAsyncThunk(
   'comment/removeComment',
   async (commentId: number) => {
-    return commentsApi.deleteComment(commentId);
+    await commentsApi.deleteComment(commentId);
+
+    return commentId;
   },
 );
 

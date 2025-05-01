@@ -35,16 +35,16 @@ export const postSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(incrementPosts.pending, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = false;
       })
       .addCase(incrementPosts.fulfilled, (state, action) => {
         state.items = action.payload;
         state.hasError = false;
-        state.loaded = false;
+        state.loaded = true;
       })
       .addCase(incrementPosts.rejected, state => {
-        state.loaded = false;
+        state.loaded = true;
         state.hasError = true;
       });
   },

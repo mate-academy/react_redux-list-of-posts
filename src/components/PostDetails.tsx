@@ -9,7 +9,6 @@ import {
   incrementComments,
   removeComment,
   createComment,
-  setComments,
 } from '../features/comments/commentsSlice';
 
 type Props = {
@@ -67,11 +66,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    dispatch(setComments(items.filter(comment => comment.id !== commentId)));
-    dispatch(removeComment(commentId));
+    const result = await dispatch(removeComment(commentId));
+
+    if (removeComment.rejected.match(result)) {
+      return;
+    }
   };
 
   return (
@@ -83,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && !visible && <Loader />}
+        {!loaded && <Loader />}
 
         {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">

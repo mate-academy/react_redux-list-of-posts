@@ -174,7 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            data-sumbiting={submitting}
+            data-sumbitting={submitting}
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
