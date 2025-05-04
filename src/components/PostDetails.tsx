@@ -99,7 +99,10 @@ export const PostDetails: React.FC = () => {
 
       // локальне видалення в redux
       dispatch(deleteCommentAction(commentId));
-    } catch (error) {}
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to delete comment', error);
+    }
   };
 
   return (
