@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { setSelectedPost } from '../features/counter/autorSlice';
+import { setSelectedPost } from '../features/counter/authorSlice';
 
 export const PostsList = () => {
   const { posts, selectedPost } = useAppSelector(state => state.posts);

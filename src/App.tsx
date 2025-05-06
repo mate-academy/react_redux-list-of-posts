@@ -15,7 +15,7 @@ import {
   fetchUserPosts,
   setSelectedPost,
   clearPosts,
-} from './features/counter/autorSlice';
+} from './features/counter/authorSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
