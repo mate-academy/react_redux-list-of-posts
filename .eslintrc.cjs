@@ -53,6 +53,7 @@ module.exports = {
     'arrow-body-style': 0,
     'arrow-parens': 0,
     'no-param-reassign': [2, { props: true }],
+    "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["state"] }],
     'padding-line-between-statements': [
       2,
       { blankLine: 'always', prev: '*', next: 'return' },
