@@ -18,7 +18,7 @@ import * as actionsSelectedPost from './features/selectedPostSlice';
 export const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const posts = useSelector((state: RootState) => state.posts.items);
-  const loaded = useSelector((state: RootState) => state.posts.loading);
+  const loading = useSelector((state: RootState) => state.posts.loading);
   const hasError = useSelector((state: RootState) => state.posts.errorMessage);
   const author = useSelector((state: RootState) => state.author.author);
   const selectedPost = useSelector((state: RootState) => {
@@ -49,9 +49,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loaded && <Loader />}
+                {author && loading && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && loading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -60,13 +60,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
+                {author && !loading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
+                {author && !loading && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
@@ -94,7 +94,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && posts.length > 0 && (
+              {selectedPost && posts.length > 0 && !loading && (
                 <PostDetails post={selectedPost} />
               )}
             </div>

@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
-import { getUserPosts } from '../api/posts';
 
 export interface SelectedPost {
   post: Post | null;
@@ -9,15 +8,6 @@ export interface SelectedPost {
 const initialState: SelectedPost = {
   post: null,
 };
-
-export const init = createAsyncThunk(
-  'selectedPost/fetchSelectedPost',
-  async (id: number) => {
-    const user = await getUserPosts(id);
-
-    return user;
-  },
-);
 
 const selectedPostSlice = createSlice({
   name: 'selectedPost',

@@ -14,7 +14,8 @@ const initialState: UserListState = {
 export const init = createAsyncThunk('users/fetch', async () => {
   await wait(500);
 
-  return getUsers();
+  // eslint-disable-next-line @typescript-eslint/return-await
+  return await getUsers();
 });
 
 const userSlice = createSlice({

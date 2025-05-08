@@ -20,7 +20,8 @@ export const init = createAsyncThunk(
   async (userId: number) => {
     await wait(2000);
 
-    return getUserPosts(userId);
+    // eslint-disable-next-line @typescript-eslint/return-await
+    return await getUserPosts(userId);
   },
 );
 
