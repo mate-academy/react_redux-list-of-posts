@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -12,8 +13,11 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { fetchUsers } from './components/UsersSlice';
+import { AppDispatch } from './app/store';
 
 export const App: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
@@ -27,13 +31,15 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
-      // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
+    dispatch(fetchUsers()); // Dispatching the fetchUsers action to load users
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Clear the post when an author is changed
     setSelectedPost(null);
 
     if (author) {
@@ -96,7 +102,7 @@ export const App: React.FC = () => {
               },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
