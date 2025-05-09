@@ -51,7 +51,7 @@ export const App: React.FC = () => {
 
                 {author && loading && <Loader />}
 
-                {author && loading && hasError && (
+                {author && !loading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

@@ -31,6 +31,7 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
+      state.errorMessage = '';
       state.loading = true;
     });
 

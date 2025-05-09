@@ -18,7 +18,7 @@ export const init = createAsyncThunk('users/fetch', async () => {
   return await getUsers();
 });
 
-const userSlice = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
@@ -33,5 +33,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUsers } = userSlice.actions;
-export default userSlice.reducer;
+export const { setUsers } = usersSlice.actions;
+export default usersSlice.reducer;
