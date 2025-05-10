@@ -70,9 +70,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={prevSelectedPost => {
+                    onPostSelected={newSelectedPost => {
                       return dispatch(
-                        actionsSelectedPost.setPost(prevSelectedPost),
+                        actionsSelectedPost.setPost(newSelectedPost),
                       );
                     }}
                   />

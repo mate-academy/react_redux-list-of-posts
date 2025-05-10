@@ -17,11 +17,11 @@ const initialState: CommentState = {
 
 export const init = createAsyncThunk(
   'comments/fetchComments',
-  async (userId: number) => {
+  async (postId: number) => {
     await wait(2000);
 
     // eslint-disable-next-line @typescript-eslint/return-await
-    return await getPostComments(userId);
+    return await getPostComments(postId);
   },
 );
 
