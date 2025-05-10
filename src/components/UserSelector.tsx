@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../types/User';
+import { RootState } from '../app/store';
+import { init } from '../features/usersSlice';
+import type { AppDispatch } from '../app/store';
 
 type Props = {
   value: User | null;
@@ -9,37 +12,39 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const users = useSelector((state: RootState) => state.users.userList);
+  const dispatch = useDispatch<AppDispatch>();
   const [expanded, setExpanded] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
+  // Carrega os usuários uma única vez quando o componente monta
+  useEffect(() => {
+    dispatch(init());
+  }, [dispatch]);
+
+  // Fecha o dropdown ao clicar fora
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setExpanded(false);
+      }
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (
@@ -49,6 +54,8 @@ export const UserSelector: React.FC<Props> = ({
     >
       <div className="dropdown-trigger">
         <button
+          ref={buttonRef}
+          id="buttonUserSelector"
           type="button"
           className="button"
           aria-haspopup="true"
@@ -59,7 +66,6 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
-
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
@@ -74,6 +80,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               onClick={() => {
                 onChange(user);
+                setExpanded(false); // fecha o dropdown ao selecionar
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
