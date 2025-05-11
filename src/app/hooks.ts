@@ -3,4 +3,5 @@ import type { RootState, AppDispatch } from './store';
 
 // Use these hooks everywhere instead of useDispatch and useSelector
 export const useAppDispatch = () => useDispatch<AppDispatch>();
+// export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
