@@ -50,7 +50,7 @@ const postsSlice = createSlice({
 
     builder.addCase(init.rejected, (state: PostState) => {
       state.loading = false;
-      state.error = 'Error with loading posts';
+      state.error = 'Error loading posts';
     });
   },
 });

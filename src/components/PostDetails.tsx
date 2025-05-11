@@ -30,7 +30,7 @@ export const PostDetails: React.FC = () => {
       name,
       email,
       body,
-      postId: selectedPost!.id,
+      postId: selectedPost ? selectedPost.id : 0,
     });
 
     dispatch(addCommentAction(newComment));

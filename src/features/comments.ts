@@ -55,7 +55,7 @@ const commentsSlice = createSlice({
 
     builder.addCase(init.rejected, (state: CommetsState) => {
       state.loading = false;
-      state.error = 'Error loading users';
+      state.error = 'Error loading comments';
     });
   },
 });

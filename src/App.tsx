@@ -11,7 +11,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init as initUsers } from './features/users';
-import { init as loadPosts, setSelectedPost } from './features/posts';
+import { init as loadPosts } from './features/posts';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +23,6 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(initUsers());
-    console.log(`users request`);
   }, [dispatch]);
 
   useEffect(() => {
@@ -31,9 +30,7 @@ export const App: React.FC = () => {
       return;
     }
 
-    dispatch(setSelectedPost(null));
     dispatch(loadPosts(selectedUser.id));
-    console.log(`posts request`);
   }, [selectedUser, dispatch]);
 
   return (
