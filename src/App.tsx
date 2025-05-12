@@ -26,7 +26,7 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(fetchPostsByAuthor(author.id));

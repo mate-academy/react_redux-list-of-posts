@@ -52,7 +52,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       dispatch(setSubmitting(false));
     }
 
-    dispatch(clearForm({ name, email }));
+    dispatch(setField({ field: 'body', value: '' }));
   };
 
   const handleReset = () => {

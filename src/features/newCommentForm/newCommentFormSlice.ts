@@ -52,12 +52,9 @@ const newCommentFormSlice = createSlice({
     setErrors(state, action) {
       state.errors = { ...state.errors, ...action.payload };
     },
-    clearForm(
-      state,
-      action: PayloadAction<{ name?: string; email?: string } | undefined>,
-    ) {
-      state.name = action.payload?.name ?? '';
-      state.email = action.payload?.email ?? '';
+    clearForm(state) {
+      state.name = '';
+      state.email = '';
       state.body = '';
       state.submitting = false;
       state.errors = {

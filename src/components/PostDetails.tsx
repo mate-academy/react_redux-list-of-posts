@@ -10,7 +10,6 @@ import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-import { setSubmitting } from '../features/newCommentForm/newCommentFormSlice';
 
 type Props = {
   post: Post;
@@ -32,7 +31,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleAddComment = async (data: CommentData) => {
     await dispatch(addComment({ ...data, postId: post.id }));
-    dispatch(setSubmitting(false));
   };
 
   useEffect(() => {
@@ -42,64 +40,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleDeleteComment = async (commentId: number) => {
     await dispatch(removeComment(commentId));
   };
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  // const addComment = async ({ name, email, body }: CommentData) => {
-  //   try {
-  //     const newComment = await commentsApi.createComment({
-  //       name,
-  //       email,
-  //       body,
-  //       postId: post.id,
-  //     });
-
-  //     setComments(currentComments => [...currentComments, newComment]);
-
-  //     // setComments([...comments, newComment]);
-  //     // works wrong if we wrap `addComment` with `useCallback`
-  //     // because it takes the `comments` cached during the first render
-  //     // not the actual ones
-  //   } catch (error) {
-  //     // we show an error message in case of any error
-  //     setError(true);
-  //   }
-  // };
-
-  // const deleteComment = async (commentId: number) => {
-  //   // we delete the comment immediately so as
-  //   // not to make the user wait long for the actual deletion
-  //   // eslint-disable-next-line max-len
-  //   setComments(currentComments =>
-  //     currentComments.filter(comment => comment.id !== commentId),
-  //   );
-
-  //   await commentsApi.deleteComment(commentId);
-  // };
 
   return (
     <div className="content" data-cy="PostDetails">
