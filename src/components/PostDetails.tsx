@@ -8,15 +8,11 @@ import {
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { Post } from '../types/Post';
-import { CommentData } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { post } = useAppSelector(state => state.selectedPost);
   const {
     items: comments,
     loaded,
@@ -26,19 +22,25 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchCommentsByPost(post.id));
-  }, [dispatch, post.id]);
-
-  const handleAddComment = async (data: CommentData) => {
-    await dispatch(addComment({ ...data, postId: post.id }));
-  };
+    if (post) {
+      dispatch(fetchCommentsByPost(post.id));
+    }
+  }, [dispatch, post]);
 
   useEffect(() => {
     setVisible(false);
   }, [post]);
 
-  const handleDeleteComment = async (commentId: number) => {
-    await dispatch(removeComment(commentId));
+  if (!post) {
+    return null;
+  }
+
+  const handleAddComment = async (data: CommentData) => {
+    await dispatch(addComment({ ...data, postId: post.id }));
+  };
+
+  const handleDeleteComment = async (comment: Comment) => {
+    dispatch(removeComment(comment));
   };
 
   return (
@@ -84,7 +86,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment)}
                   >
                     delete button
                   </button>

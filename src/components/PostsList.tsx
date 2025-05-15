@@ -32,6 +32,8 @@ export const PostsList: React.FC = () => {
   const handleSelectPost = (newPost: Post) => {
     if (!selectedPost || newPost.id !== selectedPost.id) {
       dispatch(selectedPostActions.set(newPost));
+    } else {
+      dispatch(selectedPostActions.set(null));
     }
   };
 
