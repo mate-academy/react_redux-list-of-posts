@@ -47,25 +47,32 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+    const cleanBody = body.trim();
+
+    setValues({
+      name: cleanName,
+      email: cleanEmail,
+      body: cleanBody,
     });
 
-    if (!name || !email || !body) {
+    setErrors({
+      name: !cleanName,
+      email: !cleanEmail,
+      body: !cleanBody,
+    });
+
+    if (!cleanName || !cleanEmail || !cleanBody) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -114,7 +121,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
