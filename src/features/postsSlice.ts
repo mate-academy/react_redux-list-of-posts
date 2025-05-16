@@ -20,7 +20,7 @@ export const loadPosts = createAsyncThunk('posts/fetch', (id: number) => {
 });
 
 export const postsSlice = createSlice({
-  name: 'users',
+  name: 'posts',
   initialState,
   reducers: {
     clearPosts(state) {

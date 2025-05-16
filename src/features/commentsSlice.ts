@@ -36,7 +36,7 @@ export const deletePostComment = createAsyncThunk(
 );
 
 export const commentsSlice = createSlice({
-  name: 'users',
+  name: 'comments',
   initialState,
   reducers: {
     clearComments(state) {
