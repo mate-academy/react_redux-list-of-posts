@@ -19,6 +19,7 @@ export const App: React.FC = () => {
   const { author } = useAppSelector(state => state.author);
   const { post: selectedPost } = useAppSelector(state => state.selectedPost);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { loading: usersLoading } = useAppSelector(state => state.users);
 
   useEffect(() => {
     dispatch(selectedPostActions.set(null));
@@ -41,7 +42,9 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!author && !usersLoading && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {author && !loaded && <Loader />}
 
