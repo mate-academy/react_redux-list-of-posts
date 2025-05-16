@@ -47,19 +47,23 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+    const cleanBody = body.trim();
+
     setValues({
-      name: name.trim(),
-      email: email.trim(),
-      body: body.trim(),
+      name: cleanName,
+      email: cleanEmail,
+      body: cleanBody,
     });
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !cleanName,
+      email: !cleanEmail,
+      body: !cleanBody,
     });
 
-    if (!name || !email || !body) {
+    if (!cleanName || !cleanEmail || !cleanBody) {
       return;
     }
 
