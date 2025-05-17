@@ -8,12 +8,14 @@ type Props = {
   posts: Post[];
   selectedPostId?: number;
   onPostSelected: (post: Post | null) => void;
+  setFormVisible: (visible: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
   onPostSelected,
+  setFormVisible,
 }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
@@ -41,6 +43,7 @@ export const PostsList: React.FC<Props> = ({
                 })}
                 onClick={() => {
                   onPostSelected(post.id === selectedPostId ? null : post);
+                  setFormVisible(false);
                 }}
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}
