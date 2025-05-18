@@ -1,5 +1,6 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
+
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -48,9 +49,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.replace(/\s+/g, ''),
+      email: !email.replace(/\s+/g, ''),
+      body: !body.replace(/\s+/g, ''),
     });
 
     if (!name || !email || !body) {
@@ -58,14 +59,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
