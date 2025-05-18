@@ -20,11 +20,10 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (author) {
       dispatch(postsActions.loadUserPosts(author.id));
+      dispatch(selectedPostActions.removePost());
     } else {
       dispatch(postsActions.setPosts([]));
     }
-
-    dispatch(selectedPostActions.removePost());
   }, [author, dispatch]);
 
   useEffect(() => {
