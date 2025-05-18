@@ -23,9 +23,13 @@ export const PostDetails: React.FC = () => {
     dispatch(commentsActions.clearComments());
   }, [author, dispatch]);
 
+  useEffect(() => {
+    setVisible(false);
+  }, [selectedPost]);
+
   const addComment = async ({ name, email, body }: CommentData) => {
     if (selectedPost) {
-      dispatch(
+      await dispatch(
         commentsActions.createComment({
           name,
           email,
@@ -37,7 +41,7 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentsActions.deleteComment(commentId));
+    await dispatch(commentsActions.deleteComment(commentId));
   };
 
   if (!selectedPost) {
