@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [dispatch, post.id]);
 
   const handleAddComment = async (data: CommentData) => {
-    dispatch(sendComment({ ...data, postId: post.id }));
+    await dispatch(sendComment({ ...data, postId: post.id }));
   };
 
   const handleDeleteComment = (id: number) => {
