@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
 import {
-  addComment,
-  deleteComment,
   loadComments,
+  removeComment,
   selectComments,
+  sendComment,
 } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
@@ -26,17 +26,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [dispatch, post.id]);
 
   const handleAddComment = async (data: CommentData) => {
-    const newComment: Comment = {
-      ...data,
-      id: Date.now(),
-      postId: post.id,
-    };
-
-    dispatch(addComment(newComment));
+    dispatch(sendComment({ ...data, postId: post.id }));
   };
 
   const handleDeleteComment = (id: number) => {
-    dispatch(deleteComment(id));
+    dispatch(removeComment(id));
   };
 
   return (

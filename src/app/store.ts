@@ -4,7 +4,7 @@ import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/usersSlice';
 import authorReducer from '../features/authorSlice';
 import postsReducer from '../features/postsSlice';
-import selectedPostSlice from '../features/selectedPostsSlice';
+import selectedPostReducer from '../features/selectedPostsSlice';
 import commentsSlice from '../features/commentsSlice';
 
 export const store = configureStore({
@@ -13,7 +13,7 @@ export const store = configureStore({
     users: usersReducer,
     author: authorReducer,
     posts: postsReducer,
-    selectedPost: selectedPostSlice,
+    selectedPost: selectedPostReducer,
     comments: commentsSlice,
   },
 });

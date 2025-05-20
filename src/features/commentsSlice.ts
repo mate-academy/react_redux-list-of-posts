@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
+import { createComment, getPostComments, deleteComment } from '../api/comments';
 import { Comment } from '../types/Comment';
 import { RootState } from '../app/store';
 
@@ -9,6 +9,24 @@ export const loadComments = createAsyncThunk(
     const data = await getPostComments(postId);
 
     return data;
+  },
+);
+
+export const sendComment = createAsyncThunk(
+  'comments/create',
+  async (data: Omit<Comment, 'id'>) => {
+    const response = await createComment(data);
+
+    return response;
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/delete',
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
   },
 );
 
@@ -27,17 +45,7 @@ const initialState: CommentState = {
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment: (state, action: PayloadAction<Comment>) => ({
-      ...state,
-      comments: [...state.comments, action.payload],
-    }),
-
-    deleteComment: (state, action: PayloadAction<number>) => ({
-      ...state,
-      comments: state.comments.filter(comment => comment.id !== action.payload),
-    }),
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(loadComments.pending, state => ({
       ...state,
@@ -57,9 +65,19 @@ export const commentsSlice = createSlice({
       hasError: true,
       loaded: true,
     }));
+    builder.addCase(sendComment.fulfilled, (state, action) => {
+      state.comments.push(action.payload);
+    });
+
+    builder.addCase(
+      removeComment.fulfilled,
+      (state, action: PayloadAction<number>) => ({
+        ...state,
+        comments: state.comments.filter(c => c.id !== action.payload),
+      }),
+    );
   },
 });
 
-export const { addComment, deleteComment } = commentsSlice.actions;
 export const selectComments = (state: RootState) => state.comments;
 export default commentsSlice.reducer;
