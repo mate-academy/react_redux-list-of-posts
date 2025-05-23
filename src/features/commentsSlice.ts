@@ -40,10 +40,12 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => ({
       ...state,
+      hasError: false,
       loading: true,
     }));
     builder.addCase(fetchComments.fulfilled, (state, action) => ({
       ...state,
+      hasError: false,
       comments: action.payload,
       loading: false,
     }));

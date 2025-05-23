@@ -24,11 +24,13 @@ export const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchUsers.pending, (state: Draft<UsersState>) => {
+      state.hasError = false;
       state.loading = true;
     });
     builder.addCase(
       fetchUsers.fulfilled,
       (state: Draft<UsersState>, action) => {
+        state.hasError = false;
         state.users = action.payload;
         state.loading = false;
       },
