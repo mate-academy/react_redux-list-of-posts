@@ -29,7 +29,7 @@ const usersSlice = createSlice({
     builder.addCase(
       fetchUsers.fulfilled,
       (state, action: PayloadAction<User[]>) => {
-        return { ...state, value: action.payload };
+        return { ...state, value: action.payload, isLoading: false };
       },
     );
   },

@@ -53,8 +53,6 @@ export const NewCommentForm = () => {
     email: commentsEmail,
     body: commentsBody,
   }: CommentData) => {
-    const createCommentsId = (Math.random() * 10000).toFixed(0);
-
     if (post) {
       dispatch(
         addComment({
@@ -62,7 +60,7 @@ export const NewCommentForm = () => {
           email: commentsEmail,
           body: commentsBody,
           postId: post.id,
-          id: Number(createCommentsId),
+          id: Date.now(),
         }),
       );
     }
