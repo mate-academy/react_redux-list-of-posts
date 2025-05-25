@@ -14,7 +14,7 @@ import { fetchPosts, resetPosts } from './features/postsSlice';
 export const App: React.FC = () => {
   const {
     author,
-    isLoading: loaded,
+    isLoading,
     posts,
     selectedPost,
     errorText: postsError,
@@ -52,15 +52,15 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {loaded && !postsError && <Loader />}
+                {isLoading && !postsError && <Loader />}
 
-                {author && !loaded && postsError && (
+                {author && !isLoading && postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -69,13 +69,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !postsError && posts.length === 0 && (
+                {author && !isLoading && !postsError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !postsError && posts.length > 0 && (
+                {author && !isLoading && !postsError && posts.length > 0 && (
                   <PostsList posts={posts} />
                 )}
               </div>

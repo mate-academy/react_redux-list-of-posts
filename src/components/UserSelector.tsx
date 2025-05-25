@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { chooseAuthor } from '../features/authorSlice';
 import { selectPost } from '../features/selectedPostSlice';
 
-type Props = {
-  value: User | null;
-};
-
-export const UserSelector: React.FC<Props> = () => {
+export const UserSelector = () => {
   const { users, author } = useAppSelector(state => {
     return {
       users: state.users.value,

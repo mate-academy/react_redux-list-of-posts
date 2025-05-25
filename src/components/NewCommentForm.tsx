@@ -13,7 +13,6 @@ export const NewCommentForm = () => {
       onSubmitting: state.comments.onSubmitting,
     };
   });
-  const createCommentsId = (Math.random() * 10000).toFixed(0);
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -54,6 +53,8 @@ export const NewCommentForm = () => {
     email: commentsEmail,
     body: commentsBody,
   }: CommentData) => {
+    const createCommentsId = (Math.random() * 10000).toFixed(0);
+
     if (post) {
       dispatch(
         addComment({

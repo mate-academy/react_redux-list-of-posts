@@ -49,7 +49,7 @@ const commentsSlice = createSlice({
     // DOWNLOAD COMMENTS...
 
     builder.addCase(fetchComments.pending, state => {
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, errorText: false };
     });
     builder.addCase(
       fetchComments.fulfilled,
@@ -68,7 +68,7 @@ const commentsSlice = createSlice({
     // REMOVE COMMENT ...
 
     builder.addCase(removeComment.pending, state => {
-      return { ...state, onDeleting: true };
+      return { ...state, onDeleting: true, errorText: false };
     });
     builder.addCase(
       removeComment.fulfilled,
@@ -87,7 +87,7 @@ const commentsSlice = createSlice({
     // CREATE COMMENT...
 
     builder.addCase(addComment.pending, state => {
-      return { ...state, onSubmitting: true };
+      return { ...state, onSubmitting: true, errorText: false };
     });
     builder.addCase(
       addComment.fulfilled,

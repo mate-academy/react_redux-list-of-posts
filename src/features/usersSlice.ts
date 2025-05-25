@@ -5,13 +5,13 @@ import { getUsers } from '../api/users';
 type InitialState = {
   value: User[];
   isLoading: boolean;
-  errorText: string;
+  errorText: boolean;
 };
 
 const initialState: InitialState = {
   value: [],
   isLoading: false,
-  errorText: '',
+  errorText: false,
 };
 
 export const fetchUsers = createAsyncThunk('users/fetch', () => {
@@ -24,7 +24,7 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchUsers.pending, state => {
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, errorText: false };
     });
     builder.addCase(
       fetchUsers.fulfilled,
@@ -32,9 +32,6 @@ const usersSlice = createSlice({
         return { ...state, value: action.payload };
       },
     );
-    builder.addCase(fetchUsers.rejected, state => {
-      return { ...state, errorText: 'Something went wrong' };
-    });
   },
 });
 
