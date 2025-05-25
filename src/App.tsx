@@ -29,7 +29,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     dispatch(loadUsers());
 
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(loadUserPosts(author.id));
