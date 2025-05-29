@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
