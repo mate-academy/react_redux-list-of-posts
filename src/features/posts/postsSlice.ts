@@ -4,8 +4,10 @@ import { getUserPosts } from '../../api/posts';
 
 export const fetchUserPosts = createAsyncThunk(
   'posts/fetchUserPosts',
-  (userId: number) => {
-    return getUserPosts(userId);
+  async (userId: number) => {
+    const posts = await getUserPosts(userId);
+
+    return posts;
   },
 );
 

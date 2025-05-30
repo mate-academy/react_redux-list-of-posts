@@ -43,9 +43,13 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentsAction.deleteComment(commentId));
-
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+      dispatch(commentsAction.deleteComment(commentId));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to delete comment:', error);
+    }
   };
 
   return (
