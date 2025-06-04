@@ -3,7 +3,7 @@ import { usersReducer } from '../features/usersSlice';
 import { postsReducer } from '../features/postsSlice';
 // eslint-disable-next-line max-len
 import { selectedPostReducer } from '../features/selectedPostSlice';
-import { AuthorReducer } from '../features/authorSlice';
+import { authorReducer } from '../features/authorSlice';
 import { commentsReducer } from '../features/commentsSlice';
 // eslint-disable-next-line import/no-cycle
 
@@ -11,7 +11,7 @@ export const store = configureStore({
   reducer: {
     userState: usersReducer,
     postsState: postsReducer,
-    authorState: AuthorReducer,
+    authorState: authorReducer,
     selectedPostState: selectedPostReducer,
     commentsState: commentsReducer,
   },

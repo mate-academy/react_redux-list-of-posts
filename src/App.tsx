@@ -42,7 +42,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} dispatch={dispatch} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -66,11 +66,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    dispatch={dispatch}
-                  />
+                  <PostsList posts={posts} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>
@@ -89,9 +85,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails dispatch={dispatch} post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

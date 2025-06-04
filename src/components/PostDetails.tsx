@@ -6,20 +6,19 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
-import { AppDispatch } from '../app/store';
 import { addItem, removeItem, setComments } from '../features/commentsSlice';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   post: Post;
-  dispatch: AppDispatch;
 };
 
-export const PostDetails: React.FC<Props> = ({ post, dispatch }) => {
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const { items, hasError, loaded } = useAppSelector(
     state => state.commentsState,
   );
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setVisible(false);

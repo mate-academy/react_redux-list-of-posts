@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
-import { AppDispatch } from '../app/store';
 
 type Props = {
   value: User | null;
-  dispatch: AppDispatch;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  dispatch,
-}) => {
+export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
   const users = useAppSelector(state => state.userState.users);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!expanded) {
