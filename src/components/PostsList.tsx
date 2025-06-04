@@ -3,17 +3,20 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
+import { AppDispatch } from '../app/store';
+// eslint-disable-next-line max-len
+import { setSelectedPost } from '../features/selectedPostSlice';
 
 type Props = {
   posts: Post[];
   selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
+  dispatch: AppDispatch;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
-  onPostSelected,
+  dispatch,
 }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
@@ -40,7 +43,9 @@ export const PostsList: React.FC<Props> = ({
                   'is-light': post.id !== selectedPostId,
                 })}
                 onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
+                  dispatch(
+                    setSelectedPost(post.id === selectedPostId ? null : post),
+                  );
                 }}
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}
