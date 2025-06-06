@@ -15,6 +15,7 @@ import { RootState, AppDispatch } from './app/store';
 import { setSelectedPost } from './features/selectedPost';
 import { fetchUserPosts } from './features/posts';
 import { setAuthor } from './features/author';
+import { fetchUsers } from './features/users';
 
 export const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,9 +27,11 @@ export const App: React.FC = () => {
   const posts = useSelector((state: RootState) => state.posts.items);
   const loaded = useSelector((state: RootState) => state.posts.loaded);
   const hasError = useSelector((state: RootState) => state.posts.hasError);
+  const users = useSelector((state: RootState) => state.users.items);
 
   useEffect(() => {
-    dispatch(setSelectedPost(null)); // Clear post when author changes
+    dispatch(setSelectedPost(null));
+    dispatch(fetchUsers());
 
     if (author) {
       dispatch(fetchUserPosts(author.id));
