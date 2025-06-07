@@ -27,7 +27,10 @@ export const App: React.FC = () => {
   const posts = useSelector((state: RootState) => state.posts.items);
   const loaded = useSelector((state: RootState) => state.posts.loaded);
   const hasError = useSelector((state: RootState) => state.posts.hasError);
-  const users = useSelector((state: RootState) => state.users.items);
+  //const users = useSelector((state: RootState) => state.users.items);
+  // const selectedPost = useSelector(
+  //   (state: RootState) => state.selectedPost.author,
+  // );
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
@@ -74,7 +77,8 @@ export const App: React.FC = () => {
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
+                    //selectedPostId={selectedPost?.id}
+                    selectedPost={selectedPost}
                     onPostSelected={post =>
                       dispatch(
                         setSelectedPost(
