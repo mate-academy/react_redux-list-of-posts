@@ -55,7 +55,7 @@ export const postsSlice = createSlice({
       })
       .addCase(fetchPosts.rejected, state => {
         state.hasError = true;
-        state.loaded = false;
+        state.loaded = true;
       })
 
       .addCase(fetchUserPosts.pending, state => {
