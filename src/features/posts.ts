@@ -68,7 +68,7 @@ export const postsSlice = createSlice({
       })
       .addCase(fetchUserPosts.rejected, state => {
         state.hasError = true;
-        state.loaded = false;
+        state.loaded = true;
       });
   },
 });
