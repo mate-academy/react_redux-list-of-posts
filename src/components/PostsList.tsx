@@ -1,6 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { setSelectedPost } from '../features/selectedPost';
+import { Post } from '../types/Post';
+import { RootState } from '../app/store';
 export const PostsList: React.FC<{ posts: Post[] }> = ({ posts }) => {
   const dispatch = useDispatch();
   const selectedPost = useSelector(

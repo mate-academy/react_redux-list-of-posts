@@ -3,6 +3,7 @@ import classNames from 'classnames';
 //import { UserContext } from './UsersContextOld';
 import { User } from '../types/User';
 import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
 
 type Props = {
   value: User | null;
