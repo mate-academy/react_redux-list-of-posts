@@ -9,7 +9,7 @@ interface AuthorState {
 const initialState: AuthorState = {
   author: null,
 };
-
+/* eslint-disable no-param-reassign */
 const authorSlice = createSlice({
   name: 'author',
   initialState,

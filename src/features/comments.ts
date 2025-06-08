@@ -29,7 +29,7 @@ export const fetchComments = createAsyncThunk(
     return client.get<Comment[]>('/comments');
   },
 );
-
+/* eslint-disable no-param-reassign */
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,

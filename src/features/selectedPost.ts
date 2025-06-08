@@ -9,7 +9,7 @@ interface SelectedPostState {
 const initialState: SelectedPostState = {
   selectedPost: null,
 };
-
+/* eslint-disable no-param-reassign */
 const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,

@@ -26,7 +26,7 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const data = await client.get<User[]>('/users');
   return data;
 });
-
+/* eslint-disable no-param-reassign */
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
