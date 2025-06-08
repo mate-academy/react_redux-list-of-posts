@@ -26,6 +26,7 @@ const initialState: PostsState = {
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   const data = await client.get<Post[]>('/posts');
+
   return data;
 });
 
@@ -33,10 +34,11 @@ export const fetchUserPosts = createAsyncThunk(
   'posts/fetchUserPosts',
   async (userId: number) => {
     const data = await client.get<Post[]>(`/posts?userId=${userId}`);
+
     return data;
   },
 );
-
+/* eslint-disable no-param-reassign */
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -53,6 +55,7 @@ export const postsSlice = createSlice({
       })
       .addCase(fetchPosts.rejected, state => {
         state.hasError = true;
+        state.loaded = false;
       })
 
       .addCase(fetchUserPosts.pending, state => {
@@ -65,6 +68,7 @@ export const postsSlice = createSlice({
       })
       .addCase(fetchUserPosts.rejected, state => {
         state.hasError = true;
+        state.loaded = false;
       });
   },
 });
