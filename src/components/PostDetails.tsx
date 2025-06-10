@@ -9,7 +9,7 @@ import { Comment, CommentData } from '../types/Comment';
 import { actions as commentActions } from '../app/commentSlice';
 import { useAppDispatch } from '../app/hooks';
 import { useSelector } from 'react-redux';
-import { RootState, store } from '../app/store';
+import { RootState } from '../app/store';
 
 type Props = {
   post: Post;
@@ -20,8 +20,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const { loaded, hasError, visible, comments } = useSelector(
     (state: RootState) => state.comments,
   );
-  const state = store.getState();
-  const currentComments = state.comments.comments;
+  const currentComments = useSelector(
+    (state: RootState) => state.comments.comments,
+  );
 
   function loadComments() {
     dispatch(commentActions.setLoaded(false));
