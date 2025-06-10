@@ -6,7 +6,7 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
-import { actions as commentActions } from '../app/commentSlice';
+import { actions as commentActions } from '../features/commentSlice';
 import { useAppDispatch } from '../app/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';

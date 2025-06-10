@@ -11,11 +11,13 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { useSelector } from 'react-redux';
-import { actions as postActions } from './app/postsSlice';
+import { actions as postActions } from './features/postsSlice';
 import { useAppDispatch } from './app/hooks';
-import { actions as authorActions } from './app/authorSlice';
-import { actions as selectedPostActions } from './app/selectedPostSlice';
+import { actions as authorActions } from './features/authorSlice';
+import { actions as selectedPostActions } from './features/selectedPostSlice';
+import { actions as usersActions } from './features/usersSlice';
 import { RootState } from './app/store';
+import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -50,6 +52,10 @@ export const App: React.FC = () => {
       dispatch(postActions.setPosts([]));
     }
   }, [author]);
+
+  useEffect(() => {
+    getUsers().then(_users => dispatch(usersActions.setUsers(_users)));
+  }, []);
 
   return (
     <main className="section">
