@@ -42,12 +42,12 @@ export const PostDetails: React.FC = () => {
     }
   };
 
-  const deleteComment = (commentId: number) => {
+  const deleteComment = async (commentId: number) => {
     dispatch(
       setComments(comments?.filter(comment => comment.id !== commentId)),
     );
 
-    commentsApi.deleteComment(commentId);
+    await commentsApi.deleteComment(commentId);
   };
 
   return (
@@ -96,7 +96,7 @@ export const PostDetails: React.FC = () => {
                       aria-label="delete"
                       onClick={() => deleteComment(comment.id)}
                     >
-                      delete button
+                      Delete
                     </button>
                   </div>
 
