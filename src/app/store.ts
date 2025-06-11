@@ -4,7 +4,7 @@ import counterReducer from '../features/counter/counterSlice';
 import authorReducer from '../features/author/authorSlice';
 import postsReducer from '../features/posts/postsSlice';
 import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
-import usersReducer from '../features/users/usersSlide';
+import usersReducer from '../features/users/usersSlice'; // ✅ виправлено з usersSlide
 
 export const store = configureStore({
   reducer: {
