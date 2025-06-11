@@ -20,7 +20,7 @@ import {
   clearSelectedPost,
 } from './features/selectedPost/selectedPostSlice';
 import { useAppDispatch } from './app/hooks';
-import { loadUsers } from './features/users/usersSlide';
+import { loadUsers } from './features/users/usersSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
