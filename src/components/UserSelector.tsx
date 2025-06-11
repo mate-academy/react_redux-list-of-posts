@@ -27,7 +27,7 @@ export const UserSelector: React.FC<Props> = ({
     getUsers().then(response => {
       dispatch(setUsers(response));
     });
-  }, [dispatch, users]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
