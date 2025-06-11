@@ -13,12 +13,12 @@ import { Loader } from './components/Loader';
 import { useSelector } from 'react-redux';
 import type { RootState } from './app/store';
 
-import { setAuthor } from './features/author/autorSlice';
+import { setAuthor } from './features/author/authorSlice';
 import { fetchPostsByUser, clearPosts } from './features/posts/postsSlice';
 import {
   selectPost,
   clearSelectedPost,
-} from './features/selectedPost/selectedPostSlide';
+} from './features/selectedPost/selectedPostSlice';
 import { useAppDispatch } from './app/hooks';
 import { loadUsers } from './features/users/usersSlide';
 
