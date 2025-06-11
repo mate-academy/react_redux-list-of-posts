@@ -9,7 +9,7 @@ import { CommentData } from '../types/Comment';
 import { RootState } from '../app/store';
 import { fetchComments } from '../slisers/asyncThunkComments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addCommentInItems, setComments, setError } from '../slisers/comments';
+import { setComments, setError } from '../slisers/comments';
 
 type Props = {
   post: Post;
@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(addCommentInItems(newComment));
+      dispatch(setComments([...comments, newComment]));
       dispatch(setError(false));
     } catch (error) {
       dispatch(setError(true));
