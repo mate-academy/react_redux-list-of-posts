@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { fetchComments } from './asyncThunkComments';
 
@@ -19,6 +19,9 @@ const comments = createSlice({
   name: 'comment',
   initialState,
   reducers: {
+    addCommentInItems: (state, action: PayloadAction<Comment>) => {
+      state.items.push(action.payload);
+    },
     setComments: (state, action) => (state.items = action.payload),
     setError: (state, action) => (state.hasError = action.payload),
   },
@@ -41,4 +44,4 @@ const comments = createSlice({
 });
 
 export default comments.reducer;
-export const { setComments, setError } = comments.actions;
+export const { setComments, setError, addCommentInItems } = comments.actions;

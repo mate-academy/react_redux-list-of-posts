@@ -9,7 +9,7 @@ import { CommentData } from '../types/Comment';
 import { RootState } from '../app/store';
 import { fetchComments } from '../slisers/asyncThunkComments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setComments, setError } from '../slisers/comments';
+import { addCommentInItems, setComments, setError } from '../slisers/comments';
 
 type Props = {
   post: Post;
@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(setComments([...comments, newComment]));
+      dispatch(addCommentInItems(newComment));
       dispatch(setError(false));
     } catch (error) {
       dispatch(setError(true));
@@ -46,15 +46,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(
-      setComments(
-        comments.filter(com => {
-          return com.id !== commentId;
-        }),
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+      dispatch(setComments(comments.filter(com => com.id !== commentId)));
+    } catch (error) {
+      dispatch(setError(true));
+    }
   };
 
   return (
