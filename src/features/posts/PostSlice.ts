@@ -5,13 +5,13 @@ import { getUserPosts } from '../../api/posts';
 
 export interface PostsState {
   items: Post[];
-  loaded: boolean;
+  loading: boolean;
   hasError: string;
 }
 
 const initialState: PostsState = {
   items: [],
-  loaded: true,
+  loading: false,
   hasError: '',
 };
 
@@ -31,23 +31,23 @@ const postsSlice = createSlice({
     clearPosts: state => {
       state.items = [];
       state.hasError = '';
-      state.loaded = true;
+      state.loading = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchUserPosts.pending, state => {
-        state.loaded = false;
+        state.loading = true;
       })
       .addCase(
         fetchUserPosts.fulfilled,
         (state, action: PayloadAction<Post[]>) => {
           state.items = action.payload;
-          state.loaded = true;
+          state.loading = false;
         },
       )
       .addCase(fetchUserPosts.rejected, state => {
-        state.loaded = false;
+        state.loading = false;
         state.hasError = 'Error';
       });
   },
