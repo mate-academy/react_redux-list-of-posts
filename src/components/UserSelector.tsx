@@ -39,7 +39,7 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
     // we don't want to listening for outside clicks
-    // when the Dopdown is closed
+    // when the Dropdown is closed
   }, [expanded]);
 
   return (
