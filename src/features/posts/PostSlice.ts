@@ -11,7 +11,7 @@ export interface PostsState {
 
 const initialState: PostsState = {
   items: [],
-  loaded: false,
+  loaded: true,
   hasError: '',
 };
 
@@ -31,19 +31,19 @@ const postsSlice = createSlice({
     clearPosts: state => {
       state.items = [];
       state.hasError = '';
-      state.loaded = false;
+      state.loaded = true;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchUserPosts.pending, state => {
-        state.loaded = true;
+        state.loaded = false;
       })
       .addCase(
         fetchUserPosts.fulfilled,
         (state, action: PayloadAction<Post[]>) => {
           state.items = action.payload;
-          state.loaded = false;
+          state.loaded = true;
         },
       )
       .addCase(fetchUserPosts.rejected, state => {
