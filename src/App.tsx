@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   const posts = useAppSelector((state: RootState) => state.posts.items);
   const author = useAppSelector((state: RootState) => state.author.user);
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state: RootState) => state.posts.loaded);
+  const loading = useAppSelector((state: RootState) => state.posts.loading);
   const hasError = useAppSelector((state: RootState) => state.posts.hasError);
   const selectedPost = useAppSelector(
     (state: RootState) => state.selectedPost.selectedPost,
