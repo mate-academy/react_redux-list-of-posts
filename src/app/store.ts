@@ -10,12 +10,14 @@ import { authorSlice } from './reducers/authorSlice';
 import { postsSlice } from './reducers/postsSlice';
 import { selectedPostSlice } from './reducers/selectedPostSlice';
 import { usersSlice } from './reducers/usersSlice';
+import { commentSlice } from './reducers/commentSlice';
 
 const rootReducer = combineSlices({
   author: authorSlice.reducer,
   posts: postsSlice.reducer,
   selectedPost: selectedPostSlice.reducer,
   users: usersSlice.reducer,
+  comment: commentSlice.reducer,
 });
 
 export const store = configureStore({
