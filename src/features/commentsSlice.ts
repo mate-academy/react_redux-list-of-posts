@@ -72,9 +72,11 @@ export const commentsSlice = createSlice({
       state.hasError = true;
     });
 
-    builder.addCase(deleteCom.pending, state => {
-      // state.loaded = false;
+    builder.addCase(deleteCom.pending, (state, action) => {
       state.hasError = false;
+      const commentId = action.meta.arg;
+
+      state.items = state.items.filter(comment => comment.id !== commentId);
     });
 
     builder.addCase(deleteCom.fulfilled, (state, action) => {
