@@ -27,7 +27,7 @@ export const PostDetails = () => {
       .finally(() => setLoaded(true)); // hide the spinner
   }
 
-  useEffect(loadComments, [post!.id]);
+  useEffect(loadComments, [post]);
 
   // The same useEffect with async/await
   /*

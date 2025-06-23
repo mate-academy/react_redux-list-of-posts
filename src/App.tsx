@@ -53,7 +53,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(setPost([]));
     }
-  }, [author, dispatch]);
+  }, [author, dispatch, loadUserPosts]);
 
   return (
     <main className="section">
