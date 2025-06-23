@@ -33,6 +33,7 @@ export const App: React.FC = () => {
     dispatch(loadUsers());
   }, [dispatch]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function loadUserPosts(userId: number) {
     setLoaded(false);
 
