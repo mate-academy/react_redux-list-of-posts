@@ -3,7 +3,7 @@ import { Post } from '../types/Post';
 
 const initialState = null as Post | null;
 const selectedPostSlice = createSlice({
-  name: 'post',
+  name: 'selectedPost',
   initialState,
   reducers: {
     setSelectedPost: (_state, action: PayloadAction<Post | null>) =>

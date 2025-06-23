@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useCallback } from 'react';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -34,15 +35,24 @@ export const App: React.FC = () => {
   }, [dispatch]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
 
-    getUserPosts(userId)
-      .then(post => dispatch(setPost(post)))
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const loadUserPosts = useCallback(
+    async (userId: number) => {
+      try {
+        setLoaded(false);
+        setError(false);
+
+        const usersPosts = await getUserPosts(userId);
+
+        dispatch(setPost(usersPosts));
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoaded(true);
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     // we clear the post when an author is changed

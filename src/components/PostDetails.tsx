@@ -16,12 +16,16 @@ export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
+    if (!post) {
+      return;
+    }
+
     setLoaded(false);
     setError(false);
     setVisible(false);
 
     commentsApi
-      .getPostComments(post!.id)
+      .getPostComments(post.id)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
@@ -57,11 +61,15 @@ export const PostDetails = () => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
+      if (!post) {
+        return;
+      }
+
       const newComment = await commentsApi.createComment({
         name,
         email,
         body,
-        postId: post!.id,
+        postId: post.id,
       });
 
       setComments(currentComments => [...currentComments, newComment]);
@@ -90,9 +98,9 @@ export const PostDetails = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post!.id}: ${post!.title}`}</h2>
+        {post && <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>}
 
-        <p data-cy="PostBody">{post!.body}</p>
+        {post && <p data-cy="PostBody">{post.body}</p>}
       </div>
 
       <div className="block">
