@@ -10,22 +10,34 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './app/store';
+import { setPost } from './features/posts';
+import { setSelectedPost } from './features/selectedPost';
+import { AppDispatch, loadUsers } from './features/allUsers';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const posts = useSelector((state: RootState) => state.post);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
+  // const [author, setAuthor] = useState<User | null>(null);
+  const author = useSelector((state: RootState) => state.user);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useSelector((state: RootState) => state.selectedPost);
+  const shouldShowNoPosts =
+    author && loaded && !hasError && posts && posts.length === 0;
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, [dispatch]);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
 
     getUserPosts(userId)
-      .then(setPosts)
+      .then(post => dispatch(setPost(post)))
       .catch(() => setError(true))
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
@@ -34,14 +46,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPost([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -50,7 +62,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -67,18 +79,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {shouldShowNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && loaded && !hasError && posts && posts.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -97,7 +105,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
