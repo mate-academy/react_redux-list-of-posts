@@ -29,14 +29,22 @@ export const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getUsers().then(users => dispatch(setUsers(users)));
+    setError(false);
+    getUsers()
+      .then(users => {
+        dispatch(setUsers(users));
+      })
+      .catch(() => setError(true));
   }, []);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
+    setError(false);
 
     getUserPosts(userId)
-      .then(setPosts)
+      .then(post => {
+        setPosts(post);
+      })
       .catch(() => setError(true))
       // We disable the spinner in any case
       .finally(() => setLoaded(true));
