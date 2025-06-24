@@ -38,21 +38,21 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {!loaded && <Loader />}
 
-        {!loaded && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && items.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && items.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -86,7 +86,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -97,7 +97,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && <NewCommentForm />}
+        {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );
