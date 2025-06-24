@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
@@ -10,16 +11,26 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsers } from './api/users';
+import { setUsers } from './features/user/UserSlice';
+import { RootState } from './app/store';
 
 export const App: React.FC = () => {
+  const selector = useSelector((state: RootState) => state.user);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
+  // const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getUsers().then(users => dispatch(setUsers(users)));
+  }, []);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
@@ -36,12 +47,12 @@ export const App: React.FC = () => {
     // not to confuse the user
     setSelectedPost(null);
 
-    if (author) {
-      loadUserPosts(author.id);
+    if (selector.selected) {
+      loadUserPosts(selector.selected.id);
     } else {
       setPosts([]);
     }
-  }, [author]);
+  }, [selector.selected]);
 
   return (
     <main className="section">
@@ -50,15 +61,17 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!selector.selected && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                {author && !loaded && <Loader />}
+                {selector.selected && !loaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {selector.selected && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,19 +80,28 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {selector.selected &&
+                  loaded &&
+                  !hasError &&
+                  posts.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {selector.selected &&
+                  loaded &&
+                  !hasError &&
+                  posts.length > 0 && (
+                    <PostsList
+                      posts={posts}
+                      selectedPostId={selectedPost?.id}
+                      onPostSelected={setSelectedPost}
+                    />
+                  )}
               </div>
             </div>
           </div>

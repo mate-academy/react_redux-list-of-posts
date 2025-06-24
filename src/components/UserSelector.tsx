@@ -1,24 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import { setSelected } from '../features/user/UserSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
+  const selector = useSelector((state: RootState) => state.user);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!expanded) {
@@ -58,7 +51,7 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{selector.selected?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -68,15 +61,13 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {selector.users.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={() => dispatch(setSelected(user))}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === selector.selected?.id,
               })}
             >
               {user.name}
