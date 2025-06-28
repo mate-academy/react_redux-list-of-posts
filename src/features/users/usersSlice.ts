@@ -27,7 +27,7 @@ const usersSlice = createSlice({
         state.error = false;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loaded = false;
+        state.loaded = true;
         state.error = false;
         state.items = action.payload;
       })
