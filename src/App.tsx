@@ -9,14 +9,8 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-// import { User } from './types/User';
-// import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import {
-  getPostsFromServer,
-  getUserPostsFromServer,
-  setPosts,
-} from './features/posts/postsSlice';
+import { getUserPostsFromServer, setPosts } from './features/posts/postsSlice';
 import { setAuthor } from './features/author/authorSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
@@ -38,7 +32,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">

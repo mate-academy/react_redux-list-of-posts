@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     dispatch(getPostCommentsFromServer(post.id));
     setVisible(false);
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   // The same useEffect with async/await
   /*
