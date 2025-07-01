@@ -27,32 +27,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
   }, [post.id, dispatch]);
 
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
   const addComment = async ({ name, email, body }: CommentData) => {
     const newComment = {
       name,
@@ -72,11 +46,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    // setComments(currentComments =>
-    //   currentComments.filter(comment => comment.id !== commentId),
-    // );
-
-    // await commentsApi.deleteComment(commentId);
 
     dispatch(deleteCommentFromServer(commentId));
   };

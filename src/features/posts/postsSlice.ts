@@ -16,7 +16,7 @@ const initialState: InitialStateType = {
 };
 
 export const getUserPostsFromServer = createAsyncThunk(
-  'posts/getPosts',
+  'posts/getUserPosts',
   async (userId: number) => {
     const value = await getUserPosts(userId);
 
