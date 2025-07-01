@@ -30,8 +30,6 @@ export const App: React.FC = () => {
     (state: RootState) => state.selectedPost.selectedPost,
   );
 
-  useSelector((state: RootState) => state.users);
-
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);

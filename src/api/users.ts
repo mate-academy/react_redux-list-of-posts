@@ -5,6 +5,6 @@ export const getUsers = (): Promise<UserType[]> => {
   return client.get<UserType[]>('/users');
 };
 
-export const getUser = (id: number): Promise<UserType[]> => {
-  return client.get<UserType[]>(`/users/${id}`);
+export const getUser = (id: number): Promise<UserType> => {
+  return client.get<UserType>(`/users/${id}`);
 };
