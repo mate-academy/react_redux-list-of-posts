@@ -9,21 +9,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useSelector } from 'react-redux';
-import { RootState } from './app/store';
-import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
-import { clearPosts, fetchPostsByUser } from './features/posts/postsSlice';
+
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { fetchPostsByUser, clearPosts } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const author = useSelector((state: RootState) => state.author.current);
-  const { items } = useAppSelector((state: RootState) => state.posts);
-  const { loaded, hasError } = useAppSelector(state => state.posts);
-  const { selectedPost } = useSelector(
-    (state: RootState) => state.selectedPost,
-  );
+  const author = useAppSelector(state => state.author.current);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
@@ -39,6 +35,7 @@ export const App: React.FC = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
+          {/* Ліва колонка з вибором користувача та постами */}
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
@@ -72,6 +69,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Права колонка — Sidebar з деталями поста */}
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -80,11 +78,11 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': selectedPost !== null,
               },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
