@@ -1,12 +1,17 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { addComment } from '../features/comments/commentsSLice';
+import { CommentData as CustomCommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -48,24 +53,30 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
+      alert('Please fill in all comment fields.');
+
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    const newComment: CustomCommentData = {
+      postId,
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
+    };
 
-    // and the spinner will disappear immediately
+    await dispatch(addComment(newComment));
+
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -180,7 +191,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
