@@ -9,7 +9,7 @@ import {
   fetchCommentsByPostId,
   clearComments,
   deleteComment,
-} from '../features/comments/commentsSLice';
+} from '../features/comments/commentsSlice';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../app/store';
-import { addComment } from '../features/comments/commentsSLice';
+import { addComment } from '../features/comments/commentsSlice';
 import { CommentData as CustomCommentData } from '../types/Comment';
 
 type Props = {

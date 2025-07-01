@@ -6,7 +6,7 @@ import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';
 import postsReducer from '../features/posts/postsSlice';
 import selectedPostReducer from '../features/posts/selectedPostSlice';
-import commentsReducer from '../features/comments/commentsSLice';
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
