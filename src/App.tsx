@@ -11,12 +11,11 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts/postsSlice';
-import * as selectedPostActions
-  from './features/selectedPost/selectedPostSlice';
-  
+import * as selectedPostActions from './features/selectedPost/selectedPostSlice';
+
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  
+
   const { author } = useAppSelector(state => state.author);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);

@@ -3,8 +3,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import * as selectedPostActions
-  from '../features/selectedPost/selectedPostSlice';
+import * as selectedPostActions from '../features/selectedPost/selectedPostSlice';
 import { useAppDispatch } from '../app/hooks';
 
 type Props = {
