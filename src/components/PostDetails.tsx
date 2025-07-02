@@ -35,7 +35,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
-      const result = await dispatch(
+      await dispatch(
         createNewComment({
           name,
           email,
@@ -43,10 +43,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           postId: post.id,
         }),
       );
-
-      if (createNewComment.fulfilled.match(result)) {
-        dispatch(toggleVisible());
-      }
     } catch {
       // error
     }

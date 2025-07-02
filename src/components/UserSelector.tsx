@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-// import { UserContext } from './UsersContext';
 import { User } from '../types/User';
 import { RootState } from '../app/store';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -21,18 +20,11 @@ export const UserSelector: React.FC<Props> = ({
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
 
-  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
   const users = useAppSelector((state: RootState) => state.users.users);
   const dispatch = useAppDispatch();
 
-  // console.log(users);
-
   useEffect(() => {
-    // if (!expanded) {
-    //   return;
-    // }
-
     dispatch(fetchUsers());
 
     // we save a link to remove the listener later
