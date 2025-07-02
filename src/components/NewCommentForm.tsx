@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (commentData: CommentData) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
