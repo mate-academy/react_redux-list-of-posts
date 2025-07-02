@@ -7,7 +7,7 @@ import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-import * as commentsActions from '../features/comments/commentsSlice';
+import * as commentsActions from '../features/commentsSlice';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();

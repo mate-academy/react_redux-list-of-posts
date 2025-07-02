@@ -10,12 +10,12 @@ import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import * as postsActions from '../src/features/posts/postsSlice';
-import * as selectedPostAction from '../src/features/selectedPost/selectedPostSlice';
+import * as postsActions from '../src/features/postsSlice';
+import * as selectedPostAction from '../src/features/selectedPostSlice';
 import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
-  const dispach = useAppDispatch();
+  const dispatch = useAppDispatch();
   const {
     loaded,
     hasError,
@@ -23,24 +23,24 @@ export const App: React.FC = () => {
   } = useAppSelector(state => state.posts);
 
   const { author } = useAppSelector(state => state.author);
-  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const loadUserPosts = useCallback(
     (userId: number) => {
-      dispach(postsActions.init(userId));
+      dispatch(postsActions.init(userId));
     },
-    [dispach],
+    [dispatch],
   );
 
   useEffect(() => {
-    dispach(selectedPostAction.setSelectedPost(null));
+    dispatch(selectedPostAction.setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      dispach(postsActions.clearPosts());
+      dispatch(postsActions.clearPosts());
     }
-  }, [loadUserPosts, author, dispach]);
+  }, [loadUserPosts, author, dispatch]);
 
   return (
     <main className="section">

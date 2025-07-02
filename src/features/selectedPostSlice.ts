@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { Post } from '../../types/Post';
+import { Post } from '../types/Post';
 
 type SelectedPostState = {
   selectedPost: Post | null;

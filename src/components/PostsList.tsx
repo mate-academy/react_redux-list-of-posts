@@ -1,17 +1,11 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-
-// eslint-disable-next-line max-len
-import * as selectedPostAction from '../features/selectedPost/selectedPostSlice';
+import * as selectedPostAction from '../features/selectedPostSlice';
+import { usePostsList } from '../hooks/usePostsList';
 
 export const PostsList = () => {
-  const dispach = useAppDispatch();
-
-  const { items: posts } = useAppSelector(state => state.posts);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const selectedPostId = selectedPost?.id;
+  const { dispatch, posts, selectedPostId } = usePostsList();
 
   return (
     <div data-cy="PostsList">
@@ -39,7 +33,7 @@ export const PostsList = () => {
                     'is-light': post.id !== selectedPostId,
                   })}
                   onClick={() => {
-                    dispach(
+                    dispatch(
                       selectedPostAction.setSelectedPost(
                         post.id === selectedPostId ? null : post,
                       ),
