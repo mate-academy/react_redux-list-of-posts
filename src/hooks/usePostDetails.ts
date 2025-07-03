@@ -25,7 +25,7 @@ export const usePostDetails = () => {
 
   useEffect(loadComments, [selectedPostId, dispatch]);
   if (selectedPostId === undefined) {
-    return;
+    return null;
   }
 
   const addComment = async ({ name, email, body }: CommentData) => {

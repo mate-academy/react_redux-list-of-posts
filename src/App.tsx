@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useCallback, useEffect } from 'react';
+
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,38 +9,12 @@ import './App.scss';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import * as postsActions from '../src/features/postsSlice';
-import * as selectedPostAction from '../src/features/selectedPostSlice';
+
 import { PostDetails } from './components/PostDetails';
+import { usePostApp } from './hooks/usePostsApp';
 
 export const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const {
-    loaded,
-    hasError,
-    items: posts,
-  } = useAppSelector(state => state.posts);
-
-  const { author } = useAppSelector(state => state.author);
-  const { selectedPost } = useAppSelector(state => state.selectedPost);
-
-  const loadUserPosts = useCallback(
-    (userId: number) => {
-      dispatch(postsActions.init(userId));
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    dispatch(selectedPostAction.setSelectedPost(null));
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      dispatch(postsActions.clearPosts());
-    }
-  }, [loadUserPosts, author, dispatch]);
+  const { loaded, hasError, posts, author, selectedPost } = usePostApp();
 
   return (
     <main className="section">
