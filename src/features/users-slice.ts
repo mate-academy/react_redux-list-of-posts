@@ -47,7 +47,7 @@ export const usersSlice = createSlice({
     builder.addCase(init.rejected, state => {
       return {
         ...state,
-        error: 'Somethind went wrong',
+        error: 'Something went wrong',
         isLoading: false,
       };
     });

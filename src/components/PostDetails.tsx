@@ -42,8 +42,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       dispatch(commentsSlice.actions.addComment(newComment));
-      await commentsApi.createComment(newComment);
-
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
       // because it takes the `comments` cached during the first render
