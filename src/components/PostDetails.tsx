@@ -5,6 +5,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { deleteComment } from '../features/commentsSlice';
+import { selectedPost } from '../features/selectedPostSlice';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +14,7 @@ export const PostDetails: React.FC = () => {
     error: hasError,
     comments,
   } = useAppSelector(state => state.comments);
-  const post = useAppSelector(state => state.post.selectedPost) || ({} as Post);
+  const post = useAppSelector(selectedPost) || ({} as Post);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

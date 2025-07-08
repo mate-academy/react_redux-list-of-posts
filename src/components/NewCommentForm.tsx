@@ -3,14 +3,15 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addComment } from '../features/commentsSlice';
+import { selectedPost } from '../features/selectedPostSlice';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const selectedPost = useAppSelector(state => state.post.selectedPost);
+  const post = useAppSelector(selectedPost);
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (data: CommentData) => {
-    await dispatch(addComment({ ...data, postId: selectedPost?.id || 0 }));
+    await dispatch(addComment({ ...data, postId: post?.id || 0 }));
   };
 
   const [errors, setErrors] = useState({

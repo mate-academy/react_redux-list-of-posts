@@ -3,15 +3,13 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setSelectedPost } from '../features/selectedPostSlice';
+import { selectedPost, setSelectedPost } from '../features/selectedPostSlice';
 import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.posts);
-  const selectedPostId = useAppSelector(
-    state => state.post.selectedPost?.id || null,
-  );
+  const selectedPostId = useAppSelector(selectedPost)?.id || null;
 
   const handlePostButton = (post: Post) => {
     if (selectedPostId === post.id) {
