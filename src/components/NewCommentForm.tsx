@@ -1,5 +1,14 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { FormEvent } from 'react';
+
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  updateField,
+  setErrors,
+  setSubmitting,
+  clearForm,
+  clearBody,
+} from '../features/counter/commentForm/commentFormSlice';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -7,74 +16,58 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+  const dispatch = useAppDispatch();
+  const { name, email, body, errors, submitting } = useAppSelector(
+    state => state.commentForm,
+  );
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name: field, value } = event.target;
-
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(
+      updateField({
+        field: e.target.name as keyof CommentData,
+        value: e.target.value,
+      }),
+    );
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    setErrors({
+    const newErrors = {
       name: !name,
       email: !email,
       body: !body,
-    });
+    };
 
-    if (!name || !email || !body) {
+    dispatch(setErrors(newErrors));
+
+    if (newErrors.name || newErrors.email || newErrors.body) {
       return;
     }
 
-    setSubmitting(true);
+    dispatch(setSubmitting(true));
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(clearBody());
+  };
+
+  const handleReset = () => {
+    dispatch(clearForm());
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -85,11 +78,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={name}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
           {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -99,7 +90,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
@@ -111,7 +101,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -122,11 +111,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={email}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
           {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -136,7 +123,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
@@ -148,7 +134,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -159,7 +144,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             onChange={handleChange}
           />
         </div>
-
         {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
@@ -178,9 +162,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             Add
           </button>
         </div>
-
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
