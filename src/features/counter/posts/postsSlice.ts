@@ -1,23 +1,18 @@
 /* eslint-disable no-param-reassign */
 import { Post } from '../../../types/Post';
-import { User } from '../../../types/User';
 import { getUserPosts } from '../../../api/posts';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export interface PostState {
-  author: User | null;
   items: Post[];
   loaded: boolean;
   hasError: boolean;
-  selectedPost: Post | null;
 }
 
 const initialState: PostState = {
-  author: null,
   items: [],
   loaded: false,
   hasError: false,
-  selectedPost: null,
 };
 
 export const fetchPosts = createAsyncThunk<Post[], number>(
@@ -35,14 +30,10 @@ const postSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setAuthor(state, action: PayloadAction<User | null>) {
-      state.author = action.payload;
-      state.selectedPost = null;
+    clearPosts(state) {
       state.items = [];
+      state.loaded = false;
       state.hasError = false;
-    },
-    setSelectedPost(state, action: PayloadAction<Post | null>) {
-      state.selectedPost = action.payload;
     },
   },
   extraReducers: builder => {
@@ -62,5 +53,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { setAuthor, setSelectedPost } = postSlice.actions;
+export const { clearPosts } = postSlice.actions;
 export default postSlice.reducer;
