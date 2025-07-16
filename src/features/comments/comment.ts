@@ -53,7 +53,7 @@ export const commentsSlice = createSlice({
         return {
           ...state,
           loading: false,
-          hasError: 'no responce to comments',
+          hasError: 'no response to comments',
         };
       });
   },
