@@ -15,13 +15,33 @@ iframe {
 
   &--open {
     opacity: 1;
+    overflow: visible;
 
     @media (min-width: 769px) {
       max-width: 50%;
     }
   }
+
 }
 
 .message-body {
   white-space: pre-line;
+}
+
+.flex-container {
+  display: flex;
+  gap: 1.5rem;
+
+  @media (max-width: 769px) {
+    flex-direction: row;
+  }
+}
+
+.flex-item {
+  flex: 1;
+  display: flex;
+}
+
+.flex-itemDown {
+  flex: 1;
 }
