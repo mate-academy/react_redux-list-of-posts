@@ -63,7 +63,7 @@ const postsSlice = createSlice({
         },
       )
       .addCase(fetchPostsByUser.rejected, state => {
-        state.loaded = true;
+        state.loaded = true; //its important because loading has been ended but with error
         state.hasError = true;
       });
   },
