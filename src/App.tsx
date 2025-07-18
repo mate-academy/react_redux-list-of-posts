@@ -13,7 +13,7 @@ import { User } from './types/User';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from './features/usersSlice';
 import { AppDispatch, RootState } from './app/store';
-import { fetchPosts, fetchPostsByUser } from './features/postsSlice';
+import { fetchPostsByUser } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
@@ -21,7 +21,6 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchUsers());
-    dispatch(fetchPosts());
   }, [dispatch]);
 
   const posts = useSelector((state: RootState) => state.posts.items);
@@ -39,7 +38,7 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(fetchPostsByUser(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">

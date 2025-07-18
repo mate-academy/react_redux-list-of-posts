@@ -23,8 +23,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const handleAddComment = ({ name, email, body }: CommentData) => {
-    dispatch(
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
+    await dispatch(
       addComment({
         name,
         email,
@@ -40,7 +40,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     dispatch(fetchComments(post.id));
-  }, [post.id]);
+
+    setVisible(false);
+  }, [post.id, dispatch]);
 
   return (
     <div className="content" data-cy="PostDetails">

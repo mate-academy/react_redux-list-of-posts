@@ -61,10 +61,10 @@ const commentsSlice = createSlice({
       )
       .addCase(fetchComments.rejected, state => {
         state.hasError = true;
-        state.loaded = false;
+        state.loaded = true;
       })
+
       .addCase(addComment.pending, state => {
-        state.loaded = false;
         state.hasError = false;
       })
 
@@ -72,15 +72,13 @@ const commentsSlice = createSlice({
         addComment.fulfilled,
         (state, action: PayloadAction<Comment>) => {
           state.items.push(action.payload);
-          state.loaded = true;
         },
       )
 
       .addCase(addComment.rejected, state => {
-        state.loaded = false;
-        state.items = [];
         state.hasError = true;
       })
+
       .addCase(
         removeComment.fulfilled,
         (state, action: PayloadAction<number>) => {
