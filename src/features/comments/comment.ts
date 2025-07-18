@@ -41,19 +41,24 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(initComment.pending, state => {
-        return { ...state, loading: true };
+        return { ...state, loading: true, hasError: '' };
       })
       .addCase(
         initComment.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
-          return { ...state, comments: action.payload, loading: false };
+          return {
+            ...state,
+            comments: action.payload,
+            loading: false,
+            hasError: '',
+          };
         },
       )
       .addCase(initComment.rejected, state => {
         return {
           ...state,
           loading: false,
-          hasError: 'no responce to comments',
+          hasError: 'no response to comments',
         };
       });
   },

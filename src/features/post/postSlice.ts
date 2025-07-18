@@ -29,10 +29,10 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(initPost.pending, state => {
-        return { ...state, loading: true };
+        return { ...state, loading: true, error: '' };
       })
       .addCase(initPost.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        return { ...state, posts: action.payload, loading: false };
+        return { ...state, posts: action.payload, loading: false, error: '' };
       })
       .addCase(initPost.rejected, state => {
         return {

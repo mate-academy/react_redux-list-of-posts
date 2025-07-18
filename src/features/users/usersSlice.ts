@@ -29,10 +29,10 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(initUsers.pending, state => {
-        return { ...state, loading: true };
+        return { ...state, loading: true, error: '' };
       })
       .addCase(initUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
-        return { ...state, users: action.payload, loading: false };
+        return { ...state, users: action.payload, loading: false, error: '' };
       })
       .addCase(initUsers.rejected, state => {
         return {
