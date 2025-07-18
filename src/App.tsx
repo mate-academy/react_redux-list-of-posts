@@ -9,37 +9,35 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsers } from './features/usersSlice';
+import { AppDispatch, RootState } from './app/store';
+import { fetchPosts, fetchPostsByUser } from './features/postsSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(fetchUsers());
+    dispatch(fetchPosts());
+  }, [dispatch]);
+
+  const posts = useSelector((state: RootState) => state.posts.items);
+  const loaded = useSelector((state: RootState) => state.posts.loaded);
+  const hasError = useSelector((state: RootState) => state.posts.hasError);
+
+  const [author, setAuthor] = useState<User | null>(null);
+  const selectedPost = useSelector(
+    (state: RootState) => state.selectedPost.post,
+  );
+
+  useEffect(() => {
+    dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(fetchPostsByUser(author.id));
     }
   }, [author]);
 
@@ -77,7 +75,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
