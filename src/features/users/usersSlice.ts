@@ -7,30 +7,30 @@ export const init = createAsyncThunk('users/fetch', () => getUsers());
 type UsersState = {
   items: User[];
   loading: boolean;
-  error: string;
+  error: string | null;
 };
 
 const initialState: UsersState = {
   items: [],
   loading: false,
-  error: '',
+  error: null,
 };
 
 const usersSlice = createSlice({
-  name: 'items',
+  name: 'users',
   initialState,
   reducers: {},
-  extraReducers: bulder => {
-    bulder.addCase(init.pending, state => {
+  extraReducers: builder => {
+    builder.addCase(init.pending, state => {
       state.loading = true;
     });
 
-    bulder.addCase(init.fulfilled, (state, action: PayloadAction<User[]>) => {
+    builder.addCase(init.fulfilled, (state, action: PayloadAction<User[]>) => {
       state.loading = false;
       state.items = action.payload;
     });
 
-    bulder.addCase(init.rejected, state => {
+    builder.addCase(init.rejected, state => {
       state.loading = false;
       state.error = 'Error loading data from server';
     });

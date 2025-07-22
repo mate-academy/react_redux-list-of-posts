@@ -36,7 +36,7 @@ type CommentsState = {
 const initialState: CommentsState = {
   items: [],
   loading: false,
-  error: '',
+  error: null,
   adding: false,
   isDeleting: false,
 };
