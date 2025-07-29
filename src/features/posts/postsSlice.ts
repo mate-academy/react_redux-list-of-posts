@@ -1,44 +1,54 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
+import { User } from '../../types/User';
 
-interface PostsState {
-  loaded: boolean;
-  hasError: boolean;
+export const fetchPosts = createAsyncThunk(
+  'posts/fetch',
+  async (userId: User['id']) => getUserPosts(userId),
+);
+
+export interface PostsState {
   items: Post[];
+  loaded: boolean;
+  error: boolean;
 }
 
-const initialState: PostsState = {
-  loaded: false,
-  hasError: false,
-  items: [],
-};
+const initialState: PostsState = { items: [], loaded: false, error: false };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPostsLoading: (state) => {
-      state.loaded = false;
-      state.hasError = false;
-    },
-    setPostsSuccess: (state, action: PayloadAction<Post[]>) => {
-      state.loaded = true;
-      state.hasError = false;
+    setPosts: (state, action: PayloadAction<Post[]>) => {
       state.items = action.payload;
     },
-    setPostsError: (state) => {
-      state.loaded = true;
-      state.hasError = true;
+
+    clearPosts: state => {
       state.items = [];
-    },
-    clearPosts: (state) => {
       state.loaded = false;
-      state.hasError = false;
-      state.items = [];
+      state.error = false;
     },
+  },
+
+  extraReducers: builder => {
+    builder.addCase(fetchPosts.pending, state => {
+      state.loaded = false;
+      state.error = false;
+    });
+
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      state.loaded = true;
+      state.items = action.payload;
+    });
+
+    builder.addCase(fetchPosts.rejected, state => {
+      state.loaded = true;
+      state.error = true;
+    });
   },
 });
 
-export const { setPostsLoading, setPostsSuccess, setPostsError, clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;
-export type { PostsState };
+export const { setPosts, clearPosts } = postsSlice.actions;
