@@ -42,6 +42,20 @@ module.exports = {
       "error",
       {
         "props": true,
+        "ignorePropertyModificationsFor": [
+          "state", // для Redux Toolkit слайсов
+          "acc", // для array.reduce
+          "accumulator", // для array.reduce
+          "sum", // для array.reduce
+          "curr", // для array.reduce
+          "current" // для array.reduce
+        ]
+      }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": true,
         "ignorePropertyModificationsFor": ["state"]
       }
     ],

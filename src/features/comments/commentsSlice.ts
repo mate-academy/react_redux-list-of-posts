@@ -17,30 +17,25 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    // eslint-disable-next-line no-param-reassign
-    setCommentsLoading: state => {
+    setCommentsLoading: (state) => {
       state.loaded = false;
       state.hasError = false;
     },
-    // eslint-disable-next-line no-param-reassign
     setCommentsSuccess: (state, action: PayloadAction<Comment[]>) => {
       state.loaded = true;
       state.hasError = false;
       state.items = action.payload;
     },
-    // eslint-disable-next-line no-param-reassign
-    setCommentsError: state => {
+    setCommentsError: (state) => {
       state.loaded = true;
       state.hasError = true;
       state.items = [];
     },
-    // eslint-disable-next-line no-param-reassign
-    clearComments: state => {
+    clearComments: (state) => {
       state.loaded = false;
       state.hasError = false;
       state.items = [];
     },
-    // eslint-disable-next-line no-param-reassign
     addComment: (state, action: PayloadAction<Comment>) => {
       state.items.push(action.payload);
     },
@@ -52,7 +47,7 @@ export const {
   setCommentsSuccess,
   setCommentsError,
   clearComments,
-  addComment,
+  addComment
 } = commentsSlice.actions;
 export default commentsSlice.reducer;
 export type { CommentsState };

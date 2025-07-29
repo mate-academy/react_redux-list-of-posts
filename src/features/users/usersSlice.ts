@@ -14,30 +14,30 @@ const initialState: UsersState = {
   users: [],
 };
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  const users = await getUsers();
-  return users;
-});
+export const fetchUsers = createAsyncThunk(
+  'users/fetchUsers',
+  async () => {
+    const users = await getUsers();
+    return users;
+  }
+);
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      // eslint-disable-next-line no-param-reassign
-      .addCase(fetchUsers.pending, state => {
+      .addCase(fetchUsers.pending, (state) => {
         state.loaded = false;
         state.hasError = false;
       })
-      // eslint-disable-next-line no-param-reassign
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loaded = true;
         state.hasError = false;
         state.users = action.payload;
       })
-      // eslint-disable-next-line no-param-reassign
-      .addCase(fetchUsers.rejected, state => {
+      .addCase(fetchUsers.rejected, (state) => {
         state.loaded = true;
         state.hasError = true;
         state.users = [];
