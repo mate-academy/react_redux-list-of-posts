@@ -13,8 +13,10 @@ const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    setAuthor: (state, action: PayloadAction<User | null>) => {
-      state.current = action.payload;
+    setAuthor: (_state, action: PayloadAction<User | null>) => {
+      return {
+        current: action.payload,
+      };
     },
   },
 });

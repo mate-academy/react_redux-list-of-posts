@@ -17,8 +17,7 @@ const initialState: UsersState = {
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
   async () => {
-    const users = await getUsers();
-    return users;
+    return await getUsers();
   }
 );
 
@@ -28,20 +27,23 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.loaded = false;
-        state.hasError = false;
-      })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.hasError = false;
-        state.users = action.payload;
-      })
-      .addCase(fetchUsers.rejected, (state) => {
-        state.loaded = true;
-        state.hasError = true;
-        state.users = [];
-      });
+      .addCase(fetchUsers.pending, (state) => ({
+        ...state,
+        loaded: false,
+        hasError: false,
+      }))
+      .addCase(fetchUsers.fulfilled, (state, action) => ({
+        ...state,
+        loaded: true,
+        hasError: false,
+        users: action.payload,
+      }))
+      .addCase(fetchUsers.rejected, (state) => ({
+        ...state,
+        loaded: true,
+        hasError: true,
+        users: [],
+      }));
   },
 });
 

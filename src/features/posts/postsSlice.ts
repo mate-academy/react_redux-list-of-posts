@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
@@ -15,38 +14,49 @@ export interface PostsState {
   error: boolean;
 }
 
-const initialState: PostsState = { items: [], loaded: false, error: false };
+const initialState: PostsState = {
+  items: [],
+  loaded: false,
+  error: false,
+};
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.items = action.payload;
-    },
+    // ✅ обновляет только items
+    setPosts: (state, action: PayloadAction<Post[]>) => ({
+      ...state,
+      items: action.payload,
+    }),
 
-    clearPosts: state => {
-      state.items = [];
-      state.loaded = false;
-      state.error = false;
-    },
+    // ✅ сбрасывает весь state
+    clearPosts: () => ({
+      items: [],
+      loaded: false,
+      error: false,
+    }),
   },
 
   extraReducers: builder => {
-    builder.addCase(fetchPosts.pending, state => {
-      state.loaded = false;
-      state.error = false;
-    });
+    builder.addCase(fetchPosts.pending, state => ({
+      ...state,
+      loaded: false,
+      error: false,
+    }));
 
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.loaded = true;
-      state.items = action.payload;
-    });
+    builder.addCase(fetchPosts.fulfilled, (state, action) => ({
+      ...state,
+      items: action.payload,
+      loaded: true,
+      error: false,
+    }));
 
-    builder.addCase(fetchPosts.rejected, state => {
-      state.loaded = true;
-      state.error = true;
-    });
+    builder.addCase(fetchPosts.rejected, state => ({
+      ...state,
+      loaded: true,
+      error: true,
+    }));
   },
 });
 
