@@ -17,8 +17,6 @@ const initialState: CommentsState = {
 export const fetchAllComments = createAsyncThunk(
   'comments/commentsPosts',
   async (postId: number) => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-
     return getPostComments(postId);
   },
 );

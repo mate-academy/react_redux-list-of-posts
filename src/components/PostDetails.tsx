@@ -15,8 +15,8 @@ export const PostDetails = () => {
   const { comments, loading, error } = useAppSelector(state => state.comments);
   const selectedPost = useAppSelector(state => state.selectedPost);
 
-  const deleteComment = (postId: number) => {
-    dispatch(deleteCommentFromServer(postId));
+  const deleteComment = (commentId: number) => {
+    dispatch(deleteCommentFromServer(commentId));
   };
 
   useEffect(() => {
