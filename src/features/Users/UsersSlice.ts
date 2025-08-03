@@ -5,13 +5,13 @@ import { getUsers } from '../../api/users';
 export interface UsersState {
   loaded: boolean;
   hasError: boolean;
-  Users: User[];
+  users: User[];
 }
 
 const initialState: UsersState = {
   loaded: false,
   hasError: false,
-  Users: [],
+  users: [],
 };
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
@@ -33,13 +33,13 @@ const usersSlice = createSlice({
         ...state,
         loaded: true,
         hasError: false,
-        Users: action.payload,
+        users: action.payload,
       }))
       .addCase(fetchUsers.rejected, state => ({
         ...state,
         loaded: true,
         hasError: true,
-        Users: [],
+        users: [],
       }));
   },
 });

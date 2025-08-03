@@ -5,7 +5,7 @@ import { fetchUsers } from '../features/Users/UsersSlice';
 import { setAuthor } from '../features/Author/AuthorSlice';
 
 export const UserSelector = () => {
-  const users = useAppSelector(state => state.users.Users);
+  const users = useAppSelector(state => state.users.users);
   const dispatch = useAppDispatch();
   const selectedUser = useAppSelector(state => state.author.current);
   const [expanded, setExpanded] = useState(false);
