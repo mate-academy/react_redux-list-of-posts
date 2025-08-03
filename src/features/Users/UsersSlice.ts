@@ -33,13 +33,13 @@ const usersSlice = createSlice({
         ...state,
         loaded: true,
         hasError: false,
-        users: action.payload,
+        Users: action.payload,
       }))
       .addCase(fetchUsers.rejected, state => ({
         ...state,
         loaded: true,
         hasError: true,
-        users: [],
+        Users: [],
       }));
   },
 });

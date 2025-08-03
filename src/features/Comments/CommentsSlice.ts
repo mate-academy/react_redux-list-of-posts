@@ -32,7 +32,7 @@ const commentsSlice = createSlice({
       ...state,
       loaded: true,
       hasError: true,
-      item: [],
+      items: [],
     }),
     clearComment: () => ({
       loaded: false,
