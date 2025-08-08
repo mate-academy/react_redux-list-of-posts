@@ -72,10 +72,15 @@ export const NewCommentForm: React.FC = () => {
       postId: selectedPost.id,
     };
 
-    await dispatch(commentAction.addComment(newComment));
+    try {
+      await dispatch(commentAction.addComment(newComment));
 
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+      setValues(current => ({ ...current, body: '' }));
+    } catch(e) {
+      throw new Error('Adding error');
+    } finally {
+       setSubmitting(false);
+    }
   };
 
   return (

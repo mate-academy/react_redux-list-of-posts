@@ -15,7 +15,7 @@ export const PostsList: React.FC = () => {
     if (post.id === selectedPost?.id) {
       dispatch(selectedPostAction.clearPost());
     } else {
-      dispatch(selectedPostAction.setlectPost(post));
+      dispatch(selectedPostAction.selectPost(post));
     }
   };
 

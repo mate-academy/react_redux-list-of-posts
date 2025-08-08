@@ -80,7 +80,10 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => selectUser(user)}
+              onClick={(e) => {
+                e.preventDefault();
+                selectUser(user);
+              }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
