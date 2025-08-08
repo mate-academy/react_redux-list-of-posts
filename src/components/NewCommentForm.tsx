@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import * as commentAction from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -52,20 +54,35 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: !email,
       body: !body,
     });
+    setSubmitError(false);
 
     if (!name || !email || !body) {
       return;
     }
 
+    if (!selectedPost) {
+      return;
+    }
+
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    const newComment: Comment = {
+      id: 0,
+      name,
+      email,
+      body,
+      postId: selectedPost.id,
+    };
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      await dispatch(commentAction.addComment(newComment)).unwrap();
+
+      setValues(current => ({ ...current, body: '' }));
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -185,6 +202,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             Clear
           </button>
         </div>
+
+        {submitError && (
+          <div className="notification is-danger" data-cy="PostsLoadingError">
+            Something went wrong!
+          </div>
+        )}
       </div>
     </form>
   );
