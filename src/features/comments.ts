@@ -3,15 +3,15 @@ import { Comment } from '../types/Comment';
 import * as commentsApi from '../api/comments';
 
 type CommentsState = {
-  comments: Comment[];
-  loading: boolean;
-  error: boolean;
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
-  loading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const fetchComments = createAsyncThunk(
@@ -44,24 +44,22 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        state.loading = true;
-        state.error = false;
+        state.loaded = true;
+        state.hasError = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        state.comments = action.payload;
-        state.loading = false;
+        state.items = action.payload;
+        state.loaded = false;
       })
       .addCase(fetchComments.rejected, state => {
-        state.error = true;
-        state.loading = false;
+        state.hasError = true;
+        state.loaded = false;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(deleteComment.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(
-          comment => comment.id !== action.payload,
-        );
+        state.items = state.items.filter(item => item.id !== action.payload);
       });
   },
 });

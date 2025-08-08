@@ -7,12 +7,9 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users.users);
+  const users = useAppSelector(state => state.users.items);
   const selectedUser = useAppSelector(state => state.author.selectedUser);
 
   useEffect(() => {
@@ -80,7 +77,7 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 selectUser(user);
               }}

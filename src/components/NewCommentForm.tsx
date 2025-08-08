@@ -9,6 +9,7 @@ export const NewCommentForm: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -53,6 +54,7 @@ export const NewCommentForm: React.FC = () => {
       email: !email,
       body: !body,
     });
+    setSubmitError(false);
 
     if (!name || !email || !body) {
       return;
@@ -73,13 +75,13 @@ export const NewCommentForm: React.FC = () => {
     };
 
     try {
-      await dispatch(commentAction.addComment(newComment));
+      await dispatch(commentAction.addComment(newComment)).unwrap();
 
       setValues(current => ({ ...current, body: '' }));
-    } catch(e) {
-      throw new Error('Adding error');
+    } catch {
+      setSubmitError(true);
     } finally {
-       setSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -200,6 +202,12 @@ export const NewCommentForm: React.FC = () => {
             Clear
           </button>
         </div>
+
+        {submitError && (
+          <div className="notification is-danger" data-cy="PostsLoadingError">
+            Something went wrong!
+          </div>
+        )}
       </div>
     </form>
   );
