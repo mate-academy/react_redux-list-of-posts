@@ -15,9 +15,7 @@ export const loadPosts = createAsyncThunk(
 );
 
 const initialState = {
-  items: [
-    { id: 1, userId: 990, title: 'Test Post', body: 'Test content' },
-  ] as Post[],
+  items: [] as Post[],
   loaded: false,
   hasError: false,
 };
