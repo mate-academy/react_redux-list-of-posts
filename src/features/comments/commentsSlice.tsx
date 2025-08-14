@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/return-await */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   createComment,
   deleteComment,
@@ -39,12 +39,24 @@ const initialState = {
   items: [] as Comment[],
   loaded: false,
   hasError: false,
+  visible: false,
+  adding: false,
 };
 
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    setVisible: (state, action: PayloadAction<boolean>) => {
+      state.visible = action.payload;
+    },
+    showCommentsForm: state => {
+      state.visible = true;
+    },
+    hideCommentsForm: state => {
+      state.visible = false;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(loadComments.pending, state => {
@@ -55,6 +67,7 @@ export const commentsSlice = createSlice({
         state.items = action.payload;
         state.loaded = true;
         state.hasError = false;
+        state.visible = false;
       })
       .addCase(loadComments.rejected, state => {
         state.loaded = true;
@@ -62,14 +75,18 @@ export const commentsSlice = createSlice({
       })
       .addCase(addComment.pending, state => {
         state.hasError = false;
+        state.adding = true;
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.items.push(action.payload);
         state.loaded = true;
         state.hasError = false;
+        state.visible = false;
+        state.adding = false;
       })
       .addCase(addComment.rejected, state => {
         state.hasError = true;
+        state.adding = false;
       })
       .addCase(removeComment.pending, state => {
         state.loaded = false;
@@ -91,5 +108,10 @@ export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;
 export const selectCommentsError = (state: RootState) =>
   state.comments.hasError;
+export const selectCommentsVisible = (state: RootState) =>
+  state.comments.visible;
+export const selectCommentsAdding = (state: RootState) => state.comments.adding;
 
 export default commentsSlice.reducer;
+export const { setVisible, showCommentsForm, hideCommentsForm } =
+  commentsSlice.actions;

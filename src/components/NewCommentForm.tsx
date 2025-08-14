@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
+import { selectCommentsAdding } from '../features/comments/commentsSlice';
 
 type Props = {
   onSubmit: (CommentData: CommentData) => void;
@@ -15,6 +17,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: false,
     body: false,
   });
+
+  const adding = useAppSelector(selectCommentsAdding);
+
+  const clearBody = () => {
+    setBody('');
+    setErrors(current => ({ ...current, body: false }));
+  };
 
   const clearForm = () => {
     setName('');
@@ -60,7 +69,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     onSubmit({ name: name.trim(), email: email.trim(), body: body.trim() });
 
-    clearForm();
+    clearBody();
   };
 
   return (
@@ -164,7 +173,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': adding,
+            })}
+          >
             Add
           </button>
         </div>
