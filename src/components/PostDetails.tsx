@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import * as commentsApi from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   createCommentForPost,
@@ -44,12 +43,12 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    const newComment = await commentsApi.createComment({
+    const newComment = {
       name,
       email,
       body,
       postId: post.id,
-    });
+    };
 
     dispatch(createCommentForPost(newComment));
   };
