@@ -4,7 +4,11 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsSlice } from '../features/comments';
+import {
+  createCommentForPost,
+  deleteCommentById,
+  fetchCommentsByPost,
+} from '../features/comments';
 import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
@@ -12,9 +16,10 @@ export const PostDetails: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const post = useAppSelector(state => state.posts.selectedPost);
+  const post = useAppSelector(state => state.post.post);
   const comments = useAppSelector(state => state.comments.items);
   const loaded = useAppSelector(state => state.comments.loaded);
+  const loading = useAppSelector(state => state.comments.loading);
   const hasError = useAppSelector(state => state.comments.hasError);
 
   function loadComments() {
@@ -22,15 +27,8 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    dispatch(commentsSlice.actions.setLoaded(false));
-    dispatch(commentsSlice.actions.setError(false));
     setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(list => dispatch(commentsSlice.actions.setComments(list)))
-      .catch(() => dispatch(commentsSlice.actions.setError(true)))
-      .finally(() => dispatch(commentsSlice.actions.setLoaded(true)));
+    dispatch(fetchCommentsByPost(post.id));
   }
 
   useEffect(() => {
@@ -46,23 +44,18 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
+    const newComment = await commentsApi.createComment({
+      name,
+      email,
+      body,
+      postId: post.id,
+    });
 
-      dispatch(commentsSlice.actions.addComment(newComment));
-    } catch (error) {
-      dispatch(commentsSlice.actions.setError(true));
-    }
+    dispatch(createCommentForPost(newComment));
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(commentsSlice.actions.deleteComment(commentId));
-    await commentsApi.deleteComment(commentId);
+    dispatch(deleteCommentById(commentId));
   };
 
   if (!post) {
@@ -78,9 +71,9 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loading && <Loader />}
 
-        {loaded && hasError && (
+        {!loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>

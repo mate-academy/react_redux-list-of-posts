@@ -9,38 +9,33 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { getUsers } from './api/users';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { usersSlice } from './features/users';
-import { postsSlice } from './features/posts';
+import { fetchUsers } from './features/users';
+import { fetchPostsByUser, postsSlice } from './features/posts';
+import { postSlice } from './features/selectedPost';
 
 export const App: React.FC = () => {
   // start my code
   const dispatch = useAppDispatch();
-  const author = useAppSelector(state => state.users.selectedUser);
+  const author = useAppSelector(state => state.author.author);
   const posts = useAppSelector(state => state.posts.items);
   const postsLoaded = useAppSelector(state => state.posts.loaded);
-  const postsError = useAppSelector(state => state.posts.hasError);
-  const selectedPost = useAppSelector(state => state.posts.selectedPost);
+  const postsLoading = useAppSelector(state => state.posts.loading);
+  const postsError = useAppSelector(state => state.posts.error);
+  const selectedPost = useAppSelector(state => state.post.post);
 
   useEffect(() => {
-    getUsers().then(list => dispatch(usersSlice.actions.setUsers(list)));
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   //end
 
   function loadUserPosts(userId: number) {
-    dispatch(postsSlice.actions.setLoaded(false));
-
-    getUserPosts(userId)
-      .then(list => dispatch(postsSlice.actions.setPosts(list)))
-      .catch(() => dispatch(postsSlice.actions.setError(true)))
-      .finally(() => dispatch(postsSlice.actions.setLoaded(true)));
+    dispatch(fetchPostsByUser(userId));
   }
 
   useEffect(() => {
-    dispatch(postsSlice.actions.setPost(null));
+    dispatch(postSlice.actions.setPost(null));
 
     if (author) {
       loadUserPosts(author.id);
@@ -62,9 +57,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !postsLoaded && <Loader />}
+                {author && postsLoading && <Loader />}
 
-                {author && postsLoaded && postsError && (
+                {author && !postsLoading && postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
