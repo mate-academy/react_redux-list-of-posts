@@ -4,13 +4,13 @@ import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
 type PostState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: PostState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -27,7 +27,7 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     clearPosts(state) {
-      state.posts = [];
+      state.items = [];
       state.loaded = false;
       state.hasError = false;
     },
@@ -39,12 +39,12 @@ const postsSlice = createSlice({
         state.hasError = false;
       })
       .addCase(fetchPostsByUser.fulfilled, (state, action) => {
-        state.posts = action.payload;
+        state.items = action.payload;
         state.loaded = true;
         state.hasError = false;
       })
       .addCase(fetchPostsByUser.rejected, state => {
-        state.posts = [];
+        state.items = [];
         state.loaded = true;
         state.hasError = true;
       });

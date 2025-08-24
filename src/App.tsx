@@ -21,7 +21,11 @@ import { setAuthor } from './features/author/authorSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
   const { author } = useAppSelector(state => state.author);
   const { items: selectedPost } = useAppSelector(state => state.selectedPost);
 
