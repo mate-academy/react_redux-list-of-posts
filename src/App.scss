@@ -1,3 +1,9 @@
+// Ensure Bulma dropdown menu is visible when open
+.dropdown.is-active .dropdown-menu {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 iframe {
   display: none;
 }
