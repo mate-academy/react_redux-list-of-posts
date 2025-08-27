@@ -7,11 +7,12 @@ export const fetchUsers = createAsyncThunk(
   async () => getUsers(),
   {
     condition: (_, { getState }) => {
-      // @ts-ignore
+      // @ts-expect-error Redux Toolkit getState type is not inferred here
       const { users } = getState();
+
       return !users.loaded;
     },
-  }
+  },
 );
 
 interface UsersState {
@@ -30,21 +31,20 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchUsers.pending, state => {
         if (!state.loaded) {
-          state.loaded = false;
-          state.hasError = false;
+          return { ...state, loaded: false, hasError: false };
         }
+
+        return state;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.items = action.payload;
+        return { ...state, loaded: true, items: action.payload };
       })
-      .addCase(fetchUsers.rejected, (state) => {
-        state.loaded = false;
-        state.hasError = true;
+      .addCase(fetchUsers.rejected, state => {
+        return { ...state, loaded: false, hasError: true };
       });
   },
 });
