@@ -4,9 +4,10 @@ import { CommentData } from '../types/Comment';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
+  visible: boolean;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, visible }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -20,6 +21,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: '',
     body: '',
   });
+
+  React.useEffect(() => {
+    if (visible) {
+      setSubmitting(false);
+      setValues({ name: '', email: '', body: '' });
+      setErrors({ name: false, email: false, body: false });
+    }
+  }, [visible]);
 
   const clearForm = () => {
     setValues({
@@ -84,6 +93,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
+            disabled={false}
           />
 
           <span className="icon is-small is-left">
@@ -121,6 +131,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
+            disabled={false}
           />
 
           <span className="icon is-small is-left">
@@ -157,6 +168,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
+            disabled={false}
           />
         </div>
 
