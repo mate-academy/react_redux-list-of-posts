@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
 import classNames from 'classnames';
-import React, { useEffect, useMemo, useState } from 'react';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -10,59 +8,53 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { client } from './utils/fetchClient';
+import * as apiClient from './api/api';
 import { User } from './types/User';
+import { useEffect, useState } from 'react';
 import { Post } from './types/Post';
 
-export const App: React.FC = () => {
+export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [isUsersLoading, setIsUsersLoading] = useState(false);
-  const [usersError, setUsersError] = useState<string | null>(null);
-
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-  const [postsError, setPostsError] = useState<string | null>(null);
-
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [isErrorShown, setIsErrorShown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isNewCommentFormOpened, setIsNewCommentFormOpened] = useState(false);
 
   useEffect(() => {
-    setIsUsersLoading(true);
-    setUsersError(null);
-
-    client
-      .get<User[]>('/users')
+    apiClient
+      .getUsers()
       .then(setUsers)
-      .catch(() => setUsersError('Failed to load users'))
-      .finally(() => setIsUsersLoading(false));
+      .catch(() => setIsErrorShown(true));
   }, []);
 
-  useEffect(() => {
-    if (!selectedUserId) {
-      setPosts([]);
-      setSelectedPostId(null);
-      setIsPostsLoading(false);
-      setPostsError(null);
+  const onUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setIsLoading(true);
+    setIsErrorShown(false);
+    setSelectedPost(null);
+
+    apiClient
+      .getUserPosts(user.id)
+      .then(setUserPosts)
+      .catch(() => setIsErrorShown(true))
+      .finally(() => setIsLoading(false));
+  };
+
+  const onPostSelect = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      setSelectedPost(null);
 
       return;
     }
 
-    setIsPostsLoading(true);
-    setPostsError(null);
-    setSelectedPostId(null);
+    setSelectedPost(post);
 
-    client
-      .get<Post[]>(`/posts?userId=${selectedUserId}`)
-      .then(setPosts)
-      .catch(() => setPostsError('Failed to load posts'))
-      .finally(() => setIsPostsLoading(false));
-  }, [selectedUserId]);
-
-  const selectedPost = useMemo(
-    () => posts.find(p => p.id === selectedPostId) || null,
-    [posts, selectedPostId],
-  );
+    if (isNewCommentFormOpened) {
+      setIsNewCommentFormOpened(false);
+    }
+  };
 
   return (
     <main className="section">
@@ -73,22 +65,18 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  selectedUserId={selectedUserId}
-                  onChange={setSelectedUserId}
-                  disabled={isUsersLoading && users.length === 0}
-                  loading={isUsersLoading}
-                  error={usersError}
+                  selectedUser={selectedUser}
+                  onUserSelect={onUserSelect}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUserId && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isPostsLoading && <Loader />}
-
-                {!isPostsLoading && postsError && (
+                {isLoading && <Loader />}
+                {isErrorShown && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -97,27 +85,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isPostsLoading &&
-                  !postsError &&
-                  selectedUserId &&
-                  posts.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {userPosts.length === 0 && !isErrorShown && !isLoading && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                {!isPostsLoading && !postsError && posts.length > 0 && (
+                {userPosts.length > 0 && !isLoading && !isErrorShown && (
                   <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPostId}
-                    onToggle={postId =>
-                      setSelectedPostId(curr =>
-                        curr === postId ? null : postId,
-                      )
-                    }
+                    posts={userPosts}
+                    selectedPost={selectedPost}
+                    onPostSelect={onPostSelect}
                   />
                 )}
               </div>
@@ -131,12 +109,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': Boolean(selectedPostId) },
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails post={selectedPost} key={selectedPost.id} />
+                <PostDetails
+                  post={selectedPost}
+                  isNewCommentFormOpened={isNewCommentFormOpened}
+                  setIsNewCommentFormOpened={setIsNewCommentFormOpened}
+                />
               )}
             </div>
           </div>
