@@ -1,51 +1,52 @@
-import React, { useContext, useEffect, useState } from 'react';
-import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  users: User[];
+  selectedUserId: number | null;
+  onChange: (userId: number | null) => void;
+  disabled?: boolean;
+  loading?: boolean;
+  error?: string | null;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
+  users,
+  selectedUserId,
   onChange,
+  disabled = false,
+  loading = false,
+  error = null,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const current = useMemo(
+    () => users.find(u => u.id === selectedUserId) || null,
+    [users, selectedUserId],
+  );
 
   useEffect(() => {
-    if (!expanded) {
+    if (!open) {
       return;
     }
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
+    const handleDocClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
     };
 
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('mousedown', handleDocClick);
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
-  }, [expanded]);
+    return () => document.removeEventListener('mousedown', handleDocClick);
+  }, [open]);
 
   return (
     <div
+      ref={ref}
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={`dropdown ${open ? 'is-active' : ''}`}
     >
       <div className="dropdown-trigger">
         <button
@@ -53,35 +54,48 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
+          onClick={() => setOpen(v => !v)}
+          disabled={disabled}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{current ? current.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
+            <i
+              className={`fas fa-angle-${open ? 'up' : 'down'}`}
+              aria-hidden="true"
+            />
           </span>
         </button>
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {loading && <div className="dropdown-item">Loading...</div>}
+
+          {error && !loading && (
+            <div className="dropdown-item has-text-danger">
+              Failed to load users
+            </div>
+          )}
+
+          {!loading &&
+            !error &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href="#"
+                className={`dropdown-item ${
+                  user.id === selectedUserId ? 'is-active' : ''
+                }`}
+                onClick={e => {
+                  e.preventDefault();
+                  onChange(user.id);
+                  setOpen(false);
+                }}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>
