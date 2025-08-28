@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
@@ -9,27 +10,32 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+import { getPosts, getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useAppDispatch } from './app/hooks';
+import {
+  init,
+  setAuthor,
+  setSelectedPost,
+  posts,
+  setPosts,
+  loaded,
+  hasError,
+  author,
+  selectedPost,
+} from './features/counter/infoAppSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [author, setAuthor] = useState<User | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -37,11 +43,13 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(init(author.id));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
+
+  console.log(posts);
 
   return (
     <main className="section">
