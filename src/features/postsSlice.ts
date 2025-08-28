@@ -8,14 +8,12 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 import { RootState } from '../app/store';
 
-export interface PostsState {
-  list: Post[];
-  status: 'idle' | 'loading' | 'failed';
-}
+export interface PostsState { loaded: boolean; hasError: boolean; items: Post[] }
 
 const initialState: PostsState = {
-  list: [],
-  status: 'idle',
+  loaded: false,
+  hasError: false,
+  items: []
 };
 
 export const fetchPosts = createAsyncThunk(
@@ -27,25 +25,29 @@ export const fetchPosts = createAsyncThunk(
   },
 );
 
-export const postsSlice: Slice = createSlice({
+export const postsSlice: Slice<PostsState> = createSlice({
   name: 'posts',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        state.status = 'loading';
+        state.loaded = false;
       })
       .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.status = 'idle';
-        state.list = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.status = 'failed';
+        state.loaded = true;
+        state.hasError = true;
       });
   },
 });
 
 export const postsReducer = postsSlice.reducer;
-export const selectPosts = (state: RootState): Post[] => state.posts.list;
-export const selectPostsStatus = (state: RootState) => state.posts.status;
+export const selectPosts = (state: RootState): Post[] => state.posts.items;
+export const selectPostsStatus = (state: RootState) => ({
+  loaded: state.posts.loaded,
+  hasError: state.posts.hasError,
+});

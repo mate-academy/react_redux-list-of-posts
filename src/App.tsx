@@ -19,7 +19,7 @@ import {
 
 export const App: React.FC = () => {
   const posts = useAppSelector(selectPosts);
-  const postsStatus = useAppSelector(selectPostsStatus);
+  const { loaded, hasError } = useAppSelector(selectPostsStatus);
   // const [loaded, setLoaded] = useState(false);
   // const [hasError, setError] = useState(false);
 
@@ -36,9 +36,6 @@ export const App: React.FC = () => {
       dispatch(fetchPosts(author.id));
     }
   }, [author]);
-
-  const loaded = postsStatus !== 'loading';
-  const hasError = postsStatus === 'failed';
 
   return (
     <main className="section">

@@ -15,11 +15,8 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const post = useAppSelector(state => state.selectedPost);
   const comments = useAppSelector(selectComments);
-  const status = useAppSelector(selectCommentsStatus);
+  const { loaded, hasError } = useAppSelector(selectCommentsStatus);
   const [visible, setVisible] = useState(false);
-
-  const hasError = status === 'failed';
-  const loaded = status !== 'loading';
 
   if (!post) {
     return null;

@@ -10,13 +10,15 @@ import { Comment, CommentData } from '../types/Comment';
 import * as commentsApi from '../api/comments';
 
 export interface CommentsState {
-  list: Comment[];
-  status: 'idle' | 'loading' | 'failed';
+  loaded: boolean;
+  hasError: boolean;
+  items: Comment[];
 }
 
 const initialState: CommentsState = {
-  list: [],
-  status: 'idle',
+  loaded: false,
+  hasError: false,
+  items: [],
 };
 
 export const fetchComments = createAsyncThunk(
@@ -44,35 +46,36 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-export const commentsSlice: Slice = createSlice({
+export const commentsSlice: Slice<CommentsState> = createSlice({
   name: 'comments',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        state.status = 'loading';
+        state.loaded = false;
       })
       .addCase(
         fetchComments.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
-          state.status = 'idle';
-          state.list = action.payload;
+          state.loaded = true;
+          state.items = action.payload;
         },
       )
       .addCase(fetchComments.rejected, state => {
-        state.status = 'failed';
+        state.loaded = true;
+        state.hasError = true;
       })
       .addCase(
         addComment.fulfilled,
         (state, action: PayloadAction<Comment>) => {
-          state.list.push(action.payload);
+          state.items.push(action.payload);
         },
       )
       .addCase(
         deleteComment.fulfilled,
         (state, action: PayloadAction<number>) => {
-          state.list = state.list.filter(c => c.id !== action.payload);
+          state.items = state.items.filter(c => c.id !== action.payload);
         },
       );
   },
@@ -80,5 +83,8 @@ export const commentsSlice: Slice = createSlice({
 
 export const commentsReducer = commentsSlice.reducer;
 export const selectComments = (state: RootState): Comment[] =>
-  state.comments.list;
-export const selectCommentsStatus = (state: RootState) => state.comments.status;
+  state.comments.items;
+export const selectCommentsStatus = (state: RootState) => ({
+  loaded: state.posts.loaded,
+  hasError: state.posts.hasError,
+});
