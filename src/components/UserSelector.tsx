@@ -4,73 +4,73 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setAuthor } from '../features/authorSlice';
 import { fetchUsers, selectUsers } from '../features/usersSlice';
 
-export const UserSelector: React.FC = () =>
-  {
-    const selectedUser = useAppSelector(state => state.author);
-    const users = useAppSelector(selectUsers);
-    const [expanded, setExpanded] = useState(false);
-    const dispatch = useAppDispatch();
+export const UserSelector: React.FC = () => {
+  const selectedUser = useAppSelector(state => state.author);
+  const users = useAppSelector(selectUsers);
+  const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-      dispatch(fetchUsers());
-    }, []);
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
 
-    useEffect(() => {
-      if (!expanded) {
-        return;
-      }
-      const handleDocumentClick = () => {
-        setExpanded(false);
-      };
+  useEffect(() => {
+    if (!expanded) {
+      return;
+    }
 
-      document.addEventListener('click', handleDocumentClick);
+    const handleDocumentClick = () => {
+      setExpanded(false);
+    };
 
-      // eslint-disable-next-line consistent-return
-      return () => {
-        document.removeEventListener('click', handleDocumentClick);
-      };
-    }, [expanded]);
+    document.addEventListener('click', handleDocumentClick);
 
-    return (
-      <div
-        data-cy="UserSelector"
-        className={classNames('dropdown', { 'is-active': expanded })}
-      >
-        <div className="dropdown-trigger">
-          <button
-            type="button"
-            className="button"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-            onClick={e => {
-              e.stopPropagation();
-              setExpanded(current => !current);
-            }}
-          >
-            <span>{selectedUser?.name || 'Choose a user'}</span>
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [expanded]);
 
-            <span className="icon is-small">
-              <i className="fas fa-angle-down" aria-hidden="true" />
-            </span>
-          </button>
-        </div>
+  return (
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': expanded })}
+    >
+      <div className="dropdown-trigger">
+        <button
+          type="button"
+          className="button"
+          aria-haspopup="true"
+          aria-controls="dropdown-menu"
+          onClick={e => {
+            e.stopPropagation();
+            setExpanded(current => !current);
+          }}
+        >
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                onClick={() => dispatch(setAuthor(user))}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-              >
-                {user.name}
-              </a>
-            ))}
-          </div>
+          <span className="icon is-small">
+            <i className="fas fa-angle-down" aria-hidden="true" />
+          </span>
+        </button>
+      </div>
+
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              onClick={() => dispatch(setAuthor(user))}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};

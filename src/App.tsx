@@ -16,10 +16,8 @@ import {
   selectPosts,
   selectPostsStatus,
 } from './features/postsSlice';
-//import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
-  //const [posts, setPosts] = useState<Post[]>([]);
   const posts = useAppSelector(selectPosts);
   const postsStatus = useAppSelector(selectPostsStatus);
   // const [loaded, setLoaded] = useState(false);
@@ -28,16 +26,6 @@ export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
-
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     .finally(() => setLoaded(true));
-  // }
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -88,8 +76,6 @@ export const App: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* <Counter /> */}
 
           <div
             data-cy="Sidebar"
