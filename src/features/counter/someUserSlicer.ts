@@ -10,7 +10,7 @@ type SomeUsers = {
 };
 
 const initialState: SomeUsers = {
-  user: null,
+  user: null as unknown as User,
   loaded: false,
   hasError: false,
 };
@@ -26,7 +26,7 @@ const someUserSlice = createSlice({
   name: 'someUser',
   initialState,
   reducers: {
-    setSomeUser: (state, action: PayloadAction<User>) => {
+    setSomeUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
     },
   },
@@ -47,5 +47,5 @@ const someUserSlice = createSlice({
   },
 });
 
-export default someUserSlice;
+export default someUserSlice.reducer;
 export const { setSomeUser } = someUserSlice.actions;

@@ -14,33 +14,28 @@ import { getPosts, getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useAppDispatch } from './app/hooks';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   init,
   setAuthor,
   setSelectedPost,
-  posts,
   setPosts,
-  loaded,
   hasError,
-  author,
-  selectedPost,
 } from './features/counter/infoAppSlice';
 
 export const App: React.FC = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
-
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
+  const author = useAppSelector(state => state.counter.author);
+  const loaded = useAppSelector(state => state.counter.loaded);
+  const posts = useAppSelector(state => state.counter.posts);
+  const selectedPost = useAppSelector(state => state.counter.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
     setSelectedPost(null);
+
+    console.log(author);
 
     if (author) {
       dispatch(init(author.id));
@@ -50,6 +45,8 @@ export const App: React.FC = () => {
   }, [author, dispatch]);
 
   console.log(posts);
+  console.log(loaded);
+  console.log(selectedPost);
 
   return (
     <main className="section">
@@ -58,13 +55,13 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && loaded && <Loader />}
 
                 {author && loaded && hasError && (
                   <div
@@ -75,13 +72,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && !loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && !loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}

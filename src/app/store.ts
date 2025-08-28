@@ -8,6 +8,7 @@ export const store = configureStore({
   reducer: {
     counter: infoAppReducer,
     users: usersSliceReducer,
+    someUser: someUserSlice,
   },
 });
 
