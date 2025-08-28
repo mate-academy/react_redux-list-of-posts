@@ -1,44 +1,33 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
+import { useAppSelector } from '../app/hooks';
 
 type Props = {
-  author: User | null;
-  onChange: (user: User) => void;
+  value: User | null;
+  onChange: (user: User | null) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({ author, onChange }) => {
+export const UserSelector: React.FC<Props> = ({ value, onChange }) => {
   const [expanded, setExpanded] = useState(false);
-
-  const users = useAppSelector(state => state.users.users);
-
-  const handleDocumentClick = useCallback(() => {
-    setExpanded(false);
-  }, []);
+  const { items } = useAppSelector(state => state.users);
 
   useEffect(() => {
-    if (expanded) {
-      document.addEventListener('click', handleDocumentClick);
+    if (!expanded) {
+      return;
     }
 
+    const handleDocumentClick = () => {
+      setExpanded(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, [expanded, handleDocumentClick]);
-
-  const handleToggleDropdown = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpanded(current => !current);
-  }, []);
-
-  const handleUserSelect = useCallback(
-    (user: User) => {
-      onChange(user);
-      setExpanded(false);
-    },
-    [onChange],
-  );
+  }, [expanded]);
 
   return (
     <div
@@ -51,9 +40,12 @@ export const UserSelector: React.FC<Props> = ({ author, onChange }) => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handleToggleDropdown}
+          onClick={e => {
+            e.stopPropagation();
+            setExpanded(current => !current);
+          }}
         >
-          <span>{author?.name || 'Choose a user'}</span>
+          <span>{value?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -63,13 +55,15 @@ export const UserSelector: React.FC<Props> = ({ author, onChange }) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {items.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => handleUserSelect(user)}
+              onClick={() => {
+                onChange(user);
+              }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === author?.id,
+                'is-active': user.id === value?.id,
               })}
             >
               {user.name}

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,85 +9,57 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchUsers } from './features/users/usersSlice';
-import { setAuthor } from './features/author/authorSlice';
-import { fetchUserPosts, clearPosts } from './features/posts/postsSlice';
-import {
-  clearSelectedPost,
-  setSelectedPost,
-} from './features/selectedPost/selectedPostSlice';
 import { User } from './types/User';
+import { loadUsers } from './features/users';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { loadPosts } from './features/posts';
+import { setSelectedPost } from './features/selectedPost';
 import { Post } from './types/Post';
+
+export const authorSlice = createSlice({
+  name: 'author',
+  initialState: null as User | null,
+  reducers: {
+    setAuthor: (
+      _state: User | null,
+      action: PayloadAction<User | null>,
+    ): User | null => {
+      return action.payload;
+    },
+  },
+});
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+  const author = useAppSelector(state => state.author);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
-  const author = useAppSelector(state => state.author.current);
-  const selectedPost = useAppSelector(state => state.selectedPost.current);
+  function handlePostSelected(post: Post | null) {
+    if (post === selectedPost) {
+      dispatch(setSelectedPost(null));
+
+      return;
+    }
+
+    dispatch(setSelectedPost(post));
+  }
 
   useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(clearSelectedPost());
-
     if (author) {
-      dispatch(fetchUserPosts(author.id));
-    } else {
-      dispatch(clearPosts());
+      dispatch(setSelectedPost(null));
+      dispatch(loadPosts(author.id));
     }
   }, [author, dispatch]);
 
-  const handleAuthorChange = useCallback(
-    (user: User) => {
-      dispatch(setAuthor(user));
-    },
-    [dispatch],
-  );
-
-  const handlePostSelected = useCallback(
-    (post: Post | null) => {
-      dispatch(setSelectedPost(post));
-    },
-    [dispatch],
-  );
-
-  const renderPostsContent = () => {
-    if (!author) {
-      return <p data-cy="NoSelectedUser">No user selected</p>;
-    }
-
-    if (!loaded) {
-      return <Loader />;
-    }
-
-    if (hasError) {
-      return (
-        <div className="notification is-danger" data-cy="PostsLoadingError">
-          Something went wrong!
-        </div>
-      );
-    }
-
-    if (posts.length === 0) {
-      return (
-        <div className="notification is-warning" data-cy="NoPostsYet">
-          No posts yet
-        </div>
-      );
-    }
-
-    return (
-      <PostsList
-        posts={posts}
-        selectedPostId={selectedPost?.id}
-        onPostSelected={handlePostSelected}
-      />
-    );
-  };
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, [dispatch]);
 
   return (
     <main className="section">
@@ -96,11 +68,41 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector author={author} onChange={handleAuthorChange} />
+                <UserSelector
+                  value={author}
+                  onChange={user =>
+                    dispatch(authorSlice.actions.setAuthor(user))
+                  }
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {renderPostsContent()}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+
+                {author && !loaded && <Loader />}
+
+                {author && loaded && hasError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {author && loaded && !hasError && posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
+                {author && loaded && !hasError && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPost?.id}
+                    onPostSelected={handlePostSelected}
+                  />
+                )}
               </div>
             </div>
           </div>

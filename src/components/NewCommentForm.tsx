@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
@@ -7,73 +7,63 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [formErrors, setFormErrors] = useState({
+  const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
 
-  const [formData, setFormData] = useState({
+  const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
     body: '',
   });
 
-  const { name, email, body } = formData;
-
-  const clearForm = useCallback(() => {
-    setFormData({
+  const clearForm = () => {
+    setValues({
       name: '',
       email: '',
       body: '',
     });
 
-    setFormErrors({
+    setErrors({
       name: false,
       email: false,
       body: false,
     });
-  }, []);
+  };
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name: field, value } = event.target;
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: field, value } = event.target;
 
-      setFormData(current => ({ ...current, [field]: value }));
-      setFormErrors(current => ({ ...current, [field]: false }));
-    },
-    [],
-  );
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
+  };
 
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent) => {
-      event.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-      const newErrors = {
-        name: !name,
-        email: !email,
-        body: !body,
-      };
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
 
-      setFormErrors(newErrors);
+    if (!name || !email || !body) {
+      return;
+    }
 
-      if (Object.values(newErrors).some(error => error)) {
-        return;
-      }
+    setSubmitting(true);
 
-      setIsSubmitting(true);
+    await onSubmit({ name, email, body });
 
-      try {
-        await onSubmit({ name, email, body });
-        setFormData(current => ({ ...current, body: '' }));
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [name, email, body, onSubmit],
-  );
+    setSubmitting(false);
+    setValues(current => ({ ...current, body: '' }));
+  };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
@@ -88,7 +78,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': formErrors.name })}
+            className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
           />
@@ -97,7 +87,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             <i className="fas fa-user" />
           </span>
 
-          {formErrors.name && (
+          {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -107,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {formErrors.name && (
+        {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -125,7 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': formErrors.email })}
+            className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
           />
@@ -134,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {formErrors.email && (
+          {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -144,7 +134,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {formErrors.email && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -161,13 +151,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': formErrors.body })}
+            className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
           />
         </div>
 
-        {formErrors.body && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -179,7 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': isSubmitting,
+              'is-loading': submitting,
             })}
           >
             Add
@@ -187,6 +177,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
+          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
