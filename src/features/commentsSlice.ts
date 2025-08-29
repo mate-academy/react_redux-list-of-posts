@@ -1,5 +1,6 @@
 import {
   createAsyncThunk,
+  createSelector,
   createSlice,
   PayloadAction,
   Slice,
@@ -84,7 +85,8 @@ export const commentsSlice: Slice<CommentsState> = createSlice({
 export const commentsReducer = commentsSlice.reducer;
 export const selectComments = (state: RootState): Comment[] =>
   state.comments.items;
-export const selectCommentsStatus = (state: RootState) => ({
-  loaded: state.posts.loaded,
-  hasError: state.posts.hasError,
-});
+export const selectCommentsStatus = createSelector(
+  (state: RootState) => state.comments.loaded,
+  (state: RootState) => state.comments.hasError,
+  (loaded, hasError) => ({loaded, hasError})
+)

@@ -1,5 +1,6 @@
 import {
   createAsyncThunk,
+  createSelector,
   createSlice,
   PayloadAction,
   Slice,
@@ -8,12 +9,16 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 import { RootState } from '../app/store';
 
-export interface PostsState { loaded: boolean; hasError: boolean; items: Post[] }
+export interface PostsState {
+  loaded: boolean;
+  hasError: boolean;
+  items: Post[];
+}
 
 const initialState: PostsState = {
   loaded: false,
   hasError: false,
-  items: []
+  items: [],
 };
 
 export const fetchPosts = createAsyncThunk(
@@ -47,7 +52,8 @@ export const postsSlice: Slice<PostsState> = createSlice({
 
 export const postsReducer = postsSlice.reducer;
 export const selectPosts = (state: RootState): Post[] => state.posts.items;
-export const selectPostsStatus = (state: RootState) => ({
-  loaded: state.posts.loaded,
-  hasError: state.posts.hasError,
-});
+export const selectPostsStatus = createSelector(
+  (state: RootState) => state.posts.loaded,
+  (state: RootState) => state.posts.hasError,
+  (loaded, hasError) => ({ loaded, hasError })
+);

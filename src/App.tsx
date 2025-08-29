@@ -20,8 +20,6 @@ import {
 export const App: React.FC = () => {
   const posts = useAppSelector(selectPosts);
   const { loaded, hasError } = useAppSelector(selectPostsStatus);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
 
   const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.selectedPost);
