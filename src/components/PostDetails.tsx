@@ -12,7 +12,7 @@ import {
   init,
   setLoaded,
   setError,
-} from '../features/counter/commentsSlice';
+} from '../features/counter/comments/commentsSlice';
 
 type Props = {
   post: Post;
@@ -25,9 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
 
   function loadComments() {
     dispatch(setLoaded(false));
@@ -74,7 +72,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      const updatedComments = [...comments, newComment];
+      const updatedComments = [...items, newComment];
 
       dispatch(setComments(updatedComments));
 
@@ -91,9 +89,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    const filteredComments = comments.filter(
-      comment => comment.id !== commentId,
-    );
+    const filteredComments = items.filter(comment => comment.id !== commentId);
 
     dispatch(setComments(filteredComments));
 
@@ -117,17 +113,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}

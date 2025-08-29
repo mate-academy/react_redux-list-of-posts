@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Comment } from '../../types/Comment';
-import { getPostComments } from '../../api/comments';
+import { Comment } from '../../../types/Comment';
+import { getPostComments } from '../../../api/comments';
 
 type CommentsState = {
-  comments: Comment[] | [];
+  items: Comment[] | [];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [] as Comment[],
+  items: [] as Comment[],
   loaded: false,
   hasError: false,
 };
@@ -27,7 +27,7 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments: (state, action: PayloadAction<Comment[] | []>) => {
-      state.comments = action.payload;
+      state.items = action.payload;
     },
     setLoaded: (state, action: PayloadAction<boolean>) => {
       state.loaded = action.payload;
@@ -41,7 +41,7 @@ const commentsSlice = createSlice({
       state.loaded = true;
     });
     builder.addCase(init.fulfilled, (state, action) => {
-      state.comments = action.payload;
+      state.items = action.payload;
     });
     builder.addCase(init.rejected, state => {
       state.hasError = true;

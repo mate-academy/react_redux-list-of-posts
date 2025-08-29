@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initUsers } from '../features/counter/usersSlice';
-import { setAuthor } from '../features/counter/infoAppSlice';
+import { initUsers } from '../features/counter/users/usersSlice';
+import { setAuthor } from '../features/counter/author/authorSlice';
 
 export const UserSelector: React.FC = () => {
   // `users` are loaded from the API, so for the performance reasons
@@ -10,7 +10,7 @@ export const UserSelector: React.FC = () => {
   // and now we can easily reuse the `UserSelector` in any form
   const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
-  const author = useAppSelector(state => state.counter.author);
+  const author = useAppSelector(state => state.autor.author);
 
   const dispatch = useAppDispatch();
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types/User';
-import { getUsers } from '../../api/users';
+import { User } from '../../../types/User';
+import { getUsers } from '../../../api/users';
 
 type UsersState = {
   users: User[] | [];
@@ -23,7 +23,7 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setTodos: (state, action: PayloadAction<User[] | []>) => {
+    setUsers: (state, action: PayloadAction<User[] | []>) => {
       state.users = action.payload;
     },
   },

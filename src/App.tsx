@@ -13,22 +13,23 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   init,
-  setSelectedPost,
   setPosts,
   hasError,
-} from './features/counter/infoAppSlice';
+} from './features/counter/posts/infoAppSlice';
+
+import { setSelectedPost } from './features/counter/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.counter.author);
-  const loaded = useAppSelector(state => state.counter.loaded);
-  const posts = useAppSelector(state => state.counter.posts);
-  const selectedPost = useAppSelector(state => state.counter.selectedPost);
+  const author = useAppSelector(state => state.autor.author);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const posts = useAppSelector(state => state.posts.items);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(init(author.id));
