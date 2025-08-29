@@ -6,9 +6,9 @@ import { getPostComments } from '../api/comments';
 import * as commentsApi from '../api/comments';
 
 type CommentsState = {
-  comments: Comment[];
-  isLoading: boolean;
-  error: string | null;
+  items: Comment[];
+  loaded: boolean;
+  hasError: string | null;
 };
 
 export type CommentData = {
@@ -18,9 +18,9 @@ export type CommentData = {
 };
 
 const initialState: CommentsState = {
-  comments: [],
-  isLoading: false,
-  error: null,
+  items: [],
+  loaded: false,
+  hasError: null,
 };
 
 export const fetchComments = createAsyncThunk<Comment[], number>(
@@ -51,42 +51,42 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments: (state, action) => {
-      state.comments = action.payload;
+      state.items = action.payload;
     },
 
     addComment: (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
 
     deleteComment: (state, action) => {
-      state.comments = state.comments.filter(c => c.id !== action.payload);
+      state.items = state.items.filter(c => c.id !== action.payload);
     },
   },
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => {
-      state.isLoading = true;
+      state.loaded = true;
     });
     builder.addCase(fetchComments.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.comments = action.payload;
+      state.loaded = false;
+      state.items = action.payload;
     });
     builder.addCase(fetchComments.rejected, state => {
-      state.isLoading = false;
-      state.error = 'Failed to fetch posts';
+      state.loaded = false;
+      state.hasError = 'Failed to fetch posts';
     });
 
     builder.addCase(addCommentAsync.fulfilled, (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     });
     builder.addCase(addCommentAsync.rejected, (state, action) => {
-      state.error = action.error.message || 'Failed to add comment';
+      state.hasError = action.error.message || 'Failed to add comment';
     });
 
     builder.addCase(deleteCommentAsync.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(c => c.id !== action.payload);
+      state.items = state.items.filter(c => c.id !== action.payload);
     });
     builder.addCase(deleteCommentAsync.rejected, (state, action) => {
-      state.error = action.error.message || 'Failed to delete comment';
+      state.hasError = action.error.message || 'Failed to delete comment';
     });
   },
 });

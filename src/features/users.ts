@@ -3,15 +3,15 @@ import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
 type UsersState = {
-  users: User[];
-  isLoading: boolean;
-  error: string | null;
+  items: User[];
+  loaded: boolean;
+  hasError: string | null;
 };
 
 const initialState: UsersState = {
-  users: [],
-  isLoading: false,
-  error: null,
+  items: [],
+  loaded: false,
+  hasError: null,
 };
 
 export const fetchUsers = createAsyncThunk<User[]>(
@@ -26,21 +26,21 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
+      state.items = action.payload;
     },
   },
 
   extraReducers: builder => {
     builder.addCase(fetchUsers.pending, state => {
-      state.isLoading = true;
+      state.loaded = true;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.users = action.payload;
+      state.loaded = false;
+      state.items = action.payload;
     });
     builder.addCase(fetchUsers.rejected, state => {
-      state.isLoading = false;
-      state.error = 'Failed to fetch users';
+      state.loaded = false;
+      state.hasError = 'Failed to fetch users';
     });
   },
 });

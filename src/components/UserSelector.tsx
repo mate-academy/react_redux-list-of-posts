@@ -21,15 +21,15 @@ export const UserSelector: React.FC<Props> = ({
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const dispatch = useAppDispatch();
-  const { users, isLoading, error } = useAppSelector(state => state.users);
+  const { items, loaded, hasError } = useAppSelector(state => state.users);
 
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    if (users.length === 0) {
+    if (items.length === 0) {
       dispatch(fetchUsers());
     }
-  }, [dispatch, users.length]);
+  }, [dispatch, items.length]);
 
   useEffect(() => {
     if (!expanded) {
@@ -53,12 +53,12 @@ export const UserSelector: React.FC<Props> = ({
     // when the Dopdown is closed
   }, [expanded]);
 
-  if (isLoading) {
-    <Loader />;
+  if (loaded) {
+    return <Loader />;
   }
 
-  if (error) {
-    return <div className="has-text-danger">{error}</div>;
+  if (hasError) {
+    return <div className="has-text-danger">Something went wrong</div>;
   }
 
   return (
@@ -87,7 +87,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {items.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}

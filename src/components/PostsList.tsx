@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const PostsList: React.FC<Props> = ({ onPostSelected }) => {
-  const { posts } = useAppSelector(state => state.posts);
+  const { items: posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
