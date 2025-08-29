@@ -11,18 +11,13 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import {
-  init,
-  setPosts,
-  hasError,
-} from './features/counter/posts/infoAppSlice';
+import { init, setPosts } from './features/counter/posts/infoAppSlice';
 
 import { setSelectedPost } from './features/counter/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.autor.author);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const posts = useAppSelector(state => state.posts.items);
+  const author = useAppSelector(state => state.author.author);
+  const { hasError, loaded, items } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
   const dispatch = useAppDispatch();
 
@@ -62,14 +57,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
+                {author && !loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
-                  <PostsList posts={posts} selectedPostId={selectedPost?.id} />
+                {author && !loaded && !hasError && items.length > 0 && (
+                  <PostsList posts={items} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>

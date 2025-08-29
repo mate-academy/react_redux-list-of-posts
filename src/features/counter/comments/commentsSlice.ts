@@ -38,14 +38,16 @@ const commentsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(init.fulfilled, (state, action) => {
       state.items = action.payload;
+      state.loaded = false;
+      state.hasError = false;
     });
     builder.addCase(init.rejected, state => {
       state.hasError = true;
-      state.hasError = false;
+      state.loaded = true;
     });
   },
 });

@@ -4,13 +4,13 @@ import { User } from '../../../types/User';
 import { getUsers } from '../../../api/users';
 
 type UsersState = {
-  users: User[] | [];
+  items: User[] | [];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: UsersState = {
-  users: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -24,22 +24,23 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     setUsers: (state, action: PayloadAction<User[] | []>) => {
-      state.users = action.payload;
+      state.items = action.payload;
     },
   },
   extraReducers: builder => {
     builder.addCase(initUsers.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
     });
 
     builder.addCase(initUsers.fulfilled, (state, action) => {
-      state.users = action.payload;
+      state.items = action.payload;
       state.loaded = false;
+      state.hasError = false;
     });
 
     builder.addCase(initUsers.rejected, state => {
       state.hasError = true;
-      state.loaded = false;
+      state.loaded = true;
     });
   },
 });
