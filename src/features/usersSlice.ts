@@ -50,7 +50,7 @@ export const usersSlice = createSlice({
 export const usersReducer = usersSlice.reducer;
 export const selectUsers = (state: RootState): User[] => state.users.items;
 export const selectUsersStatus = createSelector(
-  (state: RootState) => state.posts.loaded,
-  (state: RootState) => state.posts.hasError,
+  (state: RootState) => state.users.loaded,
+  (state: RootState) => state.users.hasError,
   (loaded, hasError) => ({ loaded, hasError }),
 );
