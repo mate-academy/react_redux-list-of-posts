@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,14 +10,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getPosts, getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   init,
-  setAuthor,
   setSelectedPost,
   setPosts,
   hasError,
@@ -35,18 +30,12 @@ export const App: React.FC = () => {
     // not to confuse the user
     setSelectedPost(null);
 
-    console.log(author);
-
     if (author) {
       dispatch(init(author.id));
     } else {
       dispatch(setPosts([]));
     }
   }, [author, dispatch]);
-
-  console.log(posts);
-  console.log(loaded);
-  console.log(selectedPost);
 
   return (
     <main className="section">
@@ -79,11 +68,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && !loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList posts={posts} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>

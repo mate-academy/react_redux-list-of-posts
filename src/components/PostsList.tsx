@@ -4,18 +4,14 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch } from '../app/hooks';
+import { setSelectedPost } from '../features/counter/infoAppSlice';
 
 type Props = {
   posts: Post[];
   selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -46,7 +42,7 @@ export const PostsList: React.FC<Props> = ({
                   onClick={() => {
                     const chosenPost = post.id === selectedPostId ? null : post;
 
-                    dispatch(onPostSelected(chosenPost));
+                    dispatch(setSelectedPost(chosenPost));
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}
