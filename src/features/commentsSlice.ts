@@ -55,6 +55,7 @@ export const commentsSlice: Slice<CommentsState> = createSlice({
     builder
       .addCase(fetchComments.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(
         fetchComments.fulfilled,
@@ -88,5 +89,5 @@ export const selectComments = (state: RootState): Comment[] =>
 export const selectCommentsStatus = createSelector(
   (state: RootState) => state.comments.loaded,
   (state: RootState) => state.comments.hasError,
-  (loaded, hasError) => ({loaded, hasError})
-)
+  (loaded, hasError) => ({ loaded, hasError }),
+);

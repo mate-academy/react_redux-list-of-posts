@@ -1,16 +1,23 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
 import { RootState } from '../app/store';
 
 export interface UsersState {
-  list: User[];
-  status: 'idle' | 'loading' | 'failed';
+  loaded: boolean;
+  hasError: boolean;
+  items: User[];
 }
 
 const initialState: UsersState = {
-  list: [],
-  status: 'idle',
+  loaded: false,
+  hasError: false,
+  items: [],
 };
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
@@ -26,18 +33,24 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUsers.pending, state => {
-        state.status = 'loading';
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
-        state.status = 'idle';
-        state.list = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
       .addCase(fetchUsers.rejected, state => {
-        state.status = 'failed';
+        state.loaded = true;
+        state.hasError = true;
       });
   },
 });
 
 export const usersReducer = usersSlice.reducer;
-export const selectUsers = (state: RootState) => state.users.list;
-export const selectUsersStatus = (state: RootState) => state.users.status;
+export const selectUsers = (state: RootState): User[] => state.users.items;
+export const selectUsersStatus = createSelector(
+  (state: RootState) => state.posts.loaded,
+  (state: RootState) => state.posts.hasError,
+  (loaded, hasError) => ({ loaded, hasError }),
+);

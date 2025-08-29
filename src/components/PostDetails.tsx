@@ -18,15 +18,6 @@ export const PostDetails: React.FC = () => {
   const { loaded, hasError } = useAppSelector(selectCommentsStatus);
   const [visible, setVisible] = useState(false);
 
-  if (!post) {
-    return null;
-  }
-
-  useEffect(() => {
-    setVisible(false);
-    dispatch(fetchComments(post.id));
-  }, [post.id]);
-
   const handleAddComment = async (data: CommentData) => {
     await dispatch(addComment({ postId: post.id, ...data }));
   };
@@ -34,6 +25,15 @@ export const PostDetails: React.FC = () => {
   const handleDeleteComment = async (commentId: number) => {
     await dispatch(deleteComment(commentId));
   };
+
+  useEffect(() => {
+    setVisible(false);
+    dispatch(fetchComments(post.id));
+  }, [post.id]);
+
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className="content" data-cy="PostDetails">

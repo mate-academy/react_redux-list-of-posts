@@ -38,6 +38,7 @@ export const postsSlice: Slice<PostsState> = createSlice({
     builder
       .addCase(fetchPosts.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.loaded = true;
@@ -55,5 +56,5 @@ export const selectPosts = (state: RootState): Post[] => state.posts.items;
 export const selectPostsStatus = createSelector(
   (state: RootState) => state.posts.loaded,
   (state: RootState) => state.posts.hasError,
-  (loaded, hasError) => ({ loaded, hasError })
+  (loaded, hasError) => ({ loaded, hasError }),
 );
