@@ -5,13 +5,13 @@ import { getUsers } from '../api/users';
 type UsersState = {
   items: User[];
   loaded: boolean;
-  hasError: string | null;
+  hasError: boolean;
 };
 
 const initialState: UsersState = {
   items: [],
   loaded: false,
-  hasError: null,
+  hasError: false,
 };
 
 export const fetchUsers = createAsyncThunk<User[]>(
@@ -40,7 +40,7 @@ export const usersSlice = createSlice({
     });
     builder.addCase(fetchUsers.rejected, state => {
       state.loaded = false;
-      state.hasError = 'Failed to fetch users';
+      state.hasError = true;
     });
   },
 });

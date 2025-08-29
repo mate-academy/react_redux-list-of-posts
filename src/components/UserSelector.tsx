@@ -53,7 +53,7 @@ export const UserSelector: React.FC<Props> = ({
     // when the Dopdown is closed
   }, [expanded]);
 
-  if (loaded) {
+  if (!loaded) {
     return <Loader />;
   }
 

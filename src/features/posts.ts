@@ -5,13 +5,13 @@ import { getPosts, getUserPosts } from '../api/posts';
 type PostsState = {
   items: Post[];
   loaded: boolean;
-  hasError: string | null;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
   items: [],
   loaded: false,
-  hasError: null,
+  hasError: false,
 };
 
 export const fetchPosts = createAsyncThunk<Post[]>(
@@ -46,7 +46,7 @@ export const postsSlice = createSlice({
     });
     builder.addCase(fetchUserPosts.rejected, state => {
       state.loaded = false;
-      state.hasError = 'Failed to fetch posts';
+      state.hasError = true;
     });
   },
 });

@@ -8,7 +8,7 @@ import * as commentsApi from '../api/comments';
 type CommentsState = {
   items: Comment[];
   loaded: boolean;
-  hasError: string | null;
+  hasError: boolean;
 };
 
 export type CommentData = {
@@ -20,7 +20,7 @@ export type CommentData = {
 const initialState: CommentsState = {
   items: [],
   loaded: false,
-  hasError: null,
+  hasError: false,
 };
 
 export const fetchComments = createAsyncThunk<Comment[], number>(
@@ -72,21 +72,21 @@ export const commentsSlice = createSlice({
     });
     builder.addCase(fetchComments.rejected, state => {
       state.loaded = false;
-      state.hasError = 'Failed to fetch posts';
+      state.hasError = true;
     });
 
     builder.addCase(addCommentAsync.fulfilled, (state, action) => {
       state.items.push(action.payload);
     });
-    builder.addCase(addCommentAsync.rejected, (state, action) => {
-      state.hasError = action.error.message || 'Failed to add comment';
+    builder.addCase(addCommentAsync.rejected, state => {
+      state.hasError = true;
     });
 
     builder.addCase(deleteCommentAsync.fulfilled, (state, action) => {
       state.items = state.items.filter(c => c.id !== action.payload);
     });
-    builder.addCase(deleteCommentAsync.rejected, (state, action) => {
-      state.hasError = action.error.message || 'Failed to delete comment';
+    builder.addCase(deleteCommentAsync.rejected, state => {
+      state.hasError = true;
     });
   },
 });
