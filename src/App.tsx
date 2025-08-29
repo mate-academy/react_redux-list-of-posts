@@ -16,7 +16,11 @@ import { setSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { items: posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
   const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
