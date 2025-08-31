@@ -1,5 +1,9 @@
-iframe {
-  display: none;
+@media all {
+  .dropdown.is-active .dropdown-menu {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }
 
 .Sidebar {
@@ -25,3 +29,24 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+
+.dropdown {
+  position: relative;
+
+  &-menu {
+    display: none; /* по умолчанию скрываем */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  }
+
+  &.is-active {
+    .dropdown-menu {
+      display: block !important; /* ключевой момент */
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+}
+

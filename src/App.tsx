@@ -8,9 +8,8 @@ import { PostDetails } from './components/PostDetails';
 import { fetchPosts, clearPosts } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
 import { setAuthor } from './features/authorSlice';
-import { getUsers } from './api/users';
-import { UsersProvider } from './components/UsersContext';
 import { setUsers } from './features/usersSlice';
+import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,18 +18,14 @@ export const App: React.FC = () => {
   const author = useAppSelector(s => s.author);
   const selectedPost = useAppSelector(s => s.selectedPost);
 
-  // Загрузка пользователей один раз
+  // Загружаем пользователей один раз при старте приложения
   useEffect(() => {
-    const fetchUsers = async () => {
-      const data = await getUsers();
+    if (users.length === 0) {
+      getUsers().then(data => dispatch(setUsers(data)));
+    }
+  }, [dispatch, users.length]);
 
-      dispatch(setUsers(data));
-    };
-
-    fetchUsers();
-  }, [dispatch]); // <--- dispatch в deps гарантирует вызов ровно один раз
-
-  // Загрузка постов при выборе автора
+  // Загружаем посты при выборе пользователя
   useEffect(() => {
     dispatch(setSelectedPost(null));
     if (author) {
@@ -44,15 +39,15 @@ export const App: React.FC = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
+          {/* Левая панель */}
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
-              <div className="block">
-                <UsersProvider users={users}>
-                  <UserSelector
-                    value={author}
-                    onChange={user => dispatch(setAuthor(user))}
-                  />
-                </UsersProvider>
+              <div className="block" data-cy="UserSelector">
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                  users={users}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -60,14 +55,14 @@ export const App: React.FC = () => {
                 {author && !loaded && <Loader />}
                 {author && loaded && hasError && (
                   <div
-                    className="notification is-danger"
                     data-cy="PostsLoadingError"
+                    className="notification is-danger"
                   >
                     Something went wrong!
                   </div>
                 )}
                 {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                  <div data-cy="NoPostsYet" className="notification is-warning">
                     No posts yet
                   </div>
                 )}
@@ -82,6 +77,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Правая панель */}
           <div
             data-cy="Sidebar"
             className={classNames(

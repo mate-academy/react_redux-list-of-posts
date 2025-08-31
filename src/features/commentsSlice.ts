@@ -32,6 +32,7 @@ const commentsSlice = createSlice({
     builder
       .addCase(fetchComments.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.items = action.payload;
