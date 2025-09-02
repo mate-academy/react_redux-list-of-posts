@@ -56,10 +56,16 @@ export const NewCommentForm = () => {
     }
 
     setSubmitting(true);
-    dispatch(commentsAdd({ name, email, body }));
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+
+    try {
+      await dispatch(commentsAdd({ name, email, body })).unwrap();
+      setValues(current => ({ ...current, body: '' }));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

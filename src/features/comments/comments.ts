@@ -8,6 +8,7 @@ import {
   deleteComment,
   getPostComments,
 } from '../../api/comments';
+
 type CommentsState = {
   items: Comment[];
   loaded: boolean;
@@ -16,7 +17,7 @@ type CommentsState = {
 
 const initialState: CommentsState = {
   items: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 
@@ -26,7 +27,7 @@ export const commentsFetch = createAsyncThunk<
   { state: RootState }
 >('comments/fetch', async (_, thunkAPI) => {
   const state = thunkAPI.getState();
-  const { value: post } = state.selectedPost;
+  const post = state.selectedPost.value;
 
   if (!post) {
     return [];
@@ -43,7 +44,7 @@ export const commentsAdd = createAsyncThunk<
   { state: RootState }
 >('comments/add', async (data, thunkAPI) => {
   const state = thunkAPI.getState();
-  const { value: post } = state.selectedPost;
+  const post = state.selectedPost.value;
 
   if (!post) {
     throw new Error('Post is not selected');
@@ -79,6 +80,10 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(commentsFetch.pending, state => {
+      state.loaded = true;
+      state.hasError = false;
+    });
     builder.addCase(
       commentsFetch.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
@@ -87,10 +92,6 @@ const commentsSlice = createSlice({
         state.hasError = false;
       },
     );
-    builder.addCase(commentsFetch.pending, state => {
-      state.loaded = true;
-      state.hasError = false;
-    });
     builder.addCase(commentsFetch.rejected, state => {
       state.loaded = false;
       state.hasError = true;

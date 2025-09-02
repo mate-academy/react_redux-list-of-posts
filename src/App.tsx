@@ -14,7 +14,7 @@ import { postsFetch } from './features/posts/posts';
 import { removePostId } from './features/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author.value);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
   const { posts, loaded, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();

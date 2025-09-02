@@ -11,7 +11,7 @@ type PostsState = {
 
 const initialState: PostsState = {
   posts: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 
@@ -19,7 +19,7 @@ export const postsFetch = createAsyncThunk<Post[], void, { state: RootState }>(
   'posts/fetch',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
-    const author = state.author;
+    const author = state.author.value;
 
     if (!author) {
       return [];
@@ -36,6 +36,10 @@ const postsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(postsFetch.pending, state => {
+      state.loaded = true;
+      state.hasError = false;
+    });
     builder.addCase(
       postsFetch.fulfilled,
       (state, action: PayloadAction<Post[]>) => {
@@ -44,10 +48,6 @@ const postsSlice = createSlice({
         state.hasError = false;
       },
     );
-    builder.addCase(postsFetch.pending, state => {
-      state.loaded = true;
-      state.hasError = false;
-    });
     builder.addCase(postsFetch.rejected, state => {
       state.loaded = false;
       state.hasError = true;

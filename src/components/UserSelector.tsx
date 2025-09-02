@@ -9,7 +9,7 @@ type Props = {};
 
 export const UserSelector: React.FC<Props> = () => {
   const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.author);
+  const selectedUser = useAppSelector(state => state.author.value);
 
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);

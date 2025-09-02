@@ -15,12 +15,12 @@ export const PostDetails = () => {
   } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
-  function loadComments() {}
-
   useEffect(() => {
-    loadComments();
-    dispatch(commentsFetch());
-  }, [dispatch]);
+    if (post) {
+      dispatch(commentsFetch());
+      setVisible(false);
+    }
+  }, [dispatch, post]);
 
   const deleteComment = (id: number) => {
     dispatch(commentsDelete(id));
