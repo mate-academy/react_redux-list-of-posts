@@ -2,19 +2,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PostComment } from '../types/Comment';
 import { CommentsState } from '../types/CommentsState';
+import { getPostComments } from '../api/comments';
 
 const initialState: CommentsState = {
   items: [],
-  loaded: false,
+  loading: false,
   hasError: false,
 };
 
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
   async (postId: number) => {
-    const res = await fetch(`/comments?postId=${postId}`);
+    const data = await getPostComments(postId);
 
-    return (await res.json()) as PostComment[];
+    return data;
   },
 );
 
@@ -27,25 +28,25 @@ export const commentsSlice = createSlice({
     },
     clearComments(state) {
       state.items = [];
-      state.loaded = false;
+      state.loading = false;
       state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        state.loaded = true;
+        state.loading = true;
         state.hasError = false;
       })
       .addCase(
         fetchComments.fulfilled,
         (state, action: PayloadAction<PostComment[]>) => {
           state.items = action.payload;
-          state.loaded = false;
+          state.loading = false;
         },
       )
       .addCase(fetchComments.rejected, state => {
-        state.loaded = false;
+        state.loading = false;
         state.hasError = true;
       });
   },

@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { client } from '../utils/fetchClient';
 import { User } from '../types/User';
 import { UsersState } from '../types/UsersState';
 import { RootState } from '../app/store';
+import { getUsers } from '../api/users';
 
 const initialState: UsersState = {
   items: [],
@@ -13,7 +13,7 @@ const initialState: UsersState = {
 };
 
 export const fetchUsers = createAsyncThunk('users/fetch', async () => {
-  const data = await client.get<User[]>('/users');
+  const data = await getUsers();
 
   return data;
 });

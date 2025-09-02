@@ -38,7 +38,7 @@ export const App = () => {
 
   const comments = useSelector((state: RootState) => state.comments.items);
   const commentsLoading = useSelector(
-    (state: RootState) => state.comments.loaded,
+    (state: RootState) => state.comments.loading,
   );
   const commentsError = useSelector(
     (state: RootState) => state.comments.hasError,
@@ -99,7 +99,7 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {usersLoading && <Loader />}
+                {usersLoading && <Loader data-cy="Loader" />}
                 {usersError && (
                   <div className="notification is-danger">
                     Failed to load users

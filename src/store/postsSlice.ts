@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { Post } from '../types/Post';
 import { PostsState } from '../types/PostsState';
+import { getUserPosts } from '../api/posts';
 
 const initialState: PostsState = {
   items: [],
@@ -13,8 +14,7 @@ const initialState: PostsState = {
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
   async (userId: number) => {
-    const res = await fetch(`/posts?userId=${userId}`);
-    const data = (await res.json()) as Post[];
+    const data = await getUserPosts(userId);
 
     await new Promise(resolve => setTimeout(resolve, 200));
 
