@@ -5,13 +5,13 @@ import { getUserPosts } from '../../api/posts';
 import { RootState } from '../../app/store';
 type PostsState = {
   posts: Post[];
-  loaded: boolean;
+  isLoading: boolean;
   hasError: boolean;
 };
 
 const initialState: PostsState = {
   posts: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -37,19 +37,19 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(postsFetch.pending, state => {
-      state.loaded = true;
+      state.isLoading = false;
       state.hasError = false;
     });
     builder.addCase(
       postsFetch.fulfilled,
       (state, action: PayloadAction<Post[]>) => {
         state.posts = action.payload;
-        state.loaded = false;
+        state.isLoading = true;
         state.hasError = false;
       },
     );
     builder.addCase(postsFetch.rejected, state => {
-      state.loaded = false;
+      state.isLoading = true;
       state.hasError = true;
     });
   },

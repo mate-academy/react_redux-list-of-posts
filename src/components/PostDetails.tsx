@@ -10,7 +10,7 @@ export const PostDetails = () => {
   const post = useAppSelector(state => state.selectedPost.value);
   const {
     items: comments,
-    loaded,
+    isLoading,
     hasError,
   } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
@@ -36,21 +36,21 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {!isLoading && <Loader />}
 
-        {!loaded && hasError && (
+        {isLoading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {isLoading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {isLoading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -84,7 +84,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {isLoading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -95,7 +95,6 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {/* {!loaded && !hasError && visible && <NewCommentForm />} */}
         {visible && <NewCommentForm />}
       </div>
     </div>

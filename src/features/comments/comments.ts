@@ -11,13 +11,13 @@ import {
 
 type CommentsState = {
   items: Comment[];
-  loaded: boolean;
+  isLoading: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
   items: [],
-  loaded: false,
+  isLoading: false,
   hasError: false,
 };
 
@@ -64,7 +64,7 @@ export const commentsDelete = createAsyncThunk<
   { state: RootState }
 >('comments/delete', async (commentId, thunkAPI) => {
   const state = thunkAPI.getState();
-  const post = state.selectedPost;
+  const post = state.selectedPost.value;
 
   if (!post) {
     throw new Error('Post is not selected');
@@ -81,19 +81,19 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(commentsFetch.pending, state => {
-      state.loaded = true;
+      state.isLoading = false;
       state.hasError = false;
     });
     builder.addCase(
       commentsFetch.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
         state.items = action.payload;
-        state.loaded = false;
+        state.isLoading = true;
         state.hasError = false;
       },
     );
     builder.addCase(commentsFetch.rejected, state => {
-      state.loaded = false;
+      state.isLoading = true;
       state.hasError = true;
     });
     builder
@@ -101,16 +101,16 @@ const commentsSlice = createSlice({
         commentsAdd.fulfilled,
         (state, action: PayloadAction<Comment>) => {
           state.items.push(action.payload);
-          state.loaded = false;
+          state.isLoading = true;
           state.hasError = false;
         },
       )
       .addCase(commentsAdd.pending, state => {
-        state.loaded = true;
+        state.isLoading = false;
         state.hasError = false;
       })
       .addCase(commentsAdd.rejected, state => {
-        state.loaded = false;
+        state.isLoading = true;
         state.hasError = true;
       });
     builder
@@ -120,16 +120,16 @@ const commentsSlice = createSlice({
           state.items = state.items.filter(
             comment => comment.id !== action.payload,
           );
-          state.loaded = false;
+          state.isLoading = true;
           state.hasError = false;
         },
       )
       .addCase(commentsDelete.pending, state => {
-        state.loaded = true;
+        state.isLoading = false;
         state.hasError = false;
       })
       .addCase(commentsDelete.rejected, state => {
-        state.loaded = false;
+        state.isLoading = true;
         state.hasError = true;
       });
   },
