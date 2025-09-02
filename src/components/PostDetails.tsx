@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { PostDetailsProps } from '../types/PostDetailsProps';
 import { client } from '../utils/fetchClient';
-import { Comment as CommentType, CommentData } from '../types/Comment';
+import { PostComment, CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC<PostDetailsProps> = ({
   post,
@@ -11,14 +11,18 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
   commentsLoading,
   commentsError,
 }) => {
-  const [localComments, setLocalComments] = useState<CommentType[]>(comments);
+  const [localComments, setLocalComments] = useState<PostComment[]>(comments);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalComments(comments);
+  }, [comments]);
 
   if (!post) {
     return <p data-cy="NoPostSelected">No post selected</p>;
   }
 
-  const handleAdd = async (data: CommentData): Promise<CommentType> => {
+  const handleAdd = async (data: CommentData): Promise<PostComment> => {
     setError(null);
     try {
       const added = await client.comments.add(data);
@@ -54,13 +58,15 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{post.title}</h2>
+          <h2 data-cy="PostTitle">
+            #{post.id}: {post.title}
+          </h2>
 
           <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
-          {commentsLoading && <Loader />}
+          {commentsLoading && <Loader data-cy="Loader" />}
 
           {commentsError && (
             <div className="notification is-danger" data-cy="CommentsError">

@@ -4,156 +4,81 @@ import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { client } from './utils/fetchClient';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useEffect, useMemo, useState } from 'react';
-import { User } from './types/User';
-import { Post } from './types/Post';
-import { PostComment } from './types/Comment';
-import { DataState } from './types/DataState';
+import { useSelector } from 'react-redux';
+import { fetchUsers } from './store/usersSlice';
+import { RootState } from './app/store';
+import { clearPosts, fetchPosts } from './store/postsSlice';
+import {
+  clearComments,
+  deleteComment,
+  fetchComments,
+} from './store/commentsSlice';
+import { useAppDispatch } from './app/hooks';
 
 export const App = () => {
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [posts, setPosts] = useState<DataState<Post>>({
-    loaded: false,
-    hasError: false,
-    items: [],
-  });
-  // const [postsLoading, setPostsLoading] = useState(false);
-  // const [postsError, setPostsError] = useState(false);
-  // const [error, setError] = useState(false);
-  const [usersError, setUsersError] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-  const selectedPost = useMemo(
-    () => posts.items.find(p => p.id === selectedPostId) || null,
-    [posts, selectedPostId],
+  const dispatch = useAppDispatch();
+
+  const users = useSelector((state: RootState) => state.users.items);
+  const usersLoading = useSelector((state: RootState) => state.users.loading);
+  const usersError = useSelector((state: RootState) => state.users.hasError);
+
+  const posts = useSelector((state: RootState) => state.posts.items);
+  const postsLoading = useSelector((state: RootState) => state.posts.loading);
+  const postsError = useSelector((state: RootState) => state.posts.hasError);
+
+  const comments = useSelector((state: RootState) => state.comments.items);
+  const commentsLoading = useSelector(
+    (state: RootState) => state.comments.loading,
+  );
+  const commentsError = useSelector(
+    (state: RootState) => state.comments.hasError,
   );
 
-  const [comments, setComments] = useState<DataState<PostComment>>({
-    loaded: false,
-    hasError: false,
-    items: [],
-    visible: false,
-  });
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+
+  const selectedPost = useMemo(
+    () => posts.find(p => p.id === selectedPostId) || null,
+    [posts, selectedPostId],
+  );
 
   const author = useMemo(
     () => users.find(u => u.id === selectedUserId) || null,
     [users, selectedUserId],
   );
-  // const usersFetched = useRef(false);
-  // const [commentsLoading, setCommentsLoading] = useState(false);
-  // const [commentsError, setCommentsError] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedUserId !== null) {
+      dispatch(fetchPosts(selectedUserId));
+      dispatch(clearComments());
+      setSelectedPostId(null);
+    } else {
+      dispatch(clearPosts());
+      dispatch(clearComments());
+      setSelectedPostId(null);
+    }
+  }, [selectedUserId, dispatch]);
+
+  useEffect(() => {
+    if (selectedPostId !== null) {
+      dispatch(fetchComments(selectedPostId));
+    } else {
+      dispatch(clearComments());
+    }
+  }, [selectedPostId, dispatch]);
 
   const handleDeleteComment = (id: number) => {
-    setComments(prev => ({
-      ...prev,
-      items: prev.items.filter(comment => comment.id !== id),
-    }));
+    dispatch(deleteComment(id));
   };
-
-  useEffect(() => {
-    if (!author) {
-      setPosts({ loaded: true, hasError: false, items: [] });
-      setSelectedPostId(null);
-
-      return;
-    }
-
-    setPosts(prev => ({ ...prev, loaded: false, hasError: false }));
-    client
-      .get<Post[]>(`/posts?userId=${author.id}`)
-      .then(items => setPosts({ loaded: true, hasError: false, items }))
-      .catch(() => setPosts({ loaded: true, hasError: true, items: [] }));
-  }, [author]);
-
-  useEffect(() => {
-    if (!selectedPost) {
-      setComments({ loaded: true, hasError: false, items: [], visible: false });
-
-      return;
-    }
-
-    setComments(prev => ({
-      ...prev,
-      loaded: false,
-      hasError: false,
-      visible: true,
-    }));
-
-    client
-      .get<PostComment[]>(`/comments?postId=${selectedPost.id}`)
-      .then(items =>
-        setComments({ loaded: true, hasError: false, items, visible: true }),
-      )
-      .catch(() =>
-        setComments({ loaded: true, hasError: true, items: [], visible: true }),
-      );
-  }, [selectedPost]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    client
-      .get<User[]>('/users')
-      .then(fetchedUsers => {
-        if (!cancelled) {
-          setUsers(fetchedUsers);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setUsersError(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // useEffect(() => {
-  //   if (!selectedUserId) {
-  //     setPosts([]);
-  //     setSelectedPostId(null);
-
-  //     return;
-  //   }
-
-  //   setPostsLoading(true);
-  //   setPostsError(false);
-  //   setSelectedPostId(null);
-
-  //   client
-  //     .get<Post[]>('/posts?userId=${selectedUserId}')
-  //     .then(setPosts)
-  //     .catch(() => setPostsError(true))
-  //     .finally(() => setPostsLoading(false));
-  // }, [selectedUserId]);
-
-  // useEffect(() => {
-  //   if (!selectedPostId) {
-  //     setComments([]);
-  //     setCommentsLoading(false);
-  //     setCommentsError(false);
-
-  //     return;
-  //   }
-
-  //   setCommentsLoading(true);
-  //   setCommentsError(false);
-
-  //   client
-  //     .get<CommentType[]>('/comments?postId=${selectedPostId}')
-  //     .then(setComments)
-  //     .catch(() => setCommentsError(true))
-  //     .finally(() => setCommentsLoading(false));
-  // }, [selectedPostId]);
 
   return (
     <main className="section">
@@ -170,11 +95,17 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
+                {usersLoading && <Loader />}
+                {usersError && (
+                  <div className="notification is-danger">
+                    Failed to load users
+                  </div>
+                )}
+
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {!posts.loaded && author && <Loader />}
-
-                {usersError && (
+                {author && postsLoading && <Loader data-cy="Loader" />}
+                {author && postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -184,9 +115,9 @@ export const App = () => {
                 )}
 
                 {author &&
-                  posts.loaded &&
-                  !posts.hasError &&
-                  (posts.items.length === 0 ? (
+                  !postsLoading &&
+                  !postsError &&
+                  (posts.length === 0 ? (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -195,8 +126,8 @@ export const App = () => {
                     </div>
                   ) : (
                     <PostsList
-                      posts={posts.items}
-                      selectedPostId={selectedPost?.id ?? null}
+                      posts={posts}
+                      selectedPostId={selectedPostId}
                       onSelectPost={setSelectedPostId}
                     />
                   ))}
@@ -211,15 +142,15 @@ export const App = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': comments.visible },
+              { 'Sidebar--open': selectedPostId !== null },
             )}
           >
             <div className="tile is-child box is-success ">
               <PostDetails
                 post={selectedPost}
-                comments={comments.items}
-                commentsLoading={!comments.loaded}
-                commentsError={comments.hasError}
+                comments={comments}
+                commentsLoading={commentsLoading}
+                commentsError={commentsError}
                 onDeleteComment={handleDeleteComment}
               />
             </div>

@@ -1,4 +1,4 @@
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData, PostComment } from '../types/Comment';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
@@ -41,9 +41,9 @@ export const client = {
   delete: (url: string) => request(url, 'DELETE'),
 
   comments: {
-    getAll: () => request<Comment[]>('/comments'),
-    add: (data: CommentData): Promise<Comment> =>
-      request<Comment>('/comments', 'POST', data),
+    getAll: () => request<PostComment[]>('/comments'),
+    add: (data: CommentData): Promise<PostComment> =>
+      request<PostComment>('/comments', 'POST', data),
     delete: (id: number) => request<void>(`/comments/${id}`, 'DELETE'),
   },
 };

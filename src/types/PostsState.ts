@@ -2,7 +2,6 @@ import { Post } from './Post';
 
 export interface PostsState {
   items: Post[];
-  loaded: boolean;
+  loading: boolean;
   hasError: boolean;
-  selectedPostId: number | null;
 }

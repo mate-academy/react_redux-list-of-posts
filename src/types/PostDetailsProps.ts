@@ -1,5 +1,5 @@
 import { Post } from './Post';
-import { Comment as CommentType } from './Comment';
+import { PostComment as CommentType } from './Comment';
 
 export interface PostDetailsProps {
   post: Post | null;

@@ -7,13 +7,13 @@ import { RootState } from '../app/store';
 
 const initialState: UsersState = {
   items: [],
-  loaded: false,
+  loading: false,
   hasError: false,
   selectedUserId: null,
 };
 
 export const fetchUsers = createAsyncThunk('users/fetch', async () => {
-  const data = await client.get<User[]>('users');
+  const data = await client.get<User[]>('/users');
 
   return data;
 });
@@ -24,18 +24,34 @@ export const usersSlice = createSlice({
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
       state.items = action.payload;
-      state.loaded = true;
+      state.loading = false;
       state.hasError = false;
     },
     setUsersError: state => {
       state.hasError = true;
-      state.loaded = false;
+      state.loading = false;
     },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchUsers.pending, state => {
+        state.loading = true;
+        state.hasError = false;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
+        state.items = action.payload;
+        state.loading = false;
+        state.hasError = false;
+      })
+      .addCase(fetchUsers.rejected, state => {
+        state.loading = false;
+        state.hasError = true;
+      });
   },
 });
 
 export const selectUsers = (state: RootState) => state.users.items;
-export const selectUsersLoaded = (state: RootState) => state.users.loaded;
+export const selectUsersLoaded = (state: RootState) => state.users.loading;
 export const selectUsersError = (state: RootState) => state.users.hasError;
 
 export default usersSlice.reducer;
