@@ -4,6 +4,7 @@ import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../store/usersSlice';
 import postsReducer from '../store/postsSlice';
 import commentsReducer from '../store/commentsSlice';
+import uiReducer from '../store/uiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     users: usersReducer,
     posts: postsReducer,
     comments: commentsReducer,
+    ui: uiReducer,
   },
 });
 

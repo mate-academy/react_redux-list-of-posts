@@ -5,7 +5,7 @@ import { CommentsState } from '../types/CommentsState';
 
 const initialState: CommentsState = {
   items: [],
-  loading: false,
+  loaded: false,
   hasError: false,
 };
 
@@ -27,25 +27,25 @@ export const commentsSlice = createSlice({
     },
     clearComments(state) {
       state.items = [];
-      state.loading = false;
+      state.loaded = false;
       state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        state.loading = true;
+        state.loaded = true;
         state.hasError = false;
       })
       .addCase(
         fetchComments.fulfilled,
         (state, action: PayloadAction<PostComment[]>) => {
           state.items = action.payload;
-          state.loading = false;
+          state.loaded = false;
         },
       )
       .addCase(fetchComments.rejected, state => {
-        state.loading = false;
+        state.loaded = false;
         state.hasError = true;
       });
   },

@@ -8,7 +8,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchUsers } from './store/usersSlice';
 import { RootState } from './app/store';
@@ -19,38 +19,42 @@ import {
   fetchComments,
 } from './store/commentsSlice';
 import { useAppDispatch } from './app/hooks';
+import {
+  uiActions,
+  selectSelectedUserId,
+  selectSelectedPostId,
+} from './store/uiSlice';
 
 export const App = () => {
   const dispatch = useAppDispatch();
 
   const users = useSelector((state: RootState) => state.users.items);
-  const usersLoading = useSelector((state: RootState) => state.users.loading);
+  const usersLoading = useSelector((state: RootState) => state.users.loaded);
   const usersError = useSelector((state: RootState) => state.users.hasError);
 
   const posts = useSelector((state: RootState) => state.posts.items);
-  const postsLoading = useSelector((state: RootState) => state.posts.loading);
+  const postsLoading = useSelector((state: RootState) => state.posts.loaded);
   const postsError = useSelector((state: RootState) => state.posts.hasError);
 
   const comments = useSelector((state: RootState) => state.comments.items);
   const commentsLoading = useSelector(
-    (state: RootState) => state.comments.loading,
+    (state: RootState) => state.comments.loaded,
   );
   const commentsError = useSelector(
     (state: RootState) => state.comments.hasError,
   );
 
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const selectedUserId = useSelector(selectSelectedUserId);
+  const selectedPostId = useSelector(selectSelectedPostId);
 
-  const selectedPost = useMemo(
-    () => posts.find(p => p.id === selectedPostId) || null,
-    [posts, selectedPostId],
-  );
+  const selectedPost = posts.find(p => p.id === selectedPostId) || null;
 
-  const author = useMemo(
-    () => users.find(u => u.id === selectedUserId) || null,
-    [users, selectedUserId],
-  );
+  const author = users.find(u => u.id === selectedUserId) || null;
+
+  const handleUserSelect = (id: number | null) =>
+    dispatch(uiActions.selectUser(id));
+  const handlePostSelect = (id: number | null) =>
+    dispatch(uiActions.selectPost(id));
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -60,11 +64,11 @@ export const App = () => {
     if (selectedUserId !== null) {
       dispatch(fetchPosts(selectedUserId));
       dispatch(clearComments());
-      setSelectedPostId(null);
+      dispatch(uiActions.selectPost(null));
     } else {
       dispatch(clearPosts());
       dispatch(clearComments());
-      setSelectedPostId(null);
+      dispatch(uiActions.selectPost(null));
     }
   }, [selectedUserId, dispatch]);
 
@@ -90,7 +94,7 @@ export const App = () => {
                 <UserSelector
                   users={users}
                   selectedUserId={selectedUserId}
-                  onSelect={setSelectedUserId}
+                  onSelect={handleUserSelect}
                 />
               </div>
 
@@ -128,7 +132,7 @@ export const App = () => {
                     <PostsList
                       posts={posts}
                       selectedPostId={selectedPostId}
-                      onSelectPost={setSelectedPostId}
+                      onSelectPost={handlePostSelect}
                     />
                   ))}
               </div>

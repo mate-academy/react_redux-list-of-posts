@@ -6,7 +6,7 @@ import { PostsState } from '../types/PostsState';
 
 const initialState: PostsState = {
   items: [],
-  loading: false,
+  loaded: false,
   hasError: false,
 };
 
@@ -28,22 +28,22 @@ export const postsSlice = createSlice({
   reducers: {
     clearPosts(state) {
       state.items = [];
-      state.loading = false;
+      state.loaded = false;
       state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        state.loading = true;
+        state.loaded = true;
         state.hasError = false;
       })
       .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.items = action.payload;
-        state.loading = false;
+        state.loaded = false;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.loading = false;
+        state.loaded = false;
         state.hasError = true;
       });
   },

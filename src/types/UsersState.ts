@@ -2,7 +2,7 @@ import { User } from './User';
 
 export interface UsersState {
   items: User[];
-  loading: boolean;
+  loaded: boolean;
   hasError: boolean;
   selectedUserId: number | null;
 }

@@ -2,6 +2,6 @@ import { PostComment } from './Comment';
 
 export interface CommentsState {
   items: PostComment[];
-  loading: boolean;
+  loaded: boolean;
   hasError: boolean;
 }

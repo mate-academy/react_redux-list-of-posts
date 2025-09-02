@@ -7,7 +7,7 @@ import { RootState } from '../app/store';
 
 const initialState: UsersState = {
   items: [],
-  loading: false,
+  loaded: false,
   hasError: false,
   selectedUserId: null,
 };
@@ -24,34 +24,34 @@ export const usersSlice = createSlice({
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
       state.items = action.payload;
-      state.loading = false;
+      state.loaded = false;
       state.hasError = false;
     },
     setUsersError: state => {
       state.hasError = true;
-      state.loading = false;
+      state.loaded = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchUsers.pending, state => {
-        state.loading = true;
+        state.loaded = true;
         state.hasError = false;
       })
       .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
         state.items = action.payload;
-        state.loading = false;
+        state.loaded = false;
         state.hasError = false;
       })
       .addCase(fetchUsers.rejected, state => {
-        state.loading = false;
+        state.loaded = false;
         state.hasError = true;
       });
   },
 });
 
 export const selectUsers = (state: RootState) => state.users.items;
-export const selectUsersLoaded = (state: RootState) => state.users.loading;
+export const selectUsersLoaded = (state: RootState) => state.users.loaded;
 export const selectUsersError = (state: RootState) => state.users.hasError;
 
 export default usersSlice.reducer;

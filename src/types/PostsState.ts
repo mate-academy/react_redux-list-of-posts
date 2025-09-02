@@ -2,6 +2,6 @@ import { Post } from './Post';
 
 export interface PostsState {
   items: Post[];
-  loading: boolean;
+  loaded: boolean;
   hasError: boolean;
 }
