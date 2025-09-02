@@ -174,6 +174,7 @@ export const NewCommentForm = () => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            disabled={submitting}
           >
             Add
           </button>

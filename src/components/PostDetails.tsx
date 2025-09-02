@@ -95,7 +95,8 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && <NewCommentForm />}
+        {/* {!loaded && !hasError && visible && <NewCommentForm />} */}
+        {visible && <NewCommentForm />}
       </div>
     </div>
   );
