@@ -99,7 +99,7 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {usersLoading && <Loader data-cy="Loader" />}
+                {usersLoading && <Loader />}
                 {usersError && (
                   <div className="notification is-danger">
                     Failed to load users
@@ -108,7 +108,7 @@ export const App = () => {
 
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && postsLoading && <Loader data-cy="Loader" />}
+                {author && postsLoading && <Loader />}
                 {author && postsError && (
                   <div
                     className="notification is-danger"

@@ -66,7 +66,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
         </div>
 
         <div className="block">
-          {commentsLoading && <Loader data-cy="Loader" />}
+          {commentsLoading && <Loader />}
 
           {commentsError && (
             <div className="notification is-danger" data-cy="CommentsError">

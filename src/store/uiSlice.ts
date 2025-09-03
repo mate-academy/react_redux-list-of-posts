@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UIState } from '../types/uiState';
+import { UIState } from '../types/UIState';
 
 const initialState: UIState = {
   selectedUserId: null,

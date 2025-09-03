@@ -28,7 +28,6 @@ export const commentsSlice = createSlice({
     },
     clearComments(state) {
       state.items = [];
-      state.loading = false;
       state.hasError = false;
     },
   },
