@@ -51,7 +51,9 @@ export const App = () => {
       <section>
         <h2>Posts</h2>
 
-        {postsState.hasError && <p style={{ color: 'red' }}>Error loading posts</p>}
+        {postsState.hasError && (
+          <p style={{ color: 'red' }}>Error loading posts</p>
+        )}
         {!postsState.loaded && <p>Loading posts...</p>}
 
         {postsState.loaded && (

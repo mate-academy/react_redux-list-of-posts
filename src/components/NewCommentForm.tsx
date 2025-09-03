@@ -6,7 +6,10 @@ interface NewCommentFormProps {
   onAddComment: (comment: Comment) => void;
 }
 
-export const NewCommentForm = ({ postId, onAddComment }: NewCommentFormProps) => {
+export const NewCommentForm = ({
+  postId,
+  onAddComment,
+}: NewCommentFormProps) => {
   const [name, setName] = useState('');
   const [body, setBody] = useState('');
 

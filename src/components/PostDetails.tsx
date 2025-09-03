@@ -21,13 +21,19 @@ export const PostDetails = ({ postId }: PostDetailsProps) => {
     dispatch(addComment(comment));
   };
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <div style={{ border: '1px solid gray', padding: '10px', marginTop: '10px' }}>
+    <div
+      style={{ border: '1px solid gray', padding: '10px', marginTop: '10px' }}
+    >
       <button onClick={() => setVisible(false)}>Close</button>
 
-      {comments.hasError && <p style={{ color: 'red' }}>Error loading comments</p>}
+      {comments.hasError && (
+        <p style={{ color: 'red' }}>Error loading comments</p>
+      )}
       {!comments.loaded && <p>Loading comments...</p>}
 
       {comments.loaded && (
