@@ -1,107 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import classNames from 'classnames';
-
-import 'bulma/css/bulma.css';
-import '@fortawesome/fontawesome-free/css/all.css';
-import './App.scss';
-
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchUsers } from './features/userSlice';
+import { fetchPosts } from './features/postsSlice';
+import { setAuthor } from './features/authorSlice';
 import { User } from './types/User';
-import { Post } from './types/Post';
 
-export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+export const App = () => {
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users.items);
+  const posts = useAppSelector(state => state.posts.items);
+  const author = useAppSelector(state => state.author);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(fetchUsers());
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
+  const handleSelectAuthor = (user: User) => {
+    dispatch(setAuthor(user));
+  };
 
   return (
-    <main className="section">
-      <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
-              </div>
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h1>Posts App</h1>
 
-              <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+      <section>
+        <h2>Users</h2>
+        <ul>
+          {users.map(user => (
+            <li
+              key={user.id}
+              onClick={() => handleSelectAuthor(user)}
+              style={{
+                cursor: 'pointer',
+                fontWeight: author?.id === user.id ? 'bold' : 'normal',
+              }}
+            >
+              {user.name}
+            </li>
+          ))}
+        </ul>
+      </section>
 
-                {author && !loaded && <Loader />}
+      <section>
+        <h2>Posts</h2>
+        <ul>
+          {posts
+            .filter(post => !author || post.userId === author.id)
+            .map(post => (
+              <li key={post.id}>
+                <strong>{post.title}</strong>: {post.body}
+              </li>
+            ))}
+        </ul>
+      </section>
 
-                {author && loaded && hasError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+      <section>
+        <p>
+          Selected author: <strong>{author?.name || 'None'}</strong>
+        </p>
+      </section>
+    </div>
   );
 };
