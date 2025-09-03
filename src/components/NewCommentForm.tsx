@@ -10,11 +10,11 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(false);
-  const [touched, setTouched] = useState<{
-    name: boolean;
-    email: boolean;
-    body: boolean;
-  }>({ name: false, email: false, body: false });
+  // const [touched, setTouched] = useState<{
+  //   name: boolean;
+  //   email: boolean;
+  //   body: boolean;
+  // }>({ name: false, email: false, body: false });
 
   const [errors, setErrors] = useState<{
     name?: string;
@@ -51,21 +51,19 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       return;
     }
 
+    setIsSubmitting(true);
+    setLoading(true);
+
+    const newComment: CommentData = { name, email, body };
+
     try {
-      setIsSubmitting(true);
-      setLoading(true);
-
-      const newComment: CommentData = { name, email, body };
-
       await onSubmit(newComment);
 
       setName('');
       setEmail('');
       setBody('');
       setErrors({});
-      setTouched({ name: false, email: false, body: false });
-    } catch (error) {
-      // console.error('Error adding comment:', error);
+      // setTouched({ name: false, email: false, body: false });
     } finally {
       setIsSubmitting(false);
       setLoading(false);
@@ -77,7 +75,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     setEmail('');
     setBody('');
     setErrors({});
-    setTouched({ name: false, email: false, body: false });
+    // setTouched({ name: false, email: false, body: false });
 
     if (onCancel) {
       onCancel();
@@ -96,24 +94,32 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             type="text"
             name="name"
             id="comment-author-name"
+            value={name}
             placeholder="Name Surname"
-            className={`input ${touched && !name ? 'is-danger' : ''}`}
+            className={`input ${errors.name && !name ? 'is-danger' : ''}`}
             onChange={e => {
               setName(e.target.value);
               if (errors.name) {
                 setErrors(prev => ({ ...prev, name: undefined }));
               }
             }}
+            // onBlur={() => setTouched(prev => ({ ...prev, name: true }))}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
+
+          {errors.name && (
+            <span className="icon is-small is-right" data-cy="ErrorIcon">
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
+            {errors.name}
           </p>
         )}
       </div>
@@ -129,18 +135,25 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${touched && !email ? 'is-danger' : ''}`}
+            value={email}
+            className={`input ${errors.email && !email ? 'is-danger' : ''}`}
             onChange={e => setEmail(e.target.value)}
+            // onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
+          {errors.email && (
+            <span className="icon is-small is-right" data-cy="ErrorIcon">
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        {touched && !email && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {errors.email}
           </p>
         )}
       </div>
@@ -155,14 +168,21 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`textarea ${touched && !body ? 'is-danger' : ''}`}
+            value={body}
+            className={`textarea ${errors.body ? 'is-danger' : ''}`}
             onChange={e => setBody(e.target.value)}
+            // onBlur={() => setTouched(prev => ({ ...prev, body: true }))}
           />
+          {errors.body && (
+            <span className="icon is-small is-right" data-cy="ErrorIcon">
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        {touched && !body && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
+            {errors.body}
           </p>
         )}
       </div>

@@ -13,10 +13,15 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
 }) => {
   const [localComments, setLocalComments] = useState<PostComment[]>(comments);
   const [error, setError] = useState<string | null>(null);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
     setLocalComments(comments);
   }, [comments]);
+
+  useEffect(() => {
+    setIsFormVisible(false);
+  }, [post]);
 
   if (!post) {
     return <p data-cy="NoPostSelected">No post selected</p>;
@@ -103,21 +108,30 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
                       delete button
                     </button>
                   </div>
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
                 </article>
               ))}
             </>
           )}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
         </div>
 
-        <NewCommentForm onSubmit={handleAdd} />
+        {!commentsLoading && !commentsError && (
+          <>
+            {!isFormVisible && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setIsFormVisible(true)}
+              >
+                Write a comment
+              </button>
+            )}
+            {isFormVisible && <NewCommentForm onSubmit={handleAdd} />}
+          </>
+        )}
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ export const uiSlice = createSlice({
   reducers: {
     selectUser(state, action: PayloadAction<number | null>) {
       state.selectedUserId = action.payload;
-      state.selectedPostId = null;
     },
     selectPost(state, action: PayloadAction<number | null>) {
       state.selectedPostId = action.payload;

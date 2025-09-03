@@ -61,14 +61,11 @@ export const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(uiActions.selectPost(null));
+    dispatch(clearComments());
+    dispatch(clearPosts());
     if (selectedUserId !== null) {
       dispatch(fetchPosts(selectedUserId));
-      dispatch(clearComments());
-      dispatch(uiActions.selectPost(null));
-    } else {
-      dispatch(clearPosts());
-      dispatch(clearComments());
-      dispatch(uiActions.selectPost(null));
     }
   }, [selectedUserId, dispatch]);
 

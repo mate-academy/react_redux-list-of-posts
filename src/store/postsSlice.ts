@@ -16,8 +16,6 @@ export const fetchPosts = createAsyncThunk(
   async (userId: number) => {
     const data = await getUserPosts(userId);
 
-    await new Promise(resolve => setTimeout(resolve, 200));
-
     return data;
   },
 );
@@ -28,7 +26,6 @@ export const postsSlice = createSlice({
   reducers: {
     clearPosts(state) {
       state.items = [];
-      state.loaded = false;
       state.hasError = false;
     },
   },
