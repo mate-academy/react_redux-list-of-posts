@@ -57,12 +57,16 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     const newComment: CommentData = { name, email, body };
 
     try {
-      await onSubmit(newComment);
+      const savedComment = await onSubmit(newComment);
 
-      setName('');
-      setEmail('');
       setBody('');
       setErrors({});
+
+      return savedComment;
+      // setName('');
+      // setEmail('');
+      // setBody('');
+      // setErrors({});
       // setTouched({ name: false, email: false, body: false });
     } finally {
       setIsSubmitting(false);

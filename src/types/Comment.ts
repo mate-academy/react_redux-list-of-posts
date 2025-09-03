@@ -7,3 +7,4 @@ export interface PostComment {
 }
 
 export type CommentData = Pick<PostComment, 'name' | 'email' | 'body'>;
+export type CommentPayload = CommentData & { postId: number };

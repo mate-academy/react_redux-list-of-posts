@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { PostDetailsProps } from '../types/PostDetailsProps';
 import { client } from '../utils/fetchClient';
-import { PostComment, CommentData } from '../types/Comment';
+import { PostComment, CommentData, CommentPayload } from '../types/Comment';
 
 export const PostDetails: React.FC<PostDetailsProps> = ({
   post,
@@ -30,9 +30,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
   const handleAdd = async (data: CommentData): Promise<PostComment> => {
     setError(null);
     try {
-      const added = await client.comments.add(data);
+      const payload: CommentPayload = { ...data, postId: post.id };
+      const added = await client.comments.add(payload);
 
-      setLocalComments(prev => [added, ...prev]);
+      setLocalComments(prev => [...prev, added]);
 
       return added;
     } catch {
@@ -79,16 +80,16 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
             </div>
           )}
 
-          {!commentsLoading && !commentsError && comments.length === 0 && (
+          {!commentsLoading && !commentsError && localComments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!commentsLoading && comments.length > 0 && (
+          {!commentsLoading && localComments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map(comment => (
+              {localComments.map(comment => (
                 <article
                   className="message is-small"
                   data-cy="Comment"
