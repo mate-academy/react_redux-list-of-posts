@@ -1,20 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/userSlice';
-import { fetchPosts } from './features/postsSlice';
 import { setAuthor } from './features/authorSlice';
+import { fetchPosts } from './features/postsSlice';
+import {
+  setSelectedPost,
+  clearSelectedPost,
+} from './features/selectedPostsSlice';
 import { User } from './types/User';
+import { UserSelector } from './components/UserSelector';
+import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Post } from './types/Post';
 
 export const App = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users.items);
-  const posts = useAppSelector(state => state.posts.items);
-  const author = useAppSelector(state => state.author);
-  const postsState = useAppSelector(state => state.posts);
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const usersState = useAppSelector(state => state.users);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -23,57 +26,45 @@ export const App = () => {
 
   const handleSelectAuthor = (user: User) => {
     dispatch(setAuthor(user));
-    setSelectedPost(null);
+    dispatch(clearSelectedPost()); // reset selected post when author changes
+  };
+
+  const handleSelectPost = (postId: number) => {
+    dispatch(setSelectedPost(postId));
+  };
+
+  const handleClosePostDetails = () => {
+    dispatch(clearSelectedPost());
   };
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>Posts App</h1>
 
+      {/* User Selector */}
       <section>
         <h2>Users</h2>
-        <ul>
-          {users.map(user => (
-            <li
-              key={user.id}
-              onClick={() => handleSelectAuthor(user)}
-              style={{
-                cursor: 'pointer',
-                fontWeight: author?.id === user.id ? 'bold' : 'normal',
-              }}
-            >
-              {user.name}
-            </li>
-          ))}
-        </ul>
+        {usersState.error && <p style={{ color: 'red' }}>{usersState.error}</p>}
+        {usersState.loading && <p>Loading users...</p>}
+        {!usersState.loading && usersState.items.length > 0 && (
+          <UserSelector
+            users={usersState.items}
+            selectedUser={author}
+            onSelectUser={handleSelectAuthor}
+          />
+        )}
       </section>
 
-      <section>
+      {/* Posts List */}
+      <section style={{ marginTop: '20px' }}>
         <h2>Posts</h2>
-
-        {postsState.hasError && (
-          <p style={{ color: 'red' }}>Error loading posts</p>
-        )}
-        {!postsState.loaded && <p>Loading posts...</p>}
-
-        {postsState.loaded && (
-          <ul>
-            {posts
-              .filter(post => !author || post.userId === author.id)
-              .map(post => (
-                <li
-                  key={post.id}
-                  onClick={() => setSelectedPost(post)}
-                  style={{ cursor: 'pointer', marginBottom: '5px' }}
-                >
-                  <strong>{post.title}</strong>
-                </li>
-              ))}
-          </ul>
-        )}
+        <PostsList authorId={author?.id} onSelectPost={handleSelectPost} />
       </section>
 
-      {selectedPost && <PostDetails postId={selectedPost.id} />}
+      {/* Post Details */}
+      {selectedPost !== null && (
+        <PostDetails postId={selectedPost} onClose={handleClosePostDetails} />
+      )}
     </div>
   );
 };

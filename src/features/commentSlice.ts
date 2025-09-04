@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 
@@ -13,6 +15,7 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
+// Fetch comments dla konkretnego posta
 export const fetchComments = createAsyncThunk(
   'comments/fetchComments',
   async (postId: number) => {
@@ -24,7 +27,7 @@ export const fetchComments = createAsyncThunk(
       throw new Error('Failed to fetch comments');
     }
 
-    return response.json();
+    return response.json() as Promise<Comment[]>;
   },
 );
 
@@ -32,33 +35,31 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    clearComments: () => ({
-      items: [],
-      loaded: false,
-      hasError: false,
-    }),
-    addComment: (state, action: PayloadAction<Comment>) => ({
-      ...state,
-      items: [action.payload, ...state.items],
-    }),
+    clearComments: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+    },
+    addComment: (state, action: PayloadAction<Comment>) => {
+      state.items.unshift(action.payload); // dodajemy na początek listy
+      state.loaded = true; // zaznaczamy, że lista jest załadowana
+      state.hasError = false;
+    },
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchComments.pending, state => ({
-        ...state,
-        loaded: false,
-        hasError: false,
-      }))
-      .addCase(fetchComments.fulfilled, (state, action) => ({
-        ...state,
-        items: action.payload,
-        loaded: true,
-      }))
-      .addCase(fetchComments.rejected, state => ({
-        ...state,
-        loaded: false,
-        hasError: true,
-      }));
+      .addCase(fetchComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      })
+      .addCase(fetchComments.rejected, state => {
+        state.loaded = false;
+        state.hasError = true;
+      });
   },
 });
 

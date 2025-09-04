@@ -1,12 +1,25 @@
+/* eslint-disable no-param-reassign */
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Post } from '../types/Post';
+
+interface SelectedPostState {
+  post: number | null; // przechowuje tylko ID wybranego posta
+}
+
+const initialState: SelectedPostState = {
+  post: null,
+};
 
 const selectedPostSlice = createSlice({
   name: 'selectedPost',
-  initialState: null as Post | null,
+  initialState,
   reducers: {
-    setSelectedPost: (_, action: PayloadAction<Post>) => action.payload,
-    clearSelectedPost: () => null,
+    setSelectedPost: (state, action: PayloadAction<number>) => {
+      state.post = action.payload;
+    },
+    clearSelectedPost: state => {
+      state.post = null;
+    },
   },
 });
 
