@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -11,13 +11,16 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/users/userSlice';
-import { clearSelectedPost, setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import {
+  clearSelectedPost,
+  setSelectedPost,
+} from './features/selectedPost/selectedPostSlice';
 import { clearPosts, fetchUserPosts } from './features/posts/postsSlice';
-import { setCurrentUser } from './features/currentUser/currentUserSlice';
+import { setAuthor } from './features/currentUser/currentUserSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(state => state.currentUser.item);
+  const currentUser = useAppSelector(state => state.author.item);
   const {
     items: posts,
     loaded: postsLoaded,
@@ -49,14 +52,14 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-              <UserSelector
+                <UserSelector
                   value={currentUser}
-                  onChange={user => dispatch(setCurrentUser(user))}
+                  onChange={user => dispatch(setAuthor(user))}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-              {!currentUser && (
+                {!currentUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
                 {currentUser && !postsLoaded && <Loader />}

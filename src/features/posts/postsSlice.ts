@@ -17,7 +17,7 @@ const initialState: PostsState = {
   items: [],
   loaded: false,
   hasError: false,
-}
+};
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -27,24 +27,27 @@ const postsSlice = createSlice({
       state.items = [];
       state.loaded = false;
       state.hasError = false;
-    }
+    },
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchUserPosts.pending, (state) => {
+      .addCase(fetchUserPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(fetchUserPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.items = action.payload;
-        state.loaded = true;
-      })
-      .addCase(fetchUserPosts.rejected, (state) => {
+      .addCase(
+        fetchUserPosts.fulfilled,
+        (state, action: PayloadAction<Post[]>) => {
+          state.items = action.payload;
+          state.loaded = true;
+        },
+      )
+      .addCase(fetchUserPosts.rejected, state => {
         state.loaded = true;
         state.hasError = true;
       });
-  }
-})
+  },
+});
 
 export const { clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;

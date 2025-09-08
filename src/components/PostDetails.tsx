@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addComment, fetchPostComments, removeComment } from '../features/comments/commentsSlice';
+import {
+  addComment,
+  fetchPostComments,
+  removeComment,
+} from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;
@@ -21,27 +24,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-
   useEffect(() => {
     dispatch(fetchPostComments(post.id));
     setVisible(false);
   }, [post.id, dispatch]);
 
   const handleAddComment = async (data: CommentData) => {
-    try{
+    try {
       await dispatch(addComment({ ...data, postId: post.id })).unwrap();
-    } catch(error) {
-
-    }
-  }
+    } catch (error) {}
+  };
 
   const handleDeleteComment = async (commentId: number) => {
-    try{
+    try {
       await dispatch(removeComment(commentId)).unwrap();
-    } catch(error) {
-
-    }
-  }
+    } catch (error) {}
+  };
 
   return (
     <div className="content" data-cy="PostDetails">

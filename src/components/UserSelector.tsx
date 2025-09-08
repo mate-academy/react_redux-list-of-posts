@@ -10,11 +10,9 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-
   value: selectedUser,
   onChange,
 }) => {
-
   const { items: users } = useAppSelector(state => state.users);
 
   const [expanded, setExpanded] = useState(false);

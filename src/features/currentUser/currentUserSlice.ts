@@ -1,26 +1,27 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "../../types/User";
-import userSlice from "../users/userSlice";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../types/User';
 
-interface CurrentUserState {
+interface AuthorState {
   item: User | null;
 }
-const initialState: CurrentUserState = {
-  item: null,
-}
 
-const currentUserSlice = createSlice({
-  name: 'currentUser',
+const initialState: AuthorState = {
+  item: null,
+};
+
+const authorSlice = createSlice({
+  name: 'author',
   initialState,
   reducers: {
-    setCurrentUser: (state, action: PayloadAction<User | null>) =>{
+    setAuthor: (state, action: PayloadAction<User | null>) => {
       state.item = action.payload;
     },
-    clearCurrentUser: (state) =>{
+    clearAuthor: state => {
       state.item = null;
-    }
-  }
-})
-export const { setCurrentUser, clearCurrentUser } = currentUserSlice.actions;
-export default currentUserSlice.reducer;
-export type { CurrentUserState };
+    },
+  },
+});
+
+export const { setAuthor, clearAuthor } = authorSlice.actions;
+export default authorSlice.reducer;
+export type { AuthorState };

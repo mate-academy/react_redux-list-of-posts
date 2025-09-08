@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import * as commentsApi from '../../api/comments';
-import {Comment, CommentData } from "../../types/Comment";
+import { Comment, CommentData } from '../../types/Comment';
 
 export const fetchPostComments = createAsyncThunk(
   'comments/fetchPostComments',
@@ -16,6 +16,7 @@ export const removeComment = createAsyncThunk(
   'comments/removeComment',
   async (commentId: number) => {
     await commentsApi.deleteComment(commentId);
+
     return commentId;
   },
 );
@@ -38,25 +39,24 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-    .addCase(fetchPostComments.pending, state => {
-      state.loaded = false;
-      state.hasError = false;
-    })
-    .addCase(fetchPostComments.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = true;
-    })
-    .addCase(fetchPostComments.rejected, state => {
-      state.loaded = true;
-      state.hasError = true;
-    })
-    .addCase(addComment.fulfilled, (state, action) => {
-      state.items.push(action.payload);
-    })
-    .addCase(removeComment.fulfilled, (state, action) => {
-      state.items = state.items.filter(c => c.id !== action.payload);
-    });
-
+      .addCase(fetchPostComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchPostComments.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      })
+      .addCase(fetchPostComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(c => c.id !== action.payload);
+      });
   },
 });
 
