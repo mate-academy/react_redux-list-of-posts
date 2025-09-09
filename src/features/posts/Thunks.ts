@@ -5,8 +5,6 @@ import { getUserPosts } from '../../api/posts';
 export const loadPosts = createAsyncThunk<Post[], number>(
   'posts/fetch',
   async (userId: number) => {
-    const posts = await getUserPosts(userId);
-
-    return posts;
+    return getUserPosts(userId);
   },
 );

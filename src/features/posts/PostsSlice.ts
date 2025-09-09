@@ -1,69 +1,53 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 import { loadPosts } from './Thunks';
 
 type PostsState = {
-  loading: boolean;
-  posts: Post[];
-  error: string;
-  selectedPost: Post | null;
+  loaded: boolean;
+  items: Post[];
+  hasError: string;
 };
 
 const initialState: PostsState = {
-  loading: false,
-  posts: [],
-  error: '',
-  selectedPost: null,
+  loaded: false,
+  items: [],
+  hasError: '',
 };
 
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPost(state, action: PayloadAction<Post>) {
-      return {
-        ...state,
-        selectedPost: action.payload,
-      };
-    },
     clearPosts(state) {
       return {
         ...state,
-        posts: [],
-        selectedPost: null,
-      };
-    },
-    clearPost(state) {
-      return {
-        ...state,
-        selectedPost: null,
+        items: [],
       };
     },
   },
   extraReducers: builder => {
     builder.addCase(loadPosts.pending, state => ({
       ...state,
-      error: '',
-      loading: true,
+      hasError: '',
+      loaded: true,
     }));
     builder.addCase(loadPosts.fulfilled, (state, action) => ({
       ...state,
-      posts: action.payload,
-      loading: false,
+      items: action.payload,
+      loaded: false,
     }));
     builder.addCase(loadPosts.rejected, (state, action) => ({
       ...state,
-      error: action.error.message || '',
-      loading: false,
+      hasError: action.error.message || '',
+      loaded: false,
     }));
   },
 });
 
-export const selectPosts = (state: RootState) => state.posts.posts;
-export const selectPostsLoading = (state: RootState) => state.posts.loading;
-export const selectPostsError = (state: RootState) => state.posts.error;
-export const selectCurrentPost = (state: RootState) => state.posts.selectedPost;
-export const { setPost, clearPost, clearPosts } = postsSlice.actions;
+export const selectPosts = (state: RootState) => state.posts.items;
+export const selectPostsLoading = (state: RootState) => state.posts.loaded;
+export const selectPostsError = (state: RootState) => state.posts.hasError;
+export const { clearPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

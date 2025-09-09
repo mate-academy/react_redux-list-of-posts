@@ -5,7 +5,7 @@ import { addComment } from '../features/comments';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { selectedPost } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({

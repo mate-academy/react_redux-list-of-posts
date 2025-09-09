@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
-import { setUser } from '../features/users';
+import { setAuthor } from '../features/users';
 
 export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
-  const { users, selectedUser } = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
+  const author = useAppSelector(state => state.selectedUser.author);
 
   const handleUserChange = (user: User) => {
-    dispatch(setUser(user));
+    dispatch(setAuthor(user));
     setExpanded(false);
   };
 
@@ -46,7 +47,7 @@ export const UserSelector: React.FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -64,7 +65,7 @@ export const UserSelector: React.FC = () => {
                 handleUserChange(user);
               }}
               className={classNames('dropdown-item', {
-                'is-active': selectedUser?.id === user.id,
+                'is-active': author?.id === user.id,
               })}
             >
               {user.name}

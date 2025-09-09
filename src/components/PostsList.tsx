@@ -2,17 +2,18 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { clearPost, setPost } from '../features/posts';
+import { clearSelectedPost, setSelectedPost } from '../features/posts';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, selectedPost } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const onPostSelected = (post: Post) => {
     if (post.id === selectedPost?.id) {
-      dispatch(clearPost());
+      dispatch(clearSelectedPost());
     } else {
-      dispatch(setPost(post));
+      dispatch(setSelectedPost(post));
     }
   };
 
@@ -30,7 +31,7 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {items.map(post => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
