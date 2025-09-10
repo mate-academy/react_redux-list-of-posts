@@ -8,7 +8,7 @@ export const useLoadUsers = () => {
 
   useEffect(() => {
     dispatch(loadUsers());
-  }, []);
+  }, [dispatch]);
 
   return { users, loading, error };
 };
