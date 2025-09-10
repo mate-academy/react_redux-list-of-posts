@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -23,6 +23,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(false);
+  }, [post]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {

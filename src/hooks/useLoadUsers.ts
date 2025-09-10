@@ -7,10 +7,8 @@ export const useLoadUsers = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (users.length === 0 && !loading) {
-      dispatch(loadUsers());
-    }
-  }, [users.length, loading, dispatch]);
+    dispatch(loadUsers());
+  }, []);
 
   return { users, loading, error };
 };
