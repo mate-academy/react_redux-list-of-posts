@@ -11,7 +11,7 @@ export interface CommentsState {
 const initialState: CommentsState = {
   items: [],
   loaded: false,
-  hasError: false
+  hasError: false,
 };
 
 export const commentsSlice = createSlice({
@@ -27,9 +27,8 @@ export const commentsSlice = createSlice({
     },
     setError: (state, actions: PayloadAction<boolean>) => {
       state.hasError = actions.payload;
-    }
+    },
   },
 });
-
 
 export default commentsSlice.reducer;

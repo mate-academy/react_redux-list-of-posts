@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { getUsers } from '../api/users';
-import { usersSlice } from '../features/counter/usersSlice'
+import { usersSlice } from '../features/counter/usersSlice';
 
 type Props = {
   value: User | null;
@@ -37,10 +37,9 @@ export const UserSelector: React.FC<Props> = ({
   }, [expanded]);
 
   useEffect(() => {
-    getUsers()
-      .then(data => {
-        dispatch(usersSlice.actions.get(data));
-      })
+    getUsers().then(data => {
+      dispatch(usersSlice.actions.get(data));
+    });
   }, [dispatch]);
 
   return (

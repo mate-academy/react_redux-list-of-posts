@@ -14,7 +14,6 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -32,10 +31,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .getPostComments(post.id)
       .then(data => dispatch(commentsSlice.actions.setComments(data))) // save the loaded comments
       .catch(() => dispatch(commentsSlice.actions.setError(true))) // show an error when something went wrong
-      .finally(() =>  dispatch(commentsSlice.actions.setLoaded(true))); // hide the spinner
+      .finally(() => dispatch(commentsSlice.actions.setLoaded(true))); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -46,16 +45,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(commentsSlice.actions.setComments([...comments, newComment]))
-
+      dispatch(commentsSlice.actions.setComments([...comments, newComment]));
     } catch (error) {
-      dispatch(commentsSlice.actions.setError(true))
+      dispatch(commentsSlice.actions.setError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-
-    dispatch(commentsSlice.actions.setComments(comments.filter(comment => comment.id !== commentId)))
+    dispatch(
+      commentsSlice.actions.setComments(
+        comments.filter(comment => comment.id !== commentId),
+      ),
+    );
 
     await commentsApi.deleteComment(commentId);
   };

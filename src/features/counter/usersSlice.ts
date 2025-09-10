@@ -15,10 +15,9 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     get: (state, actions: PayloadAction<User[]>) => {
-      return { ...state, users: actions.payload}
-    }
+      return { ...state, users: actions.payload };
+    },
   },
 });
-
 
 export default usersSlice.reducer;

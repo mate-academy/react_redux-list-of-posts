@@ -16,17 +16,16 @@ import { postsSlice } from './features/counter/postsSlice';
 import { selectedPostSlice } from './features/counter/selectedPostSlice';
 
 export const App: React.FC = () => {
-
   const dispatch = useAppDispatch();
 
-  const author = useAppSelector(state => state.author.author)
-  const posts = useAppSelector(state => state.posts.items)
-  const loaded = useAppSelector(state => state.posts.loaded)
-  const hasError = useAppSelector(state => state.posts.hasError)
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost)
+  const author = useAppSelector(state => state.author.author);
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   function loadUserPosts(userId: number) {
-      dispatch(postsSlice.actions.setLoaded(false))
+    dispatch(postsSlice.actions.setLoaded(false));
 
     getUserPosts(userId)
       .then(data => dispatch(postsSlice.actions.setPosts(data)))
@@ -35,14 +34,14 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    dispatch(selectedPostSlice.actions.selectPost(null))
+    dispatch(selectedPostSlice.actions.selectPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
       dispatch(postsSlice.actions.setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -51,7 +50,12 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={(value) => dispatch(authorSlice.actions.setAuthor(value))} />
+                <UserSelector
+                  value={author}
+                  onChange={value =>
+                    dispatch(authorSlice.actions.setAuthor(value))
+                  }
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -70,7 +74,8 @@ export const App: React.FC = () => {
 
                 {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet {author.name} {loaded ? 'true': false} {hasError ? 'true' : 'false'} {posts.length}
+                    No posts yet {author.name} {loaded ? 'true' : false}{' '}
+                    {hasError ? 'true' : 'false'} {posts.length}
                   </div>
                 )}
 
@@ -78,7 +83,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={value => dispatch(selectedPostSlice.actions.selectPost(value))}
+                    onPostSelected={value =>
+                      dispatch(selectedPostSlice.actions.selectPost(value))
+                    }
                   />
                 )}
               </div>

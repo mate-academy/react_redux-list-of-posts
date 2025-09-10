@@ -11,7 +11,7 @@ export interface PostsState {
 const initialState: PostsState = {
   items: [],
   loaded: false,
-  hasError: false
+  hasError: false,
 };
 
 export const postsSlice = createSlice({
@@ -27,9 +27,8 @@ export const postsSlice = createSlice({
     },
     setError: (state, actions: PayloadAction<boolean>) => {
       state.hasError = actions.payload;
-    }
+    },
   },
 });
-
 
 export default postsSlice.reducer;
