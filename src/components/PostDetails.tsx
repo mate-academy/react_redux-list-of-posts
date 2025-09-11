@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
         postId: post.id,
       };
-      await dispatch(addNewComment(newComment));
+      await dispatch(addNewComment(newComment)).unwrap();
     } catch (error) {
       dispatch(setError(true));
     }

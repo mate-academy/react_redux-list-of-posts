@@ -83,7 +83,6 @@ const commentsSlice = createSlice({
     builder.addCase(
       deleteComment.fulfilled,
       (state, action: PayloadAction<number>) => {
-        state.loaded = true;
         state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
