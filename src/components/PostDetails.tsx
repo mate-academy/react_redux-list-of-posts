@@ -16,6 +16,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
   const comments = useAppSelector(state => state.comments.items);
@@ -27,11 +28,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
-  const handleAddComment = async (data: CommentData): Promise<void> => {
+  const handleAddComment = async (data: CommentData) => {
     try {
-      await dispatch(addComment({ postId: post.id, ...data }));
+      setSubmitting(true);
+      await dispatch(addComment({ postId: post.id, ...data })).unwrap();
     } finally {
-      setVisible(false);
+      setSubmitting(false);
     }
   };
 
@@ -104,7 +106,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {!isLoading && !error && visible && (
-          <NewCommentForm onSubmit={handleAddComment} />
+          <NewCommentForm onSubmit={handleAddComment} submitting={submitting} />
         )}
       </div>
     </div>

@@ -118,7 +118,7 @@ export const commentsSlice = createSlice({
 
       // addComment
       .addCase(addComment.pending, state => {
-        state.isLoading = true;
+        //state.isLoading = true;
         state.error = null;
       })
       .addCase(
