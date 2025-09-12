@@ -8,7 +8,7 @@ import {
   addComment,
   deleteComment,
   fetchComments,
-} from '../features/counter/commentsSlice';
+} from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;

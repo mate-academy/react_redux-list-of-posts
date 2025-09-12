@@ -10,12 +10,12 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { setAuthor, selectAuthor } from './features/counter/authorSlice';
-import { fetchPosts } from './features/counter/postsSlice';
+import { setAuthor, selectAuthor } from './features/author/authorSlice';
+import { fetchPosts } from './features/posts/postsSlice';
 import {
   selectPost,
   selectSelectedPost,
-} from './features/counter/selectedPostSlice';
+} from './features/selectedPost/selectedPostSlice';
 
 /* prettier-ignore */
 export const App: React.FC = () => {

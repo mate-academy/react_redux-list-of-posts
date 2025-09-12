@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { fetchUsers } from '../features/counter/usersSlice';
+import { fetchUsers } from '../features/users/usersSlice';
 
 type Props = {
   value: User | null;
