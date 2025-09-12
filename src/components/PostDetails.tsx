@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsSlice } from '../features/counter/commentsSlice';
+import {
+  addComment,
+  deleteComment,
+  fetchComments,
+} from '../features/counter/commentsSlice';
 
 type Props = {
   post: Post;
@@ -15,79 +16,50 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
-
   const dispatch = useAppDispatch();
+
   const comments = useAppSelector(state => state.comments.items);
-  const hasError = useAppSelector(state => state.comments.hasError);
-  const loaded = useAppSelector(state => state.comments.loaded);
+  const isLoading = useAppSelector(state => state.comments.isLoading);
+  const error = useAppSelector(state => state.comments.error);
 
-  function loadComments() {
-    dispatch(commentsSlice.actions.setLoaded(false));
-    dispatch(commentsSlice.actions.setError(false));
+  useEffect(() => {
+    dispatch(fetchComments(post.id));
+  }, [post.id, dispatch]);
 
+  const handleAddComment = async (data: CommentData): Promise<void> => {
+    await dispatch(addComment({ postId: post.id, ...data }));
     setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(data => dispatch(commentsSlice.actions.setComments(data))) // save the loaded comments
-      .catch(() => dispatch(commentsSlice.actions.setError(true))) // show an error when something went wrong
-      .finally(() => dispatch(commentsSlice.actions.setLoaded(true))); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id, dispatch]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      dispatch(commentsSlice.actions.setComments([...comments, newComment]));
-    } catch (error) {
-      dispatch(commentsSlice.actions.setError(true));
-    }
   };
 
-  const deleteComment = async (commentId: number) => {
-    dispatch(
-      commentsSlice.actions.setComments(
-        comments.filter(comment => comment.id !== commentId),
-      ),
-    );
-
-    await commentsApi.deleteComment(commentId);
+  const handleDeleteComment = (commentId: number) => {
+    dispatch(deleteComment(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {isLoading && <Loader />}
 
-        {loaded && hasError && (
+        {error && (
           <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+            {error.message}
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!isLoading && !error && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!isLoading && !error && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -98,18 +70,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
                 </div>
-
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>
@@ -118,7 +88,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!isLoading && !error && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -129,8 +99,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {!isLoading && !error && visible && (
+          <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
     </div>

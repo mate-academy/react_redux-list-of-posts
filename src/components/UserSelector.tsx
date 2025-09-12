@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { getUsers } from '../api/users';
-import { usersSlice } from '../features/counter/usersSlice';
+import { fetchUsers } from '../features/counter/usersSlice';
 
 type Props = {
   value: User | null;
@@ -14,10 +13,13 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  const users = useAppSelector(state => state.users.users);
+  const { users, loading, hasError } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
-
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -35,12 +37,6 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
-
-  useEffect(() => {
-    getUsers().then(data => {
-      dispatch(usersSlice.actions.get(data));
-    });
-  }, [dispatch]);
 
   return (
     <div
@@ -68,20 +64,26 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-          ))}
+          {loading && <p className="dropdown-item">Loading users...</p>}
+          {hasError && (
+            <p className="dropdown-item has-text-danger">Error loading users</p>
+          )}
+          {!loading &&
+            !hasError &&
+            users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onClick={() => {
+                  onChange(user);
+                }}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
         </div>
       </div>
     </div>

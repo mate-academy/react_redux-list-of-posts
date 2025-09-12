@@ -9,37 +9,31 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { authorSlice } from './features/counter/authorSlice';
-import { postsSlice } from './features/counter/postsSlice';
-import { selectedPostSlice } from './features/counter/selectedPostSlice';
+import { setAuthor, selectAuthor } from './features/counter/authorSlice';
+import { fetchPosts } from './features/counter/postsSlice';
+import {
+  selectPost,
+  selectSelectedPost,
+} from './features/counter/selectedPostSlice';
 
+/* prettier-ignore */
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const author = useAppSelector(state => state.author.author);
-  const posts = useAppSelector(state => state.posts.items);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(state => state.posts.hasError);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const author = useAppSelector(selectAuthor);
+  const postsState = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(selectSelectedPost);
+  const selectedPostId = useAppSelector(
+    state => state.selectedPost.selectedPostId,
+  );
 
-  function loadUserPosts(userId: number) {
-    dispatch(postsSlice.actions.setLoaded(false));
-
-    getUserPosts(userId)
-      .then(data => dispatch(postsSlice.actions.setPosts(data)))
-      .catch(() => dispatch(postsSlice.actions.setError(true)))
-      .finally(() => dispatch(postsSlice.actions.setLoaded(true)));
-  }
-
+  // 🔹 pobierz posty wybranego użytkownika
   useEffect(() => {
-    dispatch(selectedPostSlice.actions.selectPost(null));
+    dispatch(selectPost(null)); // reset selectedPostId przy zmianie autora
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      dispatch(postsSlice.actions.setPosts([]));
+    if (author?.id) {
+      dispatch(fetchPosts(author.id));
     }
   }, [author, dispatch]);
 
@@ -52,40 +46,44 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   value={author}
-                  onChange={value =>
-                    dispatch(authorSlice.actions.setAuthor(value))
-                  }
+                  onChange={value => dispatch(setAuthor(value))}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && postsState.isLoading && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && postsState.error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {postsState.error.message}
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet {author.name} {loaded ? 'true' : false}{' '}
-                    {hasError ? 'true' : 'false'} {posts.length}
+                {author &&
+                  !postsState.isLoading &&
+                  !postsState.error &&
+                  postsState.items.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                      No posts yet {author.name}
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author &&
+                  !postsState.isLoading &&
+                  !postsState.error &&
+                  postsState.items.length > 0 && (
                   <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={value =>
-                      dispatch(selectedPostSlice.actions.selectPost(value))
-                    }
+                    posts={postsState.items}
+                    selectedPostId={selectedPostId}
+                    onPostSelected={value => dispatch(selectPost(value))}
                   />
                 )}
               </div>
