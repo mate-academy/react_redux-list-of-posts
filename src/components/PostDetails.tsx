@@ -23,12 +23,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const error = useAppSelector(state => state.comments.error);
 
   useEffect(() => {
+    setVisible(false);
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
   const handleAddComment = async (data: CommentData): Promise<void> => {
-    await dispatch(addComment({ postId: post.id, ...data }));
-    setVisible(false);
+    try {
+      await dispatch(addComment({ postId: post.id, ...data }));
+    } finally {
+      setVisible(false);
+    }
   };
 
   const handleDeleteComment = (commentId: number) => {
