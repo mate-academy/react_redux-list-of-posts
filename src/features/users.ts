@@ -18,14 +18,10 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setUsers: (_state, action: PayloadAction<User[]>) => {
-      return action.payload;
-    },
+    setUsers: (_state, action: PayloadAction<User[]>) => action.payload,
   },
   extraReducers: builder => {
-    builder.addCase(loadUsers.fulfilled, (_state, action) => {
-      return action.payload;
-    });
+    builder.addCase(loadUsers.fulfilled, (_state, action) => action.payload);
   },
 });
 

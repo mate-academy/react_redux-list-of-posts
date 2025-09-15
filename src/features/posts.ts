@@ -4,15 +4,15 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 type PostsState = {
-  posts: Post[];
-  loading: boolean;
-  error: string;
+  items: Post[];
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: '',
 };
 
 export const loadPosts = createAsyncThunk<Post[], number>(
@@ -28,31 +28,31 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      state.items = action.payload;
     },
     addPost: (state, action: PayloadAction<Post>) => {
-      state.posts.push(action.payload);
+      state.items.push(action.payload);
     },
     removePost: (state, action: PayloadAction<Post>) => {
-      state.posts = state.posts.filter(post => post.id !== action.payload.id);
+      state.items = state.items.filter(post => post.id !== action.payload.id);
     },
     clearPosts: state => {
-      state.posts = [];
+      state.items = [];
     },
   },
   extraReducers: builder => {
     builder
       .addCase(loadPosts.pending, state => {
-        state.error = '';
-        state.loading = true;
+        state.hasError = '';
+        state.loaded = true;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.posts = action.payload;
+        state.loaded = false;
+        state.items = action.payload;
       })
       .addCase(loadPosts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || '';
+        state.loaded = false;
+        state.hasError = action.error.message || '';
       });
   },
 });
