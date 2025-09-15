@@ -7,13 +7,13 @@ import {
 } from '../../api/comments';
 
 export type CommentsState = {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -49,7 +49,7 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     clearComments: state => {
-      state.comments = [];
+      state.items = [];
     },
   },
   extraReducers: builder => {
@@ -61,17 +61,17 @@ export const commentsSlice = createSlice({
       .addCase(fetchPostComments.fulfilled, (state, action) => {
         state.loaded = true;
         state.hasError = false;
-        state.comments = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchPostComments.rejected, state => {
-        state.loaded = true;
+        state.loaded = false;
         state.hasError = true;
       })
       .addCase(addNewComment.fulfilled, (state, action) => {
-        state.comments = [...state.comments, action.payload];
+        state.items = [...state.items, action.payload];
       })
       .addCase(deleteCommentById.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(
+        state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
       });

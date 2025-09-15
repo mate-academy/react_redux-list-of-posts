@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost/selectedPost';
 
 export const PostsList = () => {
-  const { posts } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
@@ -23,26 +23,26 @@ export const PostsList = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {items.map(item => (
+            <tr key={item.id} data-cy="Post">
+              <td data-cy="PostId">{item.id}</td>
+              <td data-cy="PostTitle">{item.title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPost?.id,
+                    'is-light': item.id !== selectedPost?.id,
                   })}
                   onClick={() => {
                     dispatch(
                       setSelectedPost(
-                        post.id === selectedPost?.id ? null : post,
+                        item.id === selectedPost?.id ? null : item,
                       ),
                     );
                   }}
                 >
-                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                  {item.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

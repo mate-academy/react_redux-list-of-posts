@@ -12,7 +12,7 @@ import {
 export const PostDetails = () => {
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
   const { comments, hasError, loaded } = useAppSelector(
-    state => state.comments,
+    state => state.items,
   );
   const dispatch = useAppDispatch();
 
