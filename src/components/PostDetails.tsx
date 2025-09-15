@@ -11,9 +11,7 @@ import {
 
 export const PostDetails = () => {
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
-  const { comments, hasError, loaded } = useAppSelector(
-    state => state.items,
-  );
+  const { comments, hasError, loaded } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
   const [visible, setVisible] = useState(false);
@@ -23,7 +21,7 @@ export const PostDetails = () => {
     setVisible(false);
 
     if (post) {
-      dispatch(fetchPostComments(post?.id));
+      dispatch(fetchPostComments(post.id));
     }
   }, [post, dispatch]);
 

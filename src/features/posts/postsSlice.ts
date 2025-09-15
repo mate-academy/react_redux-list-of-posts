@@ -11,7 +11,7 @@ export type PostsState = {
 const initialState: PostsState = {
   items: [],
   hasError: false,
-  loaded: true,
+  loaded: false,
 };
 
 export const fetchUserPosts = createAsyncThunk(
@@ -41,9 +41,10 @@ export const postsSlice = createSlice({
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
         state.loaded = true;
         state.items = action.payload;
+        state.hasError = false;
       })
       .addCase(fetchUserPosts.rejected, state => {
-        state.loaded = false;
+        state.loaded = true;
         state.hasError = true;
       });
   },
