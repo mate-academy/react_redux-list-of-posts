@@ -43,7 +43,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
-    // eslint-disable-next-line max-len
+    // eslint-dsisable-next-line max-len
     dispatch(setItems(comments.filter(comment => comment.id !== commentId)));
 
     await commentsApi.deleteComment(commentId);
