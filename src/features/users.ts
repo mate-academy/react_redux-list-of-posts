@@ -1,45 +1,29 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUsers } from '../api/users';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
+import { getUsers } from '../api/users';
 
-export const loadUsers = createAsyncThunk('users/loadUsers', async () => {
-  return getUsers();
-});
+const initialState: User[] = [];
 
-const initialState = {
-  items: [] as User[],
-  loaded: false,
-  hasError: false,
-};
+export const loadUsers = createAsyncThunk(
+  'users/fetch',
+
+  async () => {
+    const data = await getUsers();
+
+    return data as User[];
+  },
+);
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setUsers: (_state, action: PayloadAction<User[]>) => action.payload,
+  },
   extraReducers: builder => {
-    builder.addCase(loadUsers.pending, state => {
-      return {
-        ...state,
-        loaded: false,
-        hasError: false,
-      };
-    });
-
-    builder.addCase(loadUsers.fulfilled, (state, action) => {
-      return {
-        ...state,
-        items: action.payload,
-        loaded: true,
-        hasError: false,
-      };
-    });
-
-    builder.addCase(loadUsers.rejected, state => {
-      return {
-        ...state,
-        loaded: true,
-        hasError: true,
-      };
-    });
+    builder.addCase(loadUsers.fulfilled, (_state, action) => action.payload);
   },
 });
+
+export const { setUsers } = usersSlice.actions;
+export default usersSlice.reducer;

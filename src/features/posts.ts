@@ -1,9 +1,23 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
+import { getUserPosts } from '../api/posts';
+
+type PostsState = {
+  items: Post[];
+  loaded: boolean;
+  hasError: string;
+};
+
+const initialState: PostsState = {
+  items: [],
+  loaded: false,
+  hasError: '',
+};
 
 export const loadPosts = createAsyncThunk<Post[], number>(
-  'posts/loadPosts',
+  'posts/loadUserPosts',
+
   async (userId: number) => {
     return getUserPosts(userId);
   },
@@ -11,39 +25,37 @@ export const loadPosts = createAsyncThunk<Post[], number>(
 
 export const postsSlice = createSlice({
   name: 'posts',
-  initialState: {
-    items: [] as Post[],
-    loaded: false,
-    hasError: false,
+  initialState,
+  reducers: {
+    setPosts: (state, action: PayloadAction<Post[]>) => {
+      state.items = action.payload;
+    },
+    addPost: (state, action: PayloadAction<Post>) => {
+      state.items.push(action.payload);
+    },
+    removePost: (state, action: PayloadAction<Post>) => {
+      state.items = state.items.filter(post => post.id !== action.payload.id);
+    },
+    clearPosts: state => {
+      state.items = [];
+    },
   },
-  reducers: {},
   extraReducers: builder => {
-    builder.addCase(loadPosts.pending, state => {
-      return {
-        ...state,
-        loaded: false,
-        hasError: false,
-      };
-    });
-
-    builder.addCase(
-      loadPosts.fulfilled,
-      (state, action: PayloadAction<Post[]>) => {
-        return {
-          ...state,
-          items: action.payload,
-          loaded: true,
-          hasError: false,
-        };
-      },
-    );
-
-    builder.addCase(loadPosts.rejected, state => {
-      return {
-        ...state,
-        loaded: true,
-        hasError: true,
-      };
-    });
+    builder
+      .addCase(loadPosts.pending, state => {
+        state.hasError = '';
+        state.loaded = true;
+      })
+      .addCase(loadPosts.fulfilled, (state, action) => {
+        state.loaded = false;
+        state.items = action.payload;
+      })
+      .addCase(loadPosts.rejected, (state, action) => {
+        state.loaded = false;
+        state.hasError = action.error.message || '';
+      });
   },
 });
+
+export const { setPosts, addPost, removePost, clearPosts } = postsSlice.actions;
+export default postsSlice.reducer;

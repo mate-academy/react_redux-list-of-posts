@@ -1,16 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
+import { RootState } from '../app/store';
 
-const initialState = null as Post | null;
+type State = {
+  post: Post | null;
+};
 
-export const selectedPostSlice = createSlice({
+const initialState: State = {
+  post: null,
+};
+
+const selectedPostSlice = createSlice({
   name: 'selectedPost',
   initialState,
   reducers: {
-    setSelectedPost: (_state, action) => {
-      return action.payload;
+    select: (state, action: PayloadAction<Post | null>) => {
+      state.post = action.payload;
     },
   },
 });
 
-export const { setSelectedPost } = selectedPostSlice.actions;
+export const { select } = selectedPostSlice.actions;
+export const selectSelectedPost = (state: RootState): Post | null =>
+  state.selectedPost.post;
+export default selectedPostSlice.reducer;

@@ -1,72 +1,61 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
+import { getPostComments } from '../api/comments';
+
+type CommentsState = {
+  comments: Comment[];
+  loading: boolean;
+  error: string;
+};
+
+const initialState: CommentsState = {
+  comments: [],
+  loading: false,
+  error: '',
+};
 
 export const loadComments = createAsyncThunk<Comment[], number>(
-  'comments/loadComments',
+  'comments/fetch',
   async (postId: number) => {
-    return getPostComments(postId);
+    const data = await getPostComments(postId);
+
+    return data;
   },
 );
 
-const initialState = {
-  items: [] as Comment[],
-  loaded: false,
-  hasError: false,
-};
-
-export const commentsSlice = createSlice({
+const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    setItems: (state, action: PayloadAction<Comment[]>) => {
-      return {
-        ...state,
-        items: action.payload,
-      };
+    setComments(state, action: PayloadAction<Comment[]>) {
+      state.comments = action.payload;
     },
-    setError: (state, action: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        hasError: action.payload,
-      };
+    addComment(state, action: PayloadAction<Comment>) {
+      state.comments.push(action.payload);
     },
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        loaded: action.payload,
-      };
+    removeComment(state, action: PayloadAction<number>) {
+      state.comments = state.comments.filter(
+        comment => comment.id !== action.payload,
+      );
     },
   },
   extraReducers: builder => {
-    builder.addCase(loadComments.pending, () => {
-      return {
-        items: [],
-        loaded: false,
-        hasError: false,
-      };
-    });
-
-    builder.addCase(
-      loadComments.fulfilled,
-      (state, action: PayloadAction<Comment[]>) => {
-        return {
-          ...state,
-          items: action.payload,
-          loaded: true,
-          hasError: false,
-        };
-      },
-    );
-
-    builder.addCase(loadComments.rejected, state => {
-      return {
-        ...state,
-        loaded: true,
-        hasError: true,
-      };
-    });
+    builder
+      .addCase(loadComments.pending, state => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(loadComments.fulfilled, (state, action) => {
+        state.loading = false;
+        state.comments = action.payload;
+      })
+      .addCase(loadComments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || '';
+      });
   },
 });
 
-export const { setItems, setError, setLoaded } = commentsSlice.actions;
+export const { setComments, addComment, removeComment } = commentsSlice.actions;
+export default commentsSlice.reducer;

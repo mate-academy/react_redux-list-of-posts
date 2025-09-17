@@ -40,7 +40,7 @@ export const PostsList: React.FC<Props> = ({
                   'is-light': post.id !== selectedPostId,
                 })}
                 onClick={() => {
-                  onPostSelected(post);
+                  onPostSelected(post.id === selectedPostId ? null : post);
                 }}
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}
