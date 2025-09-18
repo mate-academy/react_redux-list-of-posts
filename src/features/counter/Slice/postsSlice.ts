@@ -6,13 +6,13 @@ import { Post } from '../../../types/Post';
 import { getUserPosts } from '../../../api/posts';
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: string;
 };
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: '',
 };
@@ -30,16 +30,16 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      state.items = action.payload;
     },
     addPost: (state, action: PayloadAction<Post>) => {
-      state.posts.push(action.payload);
+      state.items.push(action.payload);
     },
     removePost: (state, action: PayloadAction<Post>) => {
-      state.posts = state.posts.filter(post => post.id !== action.payload.id);
+      state.items = state.items.filter(item => item.id !== action.payload.id);
     },
     clearPosts: state => {
-      state.posts = [];
+      state.items = [];
     },
   },
   extraReducers: builder => {
@@ -50,7 +50,7 @@ export const postsSlice = createSlice({
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
         state.loaded = false;
-        state.posts = action.payload;
+        state.items = action.payload;
       })
       .addCase(loadPosts.rejected, (state, action) => {
         state.loaded = false;
