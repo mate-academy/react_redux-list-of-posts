@@ -32,8 +32,6 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
