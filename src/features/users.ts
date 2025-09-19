@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../src/types/User';
-import { getUsers } from '../src/api/users';
+import { User } from '../types/User';
+import { getUsers } from '../api/users';
 
 const initialState: User[] = [];
 
