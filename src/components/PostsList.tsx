@@ -8,7 +8,7 @@ import { selectPosts } from '../features/postsSlice';
 
 export const PostsList: React.FC = ({}) => {
   const posts = useAppSelector(selectPosts);
-  const selectedPostId = useAppSelector(state => state.selectedPost?.id) || 0;
+  const selectedPostId = useAppSelector(state => state.selectedPost.selectedPost?.id) || 0;
   const dispatch = useAppDispatch();
 
   return (
