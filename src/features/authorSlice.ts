@@ -3,7 +3,7 @@ import { User } from '../types/User';
 
 type AuthorState = {
   author: User | null;
-}
+};
 
 const initialState: AuthorState = {
   author: null,

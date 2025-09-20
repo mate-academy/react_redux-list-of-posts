@@ -19,6 +19,10 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const handleAddComment = async (data: CommentData) => {
+    if (!post) {
+      return;
+    }
+
     await dispatch(addComment({ postId: post.id, ...data }));
   };
 
@@ -28,8 +32,10 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     setVisible(false);
-    dispatch(fetchComments(post.id));
-  }, [post.id]);
+    if (post) {
+      dispatch(fetchComments(post.id));
+    }
+  }, [post]);
 
   if (!post) {
     return null;
