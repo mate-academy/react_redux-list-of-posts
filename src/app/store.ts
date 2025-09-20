@@ -9,16 +9,16 @@ import counterReducer from '../features/counter/counterSlice';
 import { selectedPostSlice } from '../features/selectedPostSlice';
 import { authorSlice } from '../features/authorSlice';
 import { usersReducer, usersSlice } from '../features/usersSlice';
-import { postsReducer } from '../features/postsSlice';
-import { commentsReducer } from '../features/commentsSlice';
+import { postsReducer, postsSlice } from '../features/postsSlice';
+import { commentsReducer, commentsSlice } from '../features/commentsSlice';
 
 export const rootReducer = combineSlices({
   counter: counterReducer,
-  [selectedPostSlice.name]: selectedPostSlice.reducer,
-  [authorSlice.name]: authorSlice.reducer,
+  selectedPost: selectedPostSlice.reducer,
+  author: authorSlice.reducer,
   [usersSlice.name]: usersReducer,
-  posts: postsReducer,
-  comments: commentsReducer,
+  [postsSlice.name]: postsReducer,
+  [commentsSlice.name]: commentsReducer,
 });
 
 export const store = configureStore({

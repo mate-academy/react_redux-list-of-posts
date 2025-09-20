@@ -13,7 +13,7 @@ import {
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
-  const post = useAppSelector(state => state.selectedPost);
+  const post = useAppSelector(state => state.selectedPost.selectedPost);
   const comments = useAppSelector(selectComments);
   const { loaded, hasError } = useAppSelector(selectCommentsStatus);
   const [visible, setVisible] = useState(false);

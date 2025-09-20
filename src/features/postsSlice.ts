@@ -3,7 +3,6 @@ import {
   createSelector,
   createSlice,
   PayloadAction,
-  Slice,
 } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
@@ -30,7 +29,7 @@ export const fetchPosts = createAsyncThunk(
   },
 );
 
-export const postsSlice: Slice<PostsState> = createSlice({
+export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {},

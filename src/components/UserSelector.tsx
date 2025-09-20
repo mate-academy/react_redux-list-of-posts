@@ -5,7 +5,7 @@ import { setAuthor } from '../features/authorSlice';
 import { fetchUsers, selectUsers } from '../features/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  const selectedUser = useAppSelector(state => state.author);
+  const selectedUser = useAppSelector(state => state.author.author);
   const users = useAppSelector(selectUsers);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();

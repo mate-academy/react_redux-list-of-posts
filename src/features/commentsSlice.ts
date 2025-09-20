@@ -3,7 +3,6 @@ import {
   createSelector,
   createSlice,
   PayloadAction,
-  Slice,
 } from '@reduxjs/toolkit';
 import { getPostComments } from '../api/comments';
 import { RootState } from '../app/store';
@@ -47,7 +46,7 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
-export const commentsSlice: Slice<CommentsState> = createSlice({
+export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {},
