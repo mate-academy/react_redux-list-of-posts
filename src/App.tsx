@@ -14,7 +14,7 @@ import { PostsActions } from './slices/posts';
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
-  const posts = useAppSelector(state => state.posts.items);
+  const posts = useAppSelector(state => state.posts.posts);
   const { hasError, loaded } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 

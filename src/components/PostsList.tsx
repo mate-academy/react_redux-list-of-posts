@@ -7,7 +7,7 @@ import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const posts = useAppSelector(state => state.posts.items);
+  const posts = useAppSelector(state => state.posts.posts);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   const handlePostOpening = (post: Post) => {

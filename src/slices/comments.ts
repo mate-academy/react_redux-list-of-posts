@@ -5,7 +5,7 @@ import { deleteComment as deleteCommentApi } from '../api/comments';
 
 const initialState = {
   loaded: false,
-  items: [] as Comment[],
+  comments: [] as Comment[],
   hasError: false,
 };
 
@@ -31,16 +31,16 @@ export const addComment = createAsyncThunk(
 );
 
 const commentsSlice = createSlice({
-  name: 'items',
+  name: 'commets',
   initialState,
   reducers: {
     setComments(state, { payload }: PayloadAction<Comment[]>) {
       // eslint-disable-next-line no-param-reassign
-      state.items = payload;
+      state.comments = payload;
     },
     removeCommentLocally(state, { payload }: PayloadAction<number>) {
       // eslint-disable-next-line no-param-reassign
-      state.items = state.items.filter(comment => comment.id !== payload);
+      state.comments = state.comments.filter(comment => comment.id !== payload);
     },
   },
   extraReducers(builder) {
@@ -50,12 +50,12 @@ const commentsSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.loaded = false;
       // eslint-disable-next-line no-param-reassign
-      state.items = [];
+      state.comments = [];
     });
 
     builder.addCase(loadComments.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.items = action.payload;
+      state.comments = action.payload;
       // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });
@@ -71,11 +71,13 @@ const commentsSlice = createSlice({
       const commentId = action.meta.arg;
 
       // eslint-disable-next-line no-param-reassign
-      state.items = state.items.filter(comment => comment.id !== commentId);
+      state.comments = state.comments.filter(
+        comment => comment.id !== commentId,
+      );
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {
-      state.items.push(action.payload);
+      state.comments.push(action.payload);
     });
   },
 });

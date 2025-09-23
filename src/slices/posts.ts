@@ -1,10 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 const initialState = {
   loaded: true,
-  items: [] as Post[],
+  posts: [] as Post[],
   hasError: false,
 };
 
@@ -13,14 +13,9 @@ export const loadPosts = createAsyncThunk('posts/fetch', (authorId: number) => {
 });
 
 const postsSlice = createSlice({
-  name: 'items',
+  name: 'posts',
   initialState,
-  reducers: {
-    setPosts(state, { payload }: PayloadAction<Post[]>) {
-      // eslint-disable-next-line no-param-reassign
-      state.items = payload;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder.addCase(loadPosts.pending, state => {
       // eslint-disable-next-line no-param-reassign
@@ -31,7 +26,7 @@ const postsSlice = createSlice({
 
     builder.addCase(loadPosts.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.items = action.payload;
+      state.posts = action.payload;
       // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });

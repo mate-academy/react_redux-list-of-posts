@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
@@ -15,12 +15,7 @@ export const loadUsers = createAsyncThunk('users/fetch', () => {
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setUsers(state, { payload }: PayloadAction<User[]>) {
-      // eslint-disable-next-line no-param-reassign
-      state.users = payload;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder.addCase(loadUsers.pending, state => {
       // eslint-disable-next-line no-param-reassign

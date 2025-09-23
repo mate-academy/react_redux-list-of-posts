@@ -6,7 +6,7 @@ import { CommentsActions } from '../slices/comments';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const comments = useAppSelector(state => state.comments.items);
+  const comments = useAppSelector(state => state.comments.comments);
   const { loaded, hasError } = useAppSelector(state => state.comments);
   const post = useAppSelector(state => state.selectedPost.selectedPost);
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ export const PostDetails: React.FC = () => {
       return;
     }
 
-    dispatch(CommentsActions.loadComments(post?.id as number));
+    dispatch(CommentsActions.loadComments(post.id as number));
     setVisible(false);
   }, [post?.id, dispatch, post]);
 
@@ -27,9 +27,9 @@ export const PostDetails: React.FC = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-        <p data-cy="PostBody">{post?.body}</p>
+        <p data-cy="PostBody">{post.body}</p>
       </div>
 
       <div className="block">
@@ -103,7 +103,7 @@ export const PostDetails: React.FC = () => {
               dispatch(
                 CommentsActions.addComment({
                   ...newComment,
-                  postId: post?.id as number,
+                  postId: post.id,
                 }),
               )
             }
