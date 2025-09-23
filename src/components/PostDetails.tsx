@@ -9,20 +9,22 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const comments = useAppSelector(state => state.comments.items);
   const { loaded, hasError } = useAppSelector(state => state.comments);
-  const post = useAppSelector(state => state.selectedPost.selectedPost) as Post;
+  const post = useAppSelector(
+    state => state.selectedPost.selectedPost,
+  ) as Post | null;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(CommentsActions.loadComments(post?.id as number));
     setVisible(false);
-  }, [post?.id]);
+  }, [post?.id, dispatch]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{post?.body}</p>
       </div>
 
       <div className="block">
@@ -96,7 +98,7 @@ export const PostDetails: React.FC = () => {
               dispatch(
                 CommentsActions.addComment({
                   ...newComment,
-                  postId: post.id,
+                  postId: post?.id as number,
                 }),
               )
             }

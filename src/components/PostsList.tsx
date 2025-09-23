@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
+  const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
-  const dispatch = useAppDispatch();
 
   const handlePostOpening = (post: Post) => {
     if (selectedPost?.id === post.id) {

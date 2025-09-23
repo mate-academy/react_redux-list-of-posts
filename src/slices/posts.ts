@@ -3,7 +3,7 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 const initialState = {
-  loaded: false,
+  loaded: true,
   items: [] as Post[],
   hasError: false,
 };
