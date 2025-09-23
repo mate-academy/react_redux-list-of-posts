@@ -9,7 +9,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+import { getUserPosts } from './api/postApi';
 import { User } from './types/User';
 import { Post } from './types/Post';
 
