@@ -17,22 +17,29 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     setUsers(state, { payload }: PayloadAction<User[]>) {
+      // eslint-disable-next-line no-param-reassign
       state.users = payload;
     },
   },
   extraReducers(builder) {
     builder.addCase(loadUsers.pending, state => {
+      // eslint-disable-next-line no-param-reassign
       state.error = '';
+      // eslint-disable-next-line no-param-reassign
       state.loading = true;
     });
 
     builder.addCase(loadUsers.fulfilled, (state, action) => {
+      // eslint-disable-next-line no-param-reassign
       state.users = action.payload;
+      // eslint-disable-next-line no-param-reassign
       state.loading = false;
     });
 
     builder.addCase(loadUsers.rejected, (state, action) => {
+      // eslint-disable-next-line no-param-reassign
       state.error = action.error.message || '';
+      // eslint-disable-next-line no-param-reassign
       state.loading = false;
     });
   },

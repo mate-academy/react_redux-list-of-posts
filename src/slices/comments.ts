@@ -35,32 +35,42 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments(state, { payload }: PayloadAction<Comment[]>) {
+      // eslint-disable-next-line no-param-reassign
       state.items = payload;
     },
     removeCommentLocally(state, { payload }: PayloadAction<number>) {
+      // eslint-disable-next-line no-param-reassign
       state.items = state.items.filter(comment => comment.id !== payload);
     },
   },
   extraReducers(builder) {
     builder.addCase(loadComments.pending, state => {
+      // eslint-disable-next-line no-param-reassign
       state.hasError = false;
+      // eslint-disable-next-line no-param-reassign
       state.loaded = false;
+      // eslint-disable-next-line no-param-reassign
       state.items = [];
     });
 
     builder.addCase(loadComments.fulfilled, (state, action) => {
+      // eslint-disable-next-line no-param-reassign
       state.items = action.payload;
+      // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });
 
     builder.addCase(loadComments.rejected, state => {
+      // eslint-disable-next-line no-param-reassign
       state.hasError = true;
+      // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });
 
     builder.addCase(deleteComment.fulfilled, (state, action) => {
       const commentId = action.meta.arg;
 
+      // eslint-disable-next-line no-param-reassign
       state.items = state.items.filter(comment => comment.id !== commentId);
     });
 

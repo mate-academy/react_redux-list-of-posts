@@ -3,21 +3,26 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CommentsActions } from '../slices/comments';
-import { Post } from '../types/Post';
 
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const comments = useAppSelector(state => state.comments.items);
   const { loaded, hasError } = useAppSelector(state => state.comments);
-  const post = useAppSelector(
-    state => state.selectedPost.selectedPost,
-  ) as Post | null;
+  const post = useAppSelector(state => state.selectedPost.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (!post) {
+      return;
+    }
+
     dispatch(CommentsActions.loadComments(post?.id as number));
     setVisible(false);
-  }, [post?.id, dispatch]);
+  }, [post?.id, dispatch, post]);
+
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
