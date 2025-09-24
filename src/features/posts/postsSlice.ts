@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getPosts } from '../../api/postsApi';
+import { getUserPosts } from '../../api/postsApi';
 
 type PostState = {
   items: Post[];
@@ -14,18 +14,20 @@ const initialState: PostState = {
   hasError: false,
 };
 
-export const loadPosts = createAsyncThunk('posts/fetch', async () => {
-  const postsFromServer = await getPosts();
-
-  return postsFromServer;
-});
-
+export const loadPosts = createAsyncThunk(
+  'posts/loadByUser',
+  async (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
     clearPostsList: state => {
       state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
 
@@ -37,10 +39,10 @@ export const postsSlice = createSlice({
       })
       .addCase(loadPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.items = action.payload;
-        state.loaded = false;
+        state.loaded = true;
       })
       .addCase(loadPosts.rejected, state => {
-        state.hasError = 'Failed to load posts';
+        state.hasError = true;
         state.loaded = true;
       });
   },

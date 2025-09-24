@@ -5,6 +5,7 @@ import {
   deleteComment,
 } from '../../api/commentsApi';
 import { Comment } from '../../types/Comment';
+import { RootState } from '../../app/store';
 
 type CommentsState = {
   items: Comment[];
@@ -97,6 +98,7 @@ export const commentsSlice = createSlice({
   },
 });
 
+export const selectComments = (state: RootState) => state.comments;
 export const { setError } = commentsSlice.actions;
 
 export default commentsSlice.reducer;
