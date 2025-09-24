@@ -7,14 +7,14 @@ import { getUserPosts } from '../../../api/posts';
 
 type PostsState = {
   items: Post[];
-  loaded: boolean;
-  hasError: string;
+  isLoading: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
   items: [],
-  loaded: false,
-  hasError: '',
+  isLoading: false,
+  hasError: false,
 };
 
 export const loadPosts = createAsyncThunk<Post[], number>(
@@ -28,36 +28,23 @@ export const loadPosts = createAsyncThunk<Post[], number>(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.items = action.payload;
-    },
-    addPost: (state, action: PayloadAction<Post>) => {
-      state.items.push(action.payload);
-    },
-    removePost: (state, action: PayloadAction<Post>) => {
-      state.items = state.items.filter(item => item.id !== action.payload.id);
-    },
-    clearPosts: state => {
-      state.items = [];
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(loadPosts.pending, state => {
-        state.hasError = '';
-        state.loaded = true;
+        state.hasError = false;
+        state.isLoading = true;
       })
-      .addCase(loadPosts.fulfilled, (state, action) => {
-        state.loaded = false;
+      .addCase(loadPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
+        state.hasError = false;
+        state.isLoading = false;
         state.items = action.payload;
       })
-      .addCase(loadPosts.rejected, (state, action) => {
-        state.loaded = false;
-        state.hasError = action.error.message || '';
+      .addCase(loadPosts.rejected, state => {
+        state.isLoading = true;
+        state.hasError = true;
       });
   },
 });
 
-export const { setPosts, addPost, removePost, clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;
