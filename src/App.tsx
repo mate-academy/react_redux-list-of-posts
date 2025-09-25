@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
   const {
     items: posts,
-    loaded,
+    isLoading,
     hasError,
   } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost);
@@ -65,9 +65,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !isLoading && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,17 +76,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && isLoading && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && isLoading && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={handlePostSelected}
                   />
                 )}
               </div>
@@ -106,7 +106,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={handlePostSelected} />}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

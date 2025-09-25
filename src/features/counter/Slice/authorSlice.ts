@@ -4,7 +4,7 @@ import { User } from '../../../types/User';
 
 const initialState = null as User | null;
 
-const authorSlice = createSlice({
+export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
