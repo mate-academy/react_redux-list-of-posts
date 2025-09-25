@@ -17,7 +17,6 @@ const initialState: PostsState = {
 
 export const loadUserPosts = createAsyncThunk(
   'posts/fetch',
-
   async (userId: number) => {
     return getUserPosts(userId);
   },
@@ -39,7 +38,7 @@ const postsSlice = createSlice({
       state.hasError = false;
     });
     builder.addCase(loadUserPosts.rejected, state => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
   },

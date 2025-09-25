@@ -10,24 +10,24 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { init } from './features/users';
+import { selectAuthor, setAuthor } from './features/author';
 import {
   loadUserPosts,
   selectPosts,
   selectPostsHasError,
   selectPostsLoaded,
 } from './features/posts';
-import { selectAuthor, setAuthor } from './features/author';
 import { selectSelectedPost, setSelectedPost } from './features/selectedPost';
-import { init } from './features/users';
 
 export const App: React.FC = () => {
   const posts = useAppSelector(selectPosts);
   const loaded = useAppSelector(selectPostsLoaded);
   const hasError = useAppSelector(selectPostsHasError);
-  const author = useAppSelector(selectAuthor);
   const selectedPost = useAppSelector(selectSelectedPost);
 
   const dispatch = useAppDispatch();
+  const author = useAppSelector(selectAuthor);
 
   useEffect(() => {
     dispatch(init());

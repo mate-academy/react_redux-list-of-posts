@@ -3,19 +3,19 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/users';
 import authorReducer from '../features/author';
+import postsReducer from '../features/posts';
 import selectedPostReducer from '../features/selectedPost';
 import commentsReducer from '../features/comments';
-import postsReducer from '../features/posts';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const store: any = configureStore({
   reducer: {
     counter: counterReducer,
     users: usersReducer,
     author: authorReducer,
     posts: postsReducer,
-    comments: commentsReducer,
     selectedPost: selectedPostReducer,
+    comments: commentsReducer,
   },
 });
 

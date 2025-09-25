@@ -18,9 +18,13 @@ const authorSlice = createSlice({
     setAuthor: (state, action: PayloadAction<User | null>) => {
       state.selectedAuthor = action.payload;
     },
+    clearAuthor: state => {
+      state.selectedAuthor = null;
+    },
   },
 });
 
 export default authorSlice.reducer;
-export const { setAuthor } = authorSlice.actions;
+export const { setAuthor, clearAuthor } = authorSlice.actions;
+
 export const selectAuthor = (state: RootState) => state.author.selectedAuthor;

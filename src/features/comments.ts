@@ -3,13 +3,13 @@ import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
 import { RootState } from '../app/store';
 
-interface CommentState {
+interface CommentsState {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
 
-const initialState: CommentState = {
+const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,
@@ -35,26 +35,31 @@ const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
     },
+    clearComments: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+    },
   },
   extraReducers: builder => {
-    builder.addCase(loadPostComments.pending, state => {
-      state.loaded = false;
-      state.hasError = false;
-    });
-    builder.addCase(loadPostComments.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = true;
-      state.hasError = false;
-    });
-    builder.addCase(loadPostComments.rejected, state => {
-      state.loaded = false;
-      state.hasError = true;
-    });
+    builder
+      .addCase(loadPostComments.pending, state => {
+        state.loaded = false;
+      })
+      .addCase(loadPostComments.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.items = action.payload;
+      })
+      .addCase(loadPostComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      });
   },
 });
 
 export default commentsSlice.reducer;
-export const { addComment, removeComment } = commentsSlice.actions;
+export const { addComment, removeComment, clearComments } =
+  commentsSlice.actions;
 
 export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;
