@@ -33,7 +33,8 @@ const postsSlice = createSlice({
       state.loaded = false;
       state.hasError = false;
     });
-    builder.addCase(loadUserPosts.fulfilled, state => {
+    builder.addCase(loadUserPosts.fulfilled, (state, action) => {
+      state.posts = action.payload;
       state.loaded = true;
       state.hasError = false;
     });

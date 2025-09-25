@@ -24,5 +24,5 @@ const selectedPostSlice = createSlice({
 export default selectedPostSlice.reducer;
 export const { setSelectedPost } = selectedPostSlice.actions;
 
-export const selectSelectedPost = (state: RootState): Post | null =>
-  state.selectedPost.post;
+export const selectSelectedPost = (state: RootState) =>
+  state.selectedPost.selectedPost;
