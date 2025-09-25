@@ -28,7 +28,7 @@ export const loadCommentsByPosts = createAsyncThunk(
 
 export const addNewComment = createAsyncThunk(
   'comments/add',
-  async (newComment: Comment) => {
+  async (newComment: Omit<Comment, 'id'>) => {
     return createComment(newComment);
   },
 );
@@ -65,10 +65,6 @@ export const commentsSlice = createSlice({
       .addCase(loadCommentsByPosts.rejected, state => {
         state.hasError = true;
         state.loaded = true;
-      })
-      .addCase(addNewComment.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
       })
       .addCase(
         addNewComment.fulfilled,

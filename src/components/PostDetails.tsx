@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as commentsApi from '../api/commentsApi';
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import {
@@ -34,12 +33,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
-      const newComment = await commentsApi.createComment({
+      const newComment = {
         name,
         email,
         body,
         postId: post.id,
-      });
+      };
 
       await dispatch(addNewComment(newComment)).unwrap();
     } catch (error) {
