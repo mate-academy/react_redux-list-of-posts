@@ -4,13 +4,13 @@ import { getUserPosts } from '../api/posts';
 import { RootState } from '../app/store';
 
 interface PostsState {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -34,7 +34,7 @@ const postsSlice = createSlice({
       state.hasError = false;
     });
     builder.addCase(loadUserPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.items = action.payload;
       state.loaded = true;
       state.hasError = false;
     });
@@ -48,6 +48,6 @@ const postsSlice = createSlice({
 export default postsSlice.reducer;
 export const {} = postsSlice.actions;
 
-export const selectPosts = (state: RootState) => state.posts.posts;
+export const selectPosts = (state: RootState) => state.posts.items;
 export const selectPostsLoaded = (state: RootState) => state.posts.loaded;
 export const selectPostsHasError = (state: RootState) => state.posts.hasError;

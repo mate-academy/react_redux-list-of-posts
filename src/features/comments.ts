@@ -4,20 +4,19 @@ import { getPostComments } from '../api/comments';
 import { RootState } from '../app/store';
 
 interface CommentState {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState: CommentState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
 
-const loadPostComments = createAsyncThunk(
+export const loadPostComments = createAsyncThunk(
   'comments/fetch',
-
   async (postId: number) => {
     return getPostComments(postId);
   },
@@ -29,10 +28,10 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     addComment: (state, action: PayloadAction<Comment>) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
     removeComment: (state, action: PayloadAction<number>) => {
-      state.comments = state.comments.filter(
+      state.items = state.items.filter(
         comment => comment.id !== action.payload,
       );
     },
@@ -42,7 +41,8 @@ const commentsSlice = createSlice({
       state.loaded = false;
       state.hasError = false;
     });
-    builder.addCase(loadPostComments.fulfilled, state => {
+    builder.addCase(loadPostComments.fulfilled, (state, action) => {
+      state.items = action.payload;
       state.loaded = true;
       state.hasError = false;
     });
