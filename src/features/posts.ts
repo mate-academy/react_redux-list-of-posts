@@ -6,13 +6,13 @@ import { getUserPosts } from '../api/posts';
 type PostsState = {
   items: Post[];
   loaded: boolean;
-  hasError: string;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
   items: [],
   loaded: false,
-  hasError: '',
+  hasError: false,
 };
 
 export const loadPosts = createAsyncThunk<Post[], number>(
@@ -43,16 +43,17 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadPosts.pending, state => {
-        state.hasError = '';
-        state.loaded = true;
+        state.hasError = false;
+        state.loaded = false;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        state.loaded = false;
+        state.loaded = true;
+        state.hasError = false;
         state.items = action.payload;
       })
-      .addCase(loadPosts.rejected, (state, action) => {
+      .addCase(loadPosts.rejected, state => {
         state.loaded = false;
-        state.hasError = action.error.message || '';
+        state.hasError = true;
       });
   },
 });

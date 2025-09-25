@@ -4,15 +4,15 @@ import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
 
 type CommentsState = {
-  comments: Comment[];
-  loading: boolean;
-  error: string;
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const loadComments = createAsyncThunk<Comment[], number>(
@@ -29,30 +29,29 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments(state, action: PayloadAction<Comment[]>) {
-      state.comments = action.payload;
+      state.items = action.payload;
     },
     addComment(state, action: PayloadAction<Comment>) {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
     removeComment(state, action: PayloadAction<number>) {
-      state.comments = state.comments.filter(
-        comment => comment.id !== action.payload,
-      );
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
   },
   extraReducers: builder => {
     builder
       .addCase(loadComments.pending, state => {
-        state.loading = true;
-        state.error = '';
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadComments.fulfilled, (state, action) => {
-        state.loading = false;
-        state.comments = action.payload;
+        state.loaded = true;
+        state.hasError = false;
+        state.items = action.payload;
       })
-      .addCase(loadComments.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || '';
+      .addCase(loadComments.rejected, state => {
+        state.loaded = false;
+        state.hasError = true;
       });
   },
 });
