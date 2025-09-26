@@ -20,35 +20,51 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     addComments: (state, action: PayloadAction<Comment[]>) => {
+      // eslint-disable-next-line no-param-reassign
       state.items = action.payload;
     },
     deleteComment: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(comment => comment.id !== action.payload);
+      // eslint-disable-next-line no-param-reassign
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
     },
     setError: (state, action: PayloadAction<boolean>) => {
+      // eslint-disable-next-line no-param-reassign
       state.hasError = action.payload;
     },
 
     clear: state => {
+      // eslint-disable-next-line no-param-reassign
       state.items = [];
+      // eslint-disable-next-line no-param-reassign
       state.loaded = false;
+      // eslint-disable-next-line no-param-reassign
       state.hasError = false;
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchCommentsByPost.pending, state => {
-      state.loaded = false;
-      state.hasError = false;
-    })
-    .addCase(fetchCommentsByPost.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = true;
-      state.hasError = false;
-    })
-    .addCase(fetchCommentsByPost.rejected, state => {
-      state.loaded = true;
-      state.hasError = true;
-    })
+    builder
+      .addCase(fetchCommentsByPost.pending, state => {
+        // eslint-disable-next-line no-param-reassign
+        state.loaded = false;
+        // eslint-disable-next-line no-param-reassign
+        state.hasError = false;
+      })
+      .addCase(fetchCommentsByPost.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-param-reassign
+        state.items = action.payload;
+        // eslint-disable-next-line no-param-reassign
+        state.loaded = true;
+        // eslint-disable-next-line no-param-reassign
+        state.hasError = false;
+      })
+      .addCase(fetchCommentsByPost.rejected, state => {
+        // eslint-disable-next-line no-param-reassign
+        state.loaded = true;
+        // eslint-disable-next-line no-param-reassign
+        state.hasError = true;
+      });
   },
 });
 

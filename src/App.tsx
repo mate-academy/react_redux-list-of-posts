@@ -10,7 +10,10 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPostsByUser, actions as postsActions } from './features/post/postSlice';
+import {
+  fetchPostsByUser,
+  actions as postsActions,
+} from './features/post/postSlice';
 // eslint-disable-next-line
 import { actions as selectedPostAction } from './features/selectedPost/selectedPostSlice';
 import { usersLoad } from './features/users/usersSlice';
