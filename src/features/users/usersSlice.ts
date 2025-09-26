@@ -4,8 +4,8 @@ import { getUsers } from '../../api/users';
 
 const initialState = {
   users: [] as User[] | [],
-  loader: false as boolean,
-  error: '' as string,
+  loaded: false,
+  hasError: false,
 };
 
 export const usersLoad = createAsyncThunk('users/fetch', () => {
@@ -23,19 +23,20 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(usersLoad.pending, state => ({
       ...state,
-      loader: true,
+      loaded: true,
     }));
     builder.addCase(usersLoad.fulfilled, (state, action) => ({
       ...state,
       users: action.payload,
-      loader: false,
+      loaded: false,
     }));
     builder.addCase(usersLoad.rejected, state => ({
       ...state,
-      error: 'Something went wrong!',
-      loader: false,
+      hasError: true,
+      loaded: false,
     }));
   },
 });
 
+export default usersSlice.reducer;
 export const { actions } = usersSlice;

@@ -1,28 +1,51 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
 
 const initialState = {
-  posts: [] as Post[] | [],
-  loader: false as boolean,
-  error: '' as string,
+  items: [] as Post[],
+  loaded: false,
+  hasError: false,
 };
+
+export const fetchPostsByUser = createAsyncThunk(
+  'posts/fetch',
+  (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
 
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      return { ...state, posts: action.payload };
+      return { ...state, items: action.payload };
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => ({
+    clear: state => ({
       ...state,
-      loader: action.payload,
+      items: [],
+      loaded: false,
+      hasError: false,
     }),
-    setIsError: (state, action: PayloadAction<string>) => ({
+  },
+  extraReducers: builder => {
+    builder.addCase(fetchPostsByUser.pending, state => ({
       ...state,
-      error: action.payload,
-    }),
+      loaded: true,
+    }));
+    builder.addCase(fetchPostsByUser.fulfilled, (state, action) => ({
+      ...state,
+      items: action.payload,
+      loaded: false,
+    }));
+    builder.addCase(fetchPostsByUser.rejected, state => ({
+      ...state,
+      hasError: true,
+      loaded: false,
+    }));
   },
 });
 
+export default postsSlice.reducer;
 export const { actions } = postsSlice;

@@ -1,15 +1,17 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { postsSlice } from '../features/post/postSlice';
-import { usersSlice } from '../features/users/usersSlice';
-import { selectedPostSlice } from '../features/selectedPost/selectedPostSlice';
-import { commentsSlice } from '../features/comments/commentsSlice';
+import postsSlice from '../features/post/postSlice';
+import usersSlice from '../features/users/usersSlice';
+import selectedPostSlice from '../features/selectedPost/selectedPostSlice';
+import commentsSlice from '../features/comments/commentsSlice';
+import authorSlice from '../features/author/authorSlice';
 
 export const store = configureStore({
   reducer: {
-    post: postsSlice.reducer,
-    users: usersSlice.reducer,
-    selectedPost: selectedPostSlice.reducer,
-    comments: commentsSlice.reducer,
+    posts: postsSlice,
+    author: authorSlice,
+    users: usersSlice,
+    selectedPost: selectedPostSlice,
+    comments: commentsSlice,
   },
 });
 
