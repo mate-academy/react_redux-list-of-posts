@@ -10,7 +10,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPostsByUser } from './features/post/postSlice';
+import { fetchPostsByUser, actions as postsActions } from './features/post/postSlice';
 // eslint-disable-next-line
 import { actions as selectedPostAction } from './features/selectedPost/selectedPostSlice';
 import { usersLoad } from './features/users/usersSlice';
@@ -31,6 +31,8 @@ export const App = () => {
 
     if (author) {
       dispatch(fetchPostsByUser(author.id));
+    } else {
+      dispatch(postsActions.clear());
     }
   }, [author, dispatch]);
 
@@ -47,9 +49,9 @@ export const App = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loaded && <Loader />}
+                {author && !loaded && <Loader />}
 
-                {author && !loaded && hasError && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -58,13 +60,13 @@ export const App = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && items.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && items.length > 0 && (
+                {author && loaded && !hasError && items.length > 0 && (
                   <PostsList posts={items} />
                 )}
               </div>

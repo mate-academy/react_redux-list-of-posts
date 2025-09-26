@@ -6,7 +6,7 @@ import { actions as selectedPostAction } from '../features/selectedPost/selected
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[] | [];
+  posts: Post[];
 };
 
 export const PostsList: React.FC<Props> = ({ posts }) => {

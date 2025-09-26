@@ -35,7 +35,7 @@ export const PostDetails = () => {
         postId: post?.id || 0,
       });
 
-      dispatch(commentsAction.setComments([...items, newComment]));
+      dispatch(commentsAction.addComments([...items, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -62,21 +62,21 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {!loaded && <Loader />}
 
-        {!loaded && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && items.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && items.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -110,7 +110,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -121,7 +121,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && (
+        {loaded && !hasError && visible && (
           <NewCommentForm onSubmit={addComment} />
         )}
       </div>
