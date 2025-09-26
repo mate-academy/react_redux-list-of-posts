@@ -29,7 +29,18 @@ function request<T>(
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(async response => {
+      if (!response.ok) {
+        // ⛔️ Тут кидаємо помилку → піде в rejected
+        const errorText = await response.text();
+
+        throw new Error(
+          `HTTP ${response.status}: ${errorText || response.statusText}`,
+        );
+      }
+
+      return response.json() as Promise<T>;
+    });
 }
 
 export const client = {
