@@ -40,16 +40,24 @@ const commentsSlice = createSlice({
       state.loaded = false;
       state.hasError = false;
     },
+    setError: (state, action: PayloadAction<boolean>) => {
+      state.hasError = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
       .addCase(loadPostComments.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
-      .addCase(loadPostComments.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.items = action.payload;
-      })
+      .addCase(
+        loadPostComments.fulfilled,
+        (state, action: PayloadAction<Comment[]>) => {
+          state.loaded = true;
+          state.items = action.payload;
+          state.hasError = false;
+        },
+      )
       .addCase(loadPostComments.rejected, state => {
         state.loaded = true;
         state.hasError = true;
@@ -58,7 +66,7 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { addComment, removeComment, clearComments } =
+export const { addComment, removeComment, clearComments, setError } =
   commentsSlice.actions;
 
 export const selectComments = (state: RootState) => state.comments.items;

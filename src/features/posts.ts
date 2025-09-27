@@ -16,7 +16,7 @@ const initialState: PostsState = {
 };
 
 export const loadUserPosts = createAsyncThunk(
-  'posts/fetch',
+  'posts/loadByUser',
   async (userId: number) => {
     return getUserPosts(userId);
   },
