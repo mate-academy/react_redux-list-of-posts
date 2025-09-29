@@ -68,17 +68,10 @@ const commentsSlice = createSlice({
       currentState.loaded = true;
     });
 
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
-      const commentId = action.meta.arg;
+    builder.addCase(addComment.fulfilled, (state, action) => {
       const currentState = state;
 
-      currentState.items = state.items.filter(
-        comment => comment.id !== commentId,
-      );
-    });
-
-    builder.addCase(addComment.fulfilled, (state, action) => {
-      state.items.push(action.payload);
+      currentState.items.push(action.payload);
     });
   },
 });
