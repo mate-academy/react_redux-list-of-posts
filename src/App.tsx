@@ -12,7 +12,7 @@ import { Loader } from './components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './app/store';
 import { fetchPosts } from './features/postsSlice';
-import { setSelected } from './features/selectedSclice';
+import { clearSelected, setSelected } from './features/selectedPostSlice';
 import { setAuthor } from './features/authorSlice';
 
 export const App: React.FC = () => {
@@ -21,14 +21,14 @@ export const App: React.FC = () => {
   const posts = useSelector((state: RootState) => state.posts.items);
   const loaded = useSelector((state: RootState) => state.posts.loaded);
   const hasError = useSelector((state: RootState) => state.posts.hasError);
-  const selectedPost = useSelector((state: RootState) => state.selected);
+  const selectedPost = useSelector((state: RootState) => state.selectedPost);
 
   useEffect(() => {
-    dispatch(setSelected(null));
+    dispatch(clearSelected());
     if (author) {
       dispatch(fetchPosts(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">

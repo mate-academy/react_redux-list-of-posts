@@ -3,7 +3,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
-export const fetchPosts = createAsyncThunk('posts/fetchPost', getUserPosts);
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPost',
+  async (userId: number) => {
+    const response = await getUserPosts(userId);
+
+    return response;
+  },
+);
 
 export const postsSlice = createSlice({
   name: 'posts',

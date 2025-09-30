@@ -3,6 +3,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
+export type CommentState = {
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
+};
+
+const initialState: CommentState = {
+  items: [],
+  loaded: false,
+  hasError: false,
+};
+
 export const fetchComments = createAsyncThunk<Comment[], number>(
   'comments/fetchComments',
   async (postId: number) => {
@@ -14,22 +26,8 @@ export const fetchComments = createAsyncThunk<Comment[], number>(
 
 export const commentsSlice = createSlice({
   name: 'comments',
-  initialState: {
-    items: [] as Comment[],
-    loaded: false,
-    hasError: false,
-    visible: false,
-  },
+  initialState,
   reducers: {
-    toggleVisibility(state) {
-      // eslint-disable-next-line no-param-reassign
-      state.visible = !state.visible;
-    },
-
-    hideForm(state) {
-      state.visible = false;
-    },
-
     addComment(state, action: PayloadAction<Comment>) {
       state.items.push(action.payload);
     },
@@ -58,6 +56,5 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { toggleVisibility, addComment, removeComment, hideForm } =
-  commentsSlice.actions;
+export const { addComment, removeComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

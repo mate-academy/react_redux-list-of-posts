@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -11,9 +11,7 @@ import { AppDispatch, RootState } from '../app/store';
 import {
   addComment,
   fetchComments,
-  hideForm,
   removeComment,
-  toggleVisibility,
 } from '../features/commentsSlice';
 
 type Props = {
@@ -22,17 +20,18 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [form, setForm] = useState(false);
+
   const {
     items: comments,
     loaded,
     hasError,
-    visible,
   } = useSelector((state: RootState) => state.comments);
 
   useEffect(() => {
     dispatch(fetchComments(post.id));
-    dispatch(hideForm());
-  }, [post.id]);
+    setForm(false);
+  }, [post.id, dispatch]);
 
   const handleAddComment = async (data: CommentData) => {
     try {
@@ -112,18 +111,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {loaded && !hasError && !form && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(toggleVisibility())}
+            onClick={() => setForm(true)}
           >
             Write a comment
           </button>
         )}
 
-        {loaded && !hasError && visible && (
+        {loaded && !hasError && form && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>

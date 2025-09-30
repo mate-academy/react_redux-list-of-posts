@@ -17,6 +17,7 @@ export const usersSlice = createSlice({
     builder.addCase(fetchUsers.pending, state => {
       state.hasError = false;
       state.loaded = false;
+      state.items = [];
     });
 
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
@@ -24,6 +25,7 @@ export const usersSlice = createSlice({
       state.items = action.payload;
       // eslint-disable-next-line no-param-reassign
       state.loaded = true;
+      state.hasError = false;
     });
 
     builder.addCase(fetchUsers.rejected, state => {
