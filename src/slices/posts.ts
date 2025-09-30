@@ -8,14 +8,11 @@ const initialState = {
   hasError: false,
 };
 
-export const loadPosts = createAsyncThunk(
-  'posts/featch',
-  (authorId: number) => {
-    return getUserPosts(authorId);
-  },
-);
+export const loadPosts = createAsyncThunk('posts/fetch', (authorId: number) => {
+  return getUserPosts(authorId);
+});
 const postsSlice = createSlice({
-  name: 'items',
+  name: 'posts',
   initialState,
   reducers: {
     setPosts(state, { payload }: PayloadAction<Post[]>) {

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import { PostsActions } from '../src/slices/posts';
+import { PostsActions } from './slices/posts';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -17,11 +17,14 @@ export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
   const { hasError, loaded } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
-  const authorId = useAppSelector(state => state.author?.id);
 
   useEffect(() => {
-    dispatch(PostsActions.loadPosts(authorId as number));
-  }, [authorId, dispatch]);
+    if (!author?.id) {
+      return;
+    }
+
+    dispatch(PostsActions.loadPosts(author.id as number));
+  }, [author?.id, dispatch]);
 
   return (
     <main className="section">

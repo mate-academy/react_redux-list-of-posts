@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export const loadComments = createAsyncThunk(
-  'comments/feath',
+  'comments/feth',
   (postId: number) => {
     return getPostComments(postId);
   },
@@ -31,7 +31,7 @@ export const addComment = createAsyncThunk(
 );
 
 const commentsSlice = createSlice({
-  name: 'items',
+  name: 'comments',
   initialState,
   reducers: {
     setComments(state, { payload }: PayloadAction<Comment[]>) {
