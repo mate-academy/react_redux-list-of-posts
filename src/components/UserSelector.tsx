@@ -5,7 +5,7 @@ import { authorSlice } from '../features/author';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
-  const { users } = useAppSelector(state => state.users);
+  const { items } = useAppSelector(state => state.users);
   const selectedUser = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
@@ -57,7 +57,7 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {items.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}

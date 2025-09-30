@@ -7,9 +7,10 @@ import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
 const initialState = {
-  loading: false,
-  users: [] as User[],
-  error: '',
+  loaded: false,
+  hasError: false,
+  errorMessage: '',
+  items: [] as User[],
 };
 
 export const createAppSlice = buildCreateSlice({
@@ -22,13 +23,16 @@ export const usersSlice = createAppSlice({
   reducers(create) {
     return {
       addUser: create.reducer((state, { payload }: PayloadAction<User>) => {
-        state.users.push(payload);
+        state.items.push(payload);
       }),
       removeUser: create.reducer((state, { payload }: PayloadAction<User>) => {
-        state.users = state.users.filter(user => user !== payload);
+        return {
+          ...state,
+          items: state.items.filter(u => u.id !== payload.id),
+        };
       }),
-      clearUsers: create.reducer(state => {
-        state.users = [];
+      clearUsers: create.reducer(() => {
+        return { ...initialState };
       }),
       loadUsers: create.asyncThunk(
         () => {
@@ -36,16 +40,25 @@ export const usersSlice = createAppSlice({
         },
         {
           pending: state => {
-            state.loading = true;
+            return {
+              ...state,
+              loaded: false,
+              hasError: false,
+              errorMessage: '',
+            };
           },
           fulfilled: (state, { payload }) => {
-            state.users = payload;
+            return { ...state, items: payload };
           },
           rejected: (state, { error, payload }) => {
-            state.error = error.message ?? String(payload);
+            return {
+              ...state,
+              hasError: true,
+              errorMessage: error.message ?? String(payload),
+            };
           },
           settled: state => {
-            state.loading = false;
+            return { ...state, loaded: true };
           },
         },
       ),

@@ -8,7 +8,8 @@ import { getUserPosts } from '../api/posts';
 
 const initialState = {
   loaded: false,
-  hasError: '',
+  hasError: false,
+  errorMessage: '',
   items: [] as Post[],
 };
 
@@ -25,10 +26,13 @@ export const postsSlice = createAppSlice({
         state.items.push(payload);
       }),
       removePost: create.reducer((state, { payload }: PayloadAction<Post>) => {
-        state.items = state.items.filter(item => item !== payload);
+        return {
+          ...state,
+          items: state.items.filter(item => item.id !== payload.id),
+        };
       }),
-      clearPosts: create.reducer(state => {
-        state.items = [];
+      clearPosts: create.reducer(() => {
+        return { ...initialState };
       }),
       loadPosts: create.asyncThunk(
         (userId: number) => {
@@ -36,16 +40,25 @@ export const postsSlice = createAppSlice({
         },
         {
           pending: state => {
-            state.loaded = true;
+            return {
+              ...state,
+              loaded: false,
+              hasError: false,
+              errorMessage: '',
+            };
           },
           fulfilled: (state, { payload }) => {
-            state.items = payload;
+            return { ...state, items: payload };
           },
           rejected: (state, { error, payload }) => {
-            state.hasError = error.message ?? String(payload);
+            return {
+              ...state,
+              hasError: true,
+              errorMessage: error.message ?? String(payload),
+            };
           },
           settled: state => {
-            state.loaded = false;
+            return { ...state, loaded: true };
           },
         },
       ),

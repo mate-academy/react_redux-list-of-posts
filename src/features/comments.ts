@@ -4,7 +4,8 @@ import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 const initialState = {
   loaded: false,
-  hasError: '',
+  hasError: false,
+  errorMessage: '',
   items: [] as Comment[],
 };
 
@@ -17,8 +18,8 @@ export const commentsSlice = createAppSlice({
   initialState,
   reducers(create) {
     return {
-      clearComments: create.reducer(state => {
-        state.items = [];
+      clearComments: create.reducer(() => {
+        return { ...initialState };
       }),
       loadComments: create.asyncThunk(
         (postId: number) => {
@@ -26,16 +27,25 @@ export const commentsSlice = createAppSlice({
         },
         {
           pending: state => {
-            state.loaded = true;
+            return {
+              ...state,
+              loaded: false,
+              hasError: false,
+              errorMessage: '',
+            };
           },
           fulfilled: (state, { payload }) => {
-            state.items = payload;
+            return { ...state, items: payload };
           },
           rejected: (state, { error, payload }) => {
-            state.hasError = error.message ?? String(payload);
+            return {
+              ...state,
+              hasError: true,
+              errorMessage: error.message ?? String(payload),
+            };
           },
           settled: state => {
-            state.loaded = false;
+            return { ...state, loaded: true };
           },
         },
       ),
@@ -45,16 +55,25 @@ export const commentsSlice = createAppSlice({
         },
         {
           pending: state => {
-            state.loaded = true;
+            return {
+              ...state,
+              loaded: false,
+              hasError: false,
+              errorMessage: '',
+            };
           },
           fulfilled: (state, { payload }) => {
             state.items.push(payload);
           },
           rejected: (state, { error, payload }) => {
-            state.hasError = error.message ?? String(payload);
+            return {
+              ...state,
+              hasError: true,
+              errorMessage: error.message ?? String(payload),
+            };
           },
           settled: state => {
-            state.loaded = false;
+            return { ...state, loaded: true };
           },
         },
       ),
@@ -64,16 +83,28 @@ export const commentsSlice = createAppSlice({
         },
         {
           pending: state => {
-            state.loaded = true;
+            return {
+              ...state,
+              loaded: false,
+              hasError: false,
+              errorMessage: '',
+            };
           },
           fulfilled: (state, { meta }) => {
-            state.items = state.items.filter(item => item.id !== meta.arg);
+            return {
+              ...state,
+              items: state.items.filter(item => item.id !== meta.arg),
+            };
           },
           rejected: (state, { error, payload }) => {
-            state.hasError = error.message ?? String(payload);
+            return {
+              ...state,
+              hasError: true,
+              errorMessage: error.message ?? String(payload),
+            };
           },
           settled: state => {
-            state.loaded = false;
+            return { ...state, loaded: true };
           },
         },
       ),
