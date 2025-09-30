@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export const loadComments = createAsyncThunk(
-  'comments/feth',
+  'comments/fetсh',
   (postId: number) => {
     return getPostComments(postId);
   },
@@ -65,6 +65,14 @@ const commentsSlice = createSlice({
       const currentState = state;
 
       currentState.hasError = true;
+      currentState.loaded = true;
+    });
+
+    builder.addCase(loadComments.fulfilled, (state, action) => {
+      const currentState = state;
+
+      currentState.items = action.payload;
+      currentState.hasError = false;
       currentState.loaded = true;
     });
 

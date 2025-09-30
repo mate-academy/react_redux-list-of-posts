@@ -2,13 +2,19 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-const initialState = {
+export interface UsersState {
+  loading: boolean;
+  users: User[];
+  error: string;
+}
+
+const initialState: UsersState = {
   loading: false,
-  users: [] as User[],
+  users: [],
   error: '',
 };
 
-export const loadUsers = createAsyncThunk('users/fetch', () => {
+export const loadUsers = createAsyncThunk<User[], void>('users/fetch', () => {
   return getUsers();
 });
 

@@ -23,7 +23,9 @@ export const App: React.FC = () => {
       return;
     }
 
-    dispatch(PostsActions.loadPosts(author.id as number));
+    const authorId = author?.id as number;
+
+    dispatch(PostsActions.loadPosts(authorId));
   }, [author?.id, dispatch]);
 
   return (

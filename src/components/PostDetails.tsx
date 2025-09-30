@@ -96,14 +96,14 @@ export const PostDetails: React.FC = () => {
 
         {loaded && !hasError && visible && (
           <NewCommentForm
-            onSubmit={newComment =>
-              dispatch(
+            onSubmit={async newComment => {
+              await dispatch(
                 CommentsActions.addComment({
                   ...newComment,
-                  postId: post.id,
+                  postId: post?.id,
                 }),
-              )
-            }
+              ).unwrap();
+            }}
           />
         )}
       </div>
