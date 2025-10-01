@@ -5,14 +5,14 @@ import { PostComment } from '../types/PostComment';
 
 type PostState = {
   comments: PostComment[];
-  loading: boolean;
-  error: boolean;
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostState = {
   comments: [],
-  loading: false,
-  error: false,
+  loaded: false,
+  hasError: false,
 };
 
 export const loadPostComments = createAsyncThunk(
@@ -62,17 +62,17 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadPostComments.pending, state => {
-        state.loading = true;
-        state.error = false;
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadPostComments.fulfilled, (state, action) => {
         state.comments = action.payload;
-        state.loading = false;
-        state.error = false;
+        state.loaded = true;
+        state.hasError = false;
       })
       .addCase(loadPostComments.rejected, state => {
-        state.error = true;
-        state.loading = false;
+        state.hasError = true;
+        state.loaded = false;
       })
       .addCase(deletePostComment.fulfilled, (state, action) => {
         state.comments = state.comments.filter(
@@ -80,7 +80,7 @@ export const commentsSlice = createSlice({
         );
       })
       .addCase(deletePostComment.rejected, state => {
-        state.error = true;
+        state.hasError = true;
       })
       .addCase(createPostComment.fulfilled, (state, action) => {
         state.comments.push(action.payload);
@@ -88,5 +88,4 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { actions } = commentsSlice;
 export default commentsSlice.reducer;

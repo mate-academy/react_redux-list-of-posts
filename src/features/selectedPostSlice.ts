@@ -4,14 +4,10 @@ import { Post } from '../types/Post';
 
 type SelectedPostState = {
   post: Post | null;
-  loading: boolean;
-  error: boolean;
 };
 
 const initialState: SelectedPostState = {
   post: null,
-  loading: false,
-  error: false,
 };
 
 export const selectedPostSlice = createSlice({
