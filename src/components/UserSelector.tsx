@@ -10,7 +10,7 @@ export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const users = useAppSelector(state => state.users.users);
-  const author = useAppSelector(state => state.user.user);
+  const author = useAppSelector(state => state.author.user);
 
   useEffect(() => {
     dispatch(loadUsers());

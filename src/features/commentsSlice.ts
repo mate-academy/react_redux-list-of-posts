@@ -4,13 +4,13 @@ import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { PostComment } from '../types/PostComment';
 
 type PostState = {
-  comments: PostComment[];
+  items: PostComment[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: PostState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -66,7 +66,7 @@ export const commentsSlice = createSlice({
         state.hasError = false;
       })
       .addCase(loadPostComments.fulfilled, (state, action) => {
-        state.comments = action.payload;
+        state.items = action.payload;
         state.loaded = true;
         state.hasError = false;
       })
@@ -75,7 +75,7 @@ export const commentsSlice = createSlice({
         state.loaded = false;
       })
       .addCase(deletePostComment.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(
+        state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
       })
@@ -83,7 +83,7 @@ export const commentsSlice = createSlice({
         state.hasError = true;
       })
       .addCase(createPostComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       });
   },
 });

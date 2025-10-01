@@ -8,7 +8,7 @@ import { actions as selectedPostActions } from '../features/selectedPostSlice';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const posts = useAppSelector(state => state.posts.posts);
+  const posts = useAppSelector(state => state.posts.items);
   const selectedPostId = useAppSelector(
     state => state.selectedPost.post?.id ?? 0,
   );
@@ -40,7 +40,7 @@ export const PostsList: React.FC = () => {
                   })}
                   onClick={() => {
                     if (post.id === selectedPostId) {
-                      dispatch(selectedPostActions.clear()); // прибрати вибір
+                      dispatch(selectedPostActions.clear());
                     } else {
                       dispatch(selectedPostActions.set(post));
                     }

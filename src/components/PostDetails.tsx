@@ -9,7 +9,7 @@ export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const post = useAppSelector(state => state.selectedPost.post);
-  const comments = useAppSelector(state => state.comments.comments);
+  const comments = useAppSelector(state => state.comments.items);
   const loaded = useAppSelector(state => state.comments.loaded);
   const hasError = useAppSelector(state => state.comments.hasError);
 

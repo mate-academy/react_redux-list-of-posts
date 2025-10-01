@@ -18,8 +18,8 @@ export const App: React.FC = () => {
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
 
-  const author = useAppSelector(state => state.user.user);
-  const posts = useAppSelector(state => state.posts.posts);
+  const author = useAppSelector(state => state.author.user);
+  const posts = useAppSelector(state => state.posts.items);
 
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 

@@ -11,7 +11,7 @@ export const store = configureStore({
   reducer: {
     counter: counterReducer,
     users: usersReducer,
-    user: currentUserReducer,
+    author: currentUserReducer,
     posts: postsReducer,
     selectedPost: selectedPostReducer,
     comments: commentsReducer,
