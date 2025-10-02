@@ -1,113 +1,99 @@
-import { asyncThunkCreator, buildCreateSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 const initialState = {
   loaded: false,
   hasError: false,
-  errorMessage: '',
   items: [] as Comment[],
 };
 
-export const createAppSlice = buildCreateSlice({
-  creators: { asyncThunk: asyncThunkCreator },
-});
+export const loadComments = createAsyncThunk(
+  'comments/fetch',
+  async (postId: number) => {
+    return getPostComments(postId);
+  },
+);
 
-export const commentsSlice = createAppSlice({
+export const addComment = createAsyncThunk(
+  'comments/add',
+  async (data: Omit<Comment, 'id'>) => {
+    return createComment(data);
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/remove',
+  async (commentId: number) => {
+    return deleteComment(commentId);
+  },
+);
+
+export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers(create) {
-    return {
-      clearComments: create.reducer(() => {
-        return { ...initialState };
-      }),
-      loadComments: create.asyncThunk(
-        (postId: number) => {
-          return getPostComments(postId);
-        },
-        {
-          pending: state => {
-            return {
-              ...state,
-              loaded: false,
-              hasError: false,
-              errorMessage: '',
-            };
-          },
-          fulfilled: (state, { payload }) => {
-            return { ...state, items: payload };
-          },
-          rejected: (state, { error, payload }) => {
-            return {
-              ...state,
-              hasError: true,
-              errorMessage: error.message ?? String(payload),
-            };
-          },
-          settled: state => {
-            return { ...state, loaded: true };
-          },
-        },
-      ),
-      addComment: create.asyncThunk(
-        async (data: Omit<Comment, 'id'>) => {
-          return createComment(data);
-        },
-        {
-          pending: state => {
-            return {
-              ...state,
-              loaded: false,
-              hasError: false,
-              errorMessage: '',
-            };
-          },
-          fulfilled: (state, { payload }) => {
-            state.items.push(payload);
-          },
-          rejected: (state, { error, payload }) => {
-            return {
-              ...state,
-              hasError: true,
-              errorMessage: error.message ?? String(payload),
-            };
-          },
-          settled: state => {
-            return { ...state, loaded: true };
-          },
-        },
-      ),
-      removeComment: create.asyncThunk(
-        (commentId: number) => {
-          return deleteComment(commentId);
-        },
-        {
-          pending: state => {
-            return {
-              ...state,
-              loaded: false,
-              hasError: false,
-              errorMessage: '',
-            };
-          },
-          fulfilled: (state, { meta }) => {
-            return {
-              ...state,
-              items: state.items.filter(item => item.id !== meta.arg),
-            };
-          },
-          rejected: (state, { error, payload }) => {
-            return {
-              ...state,
-              hasError: true,
-              errorMessage: error.message ?? String(payload),
-            };
-          },
-          settled: state => {
-            return { ...state, loaded: true };
-          },
-        },
-      ),
-    };
+  reducers: {
+    clearComments() {
+      return { ...initialState };
+    },
+  },
+  extraReducers(builder) {
+    builder.addCase(loadComments.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
+    });
+    builder.addCase(loadComments.fulfilled, (state, { payload }) => {
+      return { ...state, loaded: true, items: payload };
+    });
+    builder.addCase(loadComments.rejected, state => {
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
+    });
+
+    builder.addCase(addComment.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
+    });
+    builder.addCase(addComment.fulfilled, (state, { payload }) => {
+      return { ...state, items: [...state.items, payload], loaded: true };
+    });
+    builder.addCase(addComment.rejected, state => {
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
+    });
+
+    builder.addCase(removeComment.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
+    });
+    builder.addCase(removeComment.fulfilled, (state, { meta }) => {
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== meta.arg),
+        loaded: true,
+      };
+    });
+    builder.addCase(removeComment.rejected, state => {
+      return {
+        ...state,
+        hasError: true,
+        loaded: true,
+      };
+    });
   },
 });

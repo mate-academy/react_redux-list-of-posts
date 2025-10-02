@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsSlice } from '../features/comments';
+import { loadComments, removeComment } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,11 +20,11 @@ export const PostDetails: React.FC = () => {
 
     setVisible(false);
 
-    dispatch(commentsSlice.actions.loadComments(selectedPost.id));
+    dispatch(loadComments(selectedPost.id));
   }, [selectedPost, dispatch]);
 
   const deleteComment = (commentId: number) => {
-    dispatch(commentsSlice.actions.removeComment(commentId));
+    dispatch(removeComment(commentId));
   };
 
   if (!selectedPost) {

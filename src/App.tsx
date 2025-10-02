@@ -11,8 +11,8 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectedPostSlice } from './features/selectedPost';
-import { postsSlice } from './features/posts';
-import { usersSlice } from './features/users';
+import { loadPosts, postsSlice } from './features/posts';
+import { loadUsers } from './features/users';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,14 +22,14 @@ export const App: React.FC = () => {
   const { loaded, items, hasError } = useAppSelector(state => state.posts);
 
   useEffect(() => {
-    dispatch(usersSlice.actions.loadUsers());
+    dispatch(loadUsers());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(selectedPostSlice.actions.setSelectedPost(null));
 
     if (author) {
-      dispatch(postsSlice.actions.loadPosts(author.id));
+      dispatch(loadPosts(author.id));
     } else {
       dispatch(postsSlice.actions.clearPosts());
     }

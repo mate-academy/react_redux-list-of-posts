@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { commentsSlice } from '../features/comments';
+import { addComment } from '../features/comments';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -58,7 +58,7 @@ export const NewCommentForm: React.FC = () => {
     // it is very easy to forget about `await` keyword
     if (name && email && body && selectedPost) {
       await dispatch(
-        commentsSlice.actions.addComment({
+        addComment({
           name,
           email,
           body,
