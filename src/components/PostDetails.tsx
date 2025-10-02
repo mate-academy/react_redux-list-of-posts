@@ -17,13 +17,10 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const {
-    items: comments,
-    loaded,
-    hasError,
-  } = useAppSelector(selectComments);
+  const { items: comments, loaded, hasError } = useAppSelector(selectComments);
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
+
   function loadComments() {
     setVisible(false);
 
@@ -40,6 +37,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
         postId: post.id,
       };
+
       await dispatch(addNewComment(newComment)).unwrap();
     } catch (error) {
       dispatch(setError(true));
