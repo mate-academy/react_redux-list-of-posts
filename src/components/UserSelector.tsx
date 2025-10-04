@@ -23,8 +23,6 @@ export const UserSelector: React.FC<Props> = ({
 
   const [expanded, setExpanded] = useState(false);
 
-  console.log(users);
-
   useEffect(() => {
     dispatch(usersActions.init());
   }, [dispatch]);

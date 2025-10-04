@@ -47,6 +47,7 @@ export const commentsSlice = createSlice({
     // #region initFetch
     builder.addCase(initFetch.pending, state => {
       state.loaded = true;
+      state.hasError = false;
     });
     builder.addCase(
       initFetch.fulfilled,
@@ -57,6 +58,7 @@ export const commentsSlice = createSlice({
     );
     builder.addCase(initFetch.rejected, state => {
       state.hasError = true;
+      state.loaded = false;
     });
     // #endregion
     // #region initAdd

@@ -9,13 +9,13 @@ export const init = createAsyncThunk('users/fetch', () => {
 type UsersState = {
   users: User[];
   loading: boolean;
-  error: string;
+  error: boolean;
 };
 
 const initialState: UsersState = {
   users: [],
   loading: false,
-  error: '',
+  error: false,
 };
 
 export const usersSlice = createSlice({
@@ -25,6 +25,7 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
       state.loading = true;
+      state.error = false;
     });
 
     builder.addCase(init.fulfilled, (state, action) => {
@@ -34,7 +35,7 @@ export const usersSlice = createSlice({
 
     builder.addCase(init.rejected, state => {
       state.loading = false;
-      state.error = 'Something went wrong';
+      state.error = true;
     });
   },
 });
