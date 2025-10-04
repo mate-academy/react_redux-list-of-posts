@@ -13,40 +13,59 @@ import {
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const postId = useSelector((s: RootState) => s.selectedPost.id);
+  const post = useSelector((s: RootState) => s.selectedPost);
   const posts = useSelector((s: RootState) => s.posts.items);
   const commentsState = useSelector((s: RootState) => s.comments);
 
   const [visible, setVisible] = useState(false);
 
-  const post = posts.find(p => p.id === postId);
+  const postId = post?.id ?? null;
+  const postDetails = post || posts.find(p => p.id === postId);
 
-  // завантаження коментарів при зміні postId
   useEffect(() => {
-    if (postId != null) {
+    if (postId !== null) {
       dispatch(fetchCommentsByPost(postId));
-      setVisible(false); // ховаємо форму при зміні поста
+      setVisible(false);
     }
   }, [dispatch, postId]);
 
-  if (!post) return null;
+  if (!postDetails) {
+    return (
+      <div className="notification is-warning" data-cy="PostDetails">
+        No post selected
+      </div>
+    );
+  }
 
-  const addComment = async ({ name, email, body }: { name: string; email: string; body: string }) => {
-    await dispatch(postComment({ name, email, body, postId } as any)).unwrap();
+  const addComment = async ({
+    name,
+    email,
+    body,
+  }: {
+    name: string;
+    email: string;
+    body: string;
+  }) => {
+    if (postId === null) {
+      return;
+    }
+
+    try {
+      await dispatch(postComment({ name, email, body, postId })).unwrap();
+    } catch (error) {
+    }
   };
 
   const deleteComment = (commentId: number) => {
-    // оптимістично прибираємо
     dispatch(deleteCommentOptimistic(commentId));
-    // відправляємо запит
     dispatch(deleteCommentRequest(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-        <p data-cy="PostBody">{post.body}</p>
+        <h2 data-cy="PostTitle">{`#${postDetails.id}: ${postDetails.title}`}</h2>
+        <p data-cy="PostBody">{postDetails.body}</p>
       </div>
 
       <div className="block">
@@ -58,42 +77,46 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {commentsState.loaded && !commentsState.hasError && commentsState.items.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-        )}
+        {commentsState.loaded &&
+          !commentsState.hasError &&
+          commentsState.items.length === 0 && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-        {commentsState.loaded && !commentsState.hasError && commentsState.items.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
-            {commentsState.items.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
-          </>
-        )}
+        {commentsState.loaded &&
+          !commentsState.hasError &&
+          commentsState.items.length > 0 && (
+            <>
+              <p className="title is-4">Comments:</p>
+              {commentsState.items.map(comment => (
+                <article
+                  className="message is-small"
+                  key={comment.id}
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => deleteComment(comment.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
 
         {commentsState.loaded && !commentsState.hasError && !visible && (
           <button

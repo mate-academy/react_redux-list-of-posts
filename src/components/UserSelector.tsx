@@ -17,14 +17,16 @@ export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    // завантажуємо користувачів тільки один раз
     dispatch(fetchUsers());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!expanded) return;
+    if (!expanded) {
+      return;
+    }
 
     const handleDocumentClick = () => setExpanded(false);
+
     document.addEventListener('click', handleDocumentClick);
 
     return () => document.removeEventListener('click', handleDocumentClick);
@@ -32,6 +34,7 @@ export const UserSelector: React.FC = () => {
 
   const handleSelect = (user: User) => {
     dispatch(setAuthor(user));
+    setExpanded(false);
     dispatch(clearPosts());
     dispatch(clearSelectedPost());
     dispatch(clearComments());
@@ -82,4 +85,4 @@ export const UserSelector: React.FC = () => {
       </div>
     </div>
   );
-};;
+};

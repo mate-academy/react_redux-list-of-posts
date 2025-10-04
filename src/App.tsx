@@ -5,8 +5,8 @@ import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store, RootState, AppDispatch } from './app/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from './app/store';
 import { UserSelector } from './components/UserSelector';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -17,14 +17,11 @@ import { clearPosts } from './features/postsSlice';
 import { clearSelectedPost } from './features/selectedPostSlice';
 import { clearComments } from './features/commentsSlice';
 
-import { setAuthor } from './features/authorSlice';
-import { setSelectedPost } from './features/selectedPostSlice';
-
 const AppContent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const author = useSelector((s: RootState) => s.author.current);
   const postsState = useSelector((s: RootState) => s.posts);
-  const selectedPostId = useSelector((s: RootState) => s.selectedPost.id);
+  const selectedPostId = useSelector((s: RootState) => s.selectedPost?.id);
 
   useEffect(() => {
     if (author) {
@@ -50,7 +47,9 @@ const AppContent: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !postsState.loaded && !postsState.hasError && <Loader />}
+                {author && !postsState.loaded && !postsState.hasError && (
+                  <Loader />
+                )}
 
                 {author && postsState.hasError && (
                   <div
@@ -61,20 +60,26 @@ const AppContent: React.FC = () => {
                   </div>
                 )}
 
-                {author && postsState.loaded && !postsState.hasError && postsState.items.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {author &&
+                  postsState.loaded &&
+                  !postsState.hasError &&
+                  postsState.items.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
-                {author && postsState.loaded && !postsState.hasError && postsState.items.length > 0 && (
-                  <PostsList />
-                )}
+                {author &&
+                  postsState.loaded &&
+                  !postsState.hasError &&
+                  postsState.items.length > 0 && <PostsList />}
               </div>
             </div>
           </div>
 
-          {/* SIDEBAR */}
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -83,12 +88,13 @@ const AppContent: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPostId,
+                'Sidebar--open': selectedPostId != null, // Виправлено: явна перевірка на null
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPostId && <PostDetails />}
+              {selectedPostId != null && <PostDetails />}{' '}
+              {/* Виправлено: явна перевірка на null */}
             </div>
           </div>
         </div>
@@ -97,8 +103,4 @@ const AppContent: React.FC = () => {
   );
 };
 
-export const App: React.FC = () => (
-  <Provider store={store}>
-    <AppContent />
-  </Provider>
-);
+export const App: React.FC = () => <AppContent />;

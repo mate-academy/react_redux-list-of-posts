@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type SelectedPostState = {
+  body: ReactNode;
   id: number | null;
 };
 

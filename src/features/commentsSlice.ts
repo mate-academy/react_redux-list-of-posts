@@ -18,6 +18,7 @@ export const fetchCommentsByPost = createAsyncThunk(
   'comments/fetchByPost',
   async (postId: number) => {
     const comments = await commentsApi.getPostComments(postId);
+
     return comments;
   },
 );
@@ -26,6 +27,7 @@ export const postComment = createAsyncThunk(
   'comments/postComment',
   async (data: CommentData & { postId: number }) => {
     const newComment = await commentsApi.createComment(data);
+
     return newComment;
   },
 );
@@ -34,6 +36,7 @@ export const deleteCommentRequest = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number) => {
     await commentsApi.deleteComment(commentId);
+
     return commentId;
   },
 );
