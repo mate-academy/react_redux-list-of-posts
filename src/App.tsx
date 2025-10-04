@@ -1,64 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { store, RootState, AppDispatch } from './app/store';
+import { UserSelector } from './components/UserSelector';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
 
-export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+import { fetchPostsByUser } from './features/postsSlice';
+import { clearPosts } from './features/postsSlice';
+import { clearSelectedPost } from './features/selectedPostSlice';
+import { clearComments } from './features/commentsSlice';
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+import { setAuthor } from './features/authorSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+const AppContent: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const author = useSelector((s: RootState) => s.author.current);
+  const postsState = useSelector((s: RootState) => s.posts);
+  const selectedPostId = useSelector((s: RootState) => s.selectedPost.id);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPostsByUser(author.id));
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
+      dispatch(clearSelectedPost());
+      dispatch(clearComments());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
+          {/* LEFT COLUMN */}
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !postsState.loaded && !postsState.hasError && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && postsState.hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,23 +61,20 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && postsState.loaded && !postsState.hasError && postsState.items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {author && postsState.loaded && !postsState.hasError && postsState.items.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
           </div>
 
+          {/* SIDEBAR */}
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -92,12 +83,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                'Sidebar--open': selectedPostId,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPostId && <PostDetails />}
             </div>
           </div>
         </div>
@@ -105,3 +96,9 @@ export const App: React.FC = () => {
     </main>
   );
 };
+
+export const App: React.FC = () => (
+  <Provider store={store}>
+    <AppContent />
+  </Provider>
+);
