@@ -66,13 +66,11 @@ export const UserSelector: React.FC<Props> = ({
           }}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
-
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
         </button>
       </div>
-
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => (
