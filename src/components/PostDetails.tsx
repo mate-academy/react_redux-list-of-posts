@@ -13,21 +13,22 @@ import {
 
 export const PostDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const post = useSelector((s: RootState) => s.selectedPost);
   const posts = useSelector((s: RootState) => s.posts.items);
+  const selectedPostId = useSelector(
+    (s: RootState) => s.selectedPost?.id ?? null,
+  );
   const commentsState = useSelector((s: RootState) => s.comments);
 
   const [visible, setVisible] = useState(false);
 
-  const postId = post?.id ?? null;
-  const postDetails = post || posts.find(p => p.id === postId);
+  const postDetails = posts.find(p => p.id === selectedPostId);
 
   useEffect(() => {
-    if (postId !== null) {
-      dispatch(fetchCommentsByPost(postId));
+    if (selectedPostId !== null) {
+      dispatch(fetchCommentsByPost(selectedPostId));
       setVisible(false);
     }
-  }, [dispatch, postId]);
+  }, [dispatch, selectedPostId]);
 
   if (!postDetails) {
     return (
@@ -46,13 +47,17 @@ export const PostDetails: React.FC = () => {
     email: string;
     body: string;
   }) => {
-    if (postId === null) {
+    if (selectedPostId === null) {
       return;
     }
 
     try {
-      await dispatch(postComment({ name, email, body, postId })).unwrap();
+      await dispatch(
+        postComment({ name, email, body, postId: selectedPostId }),
+      ).unwrap();
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
     }
   };
 
@@ -106,9 +111,7 @@ export const PostDetails: React.FC = () => {
                       className="delete is-small"
                       aria-label="delete"
                       onClick={() => deleteComment(comment.id)}
-                    >
-                      delete button
-                    </button>
+                    />
                   </div>
                   <div className="message-body" data-cy="CommentBody">
                     {comment.body}
