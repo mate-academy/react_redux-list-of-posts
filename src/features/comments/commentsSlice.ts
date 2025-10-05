@@ -47,13 +47,13 @@ export const addPostComment = createAsyncThunk<
   Comment,
   CommentAddValues,
   { rejectValue: string }
->('comments/addPostComment', async (CommentAddValues, { rejectWithValue }) => {
+>('comments/addPostComment', async (values, { rejectWithValue }) => {
   try {
-    const res = await createComment(CommentAddValues);
+    const res = await createComment(values);
 
     return res as Comment;
   } catch (err) {
-    return rejectWithValue('Network error');
+    return rejectWithValue('Failed to add comment');
   }
 });
 
@@ -78,7 +78,7 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    clearComments: () => initialState,
+    clearComments: () => ({ ...initialState }),
   },
   extraReducers: builder => {
     builder
