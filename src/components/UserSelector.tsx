@@ -43,7 +43,7 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, [dispatch])
+  }, [dispatch]);
 
   return (
     <div

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -14,7 +14,10 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { clearPosts, fetchUserPosts } from './features/posts/postsSlice';
 import { clearAuthor, setAuthor } from './features/author/authorSlice';
 import { User } from './types/User';
-import { clearSelectedPost, setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import {
+  clearSelectedPost,
+  setSelectedPost,
+} from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
   //const [posts, setPosts] = useState<Post[]>([]);
@@ -28,10 +31,12 @@ export const App: React.FC = () => {
 
   //const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-
-    dispatch(fetchUserPosts(userId));
-  }
+  const loadUserPosts = useCallback(
+    (userId: number) => {
+      dispatch(fetchUserPosts(userId));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -43,15 +48,15 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author]);
+  }, [author, dispatch, loadUserPosts]);
 
   useEffect(() => {
     dispatch(clearAuthor());
-  }, [dispatch])
+  }, [dispatch]);
 
-  const handleAuthorChange = (author: User) => {
-    dispatch(setAuthor(author));
-  }
+  const handleAuthorChange = (newAuthor: User) => {
+    dispatch(setAuthor(newAuthor));
+  };
 
   const handlePostSelection = (post: Post | null) => {
     dispatch(setSelectedPost(post));

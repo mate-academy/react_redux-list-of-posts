@@ -1,23 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { User } from "../../types/User";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
+import { User } from '../../types/User';
 
 type AuthorState = {
   author: User | null;
 };
 
 const initialState: AuthorState = {
-  author: null
+  author: null,
 };
 
-
 const authorSlice = createSlice({
-  name: "author",
+  name: 'author',
   initialState,
   reducers: {
     clearAuthor: () => initialState,
     setAuthor: (state, action) => {
-        state.author = action.payload;
-    }
+      state.author = action.payload;
+    },
   },
 });
 

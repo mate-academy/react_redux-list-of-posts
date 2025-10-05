@@ -3,7 +3,12 @@ import { Loader } from './Loader';
 
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addPostComment, deletePostComment, fetchPostComments, setModalVisible } from '../features/comments/commentsSlice';
+import {
+  addPostComment,
+  deletePostComment,
+  fetchPostComments,
+  setModalVisible,
+} from '../features/comments/commentsSlice';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 type Props = {
@@ -13,24 +18,29 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const { items: comments, loaded, hasError, visible } = useAppSelector(s => s.comments);
+  const {
+    items: comments,
+    loaded,
+    hasError,
+    visible,
+  } = useAppSelector(s => s.comments);
   const { selectedPost } = useAppSelector(s => s.selectedPost);
 
   useEffect(() => {
     dispatch(fetchPostComments(post.id));
-  }, [dispatch, post.id])
-
+  }, [dispatch, post.id]);
 
   const handleAddComment = async (commentBody: CommentData) => {
     if (selectedPost?.id) {
-      await dispatch(addPostComment({ ...commentBody, postId: selectedPost.id }));
+      await dispatch(
+        addPostComment({ ...commentBody, postId: selectedPost.id }),
+      );
     }
-  }
+  };
 
   const handleDeleteComment = async (Id: number) => {
     dispatch(deletePostComment(Id));
-  }
-
+  };
 
   return (
     <div className="content" data-cy="PostDetails">

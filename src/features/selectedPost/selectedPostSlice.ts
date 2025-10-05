@@ -1,23 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { Post } from "../../types/Post";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
+import { Post } from '../../types/Post';
 
 type SelectedPostState = {
   selectedPost: Post | null;
 };
 
 const initialState: SelectedPostState = {
-  selectedPost: null
+  selectedPost: null,
 };
 
-
 const selectedPostSlice = createSlice({
-  name: "selectedPost",
+  name: 'selectedPost',
   initialState,
   reducers: {
     clearSelectedPost: () => initialState,
     setSelectedPost: (state, action) => {
-        state.selectedPost = action.payload;
-    }
+      state.selectedPost = action.payload;
+    },
   },
 });
 

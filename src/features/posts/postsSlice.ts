@@ -1,6 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Post } from "../../types/Post";
-import { getUserPosts } from "../../api/posts";
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/indent */
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Post } from '../../types/Post';
+import { getUserPosts } from '../../api/posts';
 
 type PostState = {
   items: Post[];
@@ -11,23 +13,26 @@ type PostState = {
 const initialState: PostState = {
   items: [],
   loaded: false,
-  hasError: false
+  hasError: false,
 };
 
-export const fetchUserPosts = createAsyncThunk<Post[], number, { rejectValue: string }>(
-  "posts/fetchUserPosts",
-  async (userId: number, { rejectWithValue}) => {
-    try {
-      const res = await getUserPosts(userId);
-      return (res) as Post[];
-    } catch (err) {
-      return rejectWithValue("Network error");
-    }
+// eslint-disable-next-line @typescript-eslint/indent
+export const fetchUserPosts = createAsyncThunk<
+  Post[],
+  number,
+  { rejectValue: string }
+>('posts/fetchUserPosts', async (userId: number, { rejectWithValue }) => {
+  try {
+    const res = await getUserPosts(userId);
+
+    return res as Post[];
+  } catch (err) {
+    return rejectWithValue('Network error');
   }
-);
+});
 
 const postsSlice = createSlice({
-  name: "posts",
+  name: 'posts',
   initialState,
   reducers: {
     clearPosts: () => initialState,
@@ -43,7 +48,7 @@ const postsSlice = createSlice({
         state.hasError = false;
         state.items = action.payload;
       })
-      .addCase(fetchUserPosts.rejected, (state) => {
+      .addCase(fetchUserPosts.rejected, state => {
         state.loaded = true;
         state.hasError = true;
         state.items = [];
