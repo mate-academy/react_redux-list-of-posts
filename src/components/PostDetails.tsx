@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 
 import { Post } from '../types/Post';
@@ -7,7 +7,6 @@ import {
   addPostComment,
   deletePostComment,
   fetchPostComments,
-  setModalVisible,
 } from '../features/comments/commentsSlice';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
@@ -17,17 +16,14 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
+  const [visible, setVisible] = useState(false);
 
-  const {
-    items: comments,
-    loaded,
-    hasError,
-    visible,
-  } = useAppSelector(s => s.comments);
+  const { items: comments, loaded, hasError } = useAppSelector(s => s.comments);
   const { selectedPost } = useAppSelector(s => s.selectedPost);
 
   useEffect(() => {
     dispatch(fetchPostComments(post.id));
+    setVisible(false); // Reset form visibility when post changes
   }, [dispatch, post.id]);
 
   const handleAddComment = async (commentBody: CommentData) => {
@@ -104,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(setModalVisible())}
+            onClick={() => setVisible(true)}
           >
             Write a comment
           </button>

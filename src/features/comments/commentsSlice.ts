@@ -12,7 +12,6 @@ type CommentsState = {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  visible: boolean;
 };
 
 export type CommentAddValues = {
@@ -26,7 +25,6 @@ const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,
-  visible: false,
 };
 
 // eslint-disable-next-line @typescript-eslint/indent
@@ -81,16 +79,12 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     clearComments: () => initialState,
-    setModalVisible: state => {
-      state.visible = true;
-    },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPostComments.pending, state => {
         state.loaded = false;
         state.hasError = false;
-        state.visible = false; // Hide the form when loading new comments
       })
       .addCase(fetchPostComments.fulfilled, (state, action) => {
         state.loaded = true;
@@ -134,6 +128,6 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { clearComments, setModalVisible } = commentsSlice.actions;
+export const { clearComments } = commentsSlice.actions;
 
 export default commentsSlice.reducer;
