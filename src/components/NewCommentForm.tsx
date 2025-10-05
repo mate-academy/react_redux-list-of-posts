@@ -161,10 +161,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {errors.body && (
-          <p
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+          <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}

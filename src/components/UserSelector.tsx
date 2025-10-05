@@ -38,8 +38,8 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  // we don't want to listening for outside clicks
-  // when the Dopdown is closed
+    // we don't want to listening for outside clicks
+    // when the Dopdown is closed
   }, [expanded]);
 
   return (
@@ -53,13 +53,12 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
+          onClick={e => {
+            e.stopPropagation();
             setExpanded(current => !current);
           }}
         >
-          <span>
-            {selectedUser?.name || 'Choose a user'}
-          </span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

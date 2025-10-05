@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import 'bulma/bulma.sass';
+import classNames from 'classnames';
+
+import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -11,7 +12,6 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Counter } from './features/counter/Counter';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -41,13 +41,10 @@ export const App: React.FC = () => {
     } else {
       setPosts([]);
     }
-  }, [author?.id]);
+  }, [author]);
 
   return (
     <main className="section">
-      {/* Learn the Redux Toolkit usage example in src/app and src/features/counter */}
-      <Counter />
-
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -57,15 +54,9 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && (
-                  <Loader />
-                )}
+                {author && !loaded && <Loader />}
 
                 {author && loaded && hasError && (
                   <div
@@ -106,9 +97,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>
