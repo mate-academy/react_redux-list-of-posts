@@ -18,19 +18,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
-  const {
-    items: comments,
-    loaded,
-    hasError,
-  } = useAppSelector(s => s.comments);  useEffect(() => {
+  const { items: comments, loaded, hasError } = useAppSelector(s => s.comments);
+
+  useEffect(() => {
     dispatch(fetchPostComments(post.id));
     setVisible(false); // Reset form visibility when post changes
   }, [dispatch, post.id]);
 
   const handleAddComment = async (commentBody: CommentData) => {
-    await dispatch(
-      addPostComment({ ...commentBody, postId: post.id }),
-    );
+    await dispatch(addPostComment({ ...commentBody, postId: post.id }));
   };
 
   const handleDeleteComment = async (Id: number) => {
