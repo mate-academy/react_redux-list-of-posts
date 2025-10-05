@@ -9,24 +9,27 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from './app/store';
-import { fetchPosts } from './features/postsSlice';
-import { clearSelected, setSelected } from './features/selectedPostSlice';
-import { setAuthor } from './features/authorSlice';
+import { selectedPostSlice } from './features/selectedPostSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { loadUsers } from './features/usersSlice';
+import { loadPosts, postsSlice } from './features/postsSlice';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const author = useSelector((state: RootState) => state.author);
-  const posts = useSelector((state: RootState) => state.posts.items);
-  const loaded = useSelector((state: RootState) => state.posts.loaded);
-  const hasError = useSelector((state: RootState) => state.posts.hasError);
-  const selectedPost = useSelector((state: RootState) => state.selectedPost);
+  const dispatch = useAppDispatch();
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { loaded, items, hasError } = useAppSelector(state => state.posts);
 
   useEffect(() => {
-    dispatch(clearSelected());
+    dispatch(loadUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(selectedPostSlice.actions.setSelectedPost(null));
     if (author) {
-      dispatch(fetchPosts(author.id));
+      dispatch(loadPosts(author.id));
+    } else {
+      dispatch(postsSlice.actions.clearPost());
     }
   }, [author, dispatch]);
 
@@ -37,10 +40,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  value={author}
-                  onChange={user => dispatch(setAuthor(user))}
-                />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -57,18 +57,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={post => dispatch(setSelected(post))}
-                  />
+                {author && loaded && !hasError && items.length > 0 && (
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -87,7 +83,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

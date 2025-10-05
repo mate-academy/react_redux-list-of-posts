@@ -3,8 +3,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPost',
+const initialState = {
+  items: [] as Post[],
+  loaded: false,
+  hasError: false,
+};
+
+export const loadPosts = createAsyncThunk(
+  'posts/fetch',
   async (userId: number) => {
     const response = await getUserPosts(userId);
 
@@ -14,28 +20,43 @@ export const fetchPosts = createAsyncThunk(
 
 export const postsSlice = createSlice({
   name: 'posts',
-  initialState: {
-    items: [] as Post[],
-    loaded: false,
-    hasError: false,
+  initialState,
+  reducers: {
+    addPost(state, action) {
+      state.items.push(action.payload);
+    },
+    removePost(state, action) {
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload.id),
+      };
+    },
+    clearPost() {
+      return { ...initialState };
+    },
   },
-  reducers: {},
   extraReducers(builder) {
-    builder.addCase(fetchPosts.pending, state => {
-      state.hasError = false;
-      state.loaded = false;
+    builder.addCase(loadPosts.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
     });
 
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.items = action.payload;
-      state.loaded = true;
+    builder.addCase(loadPosts.fulfilled, (state, action) => {
+      return { ...state, loaded: true, items: action.payload };
     });
 
-    builder.addCase(fetchPosts.rejected, state => {
-      state.loaded = true;
-      state.hasError = true;
+    builder.addCase(loadPosts.rejected, state => {
+      return {
+        ...state,
+        loaded: true,
+        hasError: true,
+      };
     });
   },
 });
 
+export const { addPost, removePost, clearPost } = postsSlice.actions;
 export default postsSlice.reducer;

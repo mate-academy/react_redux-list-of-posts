@@ -5,11 +5,13 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState: null as User | null,
   reducers: {
-    setAuthor(state, action: PayloadAction<User | null>) {
+    setAuthor(_, action: PayloadAction<User | null>) {
       return action.payload;
     },
+
+    resetAuthor: () => null,
   },
 });
 
-export const { setAuthor } = authorSlice.actions;
+export const { setAuthor, resetAuthor } = authorSlice.actions;
 export default authorSlice.reducer;

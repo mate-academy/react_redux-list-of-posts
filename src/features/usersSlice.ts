@@ -3,36 +3,53 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', getUsers);
+const initialState = {
+  items: [] as User[],
+  loaded: false,
+  hasError: false,
+};
+
+export const loadUsers = createAsyncThunk('users/fetchUsers', getUsers);
 
 export const usersSlice = createSlice({
   name: 'users',
-  initialState: {
-    items: [] as User[],
-    loaded: false,
-    hasError: false,
+  initialState,
+  reducers: {
+    addUser(state, action) {
+      state.items.push(action.payload);
+    },
+    removeUser(state, action) {
+      return {
+        ...state,
+        items: state.items.filter(it => it.id !== action.payload.id),
+      };
+    },
+    clearUsers() {
+      return { ...initialState };
+    },
   },
-  reducers: {},
   extraReducers(builder) {
-    builder.addCase(fetchUsers.pending, state => {
-      state.hasError = false;
-      state.loaded = false;
-      state.items = [];
+    builder.addCase(loadUsers.pending, state => {
+      return {
+        ...state,
+        loaded: false,
+        hasError: false,
+      };
     });
 
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      // eslint-disable-next-line no-param-reassign
-      state.items = action.payload;
-      // eslint-disable-next-line no-param-reassign
-      state.loaded = true;
-      state.hasError = false;
+    builder.addCase(loadUsers.fulfilled, (state, action) => {
+      return { ...state, items: action.payload, loaded: true };
     });
 
-    builder.addCase(fetchUsers.rejected, state => {
-      state.loaded = true;
-      state.hasError = true;
+    builder.addCase(loadUsers.rejected, state => {
+      return {
+        ...state,
+        loaded: true,
+        hasError: true,
+      };
     });
   },
 });
 
+export const { addUser, removeUser, clearUsers } = usersSlice.actions;
 export default usersSlice.reducer;
