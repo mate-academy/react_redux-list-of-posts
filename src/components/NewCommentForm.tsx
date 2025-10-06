@@ -1,14 +1,9 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
 import { addAsyncComment } from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = () => {
+export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const submitting =
     useAppSelector(state => state.comments.newCommentStatus) === 'loading';

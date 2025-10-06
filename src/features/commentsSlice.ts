@@ -11,15 +11,15 @@ import { RootState } from '../app/store';
 
 type NewCommentStatus = 'idle' | 'loading' | 'error';
 
-interface InitialState extends SliceAcyncState<Comment> {
+export interface CommentsState extends SliceAcyncState<Comment> {
   newCommentStatus: NewCommentStatus;
 }
 
-const initialState: InitialState = {
+const initialState: CommentsState = {
   loaded: false,
   hasError: false,
   newCommentStatus: 'idle' as NewCommentStatus,
-  items: [],
+  items: [] as Comment[],
 };
 
 const createAppSlice = buildCreateSlice({
@@ -46,7 +46,7 @@ const commonAsyncHandlers = {
   },
 };
 
-const comments = createAppSlice({
+export const comments = createAppSlice({
   name: 'comments',
   initialState,
   reducers(create) {
@@ -61,7 +61,7 @@ const comments = createAppSlice({
         state.items = [];
       }),
 
-      addAsyncComment: create.asyncThunk<Comment, CommentData, AppThunkAPI>(
+      addAsyncComment: create.asyncThunk<Comment, CommentData>(
         async (commentData, { getState }) => {
           const state = getState() as RootState;
           const postId = state.selectedPost?.id;
@@ -96,7 +96,7 @@ const comments = createAppSlice({
         },
       ),
 
-      deleteAsyncComment: create.asyncThunk<void, number, AppThunkAPI>(
+      deleteAsyncComment: create.asyncThunk<void, number>(
         async (postId, { dispatch }) => {
           dispatch(comments.actions.delete(postId));
           commentsApi.deleteComment(postId);

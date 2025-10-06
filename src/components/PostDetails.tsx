@@ -88,9 +88,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
+        {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );
