@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,7 +9,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
@@ -19,8 +18,7 @@ export const App: React.FC = () => {
     hasError,
     items: posts,
   } = useAppSelector(state => state.posts);
-
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   return (
     <main className="section">
@@ -53,10 +51,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                  <PostsList />
                 )}
               </div>
             </div>
@@ -75,7 +70,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

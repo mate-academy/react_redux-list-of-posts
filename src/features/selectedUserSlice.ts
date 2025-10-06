@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { AppDispatch } from '../app/store';
 import { loadPosts } from './postsSlice';
+import { clear as clearSelectedPost } from './selectedPostSlice';
+import { clear as clearComments } from './commentsSlice';
 
 const initialState = null as User | null;
 
@@ -23,6 +25,8 @@ export const setUserAndLoadPosts = createAsyncThunk<
   { dispatch: AppDispatch }
 >('selectedUser/setUserAndLoadPosts', async (user, { dispatch }) => {
   dispatch(set(user));
+  dispatch(clearSelectedPost());
+  dispatch(clearComments());
   await dispatch(loadPosts(user.id));
 });
 /* eslint-enable */

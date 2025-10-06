@@ -3,6 +3,8 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../features/userSlice';
 import selectedUserReducer from '../features/selectedUserSlice';
+import selectedPostReducer from '../features/selectedPostSlice';
+import commentsReducer from '../features/commentsSlice';
 import postsReducer from '../features/postsSlice';
 
 export const store = configureStore({
@@ -10,7 +12,8 @@ export const store = configureStore({
     users: usersReducer,
     selectedUser: selectedUserReducer,
     posts: postsReducer,
-
+    selectedPost: selectedPostReducer,
+    comments: commentsReducer,
     counter: counterReducer,
   },
 });

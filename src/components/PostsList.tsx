@@ -2,19 +2,16 @@
 
 import classNames from 'classnames';
 import React from 'react';
-import { Post } from '../types/Post';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as selectedPostActions from '../features/selectedPostSlice';
+import * as commentsActions from '../features/commentsSlice';
 
-type Props = {
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
-
-export const PostsList: React.FC<Props> = ({
-  selectedPostId = 0,
-  onPostSelected,
-}) => {
+export const PostsList: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+
+  const selectedPostId = selectedPost ? selectedPost.id : null;
+  const dispatch = useAppDispatch();
 
   return (
     <div data-cy="PostsList">
@@ -42,7 +39,13 @@ export const PostsList: React.FC<Props> = ({
                     'is-light': post.id !== selectedPostId,
                   })}
                   onClick={() => {
-                    onPostSelected(post.id === selectedPostId ? null : post);
+                    if (post.id === selectedPost?.id) {
+                      dispatch(selectedPostActions.clear());
+                      dispatch(commentsActions.clear());
+                    } else {
+                      dispatch(selectedPostActions.set(post));
+                      dispatch(commentsActions.loadComments(post.id));
+                    }
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}

@@ -31,6 +31,7 @@ const posts = createSlice({
       .addCase(loadPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
+        state.items = [];
       })
       .addCase(
         loadPosts.fulfilled,
@@ -40,7 +41,7 @@ const posts = createSlice({
         },
       )
       .addCase(loadPosts.rejected, state => {
-        state.loaded = false;
+        state.loaded = true;
         state.hasError = true;
         state.items = [];
       });
