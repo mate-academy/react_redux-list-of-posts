@@ -1,18 +1,22 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loadAsyncComments } from '../features/comments/commentsSlice';
+import { Comment } from '../types/Comment';
 
-export const useLoadComments = (postId: number) => {
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+type UseLoadCommentsReturn = {
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
+};
+
+export const useLoadComments = (postId: number): UseLoadCommentsReturn => {
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
 
-  function loadComments() {
+  // FIX: inline effect to avoid recreating a function each render
+  useEffect(() => {
     dispatch(loadAsyncComments(postId));
-  }
+  }, [postId, dispatch]);
 
-  useEffect(loadComments, [postId, dispatch]);
-
-  return { comments, loaded, hasError };
+  return { items, loaded, hasError };
 };

@@ -1,11 +1,18 @@
 import { useCallback, useEffect } from 'react';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loadPosts } from '../features/posts/postsSlice';
 import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
-export const useLoadPosts = (author: User | null) => {
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+type UseLoadPostsReturn = {
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
+};
+
+export const useLoadPosts = (author: User | null): UseLoadPostsReturn => {
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
   const loadUserPosts = useCallback(
@@ -17,11 +24,10 @@ export const useLoadPosts = (author: User | null) => {
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
-
     if (author) {
       loadUserPosts(author.id);
     }
   }, [author, loadUserPosts, dispatch]);
 
-  return { posts, loaded, hasError };
+  return { items, loaded, hasError };
 };

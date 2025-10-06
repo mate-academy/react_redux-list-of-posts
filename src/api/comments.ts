@@ -13,3 +13,7 @@ export const createComment = (data: Omit<Comment, 'id'>) => {
 export const deleteComment = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
 };
+
+export function getComments(postId: number) {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+}

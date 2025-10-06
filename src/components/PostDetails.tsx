@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useLoadComments } from '../hooks/useLoadComments';
 import { useAppDispatch } from '../app/hooks';
 import {
-  filterComments,
-  pushComment,
+  filterItem,
+  pushItem,
   setError,
+  setItems,
 } from '../features/comments/commentsSlice';
 
-type Props = {
-  post: Post;
-};
+type Props = { post: Post };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const { comments, loaded, hasError } = useLoadComments(post.id);
+  const { items, loaded, hasError } = useLoadComments(post.id);
   const dispatch = useAppDispatch();
-
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -37,23 +33,32 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(pushComment(newComment));
-    } catch (error) {
+      dispatch(pushItem(newComment));
+      dispatch(setError(false));
+    } catch {
+      // FIX: properly flag error (UI checks hasError)
       dispatch(setError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(filterComments(commentId));
+    // FIX: optimistic update with rollback on failure
+    const prevItems = items;
 
-    await commentsApi.deleteComment(commentId);
+    dispatch(filterItem(commentId));
+    try {
+      await commentsApi.deleteComment(commentId);
+      dispatch(setError(false));
+    } catch {
+      dispatch(setItems(prevItems)); // rollback
+      dispatch(setError(true));
+    }
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
@@ -66,17 +71,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}
