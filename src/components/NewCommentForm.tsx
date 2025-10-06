@@ -1,6 +1,7 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { addAsyncComment } from '../features/commentsSlice';
+import * as newFormActions from '../features/newCommentFormSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const NewCommentForm: React.FC = () => {
@@ -8,30 +9,13 @@ export const NewCommentForm: React.FC = () => {
   const submitting =
     useAppSelector(state => state.comments.newCommentStatus) === 'loading';
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const errors = useAppSelector(state => state.newCommentForm.errors);
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const fields = useAppSelector(state => state.newCommentForm.fields);
+  const { name, email, body } = fields;
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    dispatch(newFormActions.clear());
   };
 
   const handleChange = (
@@ -39,18 +23,20 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(newFormActions.setFields({ ...fields, [field]: value }));
+    dispatch(newFormActions.setError({ ...errors, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    dispatch(
+      newFormActions.setError({
+        name: !name,
+        email: !email,
+        body: !body,
+      }),
+    );
 
     if (!name || !email || !body) {
       return;
@@ -58,7 +44,7 @@ export const NewCommentForm: React.FC = () => {
 
     await dispatch(addAsyncComment({ name, email, body }));
 
-    setValues(current => ({ ...current, body: '' }));
+    dispatch(newFormActions.setFields({ ...fields, body: '' }));
   };
 
   return (
