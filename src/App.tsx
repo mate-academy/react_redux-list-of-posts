@@ -14,7 +14,7 @@ export const App: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost);
 
   const author = useAppSelector(state => state.author);
-  const { posts, loaded, hasError } = useLoadPosts(author);
+  const { items: posts, loaded, hasError } = useLoadPosts(author);
 
   return (
     <main className="section">

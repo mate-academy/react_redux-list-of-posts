@@ -24,7 +24,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
   }, [post]);
 
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const addComment = async ({
+    name,
+    email,
+    body,
+  }: CommentData): Promise<void> => {
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -41,9 +45,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  const deleteComment = async (commentId: number) => {
+  const deleteComment = async (commentId: number): Promise<void> => {
     // FIX: optimistic update with rollback on failure
-    const prevItems = items;
+    const prevItems = [...items];
 
     dispatch(filterItem(commentId));
     try {
