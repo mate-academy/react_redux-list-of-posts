@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-import { AppDispatch } from '../app/store';
 import { loadPosts } from './postsSlice';
 import { clear as clearSelectedPost } from './selectedPostSlice';
 import { clear as clearComments } from './commentsSlice';
+import { AppDispatch } from '../app/store';
 
 const initialState = null as User | null;
 
-export const selectedUser = createSlice({
-  name: 'selectedUser',
+export const authorSlice = createSlice({
+  name: 'author',
   initialState,
   reducers: {
     set(_state, { payload }: PayloadAction<User>) {
@@ -17,13 +17,13 @@ export const selectedUser = createSlice({
   },
 });
 
-export const { set } = selectedUser.actions;
+export const { set } = authorSlice.actions;
 /* eslint-disable*/
 export const setUserAndLoadPosts = createAsyncThunk<
   void,
   User,
   { dispatch: AppDispatch }
->('selectedUser/setUserAndLoadPosts', async (user, { dispatch }) => {
+>('author/setUserAndLoadPosts', async (user, { dispatch }) => {
   dispatch(set(user));
   dispatch(clearSelectedPost());
   dispatch(clearComments());
@@ -31,4 +31,4 @@ export const setUserAndLoadPosts = createAsyncThunk<
 });
 /* eslint-enable */
 
-export default selectedUser.reducer;
+export default authorSlice.reducer;

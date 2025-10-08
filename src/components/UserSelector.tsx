@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/userSlice';
-import * as selectedUserActions from '../features/selectedUserSlice';
+import * as selectedUserActions from '../features/authorSlice';
 import { Loader } from './Loader';
 
-export const UserSelector: React.FC = ({}) => {
+export const UserSelector: React.FC = () => {
   const { users, status } = useAppSelector(state => state.users);
   const selectedUser = useAppSelector(state => state.selectedUser);
   const [expanded, setExpanded] = useState(false);
@@ -13,7 +13,7 @@ export const UserSelector: React.FC = ({}) => {
 
   useEffect(() => {
     dispatch(usersActions.init());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -75,7 +75,8 @@ export const UserSelector: React.FC = ({}) => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={event => {
+                event.preventDefault();
                 dispatch(selectedUserActions.setUserAndLoadPosts(user));
               }}
               className={classNames('dropdown-item', {
