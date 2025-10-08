@@ -12,7 +12,7 @@ import { Loader } from './components/Loader';
 import { useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const author = useAppSelector(state => state.selectedUser);
+  const author = useAppSelector(state => state.author);
   const {
     loaded,
     hasError,

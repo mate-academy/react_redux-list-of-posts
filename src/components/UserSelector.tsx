@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/userSlice';
-import * as selectedUserActions from '../features/authorSlice';
+import * as authorActions from '../features/authorSlice';
 import { Loader } from './Loader';
 
 export const UserSelector: React.FC = () => {
   const { users, status } = useAppSelector(state => state.users);
-  const selectedUser = useAppSelector(state => state.selectedUser);
+  const author = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -61,7 +61,7 @@ export const UserSelector: React.FC = () => {
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -77,10 +77,10 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={event => {
                 event.preventDefault();
-                dispatch(selectedUserActions.setUserAndLoadPosts(user));
+                dispatch(authorActions.setUserAndLoadPosts(user));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

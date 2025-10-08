@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment, CommentData } from '../types/Comment';
 import * as commentsApi from '../api/comments';
 import { SliceAcyncState } from '../types/SliceAcyncState';
-import { RootState } from '../app/store';
+import { type RootState } from '../app/store';
 
 type NewCommentStatus = 'idle' | 'loading' | 'error';
 

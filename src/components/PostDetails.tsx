@@ -3,6 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import * as commentActions from '../features/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
   const post = useAppSelector(state => state.selectedPost);
@@ -13,6 +14,16 @@ export const PostDetails: React.FC = () => {
     hasError,
     items: comments,
   } = useAppSelector(state => state.comments);
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    await dispatch(
+      commentActions.addAsyncComment({
+        name,
+        email,
+        body,
+      }),
+    );
+  };
 
   if (!post) {
     return null;
@@ -88,7 +99,9 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && <NewCommentForm />}
+        {loaded && !hasError && visible && (
+          <NewCommentForm onSubmit={addComment} />
+        )}
       </div>
     </div>
   );

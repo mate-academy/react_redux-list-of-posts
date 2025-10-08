@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
-import { AppThunk } from '../app/store';
+import { type AppThunk } from '../app/store';
 import { getUsers } from '../api/users';
 
 export interface UserState {

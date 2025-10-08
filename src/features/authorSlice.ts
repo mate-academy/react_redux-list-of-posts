@@ -3,7 +3,7 @@ import { User } from '../types/User';
 import { loadPosts } from './postsSlice';
 import { clear as clearSelectedPost } from './selectedPostSlice';
 import { clear as clearComments } from './commentsSlice';
-import { AppDispatch } from '../app/store';
+import { type AppDispatch } from '../app/store';
 
 const initialState = null as User | null;
 
