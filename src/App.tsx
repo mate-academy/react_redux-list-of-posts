@@ -21,9 +21,7 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const author = useAppSelector(state => state.author.author);
-  const posts = useAppSelector(state => state.posts.items);
-  const loaded = useAppSelector(state => state.posts.loaded);
-  const hasError = useAppSelector(state => state.posts.hasError);
+  const { items: posts, loaded, hasError } = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   useEffect(() => {
@@ -38,7 +36,7 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
-  function handleAthorChange(user: User) {
+  function handleAuthorChange(user: User) {
     dispatch(setAuthor(user));
   }
 
@@ -53,7 +51,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={handleAthorChange} />
+                <UserSelector value={author} onChange={handleAuthorChange} />
               </div>
 
               <div className="block" data-cy="MainContent">

@@ -75,6 +75,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               onClick={e => {
                 e.preventDefault();
+                e.stopPropagation();
                 onChange(user);
                 setExpanded(false);
               }}

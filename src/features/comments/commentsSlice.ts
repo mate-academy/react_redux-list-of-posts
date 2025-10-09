@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign, @typescript-eslint/indent */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment, CommentData } from './../../types/Comment';
 import {
@@ -18,7 +19,7 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
-export const fetchPostComments = createAsyncThunk(
+export const fetchPostComments = createAsyncThunk<Comment[], number>(
   'comments/fetchPostComments',
   async (postId: number) => {
     const items = await getPostComments(postId);
@@ -27,7 +28,10 @@ export const fetchPostComments = createAsyncThunk(
   },
 );
 
-export const addPostComments = createAsyncThunk(
+export const addPostComments = createAsyncThunk<
+  Comment,
+  { postId: number; data: CommentData }
+>(
   'comments/addPostComments',
   async ({ postId, data }: { postId: number; data: CommentData }) => {
     const newItem = await createComment({ postId, ...data });
@@ -36,7 +40,7 @@ export const addPostComments = createAsyncThunk(
   },
 );
 
-export const deletePostComments = createAsyncThunk(
+export const deletePostComments = createAsyncThunk<number, number>(
   'comments/deletePostComments',
   async (commentId: number) => {
     await deleteComment(commentId);
@@ -68,6 +72,11 @@ const commentsSlice = createSlice({
       state.hasError = true;
     });
 
+    builder.addCase(addPostComments.pending, state => {
+      state.loaded = true;
+      state.hasError = false;
+    });
+
     builder.addCase(
       addPostComments.fulfilled,
       (state, action: PayloadAction<Comment>) => {
@@ -80,6 +89,11 @@ const commentsSlice = createSlice({
     builder.addCase(addPostComments.rejected, state => {
       state.loaded = true;
       state.hasError = true;
+    });
+
+    builder.addCase(deletePostComments.pending, state => {
+      state.loaded = false;
+      state.hasError = false;
     });
 
     builder.addCase(
