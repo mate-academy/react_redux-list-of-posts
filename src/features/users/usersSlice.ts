@@ -3,21 +3,24 @@ import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
 export interface UsersState {
-  users: User[];
-  loading: boolean;
-  error: string;
+  items: User[];
+  loaded: boolean;
+  hasError: boolean;
 }
 const initialState: UsersState = {
-  users: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  const user = await getUsers();
+export const fetchUsers = createAsyncThunk<User[]>(
+  'users/fetchUsers',
+  async () => {
+    const users = await getUsers();
 
-  return user;
-});
+    return users;
+  },
+);
 
 const usersSlice = createSlice({
   name: 'users',
@@ -26,19 +29,20 @@ const usersSlice = createSlice({
 
   extraReducers(builder) {
     builder.addCase(fetchUsers.pending, state => {
-      state.loading = true;
-      state.error = '';
+      state.loaded = false;
+      state.hasError = false;
     });
     builder.addCase(
       fetchUsers.fulfilled,
       (state, action: PayloadAction<User[]>) => {
-        state.loading = false;
-        state.users = action.payload;
+        state.loaded = true;
+        state.hasError = false;
+        state.items = action.payload;
       },
     );
-    builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message || 'Failed to fetch users';
+    builder.addCase(fetchUsers.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
     });
   },
 });

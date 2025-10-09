@@ -7,15 +7,15 @@ import {
 } from '../../api/comments';
 
 export interface CommentsState {
-  comments: Comment[];
-  loading: boolean;
-  error: boolean;
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: CommentsState = {
-  comments: [],
-  loading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const fetchPostComments = createAsyncThunk(
@@ -48,50 +48,56 @@ export const deletePostComments = createAsyncThunk(
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment: (state, action: PayloadAction<Comment>) => {
-      state.comments.push(action.payload);
-    },
-  },
+  reducers: {},
 
   extraReducers: builder => {
     builder.addCase(fetchPostComments.pending, state => {
-      state.loading = true;
-      state.error = false;
+      state.loaded = false;
+      state.hasError = false;
+      state.items = [];
     });
 
     builder.addCase(fetchPostComments.fulfilled, (state, action) => {
-      state.loading = false;
-      state.comments = action.payload;
-      state.error = false;
+      state.loaded = true;
+      state.items = action.payload;
+      state.hasError = false;
     });
 
     builder.addCase(fetchPostComments.rejected, state => {
-      state.loading = false;
-      state.error = true;
+      state.loaded = true;
+      state.hasError = true;
     });
 
     builder.addCase(
       addPostComments.fulfilled,
       (state, action: PayloadAction<Comment>) => {
-        // state.loading = false;
-        state.comments.push(action.payload);
-        // state.error = false;
+        state.items.push(action.payload);
+        state.loaded = true;
+        state.hasError = false;
       },
     );
+
+    builder.addCase(addPostComments.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
+    });
 
     builder.addCase(
       deletePostComments.fulfilled,
       (state, action: PayloadAction<number>) => {
-        // state.loading = false;
-        state.comments = state.comments.filter(
+        state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
-        // state.error = false;
+        state.loaded = true;
+        state.hasError = false;
       },
     );
+
+    builder.addCase(deletePostComments.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
+    });
   },
 });
 
-// export const { addComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

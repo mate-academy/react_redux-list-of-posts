@@ -12,15 +12,15 @@ export const fetchPosts = createAsyncThunk(
 );
 
 export interface PostsState {
-  posts: Post[];
-  loading: boolean;
-  error: boolean;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 const postsSlice = createSlice({
@@ -28,25 +28,27 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      state.items = action.payload;
+      state.loaded = true;
+      state.hasError = false;
     },
   },
 
   extraReducers: builder => {
     builder.addCase(fetchPosts.pending, state => {
-      state.loading = true;
-      state.error = false;
+      state.loaded = false;
+      state.hasError = false;
     });
 
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.loading = false;
-      state.posts = action.payload;
-      state.error = false;
+      state.items = action.payload;
+      state.loaded = true;
+      state.hasError = false;
     });
 
     builder.addCase(fetchPosts.rejected, state => {
-      state.loading = false;
-      state.error = true;
+      state.loaded = true;
+      state.hasError = true;
     });
   },
 });

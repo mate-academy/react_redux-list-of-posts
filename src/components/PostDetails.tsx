@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-// import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -20,9 +17,9 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const comments = useAppSelector(state => state.comments.comments);
-  const loaded = useAppSelector(state => state.comments.loading);
-  const hasError = useAppSelector(state => state.comments.error);
+  const comments = useAppSelector(state => state.comments.items);
+  const loaded = useAppSelector(state => state.comments.loaded);
+  const hasError = useAppSelector(state => state.comments.hasError);
 
   const [visible, setVisible] = useState(false);
 
@@ -53,21 +50,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {loaded && <Loader />}
+        {!loaded && <Loader />}
 
-        {!loaded && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -101,7 +98,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loaded && !hasError && !visible && (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -112,7 +109,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {!loaded && !hasError && visible && (
+        {loaded && !hasError && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
