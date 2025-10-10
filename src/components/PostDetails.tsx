@@ -6,7 +6,7 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchCommentsAsync } from '../features/comments';
+import { fetchCommentsAsync, setCommentsError } from '../features/comments';
 import { createCommentAsync, deleteCommentAsync } from '../features/comments';
 
 type Props = {
@@ -23,14 +23,26 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   const addComment = async (data: CommentData): Promise<void> => {
-    await dispatch(createCommentAsync({ ...data, postId: post.id }));
+    dispatch(setCommentsError(false));
+
+    try {
+      await dispatch(createCommentAsync({ ...data, postId: post.id })).unwrap();
+      setVisible(false);
+    } catch {
+      dispatch(setCommentsError(true));
+    }
   };
 
-  const deleteComment = (commentId: number) => {
-    dispatch(deleteCommentAsync(commentId));
+  const deleteComment = async (commentId: number): Promise<void> => {
+    try {
+      await dispatch(deleteCommentAsync(commentId)).unwrap();
+    } catch {
+      dispatch(setCommentsError(true));
+    }
   };
 
   useEffect(() => {
+    dispatch(setCommentsError(false));
     dispatch(fetchCommentsAsync(post.id));
   }, [post.id, dispatch]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { useAppSelector } from '../app/hooks';
@@ -20,15 +20,29 @@ export const UserSelector: React.FC<Props> = ({
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const [expanded, setExpanded] = useState(false);
+  const [hasLocalError, setHasLocalError] = useState(false);
+
   const users = useAppSelector(state => state.users.items);
   const loaded = useAppSelector(state => state.users.loaded);
 
   const dispatch = useAppDispatch();
 
+  const started = useRef(false);
+
   useEffect(() => {
-    if (!loaded) {
-      dispatch(fetchUsersAsync());
-    }
+    const loadUsers = async () => {
+      if (!loaded && !started.current) {
+        started.current = true;
+        try {
+          await dispatch(fetchUsersAsync()).unwrap();
+          setHasLocalError(false);
+        } catch {
+          setHasLocalError(true);
+        }
+      }
+    };
+
+    loadUsers();
   }, [dispatch, loaded]);
 
   useEffect(() => {
@@ -52,6 +66,14 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  if (hasLocalError) {
+    return (
+      <p className="notification is-danger" data-cy="UserSelectorError">
+        Failed to load users. Please try again later.
+      </p>
+    );
+  }
 
   return (
     <div

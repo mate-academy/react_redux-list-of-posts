@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
@@ -45,7 +45,16 @@ export const fetchCommentsAsync = createAsyncThunk<Comment[], number>(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {},
+  reducers: {
+    setCommentsError: (state, action: PayloadAction<boolean>) => {
+      state.hasError = action.payload;
+    },
+    clearComments: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchCommentsAsync.pending, state => {
@@ -65,8 +74,21 @@ export const commentsSlice = createSlice({
       })
       .addCase(deleteCommentAsync.fulfilled, (state, action) => {
         state.items = state.items.filter(c => c.id !== action.payload);
+      })
+      .addCase(createCommentAsync.pending, state => {
+        state.hasError = false;
+      })
+      .addCase(createCommentAsync.rejected, state => {
+        state.hasError = true;
+      })
+      .addCase(deleteCommentAsync.pending, state => {
+        state.hasError = false;
+      })
+      .addCase(deleteCommentAsync.rejected, state => {
+        state.hasError = true;
       });
   },
 });
 
 export default commentsSlice.reducer;
+export const { setCommentsError } = commentsSlice.actions;
