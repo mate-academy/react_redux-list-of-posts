@@ -30,6 +30,8 @@ export const postsSlice = createSlice({
   reducers: {
     clearPosts: state => {
       state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
   extraReducers: builder => {

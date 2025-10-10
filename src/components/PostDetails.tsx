@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     dispatch(fetchCommentsAsync(post.id));
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   return (
     <div className="content" data-cy="PostDetails">

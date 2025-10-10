@@ -31,7 +31,7 @@ export const App: React.FC = () => {
     } else {
       dispatch(clearPosts());
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
