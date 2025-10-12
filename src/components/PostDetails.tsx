@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as commentAction from '../features/commentsSlice';
-// { add, init, remove, setError }
+import {
+  fetchComments,
+  addComment,
+  deleteComment,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
@@ -16,80 +16,30 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
-  const { loaded, hasError, comments } = useAppSelector(
-    state => state.comments,
-  );
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setVisible(false);
-
-    dispatch(commentAction.init(post.id));
-  }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
   useEffect(() => {
-    loadComments();
-  }, []);
+    dispatch(fetchComments(post.id));
+    setVisible(false);
+  }, [dispatch, post.id]);
 
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      dispatch(commentAction.add(newComment));
-
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      dispatch(commentAction.setError());
-    }
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
+    await dispatch(addComment({ name, email, body, postId: post.id }));
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    dispatch(commentAction.remove(commentId));
-
-    await commentsApi.deleteComment(commentId);
+  const handleDeleteComment = (id: number) => {
+    dispatch(deleteComment(id));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
@@ -111,7 +61,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -127,8 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -154,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
     </div>
