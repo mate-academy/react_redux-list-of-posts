@@ -1,20 +1,26 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+// import { UserContext } from './UsersContext';
+// import { User } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchUsers } from '../features/usersSlice';
-import { setAuthor } from '../features/authorSlice';
+import { init } from '../features/usersSlice';
+import { setCurrentUser } from '../features/authorSlice';
 
-export const UserSelector = () => {
-  const users = useAppSelector(state => state.users.users);
+export const UserSelector: React.FC = () => {
+  // `users` are loaded from the API, so for the performance reasons
+  // we load them once in the `UsersContext` when the `App` is opened
+  // and now we can easily reuse the `UserSelector` in any form
+  // const users = useContext(UserContext);
   const dispatch = useAppDispatch();
-  const selectedUser = useAppSelector(state => state.author.current);
-  const [expanded, setExpanded] = useState(false);
+  const { users } = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author);
 
   useEffect(() => {
-    if (!users.length) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, users.length]);
+    dispatch(init());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (!expanded) {
@@ -69,8 +75,7 @@ export const UserSelector = () => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(setAuthor(user));
-                setExpanded(false);
+                dispatch(setCurrentUser(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

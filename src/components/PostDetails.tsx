@@ -5,30 +5,29 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentAction from '../features/commentsSlice';
+// { add, init, remove, setError }
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loaded, hasError, comments } = useAppSelector(
+    state => state.comments,
+  );
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
     setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments)
-      .catch(() => setError(true))
-      .finally(() => setLoaded(true));
+    dispatch(commentAction.init(post.id));
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(loadComments, [post.id]);
 
   // The same useEffect with async/await
@@ -66,15 +65,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(commentAction.add(newComment));
 
-      // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
       // because it takes the `comments` cached during the first render
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(commentAction.setError());
     }
   };
 
@@ -82,9 +80,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(commentAction.remove(commentId));
 
     await commentsApi.deleteComment(commentId);
   };

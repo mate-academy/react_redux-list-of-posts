@@ -9,28 +9,38 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPosts } from './features/postsSlice';
-import { clearSelectedPost } from './features/selectedPostSlice';
+import { init } from './features/postsSlice';
+import {
+  clearSelectedPost,
+  setSelectedPost,
+} from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {
-    items = [],
-    loaded = false,
-    hasError = null,
-  } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
-  const author = useAppSelector(state => state.author.current);
-  const selectedPost = useAppSelector(state => state.selectedPost.post || null);
+  const handleSetSelectedPost = (post: Post | null) => {
+    dispatch(setSelectedPost(post));
+  };
+
+  function loadUserPosts(userId: number) {
+    dispatch(init(userId));
+  }
 
   useEffect(() => {
+    // we clear the post when an author is changed
+    // not to confuse the user
     dispatch(clearSelectedPost());
 
     if (author) {
-      dispatch(fetchPosts(author.id));
+      loadUserPosts(author.id);
     }
-  }, [author, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [author]);
 
   return (
     <main className="section">
@@ -56,14 +66,18 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length === 0 && (
+                {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && items.length > 0 && (
-                  <PostsList />
+                {author && loaded && !hasError && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPost?.id}
+                    onPostSelected={handleSetSelectedPost}
+                  />
                 )}
               </div>
             </div>

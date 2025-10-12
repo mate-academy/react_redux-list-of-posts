@@ -1,60 +1,38 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
-import { User } from '../types/User';
 import { getUserPosts } from '../api/posts';
 
-export interface PostsState {
-  loaded: boolean;
-  hasError: boolean;
-  items: Post[];
-}
-
-const initialState: PostsState = {
-  loaded: false,
+const initialState = {
+  posts: [] as Post[],
   hasError: false,
-  items: [],
+  loaded: false,
 };
 
-export const fetchPosts = createAsyncThunk(
-  'posts/fetch',
-  async (userId: User['id']) => getUserPosts(userId),
-);
+export const init = createAsyncThunk('posts/fetch', (userId: number) => {
+  return getUserPosts(userId);
+});
 
-const postsSlice = createSlice({
+export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setPosts: (state, action: PayloadAction<Post[]>) => ({
-      ...state,
-      items: action.payload,
-    }),
-
-    clearState: () => ({
-      items: [],
-      loaded: false,
-      hasError: false,
-    }),
-  },
+  reducers: {},
   extraReducers: builder => {
-    builder
-      .addCase(fetchPosts.pending, state => ({
-        ...state,
-        loaded: false,
-        hasError: false,
-      }))
-      .addCase(fetchPosts.fulfilled, (state, action) => ({
-        ...state,
-        loaded: true,
-        hasError: false,
-        items: action.payload,
-      }))
-      .addCase(fetchPosts.rejected, state => ({
-        ...state,
-        loaded: true,
-        hasError: true,
-      }));
+    builder.addCase(init.pending, state => {
+      state.loaded = false;
+    });
+
+    builder.addCase(init.fulfilled, (state, action) => {
+      state.loaded = true;
+      state.posts = action.payload;
+    });
+
+    builder.addCase(init.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
+    });
   },
 });
 
 export default postsSlice.reducer;
-export const { setPosts, clearState } = postsSlice.actions;
+export const {} = postsSlice.actions;
