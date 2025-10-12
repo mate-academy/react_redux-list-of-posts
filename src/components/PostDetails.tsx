@@ -24,9 +24,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(setComments)
+      .catch(() => setError(true))
+      .finally(() => setLoaded(true));
   }
 
   useEffect(loadComments, [post.id]);
