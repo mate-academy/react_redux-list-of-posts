@@ -9,7 +9,6 @@ import { setSelectedPost } from '../store/selectedPostSlice';
 type Props = {
   posts: Post[];
   selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {

@@ -35,18 +35,18 @@ const postsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(loadUserPosts.pending, state => {
       state.hasError = false;
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(
       loadUserPosts.fulfilled,
       (state, action: PayloadAction<Post[]>) => {
-        state.loaded = false;
+        state.loaded = true;
         state.items = action.payload;
       },
     );
     builder.addCase(loadUserPosts.rejected, state => {
       state.hasError = true;
-      state.loaded = false;
+      state.loaded = true;
     });
   },
 });

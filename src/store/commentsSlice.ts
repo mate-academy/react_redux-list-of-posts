@@ -33,7 +33,9 @@ export const addNewComment = createAsyncThunk(
 export const deleteComment = createAsyncThunk(
   'comments/deleteComment',
   async (commentId: number) => {
-    return commentsApi.deleteComment(commentId);
+    await commentsApi.deleteComment(commentId);
+
+    return commentId;
   },
 );
 
@@ -48,22 +50,21 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(loadPostComments.pending, state => {
       state.hasError = false;
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(
       loadPostComments.fulfilled,
       (state, action: PayloadAction<Comment[]>) => {
-        state.loaded = false;
+        state.loaded = true;
         state.items = action.payload;
       },
     );
     builder.addCase(loadPostComments.rejected, state => {
       state.hasError = true;
-      state.loaded = false;
+      state.loaded = true;
     });
     builder.addCase(addNewComment.pending, state => {
       state.hasError = false;
-      state.loaded = true;
     });
     builder.addCase(
       addNewComment.fulfilled,
@@ -73,7 +74,6 @@ const commentsSlice = createSlice({
     );
     builder.addCase(addNewComment.rejected, state => {
       state.hasError = true;
-      state.loaded = false;
     });
     builder.addCase(
       deleteComment.fulfilled,
