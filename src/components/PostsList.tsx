@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch } from '../app/hooks';
 import { actions as selectedPostActions } from '../features/selectedPostSlice';
@@ -46,7 +46,6 @@ export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
                         post.id === selectedPostId ? null : post,
                       ),
                     );
-                    dispatch(commentActions.setVisible(false));
                   }}
                 >
                   {post.id === selectedPostId ? 'Close' : 'Open'}

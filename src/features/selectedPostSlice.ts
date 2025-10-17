@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Post } from "../../types/Post";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Post } from '../../types/Post';
 
 const initialState: Post | null = null;
 

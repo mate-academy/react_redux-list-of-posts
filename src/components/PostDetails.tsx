@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -17,16 +17,17 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  // const [comments, setComments] = useState<Comment[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
   const dispatch = useAppDispatch();
   const {
     items: comments,
     loaded,
     hasError,
-    visible,
   } = useAppSelector(state => state.comments);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(false);
+  }, [post]);
 
   useEffect(() => {
     dispatch(initComments(post.id));
@@ -124,7 +125,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(commentActions.setVisible(true))}
+            onClick={() => setVisible(true)}
           >
             Write a comment
           </button>

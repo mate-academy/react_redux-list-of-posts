@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Comment } from "../types/Comment";
-import { getPostComments } from "../api/comments";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Comment } from '../types/Comment';
+import { getPostComments } from '../api/comments';
 
 export const initComments = createAsyncThunk(
   'comments/fetch',
@@ -13,14 +13,12 @@ type CommentsState = {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  visible: boolean;
 };
 
 const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,
-  visible: false,
 };
 
 export const commentsSlice = createSlice({
@@ -32,9 +30,6 @@ export const commentsSlice = createSlice({
     },
     delete: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-    },
-    setVisible: (state, action: PayloadAction<boolean>) => {
-      state.visible = action.payload;
     },
   },
   extraReducers: builder => {
