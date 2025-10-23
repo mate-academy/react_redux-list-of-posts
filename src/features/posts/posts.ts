@@ -14,7 +14,7 @@ export const loadUserPosts = createAsyncThunk<Post[], number>(
 );
 
 export const postsSlice = createSlice({
-  name: 'userPosts',
+  name: 'posts',
   initialState,
   reducers: {},
   extraReducers(builder) {

@@ -11,7 +11,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { loadUserPosts } from './features/posts/posts';
-import { setPost } from './features/selectedPost/post';
+import { setPost } from './features/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
   const { items, loaded, hasError } = useAppSelector(state => state.posts);
