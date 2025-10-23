@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     setVisible(false);
     dispatch(loadComments(post.id));
-  }, [post.id]);
+  }, [post.id, dispatch]);
 
   // The same useEffect with async/await
   /*

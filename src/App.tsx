@@ -10,13 +10,13 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { loadUserPosts } from './features/userPosts/userPosts';
-import { setPost } from './features/post/post';
+import { loadUserPosts } from './features/posts/posts';
+import { setPost } from './features/selectedPost/post';
 
 export const App: React.FC = () => {
-  const { items, loaded, hasError } = useAppSelector(state => state.userPosts);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
   const author = useAppSelector(state => state.author);
-  const post = useAppSelector(state => state.post);
+  const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(loadUserPosts(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -60,7 +60,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && !loaded && !hasError && items.length > 0 && (
-                  <PostsList posts={items} selectedPostId={post?.id} />
+                  <PostsList posts={items} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>
@@ -74,12 +74,12 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': post,
+                'Sidebar--open': selectedPost,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {post && <PostDetails post={post} />}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

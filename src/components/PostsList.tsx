@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch } from '../app/hooks';
-import { setPost } from '../features/post/post';
+import { setPost } from '../features/selectedPost/post';
 
 type Props = {
   posts: Post[];
