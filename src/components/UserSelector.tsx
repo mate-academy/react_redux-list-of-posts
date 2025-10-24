@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
-import type { AppDispatch } from '../app/store';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 // 1. IMPORTAÇÃO NECESSÁRIA: Importe o tipo User (Se não existir, crie-o em ../types/User.ts)
 import { User } from '../types/User';
@@ -14,11 +13,11 @@ import {
 } from '../features/users/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // 3. LÊ OS DADOS DO REDUX
-  const users: User[] = useSelector(selectAllUsers);
-  const activeAuthorId: number | null = useSelector(selectActiveAuthorId);
+  const users = useAppSelector(selectAllUsers);
+  const activeAuthorId = useAppSelector(selectActiveAuthorId);
 
   // CÓDIGO CORRIGIDO: Encontra o objeto do usuário ativo
   const selectedUser: User | null =
@@ -93,7 +92,7 @@ export const UserSelector: React.FC = () => {
               'is-active': activeAuthorId === null,
             })}
           >
-            **Todos os Posts**
+            Todos os Posts
           </a>
 
           <hr className="dropdown-divider" />

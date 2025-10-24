@@ -5,11 +5,10 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  // 1. ALTERADO: A função agora é síncrona, pois apenas dispara uma ação Redux
-  // (O PostDetails que lida com o async/await do Thunk)
-  onSubmit: (data: CommentData) => void;
+  // A função onSubmit agora é assíncrona para suportar o estado de loading
+  onSubmit: (data: CommentData) => Promise<void>;
 
-  // 2. NOVO: Adicionamos onCancel para que o PostDetails possa fechar o formulário
+  // Função para cancelar e fechar o formulário
   onCancel: () => void;
 };
 
@@ -60,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
@@ -74,9 +73,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
     }
 
     setSubmitting(true);
-    // A chamada não é mais 'await', é apenas um dispatch síncrono da ação
-    onSubmit({ name, email, body });
-    setSubmitting(false);
+    try {
+      // Aguarda a conclusão da submissão
+      await onSubmit({ name, email, body });
+      // Limpa o corpo do comentário apenas após sucesso
+      setValues(current => ({ ...current, body: '' }));
+    } finally {
+      setSubmitting(false);
+    }
 
     // Resetamos o corpo do comentário, mas mantemos nome e email (como antes)
     setValues(current => ({ ...current, body: '' }));

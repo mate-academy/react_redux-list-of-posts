@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Post } from '../types/Post';
 
 import {
@@ -11,11 +11,11 @@ import {
 import { selectActiveAuthorId } from '../features/users/usersSlice';
 
 export const PostsList: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const allPosts = useSelector(selectAllPosts);
-  const selectedPostId = useSelector(selectSelectedPostId);
-  const activeAuthorId = useSelector(selectActiveAuthorId);
+  const allPosts = useAppSelector(selectAllPosts);
+  const selectedPostId = useAppSelector(selectSelectedPostId);
+  const activeAuthorId = useAppSelector(selectActiveAuthorId);
 
   const filteredPosts = useMemo(() => {
     if (activeAuthorId) {

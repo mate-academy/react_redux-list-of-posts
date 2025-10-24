@@ -1,9 +1,8 @@
 // src/App.tsx
 
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'; // Importações necessárias
-import type { AppDispatch } from './app/store';
 import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -17,18 +16,20 @@ import { Loader } from './components/Loader';
 
 // Importa Slices e Thunks
 import { fetchUsers } from './features/users/usersSlice';
-import { fetchPosts, selectSelectedPostId } from './features/posts/postsSlice';
-// ⚠️ NOTA: Você precisará de seletores de status do postsSlice (ex: selectPostsLoaded, selectPostsHasError)
+import {
+  fetchPosts,
+  selectSelectedPostId,
+  selectPostsLoaded,
+  selectPostsHasError,
+} from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // 1. LÊ O ESTADO PRINCIPAL DO REDUX
-  const selectedPostId = useSelector(selectSelectedPostId);
-
-  // ⚠️ Mock de status para fins de demonstração (substitua pelos seletores reais)
-  const loaded = true; // Use selectPostsLoaded
-  const hasError = false; // Use selectPostsHasError
+  const selectedPostId = useAppSelector(selectSelectedPostId);
+  const loaded = useAppSelector(selectPostsLoaded);
+  const hasError = useAppSelector(selectPostsHasError);
 
   // 2. EFEITO: Carrega dados essenciais UMA VEZ na montagem do App
   useEffect(() => {

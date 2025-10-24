@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // src/features/users/usersSlice.ts
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
@@ -32,10 +33,7 @@ const usersSlice = createSlice({
   reducers: {
     // Reducer simples para definir o autor ativo (chamado de forma síncrona)
     authorSelected(state, action) {
-      return {
-        ...state,
-        activeAuthorId: action.payload,
-      };
+      state.activeAuthorId = action.payload;
     },
   },
 
@@ -45,27 +43,24 @@ const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       // A) Carregando (Pending)
-      .addCase(fetchUsers.pending, state => ({
-        ...state,
-        loaded: false,
-        hasError: false,
-      }))
+      .addCase(fetchUsers.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
 
       // B) Sucesso (Fulfilled)
-      .addCase(fetchUsers.fulfilled, (state, action) => ({
-        ...state,
-        items: action.payload,
-        loaded: true,
-        hasError: false,
-      }))
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+        state.hasError = false;
+      })
 
       // C) Erro (Rejected)
-      .addCase(fetchUsers.rejected, state => ({
-        ...state,
-        loaded: true, // O carregamento terminou, mas com erro
-        hasError: true,
-        items: [],
-      }));
+      .addCase(fetchUsers.rejected, state => {
+        state.loaded = true; // O carregamento terminou, mas com erro
+        state.hasError = true;
+        state.items = [];
+      });
   },
   // ----------------------------------------------------------------------
 });

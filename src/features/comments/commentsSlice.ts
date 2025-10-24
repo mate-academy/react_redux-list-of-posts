@@ -49,9 +49,13 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     commentDeleted: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(
-        comment => comment.id !== action.payload,
+      const index = state.items.findIndex(
+        comment => comment.id === action.payload,
       );
+
+      if (index !== -1) {
+        state.items.splice(index, 1);
+      }
     },
     // Adicione actions síncronas se necessário
   },
