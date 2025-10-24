@@ -3,11 +3,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { getPostComments, createComment } from '../../api/comments';
 import { Comment } from '../../types/Comment';
-// Importe a RootState se você a definiu em src/app/store.ts
-// import type { RootState } from '../../app/store';
-
-// Usando um tipo mock para evitar erros de 'any' nos seletores se RootState não estiver definido
-type RootStateMock = any;
+import type { RootState } from '../../app/store';
 
 // ----------------------------------------------------------------------
 // THUNKS
@@ -95,9 +91,9 @@ export default commentsSlice.reducer;
 // SELETORES
 // ----------------------------------------------------------------------
 
-export const selectComments = (state: RootStateMock): Comment[] =>
+export const selectComments = (state: RootState): Comment[] =>
   state.comments.items;
-export const selectCommentsLoaded = (state: RootStateMock): boolean =>
+export const selectCommentsLoaded = (state: RootState): boolean =>
   state.comments.loaded;
-export const selectCommentsHasError = (state: RootStateMock): boolean =>
+export const selectCommentsHasError = (state: RootState): boolean =>
   state.comments.hasError;

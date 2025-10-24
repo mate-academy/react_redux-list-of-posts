@@ -1,8 +1,7 @@
-/// src/components/UserSelector.tsx
-
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import type { AppDispatch } from '../app/store';
 
 // 1. IMPORTAÇÃO NECESSÁRIA: Importe o tipo User (Se não existir, crie-o em ../types/User.ts)
 import { User } from '../types/User';
@@ -15,7 +14,7 @@ import {
 } from '../features/users/usersSlice';
 
 export const UserSelector: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   // 3. LÊ OS DADOS DO REDUX
   const users: User[] = useSelector(selectAllUsers);

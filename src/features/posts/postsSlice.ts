@@ -4,11 +4,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
-// Importe a RootState se você a definiu em src/app/store.ts
-// import type { RootState } from '../../app/store';
-
-// Usando um tipo mock para evitar erros de 'any' nos seletores se RootState não estiver definido
-type RootStateMock = any;
+import type { RootState } from '../../app/store';
 
 // ----------------------------------------------------------------------
 // THUNK
@@ -82,20 +78,19 @@ export default postsSlice.reducer;
 // SELETORES
 // ----------------------------------------------------------------------
 
-export const selectAllPosts = (state: RootStateMock): Post[] =>
-  state.posts.items;
+export const selectAllPosts = (state: RootState): Post[] => state.posts.items;
 
-export const selectSelectedPostId = (state: RootStateMock): number | null =>
+export const selectSelectedPostId = (state: RootState): number | null =>
   state.posts.selectedPostId;
 
-export const selectPostsLoaded = (state: RootStateMock): boolean =>
+export const selectPostsLoaded = (state: RootState): boolean =>
   state.posts.loaded;
 
-export const selectPostsHasError = (state: RootStateMock): boolean =>
+export const selectPostsHasError = (state: RootState): boolean =>
   state.posts.hasError;
 
 export const selectPostById = (
-  state: RootStateMock,
+  state: RootState,
   postId: number | null | undefined,
 ): Post | undefined => {
   if (postId == null) {
