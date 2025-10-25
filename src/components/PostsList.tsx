@@ -1,12 +1,23 @@
+/* eslint-disable import/extensions */
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchPosts } from '../features/posts/postsSlice';
 import { fetchUsers } from '../features/users/usersSlice';
-import { fetchComments, resetComments } from '../features/comments/commentsSlice';
-import { setSelectedPostId, clearSelectedPostId } from '../features/selectedPost/selectedPostSlice';
-import { setSelectedAuthor, clearSelectedAuthor } from '../features/selectedAuthor/selectedAuthorSlice';
+import {
+  fetchComments,
+  resetComments,
+} from '../features/comments/commentsSlice';
+import {
+  setSelectedPostId,
+  clearSelectedPostId,
+} from '../features/selectedPost/selectedPostSlice';
+import {
+  setSelectedAuthor,
+  clearSelectedAuthor,
+} from '../features/selectedAuthor/selectedAuthorSlice';
 import type { RootState, AppDispatch } from '../app/store';
+/* eslint-enable import/extensions */
 
 export const PostsList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,13 +82,16 @@ export const PostsList: React.FC = () => {
       <p className="title">Posts:</p>
 
       <div className="field mb-4">
-        <label className="label">Filtrar por autor:</label>
+        <label className="label" htmlFor="authorFilter">
+          Filtrar por autor:
+        </label>
         <div className="control">
           <div className="select">
             <select
               value={selectedAuthorId ?? ''}
               onChange={e => {
                 const value = e.target.value;
+
                 if (value === '') {
                   dispatch(clearSelectedAuthor());
                 } else {

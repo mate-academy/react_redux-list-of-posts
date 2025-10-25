@@ -1,9 +1,10 @@
+/* eslint-disable import/extensions */
 import { configureStore } from '@reduxjs/toolkit';
-import authorReducer from '../features/selectedAuthor/selectedAuthorSlice';
-import postsReducer from '../features/posts/postsSlice';
-import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
-import usersReducer from '../features/users/usersSlice';
-import commentsReducer from '../features/comments/commentsSlice';
+import postsReducer from '../features/slices/postsSlice';
+import selectedPostReducer from '../features/slices/SelectedPostSlice';
+import usersReducer from '../features/slices/usersSlice';
+import commentsReducer from '../features/slices/commentsSlice';
+/* eslint-enable import/extensions */
 
 export const store = configureStore({
   reducer: {
