@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPosts, selectPost } from '../slices/postsSlice';
-import { fetchUsers } from '../slices/usersSlice';
-import { fetchComments, resetComments } from '../slices/commentsSlice';
+import { fetchPosts } from '../features/posts/postsSlice';
+import { fetchUsers } from '../features/users/usersSlice';
+import { fetchComments, resetComments } from '../features/comments/commentsSlice';
+import { setSelectedPostId, clearSelectedPostId } from '../features/selectedPost/selectedPostSlice';
+import { setSelectedAuthor, clearSelectedAuthor } from '../features/selectedAuthor/selectedAuthorSlice';
 import type { RootState, AppDispatch } from '../app/store';
 
 export const PostsList: React.FC = () => {
@@ -13,7 +15,6 @@ export const PostsList: React.FC = () => {
     items: posts,
     loaded: postsLoaded,
     hasError: postsError,
-    selectedPostId,
   } = useSelector((state: RootState) => state.posts);
 
   const { items: users, loaded: usersLoaded } = useSelector(
@@ -26,22 +27,35 @@ export const PostsList: React.FC = () => {
     hasError: commentsError,
   } = useSelector((state: RootState) => state.comments);
 
+  const selectedPostId = useSelector(
+    (state: RootState) => state.selectedPost.selectedPostId,
+  );
+
+  const selectedAuthorId = useSelector(
+    (state: RootState) => state.selectedAuthor.authorId,
+  );
+
   useEffect(() => {
     dispatch(fetchPosts());
     dispatch(fetchUsers());
   }, [dispatch]);
 
   const handleSelectPost = (id: number) => {
-    dispatch(selectPost(id));
     if (selectedPostId !== id) {
+      dispatch(setSelectedPostId(id));
       dispatch(fetchComments(id));
     } else {
+      dispatch(clearSelectedPostId());
       dispatch(resetComments());
     }
   };
 
   const getAuthorName = (userId: number) =>
     users.find(user => user.id === userId)?.name || 'Desconhecido';
+
+  const filteredPosts = selectedAuthorId
+    ? posts.filter(post => post.userId === selectedAuthorId)
+    : posts;
 
   if (!postsLoaded || !usersLoaded) {
     return <p>Carregando...</p>;
@@ -55,6 +69,33 @@ export const PostsList: React.FC = () => {
     /* eslint-disable @typescript-eslint/indent */
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
+
+      <div className="field mb-4">
+        <label className="label">Filtrar por autor:</label>
+        <div className="control">
+          <div className="select">
+            <select
+              value={selectedAuthorId ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                if (value === '') {
+                  dispatch(clearSelectedAuthor());
+                } else {
+                  dispatch(setSelectedAuthor(Number(value)));
+                }
+              }}
+            >
+              <option value="">Todos</option>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
@@ -64,7 +105,7 @@ export const PostsList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {posts.map(post => (
+          {filteredPosts.map(post => (
             <React.Fragment key={post.id}>
               <tr data-cy="Post">
                 <td data-cy="PostId">{post.id}</td>
@@ -116,7 +157,10 @@ export const PostsList: React.FC = () => {
           Recarregar Posts
         </button>
         <button
-          onClick={() => dispatch(selectPost(null))}
+          onClick={() => {
+            dispatch(clearSelectedPostId());
+            dispatch(resetComments());
+          }}
           className="button is-warning ml-2"
         >
           Desselecionar

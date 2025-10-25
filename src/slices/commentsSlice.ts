@@ -1,79 +1,70 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Comment } from '../types/Comment';
+import { Comentario } from '../tipos/Comentario';
 import { getCommentsByPostId } from '../api/comments';
 
-interface CommentsState {
-  items: Comment[];
-  loaded: boolean;
+interface ComentariosEstado {
+  itens: Comentario[];
+  carregado: boolean;
   hasError: boolean;
   postId: number | null;
 }
 
-const initialState: CommentsState = {
-  items: [],
-  loaded: false,
+const initialState: ComentariosEstado = {
+  itens: [],
+  carregado: false,
   hasError: false,
   postId: null,
 };
 
 export const fetchComments = createAsyncThunk(
-  'comments/fetchComments',
+  'comentarios/fetchComments',
   async (postId: number) => {
-    const comments = await getCommentsByPostId(postId);
-
-    return { postId, comments };
-  },
+    const comentarios = await getCommentsByPostId(postId);
+    return { postId, comentarios };
+  }
 );
 
 const commentsSlice = createSlice({
-  name: 'comments',
+  name: 'comentarios',
   initialState,
   reducers: {
-    resetComments: state => {
-      state.items = []; // eslint-disable-line no-param-reassign
-      state.loaded = false; // eslint-disable-line no-param-reassign
-      state.hasError = false; // eslint-disable-line no-param-reassign
-      state.postId = null; // eslint-disable-line no-param-reassign
+    resetComments: (state) => {
+      state.itens = [];
+      state.carregado = false;
+      state.hasError = false;
+      state.postId = null;
     },
-    addComment: (state, action: PayloadAction<Comment>) => {
-      state.items.push(action.payload);
+    addComment: (state, action: PayloadAction<Comentario>) => {
+      state.itens.push(action.payload);
     },
-    updateComment: (state, action: PayloadAction<Comment>) => {
-      const index = state.items.findIndex(c => c.id === action.payload.id);
-
+    updateComment: (state, action: PayloadAction<Comentario>) => {
+      const index = state.itens.findIndex(c => c.id === action.payload.id);
       if (index !== -1) {
-        state.items[index] = action.payload; // eslint-disable-line no-param-reassign
+        state.itens[index] = action.payload;
       }
     },
     deleteComment: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(c => c.id !== action.payload); // eslint-disable-line no-param-reassign
+      state.itens = state.itens.filter(c => c.id !== action.payload);
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchComments.pending, state => {
-        state.loaded = false; // eslint-disable-line no-param-reassign
-        state.hasError = false; // eslint-disable-line no-param-reassign
+      .addCase(fetchComments.pending, (state) => {
+        state.carregado = false;
+        state.hasError = false;
       })
-      .addCase(
-        fetchComments.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ postId: number; comments: Comment[] }>,
-        ) => {
-          state.items = action.payload.comments; // eslint-disable-line no-param-reassign
-          state.postId = action.payload.postId; // eslint-disable-line no-param-reassign
-          state.loaded = true; // eslint-disable-line no-param-reassign
-          state.hasError = false; // eslint-disable-line no-param-reassign
-        },
-      )
-      .addCase(fetchComments.rejected, state => {
-        state.loaded = true; // eslint-disable-line no-param-reassign
-        state.hasError = true; // eslint-disable-line no-param-reassign
+      .addCase(fetchComments.fulfilled, (state, action: PayloadAction<{ postId: number; comentarios: Comentario[] }>) => {
+        state.itens = action.payload.comentarios;
+        state.postId = action.payload.postId;
+        state.carregado = true;
+        state.hasError = false;
+      })
+      .addCase(fetchComments.rejected, (state) => {
+        state.carregado = true;
+        state.hasError = true;
       });
   },
 });
 
-export const { resetComments, addComment, updateComment, deleteComment } =
-  commentsSlice.actions;
+export const { resetComments, addComment, updateComment, deleteComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

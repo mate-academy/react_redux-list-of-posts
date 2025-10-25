@@ -1,32 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import authorReducer from '../slices/authorSlice';
-import postsReducer from '../slices/postsSlice';
-import selectedPostReducer from '../slices/selectedPostSlice';
-import usersReducer from '../slices/usersSlice';
-import commentsReducer from '../slices/commentsSlice';
-
-/*export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
-});*/
-
-/*export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;*/
-
-/* eslint-disable @typescript-eslint/indent */
-/*export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;*/
-/* eslint-enable @typescript-eslint/indent */
+import authorReducer from '../features/selectedAuthor/selectedAuthorSlice';
+import postsReducer from '../features/posts/postsSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+import usersReducer from '../features/users/usersSlice';
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     author: authorReducer,
     posts: postsReducer,
     selectedPost: selectedPostReducer,
