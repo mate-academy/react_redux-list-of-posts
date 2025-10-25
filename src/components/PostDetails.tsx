@@ -21,6 +21,8 @@ import {
   addNewComment,
   commentDeleted,
   selectComments,
+  selectCommentsLoaded,
+  selectCommentsHasError,
 } from '../features/comments/commentsSlice';
 import { selectAllUsers } from '../features/users/usersSlice';
 
@@ -38,9 +40,9 @@ export const PostDetails: React.FC = () => {
   const comments: Comment[] = useAppSelector(selectComments);
   const users: User[] = useAppSelector(selectAllUsers);
 
-  // ⚠️ Variáveis mock (Substitua pelos seletores reais quando prontos)
-  const loaded = true;
-  const hasError = false;
+  // Usa seletores reais do Redux para carregamento/erro dos comentários
+  const loaded = useAppSelector(selectCommentsLoaded);
+  const hasError = useAppSelector(selectCommentsHasError);
   const postAuthor: User | undefined = users.find(
     user => user.id === post?.userId,
   );
@@ -63,14 +65,14 @@ export const PostDetails: React.FC = () => {
   // 5. FUNÇÕES DE REDUX (CRUD)
 
   // FUNÇÃO DE CRIAÇÃO (Dispara o Thunk)
-  const addComment = (data: CommentData) => {
+  const addComment = async (data: CommentData): Promise<void> => {
     const newCommentPayload = {
       ...data,
       postId: post.id,
     };
 
-    // ⚠️ RESOLVIDO: O dispatch do Thunk não precisa mais de 'as any'
-    dispatch(addNewComment(newCommentPayload));
+    // Aguarda o Thunk completar para que o formulário possa refletir o estado
+    await dispatch(addNewComment(newCommentPayload));
     setVisible(false);
   };
 

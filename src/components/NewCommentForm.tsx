@@ -81,9 +81,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
     } finally {
       setSubmitting(false);
     }
-
-    // Resetamos o corpo do comentário, mas mantemos nome e email (como antes)
-    setValues(current => ({ ...current, body: '' }));
   };
 
   // 3. Renderização: Adiciona o botão de Cancelar e a chamada a onCancel
