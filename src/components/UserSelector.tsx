@@ -1,34 +1,38 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+
+// 1. IMPORTAÇÃO NECESSÁRIA: Importe o tipo User (Se não existir, crie-o em ../types/User.ts)
 import { User } from '../types/User';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+// 2. IMPORTAÇÕES DO REDUX
+import {
+  selectAllUsers,
+  selectActiveAuthorId,
+  authorSelected, // Ação para definir o autor ativo
+} from '../features/users/usersSlice';
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  // 3. LÊ OS DADOS DO REDUX
+  const users = useAppSelector(selectAllUsers);
+  const activeAuthorId = useAppSelector(selectActiveAuthorId);
+
+  // CÓDIGO CORRIGIDO: Encontra o objeto do usuário ativo
+  const selectedUser: User | null =
+    users.find(user => user.id === activeAuthorId) || null;
+
+  // O estado local `expanded` é mantido, pois é apenas um estado de UI
   const [expanded, setExpanded] = useState(false);
 
+  // O useEffect para fechar o dropdown no clique externo é mantido
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
@@ -38,9 +42,20 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
+
+  // Função para lidar com a seleção de um usuário
+  const handleUserSelect = (userId: number) => {
+    // 4. DISPARA A AÇÃO: Define o novo autor ativo no Redux Store
+    dispatch(authorSelected(userId));
+    setExpanded(false); // Fecha o dropdown após a seleção
+  };
+
+  // Função para remover o filtro e selecionar "Todos os posts"
+  const handleClearSelection = () => {
+    dispatch(authorSelected(null)); // Define o autor ativo como null
+    setExpanded(false);
+  };
 
   return (
     <div
@@ -58,7 +73,8 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          {/* Usa o usuário ativo do Redux para o texto do botão */}
+          <span>{selectedUser?.name || 'Selecione um Autor'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -68,15 +84,29 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {/* Opção para limpar o filtro (selecionar 'Todos') */}
+          <a
+            href="#user-all"
+            onClick={handleClearSelection}
+            className={classNames('dropdown-item', {
+              'is-active': activeAuthorId === null,
+            })}
+          >
+            Todos os Posts
+          </a>
+
+          <hr className="dropdown-divider" />
+
+          {/* CÓDIGO CORRIGIDO: Mapeia a lista de usuários lida do Redux */}
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                handleUserSelect(user.id);
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === activeAuthorId,
               })}
             >
               {user.name}
