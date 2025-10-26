@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
@@ -7,14 +7,12 @@ type UsersType = {
   users: User[];
   loading: boolean;
   error: string;
-  author: User | null;
 };
 
 const initialState: UsersType = {
-  users: [] as User[],
+  users: [],
   loading: false,
   error: '',
-  author: null,
 };
 
 export const init = createAsyncThunk<User[]>('users/init', () => {
@@ -24,11 +22,7 @@ export const init = createAsyncThunk<User[]>('users/init', () => {
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setAuthor: (state, action: PayloadAction<User | null>) => {
-      state.author = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
       state.loading = true;
@@ -42,10 +36,9 @@ const usersSlice = createSlice({
 
     builder.addCase(init.rejected, state => {
       state.loading = false;
-      state.error = 'Failed to loading users';
+      state.error = 'Failed to load users';
     });
   },
 });
 
 export default usersSlice.reducer;
-export const { setAuthor } = usersSlice.actions;

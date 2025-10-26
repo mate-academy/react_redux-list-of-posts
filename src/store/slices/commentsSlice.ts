@@ -10,13 +10,13 @@ import {
 type CommentState = {
   items: Comment[];
   loaded: boolean;
-  hasError: string;
+  hasError: boolean;
 };
 
 const initialState: CommentState = {
   items: [],
   loaded: false,
-  hasError: '',
+  hasError: false,
 };
 
 export const init = createAsyncThunk('comments/fetchByUser', (id: number) => {
@@ -44,32 +44,31 @@ export const deleteNewComment = createAsyncThunk(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment: (state, action: PayloadAction<Comment>) => {
-      state.items = [...state.items, action.payload];
-    },
-    removeComment: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
       state.loaded = false;
+      state.hasError = false;
     });
+
     builder.addCase(init.fulfilled, (state, action) => {
       state.items = action.payload;
       state.loaded = true;
+      state.hasError = false;
     });
+
     builder.addCase(init.rejected, state => {
       state.loaded = true;
-      state.hasError = 'Error';
+      state.hasError = true;
     });
+
     builder.addCase(
       addNewComment.fulfilled,
       (state, action: PayloadAction<Comment>) => {
         state.items.push(action.payload);
       },
     );
+
     builder.addCase(
       deleteNewComment.fulfilled,
       (state, action: PayloadAction<number>) => {
@@ -79,5 +78,4 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { addComment, removeComment } = commentsSlice.actions;
 export default commentsSlice.reducer;

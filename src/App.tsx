@@ -11,8 +11,8 @@ import { Loader } from './components/Loader';
 import { useAppSelector } from './store/hooks';
 
 export const App: React.FC = () => {
-  const { posts, loaded, error } = useAppSelector(state => state.posts);
-  const { author } = useAppSelector(state => state.users);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+  const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
 
                 {author && !loaded && <Loader />}
 
-                {author && loaded && error && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -39,13 +39,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !error && posts.length > 0 && (
+                {author && loaded && !hasError && items.length > 0 && (
                   <PostsList />
                 )}
               </div>

@@ -7,7 +7,7 @@ import { Post } from '../types/Post';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { posts } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
@@ -24,7 +24,7 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map((post: Post) => (
+          {items.map((post: Post) => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>

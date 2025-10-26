@@ -3,16 +3,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
-type PostType = {
-  posts: Post[];
+type PostsState = {
+  items: Post[];
   loaded: boolean;
-  error: string;
+  hasError: boolean;
 };
 
-const initialState: PostType = {
-  posts: [] as Post[],
+const initialState: PostsState = {
+  items: [],
   loaded: false,
-  error: '',
+  hasError: false,
 };
 
 export const init = createAsyncThunk('posts/init', (id: number) => {
@@ -22,29 +22,25 @@ export const init = createAsyncThunk('posts/init', (id: number) => {
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    clear: state => {
-      state.posts = [];
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(init.pending, state => {
       state.loaded = false;
-      state.error = '';
-      state.posts = [];
+      state.hasError = false;
+      state.items = [];
     });
 
     builder.addCase(init.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.items = action.payload;
       state.loaded = true;
+      state.hasError = false;
     });
 
     builder.addCase(init.rejected, state => {
       state.loaded = true;
-      state.error = 'Failed to loading posts';
+      state.hasError = true;
     });
   },
 });
 
 export default postsSlice.reducer;
-export const { clear } = postsSlice.actions;
