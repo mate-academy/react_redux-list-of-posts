@@ -1,45 +1,43 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import * as usersAction from '../store/slices/usersSlice';
+import * as postsActions from '../store/slices/postsSlice';
 import { User } from '../types/User';
+import { setSelectedPost } from '../store/slices/selectedPostSlice';
+import { setAuthor } from '../store/slices/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
+  const { users } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
+
+  function chooseUser(user: User) {
+    if (user?.id) {
+      // eslint-disable-next-line no-console
+      console.log('chooseUser', user.id);
+      dispatch(postsActions.init(user.id));
+    }
+
+    dispatch(setAuthor(user));
+    dispatch(setSelectedPost(null));
+  }
+
+  useEffect(() => {
+    dispatch(usersAction.init());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
       return;
     }
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
-    };
+    const handleDocumentClick = () => setExpanded(false);
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
+    return () => document.removeEventListener('click', handleDocumentClick);
   }, [expanded]);
 
   return (
@@ -58,25 +56,21 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
-
+          <span>{author?.name || 'Choose a user'}</span>
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
         </button>
       </div>
-
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={() => chooseUser(user)}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}
