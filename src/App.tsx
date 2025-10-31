@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,20 +9,25 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { Post } from './types/Post';
+
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { loadPosts } from './Slices/PostsSlice';
+import { setAuthor } from './Slices/AuthorSlice';
+import { setSelectedPost } from './Slices/SelectedPostsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author.item);
+  const selectedPost = useAppSelector(state => state.selectedPost.item);
 
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(loadPosts(author.id));
@@ -36,7 +41,10 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -63,7 +71,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
@@ -77,12 +85,10 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>

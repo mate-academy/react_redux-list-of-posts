@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-
 import {
   loadComments,
   addComment,
   deleteComment,
-  toggleVisible,
 } from '../Slices/CommentsSlice';
 
 type Props = {
@@ -18,19 +16,24 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
 
-  const { comments, loaded, hasError, visible } = useAppSelector(
-    state => state.comments,
-  );
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     dispatch(loadComments(post.id));
+
+    setVisible(false);
   }, [post.id, dispatch]);
 
   const handleAddComment = async (data: CommentData): Promise<void> => {
     try {
       await dispatch(addComment({ ...data, postId: post.id })).unwrap();
-    } catch (error) {}
+    } catch {}
   };
 
   const handleDeleteComment = (commentId: number) => {
@@ -96,7 +99,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(toggleVisible())}
+            onClick={() => setVisible(true)}
           >
             Write a comment
           </button>
