@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch } from '../app/hooks';
+// eslint-disable-next-line max-len
 import { addComment as addCommentAction } from '../features/comments/commentsSlice';
 
 type Props = {
