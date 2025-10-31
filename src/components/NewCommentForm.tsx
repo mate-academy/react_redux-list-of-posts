@@ -1,12 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch } from '../app/hooks';
+import { addComment as addCommentAction } from '../features/comments/commentsSlice';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+  const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -14,6 +17,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: false,
     body: false,
   });
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: postId,
+    };
+
+    return dispatch(addCommentAction(newComment));
+  };
 
   const [{ name, email, body }, setValues] = useState({
     name: '',
@@ -60,11 +74,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    try {
+      await addComment({ name, email, body });
+      // clear body only after success
+      setValues(current => ({ ...current, body: '' }));
+    } finally {
+      setSubmitting(false);
+    }
     // We keep the entered name and email
   };
 
