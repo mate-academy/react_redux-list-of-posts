@@ -1,167 +1,73 @@
-// src/slices/postsSlice.ts
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import * as postsApi from '../api/posts';
 import { Post } from '../types/Post';
+import { RootState } from '../app/store';
+import { getUserPosts } from '../api/posts';
 
-export type PostsState = {
+export interface PostsState {
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
-  items: Post[];
-  errorMessage?: string | null;
-};
+  errorMessage: string | null;
+}
 
 const initialState: PostsState = {
+  items: [],
   loaded: false,
   hasError: false,
-  items: [],
   errorMessage: null,
 };
 
-function getErrorMessage(err: unknown, fallback = 'Unknown error'): string {
-  if (err instanceof Error) {
-    return err.message;
-  }
+export const fetchPostsByUser = createAsyncThunk(
+  'posts/fetchPostsByUser',
+  async (userId: number) => {
+    const response = await getUserPosts(userId);
 
-  if (typeof err === 'string') {
-    return err;
-  }
+    return response;
+  },
+);
 
-  try {
-    const s = JSON.stringify(err);
-
-    return s === '{}' ? fallback : s;
-  } catch {
-    return fallback;
-  }
-}
-
-export const fetchPostsByUser = createAsyncThunk<
-  Post[],
-  number,
-  { rejectValue: string }
->('posts/fetchByUser', async (userId, { rejectWithValue }) => {
-  if (typeof userId !== 'number' || Number.isNaN(userId)) {
-    return rejectWithValue('Invalid userId');
-  }
-
-  try {
-    const data = await postsApi.getUserPosts(userId);
-
-    return data as Post[];
-  } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err, 'Failed to fetch posts'));
-  }
-});
-
-export const fetchAllPosts = createAsyncThunk<
-  Post[],
-  void,
-  { rejectValue: string }
->('posts/fetchAll', async (_, { rejectWithValue }) => {
-  try {
-    const data = await postsApi.getPosts();
-
-    return data as Post[];
-  } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err, 'Failed to fetch posts'));
-  }
-});
-
-const postsSlice = createSlice({
+export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts(_state, action: PayloadAction<Post[]>) {
-      return {
-        ...initialState,
-        items: action.payload,
-        loaded: true,
-      } as PostsState;
-    },
-    clearPosts() {
-      return { ...initialState };
+    clearPosts(state) {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+      state.errorMessage = null;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPostsByUser.pending, state => {
-        return {
-          ...state,
-          loaded: false,
-          hasError: false,
-          errorMessage: null,
-          items: [],
-        };
+        state.loaded = false;
+        state.hasError = false;
+        state.errorMessage = null;
       })
       .addCase(
         fetchPostsByUser.fulfilled,
-        (_state, action: PayloadAction<Post[]>) => {
-          return {
-            ...initialState,
-            items: action.payload,
-            loaded: true,
-            hasError: false,
-            errorMessage: null,
-          };
+        (state, action: PayloadAction<Post[]>) => {
+          state.items = action.payload;
+          state.loaded = true;
+          state.hasError = false;
+          state.errorMessage = null;
         },
       )
-      .addCase(fetchPostsByUser.rejected, (_state, action) => {
-        const msg =
-          action.payload ?? action.error?.message ?? 'Failed to fetch posts';
-
-        return {
-          ...initialState,
-          loaded: true,
-          hasError: true,
-          items: [],
-          errorMessage: msg,
-        };
-      })
-      .addCase(fetchAllPosts.pending, state => {
-        return {
-          ...state,
-          loaded: false,
-          hasError: false,
-          errorMessage: null,
-          items: [],
-        };
-      })
-      .addCase(
-        fetchAllPosts.fulfilled,
-        (_state, action: PayloadAction<Post[]>) => {
-          return {
-            ...initialState,
-            items: action.payload,
-            loaded: true,
-            hasError: false,
-          };
-        },
-      )
-      .addCase(fetchAllPosts.rejected, (_state, action) => {
-        const msg =
-          action.payload ?? action.error?.message ?? 'Failed to fetch posts';
-
-        return {
-          ...initialState,
-          loaded: true,
-          hasError: true,
-          items: [],
-          errorMessage: msg,
-        };
+      .addCase(fetchPostsByUser.rejected, (state, action) => {
+        state.loaded = true;
+        state.hasError = true;
+        state.errorMessage = action.error.message ?? null;
       });
   },
 });
 
-export const { setPosts, clearPosts } = postsSlice.actions;
+export const { clearPosts } = postsSlice.actions;
 
-// Seletores tipados.
-// Se você tiver RootState em src/app/store, prefira importar e usar aqui.
-export const selectPosts = (state: { posts: PostsState }) => state.posts.items;
-export const selectPostsLoaded = (state: { posts: PostsState }) =>
-  state.posts.loaded;
-export const selectPostsHasError = (state: { posts: PostsState }) =>
-  state.posts.hasError;
-export const selectPostsErrorMessage = (state: { posts: PostsState }) =>
+export const selectPosts = (state: RootState) => state.posts.items;
+export const selectPostsLoaded = (state: RootState) => state.posts.loaded;
+export const selectPostsHasError = (state: RootState) => state.posts.hasError;
+export const selectPostsErrorMessage = (state: RootState) =>
   state.posts.errorMessage ?? null;
 
 export default postsSlice.reducer;

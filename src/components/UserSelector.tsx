@@ -2,14 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { fetchUsers } from '../slices/usersSlice';
 import { setAuthor } from '../slices/authorSlice';
-import { User } from '../types/User';
 
-type Props = {
-  value?: User | null;
-  onChange?: (u: User | null) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({ onChange }) => {
+export const UserSelector: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
     items: users,
@@ -33,10 +27,6 @@ export const UserSelector: React.FC<Props> = ({ onChange }) => {
 
     dispatch(setAuthor(selected));
     setIsOpen(false);
-
-    if (onChange) {
-      onChange(selected);
-    }
   };
 
   return (

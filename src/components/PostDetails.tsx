@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
-  fetchCommentsByPost,
+  fetchCommentsByPostId,
   createComment,
   deleteComment,
 } from '../slices/commentsSlice';
@@ -23,22 +23,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // load comments for the given post
-    dispatch(fetchCommentsByPost(post.id));
+    dispatch(fetchCommentsByPostId(post.id));
     setVisible(false);
   }, [dispatch, post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       await dispatch(createComment({ postId: post.id, name, email, body }));
-      // keep NewCommentForm state handling as-is (it will clear body locally)
     } catch (e) {
-      // already handled in slice; just set UI state if needed
+      // erro já tratado no slice
     }
   };
 
   const handleDelete = async (commentId: number) => {
-    // optimistic removal is handled by slice on fulfilled result
     await dispatch(deleteComment(commentId));
   };
 
@@ -46,7 +43,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
@@ -68,7 +64,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -79,7 +74,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
@@ -90,7 +84,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     delete button
                   </button>
                 </div>
-
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>

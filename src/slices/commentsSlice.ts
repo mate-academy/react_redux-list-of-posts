@@ -1,186 +1,103 @@
-// src/slices/commentsSlice.ts
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import * as commentsApi from '../api/comments';
 import { Comment } from '../types/Comment';
+import { RootState } from '../app/store';
+import {
+  getPostComments,
+  createComment as createCommentApi,
+  deleteComment as deleteCommentApi,
+} from '../api/comments';
 
-export type CommentsState = {
+export interface CommentsState {
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  items: Comment[];
-  errorMessage?: string | null;
-};
-
-const initialState: CommentsState = {
-  loaded: false,
-  hasError: false,
-  items: [],
-  errorMessage: null,
-};
-
-function getErrorMessage(err: unknown, fallback = 'Unknown error'): string {
-  if (err instanceof Error) {
-    return err.message;
-  }
-
-  if (typeof err === 'string') {
-    return err;
-  }
-
-  try {
-    const str = JSON.stringify(err);
-
-    return str === '{}' ? fallback : str;
-  } catch {
-    return fallback;
-  }
+  errorMessage: string | null;
+  visible: boolean;
 }
 
-export const fetchCommentsByPost = createAsyncThunk<
-  Comment[],
-  number,
-  { rejectValue: string }
->('comments/fetchByPost', async (postId, { rejectWithValue }) => {
-  try {
-    const data = await commentsApi.getPostComments(postId);
+const initialState: CommentsState = {
+  items: [],
+  loaded: false,
+  hasError: false,
+  errorMessage: null,
+  visible: false,
+};
 
-    return data as Comment[];
-  } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err, 'Failed to fetch comments'));
-  }
-});
+export const fetchCommentsByPostId = createAsyncThunk(
+  'comments/fetchCommentsByPostId',
+  async (postId: number) => {
+    const response = await getPostComments(postId);
 
-export const createComment = createAsyncThunk<
-  Comment,
-  { postId: number; name: string; email: string; body: string },
-  { rejectValue: string }
->('comments/create', async (payload, { rejectWithValue }) => {
-  try {
-    const data = await commentsApi.createComment({
-      postId: payload.postId,
-      name: payload.name,
-      email: payload.email,
-      body: payload.body,
-    });
+    return response;
+  },
+);
 
-    return data as Comment;
-  } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err, 'Failed to create comment'));
-  }
-});
+export const createComment = createAsyncThunk(
+  'comments/createComment',
+  async (data: Omit<Comment, 'id'>) => {
+    const response = await createCommentApi(data);
 
-export const deleteComment = createAsyncThunk<
-  number,
-  number,
-  { rejectValue: string }
->('comments/delete', async (commentId, { rejectWithValue }) => {
-  try {
-    await commentsApi.deleteComment(commentId);
+    return response;
+  },
+);
+
+export const deleteComment = createAsyncThunk(
+  'comments/deleteComment',
+  async (commentId: number) => {
+    await deleteCommentApi(commentId);
 
     return commentId;
-  } catch (err: unknown) {
-    return rejectWithValue(getErrorMessage(err, 'Failed to delete comment'));
-  }
-});
+  },
+);
 
-const commentsSlice = createSlice({
+export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    clearComments() {
-      return { ...initialState };
+    setVisible(state, action: PayloadAction<boolean>) {
+      state.visible = action.payload;
     },
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchCommentsByPost.pending, () => {
-        return {
-          ...initialState,
-          loaded: false,
-          hasError: false,
-          errorMessage: null,
-          items: [],
-        };
+      .addCase(fetchCommentsByPostId.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+        state.errorMessage = null;
       })
-      .addCase(
-        fetchCommentsByPost.fulfilled,
-        (_state, action: PayloadAction<Comment[]>) => {
-          return {
-            ...initialState,
-            items: action.payload,
-            loaded: true,
-            hasError: false,
-            errorMessage: null,
-          };
-        },
-      )
-      .addCase(fetchCommentsByPost.rejected, (_state, action) => {
-        const msg =
-          action.payload ?? action.error?.message ?? 'Failed to fetch comments';
-
-        return {
-          ...initialState,
-          loaded: true,
-          hasError: true,
-          items: [],
-          errorMessage: msg,
-        };
+      .addCase(fetchCommentsByPostId.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+        state.hasError = false;
+        state.errorMessage = null;
       })
-      .addCase(
-        createComment.fulfilled,
-        (_state, action: PayloadAction<Comment>) => {
-          // adiciona novo comentário imutavelmente
-          return {
-            ...initialState,
-            items: [...(_state as CommentsState).items, action.payload],
-            loaded: (_state as CommentsState).loaded,
-            hasError: false,
-            errorMessage: null,
-          };
-        },
-      )
-      .addCase(createComment.rejected, (state, action) => {
-        const msg =
-          action.payload ?? action.error?.message ?? 'Failed to create comment';
-
-        return {
-          ...state,
-          hasError: true,
-          errorMessage: msg,
-        };
+      .addCase(fetchCommentsByPostId.rejected, (state, action) => {
+        state.loaded = true;
+        state.hasError = true;
+        state.errorMessage = action.error.message ?? null;
       })
-      .addCase(
-        deleteComment.fulfilled,
-        (state, action: PayloadAction<number>) => {
-          return {
-            ...state,
-            items: state.items.filter(c => c.id !== action.payload),
-          };
-        },
-      )
-      .addCase(deleteComment.rejected, (state, action) => {
-        const msg =
-          action.payload ?? action.error?.message ?? 'Failed to delete comment';
-
-        return {
-          ...state,
-          hasError: true,
-          errorMessage: msg,
-        };
+      .addCase(createComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+        state.loaded = true;
+        state.hasError = false;
+        state.errorMessage = null;
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(c => c.id !== action.payload);
       });
   },
 });
 
-export const { clearComments } = commentsSlice.actions;
+export const { setVisible } = commentsSlice.actions;
 
-// Seletores tipados sem usar any. Se você tiver RootState, prefira importá-lo e usar aqui.
-export const selectComments = (state: { comments: CommentsState }) =>
-  state.comments.items;
-export const selectCommentsLoaded = (state: { comments: CommentsState }) =>
-  state.comments.loaded;
-export const selectCommentsHasError = (state: { comments: CommentsState }) =>
+export const selectComments = (state: RootState) => state.comments.items;
+export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;
+export const selectCommentsHasError = (state: RootState) =>
   state.comments.hasError;
-export const selectCommentsErrorMessage = (state: {
-  comments: CommentsState;
-}) => state.comments.errorMessage ?? null;
+export const selectCommentsErrorMessage = (state: RootState) =>
+  state.comments.errorMessage ?? null;
+export const selectCommentsVisible = (state: RootState) =>
+  state.comments.visible;
 
 export default commentsSlice.reducer;

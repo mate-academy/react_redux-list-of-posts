@@ -126,7 +126,6 @@ module.exports = {
     '.eslintrc.cjs',
     'vite.config.ts',
     'src/vite-env.d.ts',
-    'cypress',
   ],
   settings: {
     react: {

@@ -37,7 +37,7 @@ iframe {
 /* assegura que o conteúdo do placeholder ocupe toda a altura disponível da equal-box */
 [data-cy='ChoosePostPlaceholder'] {
   display: flex;
-  align-items: left;
+  align-items: flex-start;
   justify-content: left;
   height: 5.5rem;
   width: 100%;
