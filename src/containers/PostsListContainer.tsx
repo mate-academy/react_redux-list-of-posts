@@ -1,8 +1,6 @@
-// src/containers/PostsListContainer.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PostsList } from '../components/PostsList';
 import { useAppDispatch, useAppSelector } from '../app/store';
-import { fetchPostsByUser } from '../slices/postsSlice';
 import { selectPost } from '../slices/selectedPostSlice';
 import { Post } from '../types/Post';
 
@@ -11,14 +9,6 @@ export const PostsListContainer: React.FC = () => {
   const author = useAppSelector(state => state.author.author);
   const postsState = useAppSelector(state => state.posts);
   const selectedPostId = useAppSelector(state => state.selectedPost.postId);
-
-  const authorId = author?.id;
-
-  useEffect(() => {
-    if (typeof authorId === 'number') {
-      dispatch(fetchPostsByUser(authorId));
-    }
-  }, [dispatch, authorId]);
 
   const handlePostSelected = (post: Post | null) => {
     dispatch(selectPost(post));

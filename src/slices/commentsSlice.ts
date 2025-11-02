@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { RootState } from '../app/store';
 import {
@@ -13,7 +13,6 @@ export interface CommentsState {
   loaded: boolean;
   hasError: boolean;
   errorMessage: string | null;
-  visible: boolean;
 }
 
 const initialState: CommentsState = {
@@ -21,7 +20,6 @@ const initialState: CommentsState = {
   loaded: false,
   hasError: false,
   errorMessage: null,
-  visible: false,
 };
 
 export const fetchCommentsByPostId = createAsyncThunk(
@@ -54,11 +52,7 @@ export const deleteComment = createAsyncThunk(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    setVisible(state, action: PayloadAction<boolean>) {
-      state.visible = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchCommentsByPostId.pending, state => {
@@ -89,15 +83,11 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { setVisible } = commentsSlice.actions;
-
 export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;
 export const selectCommentsHasError = (state: RootState) =>
   state.comments.hasError;
 export const selectCommentsErrorMessage = (state: RootState) =>
   state.comments.errorMessage ?? null;
-export const selectCommentsVisible = (state: RootState) =>
-  state.comments.visible;
 
 export default commentsSlice.reducer;
