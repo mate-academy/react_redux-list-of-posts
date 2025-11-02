@@ -25,3 +25,69 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+/* aplica o mesmo tamanho de fonte para o título "Choose a post" */
+[data-cy='ChoosePostPlaceholder'] .title,
+[data-cy='ChoosePostPlaceholder'] h2 {
+  font-size: 16px;
+  margin: 0;
+  text-align: center;
+}
+
+/* assegura que o conteúdo do placeholder ocupe toda a altura disponível da equal-box */
+[data-cy='ChoosePostPlaceholder'] {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  height: 5.5rem;
+  width: 100%;
+}
+
+/* se você usa a largura fixa do seletor como referência (user-selector),
+   forçamos o alinhamento visual central mantendo equal-box como container igual */
+.equal-box {
+  /* já existe no seu arquivo; manter height e garantir box sizing */
+  box-sizing: border-box;
+}
+
+/* opcional: garantir que o box interno (quando vazio) pareça igual em largura visual
+     ao seletor compacto dentro do painel esquerdo (não muda a largura da coluna) */
+[data-cy='ChoosePostPlaceholder'] .title {
+  width: 220px; /* usa a mesma referência de largura do select; ajuste se alterar o select */
+}
+
+/* user-selector: placeholder inside select and chevron on the right */
+.user-selector {
+  position: relative;
+  width: 220px;
+  max-width: 100%;
+}
+
+.user-selector select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* chevron triangle on the right */
+.user-selector::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #333;
+  pointer-events: none;
+}

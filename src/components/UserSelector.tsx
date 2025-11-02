@@ -1,89 +1,87 @@
-import React, { useContext, useEffect, useState } from 'react';
-import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { fetchUsers } from '../slices/usersSlice';
+import { setAuthor } from '../slices/authorSlice';
 import { User } from '../types/User';
 
 type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
+  value?: User | null;
+  onChange?: (u: User | null) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+export const UserSelector: React.FC<Props> = ({ onChange }) => {
+  const dispatch = useAppDispatch();
+  const {
+    items: users,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.users);
+  const author = useAppSelector(state => state.author.author);
+
+  const calledRef = useRef(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!expanded) {
-      return;
+    if (!loaded && !hasError && !calledRef.current) {
+      calledRef.current = true;
+      dispatch(fetchUsers());
     }
+  }, [dispatch, loaded, hasError]);
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
-    };
+  const handleUserSelect = (userId: number) => {
+    const selected = users.find(u => u.id === userId) ?? null;
 
-    document.addEventListener('click', handleDocumentClick);
+    dispatch(setAuthor(selected));
+    setIsOpen(false);
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
-  }, [expanded]);
+    if (onChange) {
+      onChange(selected);
+    }
+  };
 
   return (
-    <div
-      data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
-    >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
-        >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+    <div className="user-selector-wrapper" data-cy="UserSelector">
+      {!loaded && !hasError && (
+        <div className="user-selector-loading">Loading users...</div>
+      )}
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+      {hasError && (
+        <div className="notification is-danger">Failed to load users</div>
+      )}
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
+      {loaded && (
+        <div className={`dropdown ${isOpen ? 'is-active' : ''}`}>
+          <div className="dropdown-trigger">
+            <button
+              className="button"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+              onClick={() => setIsOpen(!isOpen)}
             >
-              {user.name}
-            </a>
-          ))}
+              <span>{author ? author.name : 'Choose a user'}</span>
+              <span className="icon is-small">
+                <i className="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+
+          <div className="dropdown-menu" id="dropdown-menu" role="menu">
+            <div className="dropdown-content">
+              {users.map(u => (
+                <a
+                  key={u.id}
+                  className={`dropdown-item ${author?.id === u.id ? 'is-active' : ''}`}
+                  onClick={() => handleUserSelect(u.id)}
+                  role="menuitem"
+                  data-cy="UserOption"
+                >
+                  {u.name}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
