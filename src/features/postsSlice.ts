@@ -48,7 +48,7 @@ export const postsSlice = createSlice({
       .addCase(loadPost.rejected, state => ({
         ...state,
         loaded: true,
-        hasError: false,
+        hasError: true,
         items: [],
       }));
   },

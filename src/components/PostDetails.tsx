@@ -25,7 +25,7 @@ export const PostDetails: React.FC = () => {
     };
 
     getAllComments();
-  }, [post.id]);
+  }, [post?.id]);
 
   // The same useEffect with async/await
   /*
