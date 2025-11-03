@@ -81,7 +81,7 @@ export const commentsSlice = createSlice({
       state.items = state.items.filter(item => item.id !== commentId);
     });
 
-    builder.addCase(deleteCommentThunk.rejected, state  => {
+    builder.addCase(deleteCommentThunk.rejected, state => {
       state.hasError = true;
     });
   },

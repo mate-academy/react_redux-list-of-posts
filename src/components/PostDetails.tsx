@@ -46,8 +46,7 @@ export const PostDetails: React.FC = () => {
         }),
       ).unwrap();
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
+      alert('Something went wrong with addind the comment');
     }
   };
 
@@ -55,8 +54,7 @@ export const PostDetails: React.FC = () => {
     try {
       await dispatch(deleteCommentThunk(commentId));
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
+      alert('Something went wrong with deleting comment');
     }
   };
 
