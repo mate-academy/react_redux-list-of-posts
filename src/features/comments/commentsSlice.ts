@@ -8,7 +8,7 @@ import { Comment } from '../../types/Comment';
 /* eslint-disable no-param-reassign */
 
 export const loadCommentsThunk = createAsyncThunk<Comment[], number>(
-  'user/fetchComments',
+  'comments/load',
   async postId => {
     const comments = await getPostComments(postId);
 
@@ -79,6 +79,10 @@ export const commentsSlice = createSlice({
       const commentId = action.meta.arg;
 
       state.items = state.items.filter(item => item.id !== commentId);
+    });
+
+    builder.addCase(deleteCommentThunk.rejected, state  => {
+      state.hasError = true;
     });
   },
 });

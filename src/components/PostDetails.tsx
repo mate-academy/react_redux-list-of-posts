@@ -45,13 +45,19 @@ export const PostDetails: React.FC = () => {
           postId: post.id,
         }),
       ).unwrap();
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   };
 
   const deleteComment = async (commentId: number) => {
     try {
       await dispatch(deleteCommentThunk(commentId));
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   };
 
   return (
