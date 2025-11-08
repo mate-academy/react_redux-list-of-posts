@@ -23,7 +23,6 @@ export const App: React.FC = () => {
   const postsError = useAppSelector(s => s.posts.hasError);
   const selectedPost = useAppSelector(s => s.selectedPost.value);
 
-  // при смене автора — чистим выбранный пост и грузим посты
   useEffect(() => {
     dispatch(clearSelectedPost());
 
@@ -65,19 +64,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author && postsLoaded && !postsError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={post =>
-                      dispatch(
-                        clearSelectedPost(), // на случай клика по открытому
-                      ) ||
-                      dispatch({
-                        type: 'selectedPost/setSelectedPost',
-                        payload: post,
-                      })
-                    }
-                  />
+                  <PostsList posts={posts} />
                 )}
               </div>
             </div>
