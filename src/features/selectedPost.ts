@@ -16,9 +16,6 @@ export const selectedPostSlice = createSlice({
     setSelectedPost: (_state, action: PayloadAction<Post | null>) => ({
       post: action.payload,
     }),
-    clearSelectedPost: () => ({
-      post: null,
-    }),
   },
 });
 

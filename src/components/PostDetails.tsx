@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as commentsApi from '../api/comments';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadComments, addComment, removeComment } from '../features/comments';
+import {
+  addCommentThunk,
+  deleteCommentThunk,
+  loadComments,
+} from '../features/comments';
 
 export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const comments = useAppSelector(state => state.comments.comments);
+  const comments = useAppSelector(state => state.comments.items);
   const loaded = useAppSelector(state => state.comments.loaded);
   const hasError = useAppSelector(state => state.comments.hasError);
 
@@ -29,19 +32,18 @@ export const PostDetails = () => {
       return;
     }
 
-    const newComment = await commentsApi.createComment({
-      name,
-      email,
-      body,
-      postId: selectedPost.id,
-    });
-
-    dispatch(addComment(newComment));
+    await dispatch(
+      addCommentThunk({
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      }),
+    );
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    dispatch(removeComment(commentId));
-    await commentsApi.deleteComment(commentId);
+    await dispatch(deleteCommentThunk(commentId));
   };
 
   return (

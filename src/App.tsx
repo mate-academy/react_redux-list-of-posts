@@ -16,7 +16,7 @@ import { loadUsers } from './features/users';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const posts = useAppSelector(state => state.posts.posts);
+  const posts = useAppSelector(state => state.posts.items);
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
 

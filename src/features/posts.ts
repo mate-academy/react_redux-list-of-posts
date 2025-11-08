@@ -5,13 +5,13 @@ import { getUserPosts } from '../api/posts';
 
 type PostsState = {
   loaded: boolean;
-  posts: Post[];
+  items: Post[];
   hasError: boolean;
 };
 
 const initialState: PostsState = {
   loaded: false,
-  posts: [],
+  items: [],
   hasError: false,
 };
 
@@ -25,7 +25,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+      state.items = action.payload;
     },
   },
   extraReducers(builder) {
@@ -35,7 +35,7 @@ export const postsSlice = createSlice({
     });
 
     builder.addCase(loadPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.items = action.payload;
       state.loaded = true;
       state.hasError = false;
     });

@@ -1,17 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
-import { getPostComments } from '../api/comments';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 type CommentsState = {
   loaded: boolean;
-  comments: Comment[];
+  items: Comment[];
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
   loaded: false,
-  comments: [],
+  items: [],
   hasError: false,
 };
 
@@ -20,17 +20,36 @@ export const loadComments = createAsyncThunk(
   async (postId: number) => getPostComments(postId),
 );
 
+export const addCommentThunk = createAsyncThunk(
+  'comments/addComment',
+  async (data: Omit<Comment, 'id'>, { rejectWithValue }) => {
+    try {
+      const newComment = await createComment(data);
+
+      return newComment;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const deleteCommentThunk = createAsyncThunk(
+  'comments/deleteComment',
+  async (commentId: number, { rejectWithValue }) => {
+    try {
+      await deleteComment(commentId);
+
+      return commentId;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    addComment(state, { payload }: PayloadAction<Comment>) {
-      state.comments.push(payload);
-    },
-    removeComment(state, { payload }: PayloadAction<number>) {
-      state.comments = state.comments.filter(item => item.id !== payload);
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder.addCase(loadComments.pending, state => {
       state.hasError = false;
@@ -38,7 +57,7 @@ export const commentsSlice = createSlice({
     });
 
     builder.addCase(loadComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
+      state.items = action.payload;
       state.loaded = true;
     });
 
@@ -46,8 +65,23 @@ export const commentsSlice = createSlice({
       state.hasError = true;
       state.loaded = true;
     });
+
+    builder.addCase(addCommentThunk.fulfilled, (state, action) => {
+      state.items.push(action.payload);
+    });
+
+    builder.addCase(addCommentThunk.rejected, state => {
+      state.hasError = true;
+    });
+
+    builder.addCase(deleteCommentThunk.fulfilled, (state, action) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
+    });
+
+    builder.addCase(deleteCommentThunk.rejected, state => {
+      state.hasError = true;
+    });
   },
 });
 
-export const { addComment, removeComment } = commentsSlice.actions;
 export default commentsSlice.reducer;
