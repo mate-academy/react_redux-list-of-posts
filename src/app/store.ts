@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice'; // у тебя уже есть
+import counterReducer from '../features/counter/counterSlice';
 import usersReducer from '../slices/usersSlice';
 import authorReducer from '../slices/authorSlice';
 import postsReducer from '../slices/postsSlice';

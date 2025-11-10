@@ -15,9 +15,9 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-export const fetchPostsByUser = createAsyncThunk(
+export const fetchPostsByUser = createAsyncThunk<Post[], number>(
   'posts/fetchByUser',
-  async (userId: number) => getUserPosts(userId),
+  (userId: number) => getUserPosts(userId),
 );
 
 const postsSlice = createSlice({

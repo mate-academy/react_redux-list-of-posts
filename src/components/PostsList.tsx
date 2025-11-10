@@ -15,6 +15,14 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.value);
 
+  const handleToggle = (post: Post, isSelected: boolean) => () => {
+    if (isSelected) {
+      dispatch(clearSelectedPost());
+    } else {
+      dispatch(setSelectedPost(post));
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -43,13 +51,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                     className={classNames('button', 'is-link', {
                       'is-light': !isSelected,
                     })}
-                    onClick={() => {
-                      if (isSelected) {
-                        dispatch(clearSelectedPost());
-                      } else {
-                        dispatch(setSelectedPost(post));
-                      }
-                    }}
+                    onClick={handleToggle(post, isSelected)}
                   >
                     {isSelected ? 'Close' : 'Open'}
                   </button>

@@ -18,7 +18,6 @@ export const UserSelector: React.FC = () => {
     }
   }, [dispatch, loaded, hasError]);
 
-  // Закрыть по клику вне
   useEffect(() => {
     if (!open) {
       return;
@@ -44,13 +43,18 @@ export const UserSelector: React.FC = () => {
     setOpen(false);
   };
 
+  const onUserClick = (u: User) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    handlePick(u);
+  };
+
   return (
     <div
       ref={rootRef}
       className={`dropdown is-fullwidth ${open ? 'is-active' : ''}`}
       data-cy="UserSelector"
     >
-      <div className="dropdown-trigger" style={{ width: '100%' }}>
+      <div className="dropdown-trigger">
         <button
           type="button"
           className="button is-fullwidth"
@@ -73,10 +77,7 @@ export const UserSelector: React.FC = () => {
               className={
                 'dropdown-item' + (author?.id === u.id ? ' is-active' : '')
               }
-              onClick={e => {
-                e.preventDefault();
-                handlePick(u);
-              }}
+              onClick={onUserClick(u)}
               data-cy={`UserOption-${u.id}`}
             >
               {u.name}

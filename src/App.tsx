@@ -23,6 +23,14 @@ export const App: React.FC = () => {
   const postsError = useAppSelector(s => s.posts.hasError);
   const selectedPost = useAppSelector(s => s.selectedPost.value);
 
+  const hasAuthor = !!author;
+  const isLoadingPosts = hasAuthor && !postsLoaded;
+  const hasPostsError = hasAuthor && postsLoaded && postsError;
+  const isEmptyPosts =
+    hasAuthor && postsLoaded && !postsError && posts.length === 0;
+  const canShowPosts =
+    hasAuthor && postsLoaded && !postsError && posts.length > 0;
+
   useEffect(() => {
     dispatch(clearSelectedPost());
 
@@ -44,11 +52,11 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!hasAuthor && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !postsLoaded && <Loader />}
+                {isLoadingPosts && <Loader />}
 
-                {author && postsLoaded && postsError && (
+                {hasPostsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -57,15 +65,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && postsLoaded && !postsError && posts.length === 0 && (
+                {isEmptyPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && postsLoaded && !postsError && posts.length > 0 && (
-                  <PostsList posts={posts} />
-                )}
+                {canShowPosts && <PostsList posts={posts} />}
               </div>
             </div>
           </div>
@@ -80,7 +86,7 @@ export const App: React.FC = () => {
               { 'Sidebar--open': !!selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>

@@ -36,6 +36,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     await dispatch(deleteComment(commentId));
   };
 
+  const handleDeleteClick = (id: number) => () => {
+    handleDelete(id);
+  };
+
   const isCurrent = postId === post.id;
 
   return (
@@ -78,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDelete(comment.id)}
+                    onClick={handleDeleteClick(comment.id)}
                   >
                     delete button
                   </button>
