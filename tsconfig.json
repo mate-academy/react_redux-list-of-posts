@@ -4,7 +4,13 @@
     "src"
   ],
   "compilerOptions": {
-    "sourceMap": false,
-    "types": ["node", "cypress"]
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
   }
 }
