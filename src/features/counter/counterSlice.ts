@@ -3,6 +3,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState, AppThunk } from '../../app/store';
 import { fetchCount } from './counterAPI';
+import { User } from '../../types/User';
+import { getUsers } from '../../api/users';
 
 export interface CounterState {
   value: number;
