@@ -1,15 +1,17 @@
 /* eslint-disable curly */
 import { useSelector } from 'react-redux';
 import { RootState } from './store';
-import { toggleVisible, removeComment } from './commentsSlice';
+import { removeComment } from './commentsSlice';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch } from './hooks';
+import { useState } from 'react';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
   const postId = useSelector((s: RootState) => s.selectedPost);
 
-  const { items, visible } = useSelector((s: RootState) => s.comments);
+  const { items } = useSelector((s: RootState) => s.comments);
+  const [visible, setVisible] = useState<boolean>(false);
   const posts = useSelector((s: RootState) => s.posts.items);
   const post = posts.find(p => p.id === postId);
 
@@ -22,7 +24,7 @@ export const PostDetails = () => {
 
       <NewCommentForm postId={postId} />
 
-      <button onClick={() => dispatch(toggleVisible())}>
+      <button onClick={() => setVisible(prev => !prev)}>
         {visible ? 'Hide comments' : 'Show comments'}
       </button>
 
