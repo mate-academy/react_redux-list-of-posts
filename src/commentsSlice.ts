@@ -53,7 +53,7 @@ const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    clearComments: state => {
+    clearComments(state) {
       state.items = [];
       state.loaded = false;
       state.hasError = false;
@@ -76,5 +76,7 @@ const commentsSlice = createSlice({
       });
   },
 });
+
+export const { clearComments } = commentsSlice.actions;
 
 export default commentsSlice.reducer;
