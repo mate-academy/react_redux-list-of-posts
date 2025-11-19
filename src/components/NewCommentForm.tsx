@@ -1,191 +1,123 @@
-import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Loader } from './Loader';
+import { NewCommentForm } from './NewCommentForm';
+
+import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addNewComment,
+  deleteComment,
+  loadPostComments,
+  selectComments,
+  setError,
+} from '../features/comments/commentsSlice';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  post: Post;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const dispatch = useAppDispatch();
+  const { items: comments, hasError, loaded } = useAppSelector(selectComments);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [visible, setVisible] = useState(false);
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  function loadComments() {
+    setVisible(false);
 
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+    dispatch(loadPostComments(post.id));
+  }
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+  useEffect(loadComments, [post.id, dispatch]);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
+  const addComment = async ({ name, email, body }: CommentData) => {
+    try {
+      const newComment = {
+        name,
+        email,
+        body,
+        postId: post.id,
+      };
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
-      return;
+      await dispatch(addNewComment(newComment)).unwrap();
+    } catch (error) {
+      dispatch(setError(true));
     }
-
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+    <div className="content" data-cy="PostDetails">
+      <div className="block">
+        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
-            value={name}
-            onChange={handleChange}
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          {errors.name && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {errors.name && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
+        <p data-cy="PostBody">{post.body}</p>
       </div>
 
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
+      <div className="block">
+        {!loaded && <Loader />}
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
-            value={email}
-            onChange={handleChange}
-          />
+        {loaded && hasError && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
+        )}
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          {errors.email && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {errors.email && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+        {loaded && !hasError && comments.length === 0 && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
           </p>
         )}
-      </div>
 
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
+        {loaded && !hasError && comments.length > 0 && (
+          <>
+            <p className="title is-4">Comments:</p>
 
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
-            onChange={handleChange}
-          />
-        </div>
+            {comments.map(comment => (
+              <article
+                className="message is-small"
+                key={comment.id}
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
 
-        {errors.body && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => dispatch(deleteComment(comment.id))}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))}
+          </>
         )}
-      </div>
 
-      <div className="field is-grouped">
-        <div className="control">
+        {loaded && !hasError && !visible && (
           <button
-            type="submit"
-            className={classNames('button', 'is-link', {
-              'is-loading': submitting,
-            })}
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setVisible(true)}
           >
-            Add
+            Write a comment
           </button>
-        </div>
+        )}
 
-        <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
-            Clear
-          </button>
-        </div>
+        {loaded && !hasError && visible && (
+          <NewCommentForm onSubmit={addComment} />
+        )}
       </div>
-    </form>
+    </div>
   );
 };
