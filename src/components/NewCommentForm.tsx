@@ -1,123 +1,190 @@
-import React, { useEffect, useState } from 'react';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
-
-import { Post } from '../types/Post';
+import classNames from 'classnames';
+import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  addNewComment,
-  deleteComment,
-  loadPostComments,
-  selectComments,
-  setError,
-} from '../features/comments/commentsSlice';
 
 type Props = {
-  post: Post;
+  onSubmit: (data: CommentData) => Promise<void>;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useAppDispatch();
-  const { items: comments, hasError, loaded } = useAppSelector(selectComments);
+export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const [submitting, setSubmitting] = useState(false);
 
-  const [visible, setVisible] = useState(false);
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
-  function loadComments() {
-    setVisible(false);
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
-    dispatch(loadPostComments(post.id));
-  }
+  const clearForm = () => {
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
 
-  useEffect(loadComments, [post.id, dispatch]);
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
 
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: field, value } = event.target;
+
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
+
+    if (!name || !email || !body) {
+      return;
+    }
+
     try {
-      const newComment = {
-        name,
-        email,
-        body,
-        postId: post.id,
-      };
+      setSubmitting(true);
+      await onSubmit({ name, email, body });
+    } finally {
+      setSubmitting(false);
 
-      await dispatch(addNewComment(newComment)).unwrap();
-    } catch (error) {
-      dispatch(setError(true));
+      setValues(current => ({ ...current, body: '' }));
     }
   };
 
   return (
-    <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      <div className="field" data-cy="NameField">
+        <label className="label" htmlFor="comment-author-name">
+          Author Name
+        </label>
 
-        <p data-cy="PostBody">{post.body}</p>
-      </div>
+        <div className="control has-icons-left has-icons-right">
+          <input
+            type="text"
+            name="name"
+            id="comment-author-name"
+            placeholder="Name Surname"
+            className={classNames('input', { 'is-danger': errors.name })}
+            value={name}
+            onChange={handleChange}
+          />
 
-      <div className="block">
-        {!loaded && <Loader />}
+          <span className="icon is-small is-left">
+            <i className="fas fa-user" />
+          </span>
 
-        {loaded && hasError && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )}
+          {errors.name && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
+        </div>
 
-        {loaded && !hasError && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
+        {errors.name && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
           </p>
         )}
+      </div>
 
-        {loaded && !hasError && comments.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
+      <div className="field" data-cy="EmailField">
+        <label className="label" htmlFor="comment-author-email">
+          Author Email
+        </label>
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+        <div className="control has-icons-left has-icons-right">
+          <input
+            type="text"
+            name="email"
+            id="comment-author-email"
+            placeholder="email@test.com"
+            className={classNames('input', { 'is-danger': errors.email })}
+            value={email}
+            onChange={handleChange}
+          />
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => dispatch(deleteComment(comment.id))}
-                  >
-                    delete button
-                  </button>
-                </div>
+          <span className="icon is-small is-left">
+            <i className="fas fa-envelope" />
+          </span>
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
-          </>
-        )}
+          {errors.email && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
+        </div>
 
-        {loaded && !hasError && !visible && (
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setVisible(true)}
-          >
-            Write a comment
-          </button>
-        )}
-
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {errors.email && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
         )}
       </div>
-    </div>
+
+      <div className="field" data-cy="BodyField">
+        <label className="label" htmlFor="comment-body">
+          Comment Text
+        </label>
+
+        <div className="control">
+          <textarea
+            id="comment-body"
+            name="body"
+            placeholder="Type comment here"
+            className={classNames('textarea', { 'is-danger': errors.body })}
+            value={body}
+            onChange={handleChange}
+          />
+        </div>
+
+        {errors.body && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
+      </div>
+
+      <div className="field is-grouped">
+        <div className="control">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': submitting,
+            })}
+          >
+            Add
+          </button>
+        </div>
+
+        <div className="control">
+          {/* eslint-disable-next-line react/button-has-type */}
+          <button type="reset" className="button is-link is-light">
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
   );
 };
