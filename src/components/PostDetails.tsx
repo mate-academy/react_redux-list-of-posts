@@ -68,7 +68,7 @@ export const PostDetails = () => {
     );
   };
 
-  const deleteComment = async (commentId: number) => {
+  const deleteComment = (commentId: number) => {
     dispatch(deleteCommentOnServer(commentId));
   };
 
