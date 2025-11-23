@@ -63,6 +63,10 @@ export const commentsSlice = createSlice({
       state.items = state.items.filter(item => item.id !== action.payload);
     });
 
+    builder.addCase(deleteCommentOnServer.rejected, state => {
+      state.hasError = true;
+    });
+
     builder.addCase(addCommentOnServer.fulfilled, (state, action) => {
       state.items.push(action.payload);
     });
