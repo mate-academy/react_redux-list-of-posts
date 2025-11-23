@@ -5,7 +5,6 @@ import { NewCommentForm } from './NewCommentForm';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  actions,
   addCommentOnServer,
   deleteCommentOnServer,
   fetchComments,
@@ -55,6 +54,10 @@ export const PostDetails = () => {
   */
 
   const addComment = async ({ name, email, body }: CommentData) => {
+    if (!selectedPost) {
+      return;
+    }
+
     await dispatch(
       addCommentOnServer({
         postId: selectedPost?.id,
@@ -66,8 +69,6 @@ export const PostDetails = () => {
   };
 
   const deleteComment = async (commentId: number) => {
-    dispatch(actions.deleteComment(commentId));
-
     dispatch(deleteCommentOnServer(commentId));
   };
 
