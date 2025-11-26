@@ -13,7 +13,7 @@ export interface PostsState {
 const initialState: PostsState = {
   posts: [],
   selectedPost: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 
