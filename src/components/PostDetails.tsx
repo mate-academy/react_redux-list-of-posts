@@ -23,14 +23,12 @@ export const PostDetails = () => {
     if (selectedPost) {
       dispatch(fetchPostComments(selectedPost.id));
     }
+
+    setVisible(false);
   }, [dispatch, selectedPost]);
 
   const handleDeleteComment = (commentId: number) =>
     dispatch(fetchDeleteComment(commentId));
-
-  const handleCommentAdded = () => {
-    setVisible(false);
-  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -100,9 +98,7 @@ export const PostDetails = () => {
           </button>
         )}
 
-        {!loading && hasError === null && visible && (
-          <NewCommentForm handleCommentAdded={handleCommentAdded} />
-        )}
+        {!loading && hasError === null && visible && <NewCommentForm />}
       </div>
     </div>
   );
