@@ -5,7 +5,11 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectSelectedPosts } from '../features/slices/postsSlice';
 import { fetchComment } from '../features/slices/commentsSlice';
 
-export const NewCommentForm = () => {
+interface NewCommentFormProps {
+  handleCommentAdded: () => void;
+}
+
+export const NewCommentForm: React.FC<NewCommentFormProps> = ({ handleCommentAdded }) => {
   const [submitting, setSubmitting] = useState(false);
   const selectedPost = useAppSelector(selectSelectedPosts);
   const dispatch = useAppDispatch();
@@ -15,7 +19,13 @@ export const NewCommentForm = () => {
       return;
     }
 
-    await dispatch(fetchComment({ ...data, postId: selectedPost.id }));
+    const result = await dispatch(
+      fetchComment({ ...data, postId: selectedPost.id }),
+    );
+
+    if (result.meta.requestStatus === 'fulfilled') {
+      handleCommentAdded();
+    }
   };
 
   const [errors, setErrors] = useState({
