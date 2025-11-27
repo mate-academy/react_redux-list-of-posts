@@ -4,17 +4,17 @@ import { getUser, getUsers } from '../../api/users';
 import { RootState } from '../../app/store';
 
 export interface UsersState {
-  list: User[];
+  items: User[];
   selectedUser: User | null;
-  loading: boolean;
-  error: string | null;
+  loaded: boolean;
+  hasError: string | null;
 }
 
 const initialState: UsersState = {
-  list: [],
+  items: [],
   selectedUser: null,
-  loading: false,
-  error: null,
+  loaded: false,
+  hasError: null,
 };
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
@@ -44,36 +44,36 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUsers.pending, state => {
-        state.loading = true;
-        state.error = null;
+        state.loaded = true;
+        state.hasError = null;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
+        state.loaded = false;
+        state.items = action.payload;
       })
       .addCase(fetchUsers.rejected, state => {
-        state.loading = false;
-        state.error = 'Users can not be found';
+        state.loaded = false;
+        state.hasError = 'Users can not be found';
       })
 
       .addCase(fetchUserById.pending, state => {
-        state.loading = true;
-        state.error = null;
+        state.loaded = true;
+        state.hasError = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loaded = false;
         state.selectedUser = action.payload;
       })
       .addCase(fetchUserById.rejected, state => {
-        state.loading = false;
-        state.error = 'A user can not be found';
+        state.loaded = false;
+        state.hasError = 'A user can not be found';
       });
   },
 });
 
-export const selectUsersList = (state: RootState) => state.users.list;
-export const selectUsersLoading = (state: RootState) => state.users.loading;
-export const selectUsersError = (state: RootState) => state.users.error;
+export const selectUsersList = (state: RootState) => state.users.items;
+export const selectUsersLoading = (state: RootState) => state.users.loaded;
+export const selectUsersError = (state: RootState) => state.users.hasError;
 export const selectSelectedUser = (state: RootState) =>
   state.users.selectedUser;
 

@@ -4,17 +4,17 @@ import { getPosts, getUserPosts } from '../../api/posts';
 import { RootState } from '../../app/store';
 
 export interface PostsState {
-  posts: Post[];
+  items: Post[];
   selectedPost: Post | null;
-  loading: boolean;
-  error: string | null;
+  loaded: boolean;
+  hasError: string | null;
 }
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   selectedPost: null,
-  loading: true,
-  error: null,
+  loaded: true,
+  hasError: null,
 };
 
 export const fetchUserPosts = createAsyncThunk('posts/fetchPosts', async () => {
@@ -44,37 +44,37 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        state.loading = true;
-        state.error = null;
-        state.posts = [];
+        state.loaded = true;
+        state.hasError = null;
+        state.items = [];
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.posts = action.payload;
+        state.loaded = false;
+        state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.loading = false;
-        state.error = 'Posts can not be found';
+        state.loaded = false;
+        state.hasError = 'Posts can not be found';
       })
 
       .addCase(fetchUserPosts.pending, state => {
-        state.loading = true;
-        state.error = null;
+        state.loaded = true;
+        state.hasError = null;
       })
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loaded = false;
         state.selectedPost = action.payload[0] || null;
       })
       .addCase(fetchUserPosts.rejected, state => {
-        state.loading = false;
-        state.error = 'A post can not be found';
+        state.loaded = false;
+        state.hasError = 'A post can not be found';
       });
   },
 });
 
-export const selectPostsList = (state: RootState) => state.posts.posts;
-export const selectPostsLoading = (state: RootState) => state.posts.loading;
-export const selectPostsError = (state: RootState) => state.posts.error;
+export const selectPostsList = (state: RootState) => state.posts.items;
+export const selectPostsLoading = (state: RootState) => state.posts.loaded;
+export const selectPostsError = (state: RootState) => state.posts.hasError;
 export const selectSelectedPosts = (state: RootState) =>
   state.posts.selectedPost;
 
