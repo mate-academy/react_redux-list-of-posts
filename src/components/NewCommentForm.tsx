@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectSelectedPosts } from '../features/slices/postsSlice';
 import { fetchComment } from '../features/slices/commentsSlice';
+import { selectSelectedPost } from '../features/slices/selectedPostSlice';
 
 export const NewCommentForm = () => {
   const [submitting, setSubmitting] = useState(false);
-  const selectedPost = useAppSelector(selectSelectedPosts);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
 
   const handleAddComment = async (data: CommentData) => {

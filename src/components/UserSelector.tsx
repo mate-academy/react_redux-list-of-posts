@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { selectUsersList } from '../features/slices/usersSlice';
 import {
   selectSelectedUser,
-  selectUsersList,
   setSelectedUser,
-} from '../features/slices/usersSlice';
+} from '../features/slices/authorSlice';
 
 export const UserSelector = () => {
   const users = useAppSelector(selectUsersList);

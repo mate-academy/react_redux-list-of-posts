@@ -2,18 +2,18 @@
 
 import classNames from 'classnames';
 import { useAppSelector } from '../app/hooks';
-import {
-  selectPostsList,
-  selectSelectedPosts,
-  setSelectedPost,
-} from '../features/slices/postsSlice';
 import { useDispatch } from 'react-redux';
 import { Post } from '../types/Post';
+import {
+  selectSelectedPost,
+  setSelectedPost,
+} from '../features/slices/selectedPostSlice';
+import { selectPostsList } from '../features/slices/postsSlice';
 
 export const PostsList = () => {
   const dispatch = useDispatch();
   const items = useAppSelector(selectPostsList);
-  const selectedPost = useAppSelector(selectSelectedPosts);
+  const selectedPost = useAppSelector(selectSelectedPost);
 
   const handleSelectedPost = (post: Post) =>
     dispatch(setSelectedPost(post.id === selectedPost?.id ? null : post));

@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 import {
   createComment,
@@ -9,14 +9,12 @@ import { RootState } from '../../app/store';
 
 export interface CommentsState {
   comments: Comment[];
-  selectedComment: Comment | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: CommentsState = {
   comments: [],
-  selectedComment: null,
   loading: true,
   error: null,
 };
@@ -51,11 +49,7 @@ export const fetchDeleteComment = createAsyncThunk(
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    setSelectedComment(state, action: PayloadAction<Comment | null>) {
-      state.selectedComment = action.payload;
-    },
-  },
+  reducers: {},
 
   extraReducers: builder => {
     builder
@@ -100,9 +94,5 @@ export const commentsSlice = createSlice({
 export default commentsSlice.reducer;
 
 export const selectComments = (state: RootState) => state.comments.comments;
-export const selectedComment = (state: RootState) =>
-  state.comments.selectedComment;
 export const loadingComment = (state: RootState) => state.comments.loading;
 export const errorComment = (state: RootState) => state.comments.error;
-
-export const { setSelectedComment } = commentsSlice.actions;

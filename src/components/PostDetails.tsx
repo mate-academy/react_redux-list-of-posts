@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectSelectedPosts } from '../features/slices/postsSlice';
+
 import {
   errorComment,
   fetchDeleteComment,
@@ -10,13 +10,14 @@ import {
   loadingComment,
   selectComments,
 } from '../features/slices/commentsSlice';
+import { selectSelectedPost } from '../features/slices/selectedPostSlice';
 
 export const PostDetails = () => {
   const dispatch = useAppDispatch();
   const comments = useAppSelector(selectComments);
   const loaded = useAppSelector(loadingComment);
   const hasError = useAppSelector(errorComment);
-  const selectedPost = useAppSelector(selectSelectedPosts);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

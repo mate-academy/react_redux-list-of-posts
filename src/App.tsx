@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -10,22 +9,25 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchUsers, selectSelectedUser } from './features/slices/usersSlice';
+import { fetchUsers } from './features/slices/usersSlice';
 import {
-  fetchPosts,
   selectPostsError,
   selectPostsList,
   selectPostsLoading,
-  selectSelectedPosts,
-  setSelectedPost,
 } from './features/slices/postsSlice';
+import { selectSelectedUser } from './features/slices/authorSlice';
+import {
+  fetchPosts,
+  selectSelectedPost,
+  setSelectedPost,
+} from './features/slices/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const author = useAppSelector(selectSelectedUser);
 
   const items = useAppSelector(selectPostsList);
-  const selectedPost = useAppSelector(selectSelectedPosts);
+  const selectedPost = useAppSelector(selectSelectedPost);
   const loaded = useAppSelector(selectPostsLoading);
   const hasError = useAppSelector(selectPostsError);
 
