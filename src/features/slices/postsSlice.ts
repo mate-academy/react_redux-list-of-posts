@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getPosts } from '../../api/posts';
+import { getPosts, getUserPosts } from '../../api/posts';
 import { RootState } from '../../app/store';
 
 export interface PostsState {
@@ -21,6 +21,15 @@ export const fetchUserPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return response;
 });
 
+export const fetchPosts = createAsyncThunk(
+  'userPosts/fetchUserPosts',
+  async (userId: number) => {
+    const response = await getUserPosts(userId);
+
+    return response;
+  },
+);
+
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -39,6 +48,20 @@ export const postsSlice = createSlice({
       .addCase(fetchUserPosts.rejected, state => {
         state.loaded = false;
         state.hasError = 'A post can not be found';
+      })
+
+      .addCase(fetchPosts.pending, state => {
+        state.loaded = true;
+        state.items = [];
+        state.hasError = null;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.loaded = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchPosts.rejected, state => {
+        state.loaded = false;
+        state.hasError = 'Posts can not be found';
       });
   },
 });

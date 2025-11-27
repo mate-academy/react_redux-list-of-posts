@@ -11,13 +11,13 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/slices/usersSlice';
 import {
+  fetchPosts,
   selectPostsError,
   selectPostsList,
   selectPostsLoading,
 } from './features/slices/postsSlice';
 import { selectSelectedUser } from './features/slices/authorSlice';
 import {
-  fetchPosts,
   selectSelectedPost,
   setSelectedPost,
 } from './features/slices/selectedPostSlice';

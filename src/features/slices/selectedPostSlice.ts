@@ -1,6 +1,5 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getUserPosts } from '../../api/posts';
 import { RootState } from '../../app/store';
 
 export interface SelectedPostState {
@@ -10,15 +9,6 @@ export interface SelectedPostState {
 const initialState: SelectedPostState = {
   item: null,
 };
-
-export const fetchPosts = createAsyncThunk(
-  'userPosts/fetchUserPosts',
-  async (userId: number) => {
-    const response = await getUserPosts(userId);
-
-    return response;
-  },
-);
 
 export const selectedPostSlice = createSlice({
   name: 'selectedPost',
