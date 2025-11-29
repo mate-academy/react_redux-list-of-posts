@@ -11,11 +11,9 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 import { Post } from './types/Post';
-import { User } from './types/User';
 
 import { useAppSelector, useAppDispatch } from './app/hooks';
 import { fetchPostsByUser, clearPosts } from './features/posts/postsSlice';
-import { setAuthor } from './features/author/authorSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
@@ -27,7 +25,6 @@ export const App: React.FC = () => {
   const hasError = useAppSelector(state => state.posts.hasError);
   const selectedPost = useAppSelector(state => state.selectedPost.current);
 
-  // Quando o autor muda, carrega os posts ou limpa
   useEffect(() => {
     dispatch(setSelectedPost(null));
 
@@ -42,10 +39,6 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(post));
   };
 
-  const handleAuthorChange = (user: User) => {
-    dispatch(setAuthor(user));
-  };
-
   return (
     <main className="section">
       <div className="container">
@@ -53,7 +46,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={handleAuthorChange} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
