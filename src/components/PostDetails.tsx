@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     email: string;
     body: string;
   }) => {
-    await dispatch(addComment({ ...data, postId: post.id }));
+    await dispatch(addComment({ postId: post.id, data }));
   };
 
   const handleDeleteComment = async (commentId: number) => {
