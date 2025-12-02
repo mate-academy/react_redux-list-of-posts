@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -17,63 +17,77 @@ import { fetchUsersThunk } from './features/user/usersSlice';
 import { useCustomDispatch, useCustomSelector } from './hooks/hooks';
 
 export const App: React.FC = () => {
-
   const dispatch = useCustomDispatch<AppDispatch>();
 
-  const {author, items, loaded, hasError, selectedPost, users} = useCustomSelector((rootState: RootState) => {
-    return {
-      ...rootState.authorReducer,
-      ...rootState.postsReducer,
-      ...rootState.selectedPostReducer,
-      ...rootState.usersReducer
-    };
-  })
+  const { author, items, loaded, hasError, selectedPost, users } =
+    useCustomSelector((rootState: RootState) => {
+      return {
+        ...rootState.authorReducer,
+        ...rootState.postsReducer,
+        ...rootState.selectedPostReducer,
+        ...rootState.usersReducer,
+      };
+    });
 
-  const handleAuthor = (author: Author) => {
-    dispatch(setAuthor({author}));
-  }
+  const handleAuthor = (authorArg: Author) => {
+    dispatch(setAuthor({ author: authorArg }));
+  };
 
   function loadUserPosts(userId: number) {
-    dispatch(setLoaded({
-      loaded: false
-    }));
+    dispatch(
+      setLoaded({
+        loaded: false,
+      }),
+    );
 
     getUserPosts(userId)
       .then((posts: Post[]) => {
-        dispatch(setPosts({
-          items: posts
-        }));
+        dispatch(
+          setPosts({
+            items: posts,
+          }),
+        );
       })
       .catch(() => {
-        dispatch(setError({
-          hasError: true
-        }))
+        dispatch(
+          setError({
+            hasError: true,
+          }),
+        );
       })
       // We disable the spinner in any case
-      .finally(() => dispatch(setLoaded({
-        loaded: true
-      })));
+      .finally(() =>
+        dispatch(
+          setLoaded({
+            loaded: true,
+          }),
+        ),
+      );
   }
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(setSelectedPost({
-      selectedPost: null
-    }))
+    dispatch(
+      setSelectedPost({
+        selectedPost: null,
+      }),
+    );
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      return
+      return;
     }
   }, [author]);
 
   const handleSelectedPost = (post: Post) => {
-    dispatch(setSelectedPost({
-      selectedPost: post
-    }))
-  }
+    dispatch(
+      setSelectedPost({
+        selectedPost: post,
+      }),
+    );
+  };
 
   useEffect(() => {
     dispatch(fetchUsersThunk());
@@ -86,7 +100,11 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} value={author} onChange={handleAuthor} />
+                <UserSelector
+                  users={users}
+                  value={author}
+                  onChange={handleAuthor}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -122,9 +140,11 @@ export const App: React.FC = () => {
 
           <div className="tile is-parent">
             <div className="tile is-child box is-success ">
-                {
-                  selectedPost ? <PostDetails post={selectedPost} /> : <p>Choose a post</p>
-                }
+              {selectedPost ? (
+                <PostDetails post={selectedPost} />
+              ) : (
+                <p>Choose a post</p>
+              )}
             </div>
           </div>
         </div>

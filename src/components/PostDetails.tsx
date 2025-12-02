@@ -7,7 +7,11 @@ import * as commentsApi from '../api/comments';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 import { AppDispatch, RootState } from '../app/store';
-import { setComments, setHasError, setLoaded } from '../features/comments/commentsSlice';
+import {
+  setComments,
+  setHasError,
+  setLoaded,
+} from '../features/comments/commentsSlice';
 import { useCustomDispatch, useCustomSelector } from '../hooks/hooks';
 import { setError } from '../features/posts/postsSlice';
 
@@ -19,39 +23,47 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const dispatch = useCustomDispatch<AppDispatch>();
-  const {items, loaded, hasError} = useCustomSelector((rootState: RootState) => {
-    return rootState.commentsReducer;
-  });
+  const { items, loaded, hasError } = useCustomSelector(
+    (rootState: RootState) => {
+      return rootState.commentsReducer;
+    },
+  );
 
   const comments: Comment[] = [...items];
 
   function loadComments() {
     dispatch(
       setLoaded({
-        loaded: false
+        loaded: false,
       }),
       setHasError({
-        hasError: false
-      })
-    )
+        hasError: false,
+      }),
+    );
     setVisible(false);
 
     commentsApi
       .getPostComments(post.id)
-      .then((comments: Comment[]) => {
-        dispatch(setComments({
-          items: [...comments]
-        }))
+      .then((commentsFetched: Comment[]) => {
+        dispatch(
+          setComments({
+            items: [...commentsFetched],
+          }),
+        );
       }) // save the loaded comments
       .catch(() => {
-        dispatch(setHasError({
-          hasError: true
-        }))
+        dispatch(
+          setHasError({
+            hasError: true,
+          }),
+        );
       }) // show an error when something went wrong
       .finally(() => {
-        dispatch(setLoaded({
-          loaded: true
-        }))
+        dispatch(
+          setLoaded({
+            loaded: true,
+          }),
+        );
       }); // hide the spinner
   }
 
@@ -94,9 +106,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       dispatch(
         setComments({
-          items: [...items, newComment]
-        })
-      )
+          items: [...items, newComment],
+        }),
+      );
 
       //setComments(currentComments => [...currentComments, newComment]);
 
@@ -108,9 +120,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // we show an error message in case of any error
       dispatch(
         setError({
-          hasError: true
-        })
-      )
+          hasError: true,
+        }),
+      );
     }
   };
 
@@ -119,17 +131,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
 
-    const newItems: Comment[] = items.filter(
-      (comment: Comment) => {
-        return comment.id !== commentId
-      }
-    )
+    const newItems: Comment[] = items.filter((comment: Comment) => {
+      return comment.id !== commentId;
+    });
 
     dispatch(
       setComments({
         items: [...newItems],
-      })
-    )
+      }),
+    );
 
     await commentsApi.deleteComment(commentId);
   };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import * as uuid from 'uuid'
+import * as uuid from 'uuid';
 
 type Props = {
   users: User[];
@@ -70,25 +70,25 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.length > 0 && users.map((user) => {
+          {users.length > 0 &&
+            users.map(user => {
+              const key = uuid.v4();
 
-            let key = uuid.v4()
-
-            return (
-              <a
-              key={key}
-              href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-            >
-              {user.name}
-            </a>
-            )
-          })}
+              return (
+                <a
+                  key={key}
+                  href={`#user-${user.id}`}
+                  onClick={() => {
+                    onChange(user);
+                  }}
+                  className={classNames('dropdown-item', {
+                    'is-active': user.id === selectedUser?.id,
+                  })}
+                >
+                  {user.name}
+                </a>
+              );
+            })}
         </div>
       </div>
     </div>
