@@ -6,14 +6,12 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
-import { AppDispatch, RootState } from '../app/store';
+import { RootState } from '../app/store';
 import {
-  setComments,
-  setHasError,
-  setLoaded,
+  loadCommentsThunk,
+  setComments
 } from '../features/comments/commentsSlice';
-import { useCustomDispatch, useCustomSelector } from '../hooks/hooks';
-import { setError } from '../features/posts/postsSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   post: Post;
@@ -22,78 +20,18 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
-  const dispatch = useCustomDispatch<AppDispatch>();
-  const { items, loaded, hasError } = useCustomSelector(
-    (rootState: RootState) => {
-      return rootState.commentsReducer;
-    },
-  );
+  const dispatch = useAppDispatch();
+  const { items, loaded, hasError } = useAppSelector((rootState: RootState) => {
+    return rootState.commentsReducer;
+  });
 
   const comments: Comment[] = [...items];
 
-  function loadComments() {
-    dispatch(
-      setLoaded({
-        loaded: false,
-      }),
-      setHasError({
-        hasError: false,
-      }),
-    );
-    setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then((commentsFetched: Comment[]) => {
-        dispatch(
-          setComments({
-            items: [...commentsFetched],
-          }),
-        );
-      }) // save the loaded comments
-      .catch(() => {
-        dispatch(
-          setHasError({
-            hasError: true,
-          }),
-        );
-      }) // show an error when something went wrong
-      .finally(() => {
-        dispatch(
-          setLoaded({
-            loaded: true,
-          }),
-        );
-      }); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
   useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
+    dispatch(
+      loadCommentsThunk(post.id)
+    )
+  }, [post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {

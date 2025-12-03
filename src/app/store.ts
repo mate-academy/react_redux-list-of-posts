@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { usersReducer } from '../features/user/usersSlice';
+import { usersReducer } from '../features/users/usersSlice';
 import { authorReducer } from '../features/author/authorSlice';
 import { postsReducer } from '../features/posts/postsSlice';
 // eslint-disable-next-line max-len
@@ -9,11 +9,11 @@ import { commentsReducer } from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
-    usersReducer: usersReducer,
-    authorReducer: authorReducer,
-    postsReducer: postsReducer,
-    selectedPostReducer: selectedPostReducer,
-    commentsReducer: commentsReducer,
+    usersReducer,
+    authorReducer,
+    postsReducer,
+    selectedPostReducer,
+    commentsReducer,
   },
 });
 

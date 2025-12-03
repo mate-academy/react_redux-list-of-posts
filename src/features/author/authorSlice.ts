@@ -1,12 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Author } from '../../types/Author';
 
 interface AuthorState {
   author: Author | null;
-}
-
-interface ActionAuthorReducer {
-  payload: AuthorState;
 }
 
 export const authorSlice = createSlice({
@@ -15,7 +11,10 @@ export const authorSlice = createSlice({
     author: null,
   },
   reducers: {
-    setAuthor(state: AuthorState, action: ActionAuthorReducer) {
+    setAuthor(
+      state: AuthorState,
+      action: PayloadAction<{ author: Author | null }>,
+    ) {
       state.author = action.payload.author;
     },
   },

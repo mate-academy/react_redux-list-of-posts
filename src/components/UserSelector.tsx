@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import * as uuid from 'uuid';
 
 type Props = {
   users: User[];
@@ -16,10 +15,6 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -72,7 +67,8 @@ export const UserSelector: React.FC<Props> = ({
         <div className="dropdown-content">
           {users.length > 0 &&
             users.map(user => {
-              const key = uuid.v4();
+              const { id } = user;
+              const key = id;
 
               return (
                 <a

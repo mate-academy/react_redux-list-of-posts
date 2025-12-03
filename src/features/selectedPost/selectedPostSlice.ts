@@ -1,12 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
 interface SelectedPostState {
   selectedPost: Post | null;
-}
-
-interface ActionSelectedPostReducer {
-  payload: SelectedPostState;
 }
 
 const selectedPostSlice = createSlice({
@@ -17,7 +13,7 @@ const selectedPostSlice = createSlice({
   reducers: {
     setSelectedPost(
       state: SelectedPostState,
-      action: ActionSelectedPostReducer,
+      action: PayloadAction<{ selectedPost: Post }>,
     ) {
       state.selectedPost = action.payload.selectedPost;
     },

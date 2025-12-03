@@ -6,64 +6,37 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
-import { AppDispatch, RootState } from './app/store';
+import { RootState } from './app/store';
 import { Author } from './types/Author';
 import { setAuthor } from './features/author/authorSlice';
-import { setLoaded, setPosts, setError } from './features/posts/postsSlice';
+import { loadPostsThunk } from './features/posts/postsSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
-import { fetchUsersThunk } from './features/user/usersSlice';
-import { useCustomDispatch, useCustomSelector } from './hooks/hooks';
+import { fetchUsersThunk } from './features/users/usersSlice';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const dispatch = useCustomDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
-  const { author, items, loaded, hasError, selectedPost, users } =
-    useCustomSelector((rootState: RootState) => {
-      return {
-        ...rootState.authorReducer,
-        ...rootState.postsReducer,
-        ...rootState.selectedPostReducer,
-        ...rootState.usersReducer,
-      };
-    });
+  const { author } = useAppSelector((rootState: RootState) => {
+    return rootState.authorReducer;
+  });
+
+  const { items, loaded, hasError } = useAppSelector((rootState: RootState) => {
+    return rootState.postsReducer;
+  });
+
+  const { selectedPost } = useAppSelector((rootState: RootState) => {
+    return rootState.selectedPostReducer;
+  });
+
+  const { users } = useAppSelector((rootState: RootState) => {
+    return rootState.usersReducer;
+  });
 
   const handleAuthor = (authorArg: Author) => {
     dispatch(setAuthor({ author: authorArg }));
   };
-
-  function loadUserPosts(userId: number) {
-    dispatch(
-      setLoaded({
-        loaded: false,
-      }),
-    );
-
-    getUserPosts(userId)
-      .then((posts: Post[]) => {
-        dispatch(
-          setPosts({
-            items: posts,
-          }),
-        );
-      })
-      .catch(() => {
-        dispatch(
-          setError({
-            hasError: true,
-          }),
-        );
-      })
-      // We disable the spinner in any case
-      .finally(() =>
-        dispatch(
-          setLoaded({
-            loaded: true,
-          }),
-        ),
-      );
-  }
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -75,7 +48,9 @@ export const App: React.FC = () => {
     );
 
     if (author) {
-      loadUserPosts(author.id);
+      const { id } = author;
+
+      dispatch(loadPostsThunk(id));
     } else {
       return;
     }
