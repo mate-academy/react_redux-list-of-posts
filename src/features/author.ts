@@ -1,23 +1,18 @@
-// import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import { User } from '../types/User';
-// import { getUser } from '../api/users';
+import { createSlice } from '@reduxjs/toolkit';
+import { User } from '../types/User';
 
-// const initialState: User | null = null;
+const initialState: User | null = null;
 
-// export const setAuthor = createAsyncThunk<User | null, number>(
-//   'author/fetch',
-//   (id: number) => getUser(id),
-// );
+export const authorSlice = createSlice({
+  name: 'author',
+  initialState,
+  reducers: {
+    setCurrentUser: (_state, action) => {
+      return action.payload;
+    },
+  },
+});
 
-// export const authorSlice = createSlice({
-//   name: 'author',
-//   initialState,
-//   reducers: {},
-//   extraReducers: builder => {
-//     builder.addCase(setAuthor.fulfilled, (state, action) => {
-//       state = action.payload;
-//     });
-//   },
-// });
+export const { setCurrentUser } = authorSlice.actions;
 
-// export default authorSlice.reducer;
+export default authorSlice.reducer;

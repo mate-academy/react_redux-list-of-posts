@@ -3,10 +3,12 @@ import { usersSlice } from '../features/users';
 import { postsSlice } from '../features/posts';
 import { selectedPostSlice } from '../features/selectedPost';
 import { commentsSlice } from '../features/comments';
+import { authorSlice } from '../features/author';
 
 export const store = configureStore({
   reducer: {
     users: usersSlice.reducer,
+    author: authorSlice.reducer,
     posts: postsSlice.reducer,
     selectedPost: selectedPostSlice.reducer,
     comments: commentsSlice.reducer,

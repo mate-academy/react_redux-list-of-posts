@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadPosts, setCurrentUser } from '../features/posts';
+import { loadPosts } from '../features/posts';
 import { User } from '../types/User';
+import { setCurrentUser } from '../features/author';
 
 type Props = {};
 
 export const UserSelector: React.FC<Props> = ({}) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users);
-  const posts = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export const UserSelector: React.FC<Props> = ({}) => {
             setExpanded(prev => !prev);
           }}
         >
-          <span>{posts.user?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -70,7 +71,7 @@ export const UserSelector: React.FC<Props> = ({}) => {
                 handleOpenUserPosts(userItem);
               }}
               className={classNames('dropdown-item', {
-                'is-active': posts.user?.id === userItem.id,
+                'is-active': author?.id === userItem.id,
               })}
             >
               {userItem.name}

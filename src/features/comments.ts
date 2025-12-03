@@ -1,17 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PostComment, PostCommentData } from '../types/PostComment';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PostComment } from '../types/PostComment';
 import { getPostComments } from '../api/comments';
 
 type State = {
-  comments: [] | PostComment[];
-  loading: boolean;
+  items: [] | PostComment[];
+  loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: State = {
-  comments: [],
-  loading: false,
+  items: [],
+  loaded: false,
   hasError: false,
 };
 
@@ -25,23 +25,23 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     deleteComment: (state, action) => {
-      state.comments = state.comments.filter(c => c.id !== action.payload);
+      state.items = state.items.filter(c => c.id !== action.payload);
     },
     addNewComment: (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
   },
   extraReducers: builder => {
     builder.addCase(loadComments.pending, state => {
-      state.loading = true;
+      state.loaded = true;
       state.hasError = false;
     });
     builder.addCase(loadComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
     builder.addCase(loadComments.rejected, state => {
-      state.loading = false;
+      state.loaded = false;
       state.hasError = true;
     });
   },

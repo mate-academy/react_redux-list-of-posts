@@ -6,15 +6,15 @@ import { User } from '../types/User';
 
 type State = {
   user: User | null;
-  posts: Post[];
-  loading: boolean;
+  items: Post[];
+  loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: State = {
   user: null,
-  posts: [],
-  loading: false,
+  items: [],
+  loaded: false,
   hasError: false,
 };
 
@@ -25,29 +25,23 @@ export const loadPosts = createAsyncThunk('posts/fetch', (userId: number) =>
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setCurrentUser: (state, action) => {
-      state.user = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder.addCase(loadPosts.pending, state => {
-      state.loading = true;
+      state.loaded = true;
       state.hasError = false;
     });
 
     builder.addCase(loadPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(loadPosts.rejected, state => {
       state.hasError = true;
-      state.loading = false;
+      state.loaded = false;
     });
   },
 });
-
-export const { setCurrentUser } = postsSlice.actions;
 
 export default postsSlice.reducer;

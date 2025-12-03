@@ -16,19 +16,18 @@ import { setPost } from './features/selectedPost';
 export const App: React.FC = () => {
   const [sidebar, setSidebar] = useState(false);
   const dispatch = useAppDispatch();
-  const { posts, loading, hasError, user } = useAppSelector(
-    state => state.posts,
-  );
+  const posts = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
   const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     dispatch(loadData());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setSidebar(false);
     dispatch(setPost(null));
-  }, [user]);
+  }, [dispatch, author]);
 
   return (
     <main className="section">
@@ -41,18 +40,18 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!user ? (
+                {!author ? (
                   <p data-cy="NoSelectedUser">No user selected</p>
-                ) : loading ? (
+                ) : posts.loaded ? (
                   <Loader />
-                ) : hasError ? (
+                ) : posts.hasError ? (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     Something went wrong
                   </div>
-                ) : posts.length === 0 ? (
+                ) : posts.items.length === 0 ? (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

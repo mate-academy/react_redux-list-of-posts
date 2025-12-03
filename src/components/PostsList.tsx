@@ -11,7 +11,7 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ selectedPost, handleSidebar }) => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
+  const posts = useAppSelector(state => state.posts);
 
   const onPostSelected = (currentPost: Post | null) => {
     handleSidebar(Boolean(currentPost));
@@ -33,7 +33,7 @@ export const PostsList: React.FC<Props> = ({ selectedPost, handleSidebar }) => {
         </thead>
 
         <tbody>
-          {posts.map(postItem => (
+          {posts.items.map(postItem => (
             <tr key={postItem.id} data-cy="Post">
               <td data-cy="PostId">{postItem.id}</td>
               <td data-cy="PostTitle">{postItem.title}</td>

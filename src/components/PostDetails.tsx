@@ -18,9 +18,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
-  const { comments, loading, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const comments = useAppSelector(state => state.comments);
 
   useEffect(() => {
     if (!selectedPost) {
@@ -60,27 +58,27 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       </div>
 
       <div className="block">
-        {loading ? (
+        {comments.loaded ? (
           <Loader />
         ) : (
           <>
-            {hasError ? (
+            {comments.hasError ? (
               <div className="notification is-danger" data-cy="CommentsError">
                 Something went wrong
               </div>
             ) : (
               <>
-                {!hasError && comments.length === 0 && (
+                {!comments.hasError && comments.items.length === 0 && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
                 )}
 
-                {!hasError && comments.length > 0 && (
+                {!comments.hasError && comments.items.length > 0 && (
                   <>
                     <p className="title is-4">Comments:</p>
 
-                    {comments.map(comment => (
+                    {comments.items.map(comment => (
                       <article
                         className="message is-small"
                         key={comment.id}
@@ -112,7 +110,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                     ))}
                   </>
                 )}
-                {!loading && !visible && (
+                {!comments.loaded && !visible && (
                   <button
                     data-cy="WriteCommentButton"
                     type="button"
