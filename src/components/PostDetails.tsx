@@ -9,7 +9,8 @@ import { Comment, CommentData } from '../types/Comment';
 import { RootState } from '../app/store';
 import {
   loadCommentsThunk,
-  setComments
+  setComments,
+  setHasError,
 } from '../features/comments/commentsSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
@@ -28,9 +29,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments: Comment[] = [...items];
 
   useEffect(() => {
-    dispatch(
-      loadCommentsThunk(post.id)
-    )
+    dispatch(loadCommentsThunk(post.id));
   }, [post.id]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
@@ -57,7 +56,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch (error) {
       // we show an error message in case of any error
       dispatch(
-        setError({
+        setHasError({
           hasError: true,
         }),
       );

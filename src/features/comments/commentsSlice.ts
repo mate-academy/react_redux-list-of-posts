@@ -16,8 +16,8 @@ const initialState: CommentsState = {
 
 export const loadCommentsThunk = createAsyncThunk(
   'comments/loadComments',
-  loadPostComments
-)
+  loadPostComments,
+);
 
 const commentsSlice = createSlice({
   name: 'comments',
@@ -27,34 +27,55 @@ const commentsSlice = createSlice({
       state: CommentsState,
       action: PayloadAction<{ items: Comment[] }>,
     ) {
-      state.items = action.payload.items;
+      return {
+        ...state,
+        items: action.payload.items,
+      };
     },
     setLoaded(
       state: CommentsState,
       action: PayloadAction<{ loaded: boolean }>,
     ) {
-      state.loaded = action.payload.loaded;
+      return {
+        ...state,
+        loaded: action.payload.loaded,
+      };
     },
     setHasError(
       state: CommentsState,
       action: PayloadAction<{ hasError: boolean }>,
     ) {
-      state.hasError = action.payload.hasError;
+      return {
+        ...state,
+        hasError: action.payload.hasError,
+      };
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       .addCase(loadCommentsThunk.pending, (state: CommentsState) => {
-        state.loaded = false;
+        return {
+          ...state,
+          loaded: false,
+        };
       })
-      .addCase(loadCommentsThunk.fulfilled, (state: CommentsState, action: PayloadAction<{items: Comment[]}>) => {
-        state.items = action.payload;
-        state.loaded = true;
-      })
+      .addCase(
+        loadCommentsThunk.fulfilled,
+        (state: CommentsState, action: PayloadAction<Comment[]>) => {
+          return {
+            ...state,
+            items: action.payload,
+            loaded: true,
+          };
+        },
+      )
       .addCase(loadCommentsThunk.rejected, (state: CommentsState) => {
-        state.hasError = true;
-      })
-  }
+        return {
+          ...state,
+          hasError: true,
+        };
+      });
+  },
 });
 
 export const commentsReducer = commentsSlice.reducer;

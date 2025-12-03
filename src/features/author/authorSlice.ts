@@ -15,7 +15,10 @@ export const authorSlice = createSlice({
       state: AuthorState,
       action: PayloadAction<{ author: Author | null }>,
     ) {
-      state.author = action.payload.author;
+      return {
+        ...state,
+        author: action.payload.author,
+      };
     },
   },
 });

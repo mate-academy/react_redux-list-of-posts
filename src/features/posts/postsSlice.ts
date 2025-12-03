@@ -22,29 +22,47 @@ const postsSlice = createSlice({
   },
   reducers: {
     setLoaded(state: PostsState, action: PayloadAction<{ loaded: boolean }>) {
-      state.loaded = action.payload.loaded;
+      return {
+        ...state,
+        loaded: action.payload.loaded,
+      };
     },
     setError(state: PostsState, action: PayloadAction<{ hasError: boolean }>) {
-      state.hasError = action.payload.hasError;
+      return {
+        ...state,
+        hasError: action.payload.hasError,
+      };
     },
     setPosts(state: PostsState, action: PayloadAction<{ items: Post[] }>) {
-      state.items = action.payload.items;
+      return {
+        ...state,
+        items: action.payload.items,
+      };
     },
   },
   extraReducers: builder => {
     builder
       .addCase(loadPostsThunk.pending, (state: PostsState) => {
-        state.loaded = false;
+        return {
+          ...state,
+          loaded: false,
+        };
       })
       .addCase(
         loadPostsThunk.fulfilled,
-        (state: PostsState, action: PayloadAction<{ items: Post[] }>) => {
-          state.items = action.payload;
-          state.loaded = true;
+        (state: PostsState, action: PayloadAction<Post[]>) => {
+          return {
+            ...state,
+            items: action.payload,
+            loaded: true,
+          };
         },
       )
       .addCase(loadPostsThunk.rejected, (state: PostsState) => {
-        state.hasError = true;
+        return {
+          ...state,
+          hasError: true,
+        };
       });
   },
 });

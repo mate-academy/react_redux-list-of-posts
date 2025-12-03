@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { fetchUsers } from './userAPI';
 
@@ -17,9 +17,15 @@ const usersSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchUsersThunk.fulfilled, (state, action) => {
-      state.users = action.payload;
-    });
+    builder.addCase(
+      fetchUsersThunk.fulfilled,
+      (state: UserState, action: PayloadAction<User[]>) => {
+        return {
+          ...state,
+          users: action.payload,
+        };
+      },
+    );
   },
 });
 
