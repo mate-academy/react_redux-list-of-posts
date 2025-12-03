@@ -2,17 +2,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
-import { User } from '../types/User';
 
 type State = {
-  user: User | null;
   items: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: State = {
-  user: null,
   items: [],
   loaded: false,
   hasError: false,
