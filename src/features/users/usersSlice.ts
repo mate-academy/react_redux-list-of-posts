@@ -6,6 +6,8 @@ interface UserState {
   users: User[];
 }
 
+// Contour solution
+
 const initialState: UserState = {
   users: [],
 };
