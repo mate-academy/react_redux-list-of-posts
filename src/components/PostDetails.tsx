@@ -6,30 +6,31 @@ import * as commentsApi from '../api/comments';
 
 // import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setComments, setError, setLoaded, } from '../slices/comments';
 
 // type Props = {
 //   post: Post;
 // };
 
 export const PostDetails: React.FC = () => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
-
+  const { comments, loaded, hasError } = useAppSelector(state => state.comments)
+  const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
+  //we keep visible here
+  const [visible, setVisible] = useState(false);
+
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
     setVisible(false);
 
     commentsApi
-      .getPostComments(selectedPost ? selectedPost.id: 0)
+      .getPostComments(selectedPost ? selectedPost.id : 0)
       .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .catch(() => dispatch(setError(true))) // show an error when something went wrong
+      .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
 
   useEffect(loadComments, [selectedPost?.id]);
@@ -66,10 +67,10 @@ export const PostDetails: React.FC = () => {
         name,
         email,
         body,
-        postId: selectedPost ?selectedPost.id : 0,
+        postId: selectedPost ? selectedPost.id : 0,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      setComments((currentComments: Comment[]) => [...currentComments, newComment]);
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -85,7 +86,7 @@ export const PostDetails: React.FC = () => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
+    setComments((currentComments: Comment[]) =>
       currentComments.filter(comment => comment.id !== commentId),
     );
 
