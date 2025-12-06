@@ -37,7 +37,6 @@ module.exports = {
     'prettier'
   ],
   rules: {
-    // JS
     'semi': 'off',
     '@typescript-eslint/semi': ['error', 'always'],
     'prefer-const': 2,
@@ -52,7 +51,15 @@ module.exports = {
     'brace-style': [2, '1tbs'],
     'arrow-body-style': 0,
     'arrow-parens': 0,
-    'no-param-reassign': [2, { props: true }],
+
+    'no-param-reassign': [
+      'error',
+      {
+        props: true,
+        ignorePropertyModificationsFor: ['state'],
+      },
+    ],
+
     'padding-line-between-statements': [
       2,
       { blankLine: 'always', prev: '*', next: 'return' },
@@ -61,9 +68,7 @@ module.exports = {
       { blankLine: 'always', prev: 'directive', next: '*' },
       { blankLine: 'always', prev: 'block-like', next: '*' },
     ],
-    'implicit-arrow-linebreak:': 0,
-
-    // React
+    'implicit-arrow-linebreak': 0,
     'react/prop-types': 0,
     'react/require-default-props': 0,
     'import/prefer-default-export': 0,
@@ -73,8 +78,8 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'react/state-in-constructor': [2, 'never'],
     'react-hooks/rules-of-hooks': 2,
-    'jsx-a11y/label-has-associated-control': ["error", {
-      assert: "either",
+    'jsx-a11y/label-has-associated-control': ['error', {
+      assert: 'either',
     }],
     'jsx-a11y/label-has-for': [2, {
       components: ['Label'],
@@ -86,18 +91,16 @@ module.exports = {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
 
-    // Typescript
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error'],
     '@typescript-eslint/indent': ['error', 2],
     '@typescript-eslint/ban-types': ['error', {
-        extendDefaults: true,
-        types: {
-          '{}': false,
-        },
+      extendDefaults: true,
+      types: {
+        '{}': false,
       },
-    ],
+    }],
   },
   ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts', 'src/vite-env.d.ts', 'cypress'],
   settings: {
