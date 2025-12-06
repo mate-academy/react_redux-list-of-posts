@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getPosts } from '../api/posts';
 
@@ -22,13 +22,13 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setItems: (state, action) => {
+    setItems: (state, action: PayloadAction<Post[]>) => {
       state.items = action.payload;
     },
-    setLoaded: (state, action) => {
+    setLoaded: (state, action: PayloadAction<boolean>) => {
       state.loaded = action.payload;
     },
-    setError: (state, action) => {
+    setError: (state, action: PayloadAction<boolean>) => {
       state.hasError = action.payload;
     },
   },
@@ -42,8 +42,8 @@ export const postsSlice = createSlice({
         state.loaded = true;
         state.items = action.payload;
       })
-      .addCase(loadPosts.rejected, (state) => {
-        state.loaded = false;
+      .addCase(loadPosts.rejected, state => {
+        state.loaded = true;
         state.hasError = true;
       });
   },

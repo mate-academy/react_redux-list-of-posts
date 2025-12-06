@@ -76,7 +76,8 @@ export const UserSelector: React.FC = (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
                 dispatch(setAuthor(user));
               }}
               className={classNames('dropdown-item', {

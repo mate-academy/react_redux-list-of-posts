@@ -68,8 +68,7 @@ module.exports = {
       { blankLine: 'always', prev: 'directive', next: '*' },
       { blankLine: 'always', prev: 'block-like', next: '*' },
     ],
-    'implicit-arrow-linebreak:': 0,
-
+    'implicit-arrow-linebreak': 0,
     'react/prop-types': 0,
     'react/require-default-props': 0,
     'import/prefer-default-export': 0,

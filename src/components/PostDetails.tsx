@@ -14,9 +14,7 @@ import { setItems, setError, setLoaded } from '../slices/comments';
 // };
 
 export const PostDetails: React.FC = () => {
-  const { items, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
@@ -30,7 +28,7 @@ export const PostDetails: React.FC = () => {
 
     commentsApi
       .getPostComments(selectedPost ? selectedPost.id : 0)
-      .then((comments) => dispatch(setItems(comments))) // save the loaded comments
+      .then(comments => dispatch(setItems(comments))) // save the loaded comments
       .catch(() => dispatch(setError(true))) // show an error when something went wrong
       .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
@@ -72,7 +70,7 @@ export const PostDetails: React.FC = () => {
         postId: selectedPost ? selectedPost.id : 0,
       });
 
-     dispatch(setItems([...items, newComment]));
+      dispatch(setItems([...items, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -80,7 +78,7 @@ export const PostDetails: React.FC = () => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setError(true));
     }
   };
 
@@ -88,9 +86,7 @@ export const PostDetails: React.FC = () => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    dispatch(setItems(
-      items.filter(comment => comment.id !== commentId)
-    ));
+    dispatch(setItems(items.filter(comment => comment.id !== commentId)));
 
     await commentsApi.deleteComment(commentId);
   };
