@@ -4,18 +4,21 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
+// import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppSelector } from '../app/hooks';
 
-type Props = {
-  post: Post;
-};
+// type Props = {
+//   post: Post;
+// };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   function loadComments() {
     setLoaded(false);
@@ -23,13 +26,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setVisible(false);
 
     commentsApi
-      .getPostComments(post.id)
+      .getPostComments(selectedPost ? selectedPost.id: 0)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [selectedPost?.id]);
 
   // The same useEffect with async/await
   /*
@@ -63,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         name,
         email,
         body,
-        postId: post.id,
+        postId: selectedPost ?selectedPost.id : 0,
       });
 
       setComments(currentComments => [...currentComments, newComment]);
@@ -92,9 +95,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">
