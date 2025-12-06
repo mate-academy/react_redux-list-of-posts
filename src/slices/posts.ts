@@ -3,15 +3,15 @@ import { Post } from '../types/Post';
 import { getPosts } from '../api/posts';
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
-  hasError: string | null;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
-  hasError: null,
+  hasError: false,
 };
 
 export const loadPosts = createAsyncThunk('posts/load', async () => {
@@ -22,8 +22,8 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: (state, action) => {
-      state.posts = action.payload;
+    setItems: (state, action) => {
+      state.items = action.payload;
     },
     setLoaded: (state, action) => {
       state.loaded = action.payload;
@@ -35,19 +35,19 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadPosts.pending, state => {
-        state.loaded = true;
-        state.hasError = null;
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        state.loaded = false;
-        state.posts = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
-      .addCase(loadPosts.rejected, (state, action) => {
+      .addCase(loadPosts.rejected, (state) => {
         state.loaded = false;
-        state.hasError = action.error.message || 'Failed to load users';
+        state.hasError = true;
       });
   },
 });
 
 export default postsSlice.reducer;
-export const { setLoaded, setError, setPosts } = postsSlice.actions;
+export const { setLoaded, setError, setItems } = postsSlice.actions;

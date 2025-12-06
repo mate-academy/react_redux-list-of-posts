@@ -5,16 +5,18 @@ import { NewCommentForm } from './NewCommentForm';
 import * as commentsApi from '../api/comments';
 
 // import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setComments, setError, setLoaded, } from '../slices/comments';
+import { setItems, setError, setLoaded } from '../slices/comments';
 
 // type Props = {
 //   post: Post;
 // };
 
 export const PostDetails: React.FC = () => {
-  const { comments, loaded, hasError } = useAppSelector(state => state.comments)
+  const { items, loaded, hasError } = useAppSelector(
+    state => state.comments,
+  );
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
@@ -28,7 +30,7 @@ export const PostDetails: React.FC = () => {
 
     commentsApi
       .getPostComments(selectedPost ? selectedPost.id : 0)
-      .then(setComments) // save the loaded comments
+      .then((comments) => dispatch(setItems(comments))) // save the loaded comments
       .catch(() => dispatch(setError(true))) // show an error when something went wrong
       .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
@@ -70,7 +72,7 @@ export const PostDetails: React.FC = () => {
         postId: selectedPost ? selectedPost.id : 0,
       });
 
-      setComments((currentComments: Comment[]) => [...currentComments, newComment]);
+     dispatch(setItems([...items, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -86,9 +88,9 @@ export const PostDetails: React.FC = () => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments((currentComments: Comment[]) =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(setItems(
+      items.filter(comment => comment.id !== commentId)
+    ));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -110,17 +112,17 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}

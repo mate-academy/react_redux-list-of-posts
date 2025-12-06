@@ -18,7 +18,7 @@ export const PostsList: React.FC = (
     // onPostSelected,
   },
 ) => {
-  const posts = useAppSelector(state => state.posts.posts);
+  const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
   const dispatch = useAppDispatch();
 
