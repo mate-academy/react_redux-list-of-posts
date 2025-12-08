@@ -6,7 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/css/bulma.css';
 import './App.scss';
 
-import { AppDispatch } from './app/store';
+import type { AppDispatch } from './app/store';
 import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
@@ -19,6 +19,7 @@ import {
 } from './features/author/authorSlice';
 
 import {
+  clearPosts,
   fetchPosts,
   selectPosts,
   selectPostsError,
@@ -49,6 +50,7 @@ export const App: React.FC = () => {
       dispatch(fetchPosts(user.id));
     } else {
       dispatch(clearAuthor());
+      dispatch(clearAuthor());
       dispatch(clearSelectedPost());
     }
   };
@@ -56,6 +58,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     dispatch(clearAuthor());
     dispatch(clearSelectedPost());
+    dispatch(clearPosts());
   }, [dispatch]);
 
   return (

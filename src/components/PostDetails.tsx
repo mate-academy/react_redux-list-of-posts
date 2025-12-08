@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as commentsApi from '../api/comments';
-import { AppDispatch } from '../app/store';
+
+import type { AppDispatch } from '../app/store'; // ✔ type-only import
+
 import {
   fetchComments,
   selectComments,
@@ -22,12 +24,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const comments = useSelector(selectComments);
   const loaded = useSelector(selectCommentsLoaded);
   const hasError = useSelector(selectCommentsError);
+
   const [visible, setVisible] = useState(false);
 
+  // ✔ Reset form visibility on post change — fixes Cypress test
+  useEffect(() => {
+    setVisible(false);
+  }, [post.id]);
+
+  // ✔ Fetch comments on post change
   useEffect(() => {
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
 
+  // Add comment
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       await commentsApi.createComment({
@@ -36,20 +46,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
         postId: post.id,
       });
-      // Note: In a real app, you'd dispatch an action to add comment to Redux
-      // For now, we just rely on re-fetching comments
+
       dispatch(fetchComments(post.id));
     } catch (error) {
-      // Handle error
+      throw error;
     }
   };
 
+  // Delete comment
   const deleteComment = async (commentId: number) => {
     try {
       await commentsApi.deleteComment(commentId);
       dispatch(fetchComments(post.id));
     } catch (error) {
-      // Handle error
+      throw error;
     }
   };
 
@@ -57,7 +67,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 

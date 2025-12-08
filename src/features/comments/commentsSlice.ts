@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getPostComments } from '../../api/comments';
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { Comment } from '../../types/Comment';
 /* eslint-disable no-param-reassign */
 

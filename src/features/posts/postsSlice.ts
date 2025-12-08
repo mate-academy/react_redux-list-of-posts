@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../../api/posts';
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 /* eslint-disable no-param-reassign */
 
@@ -28,14 +28,20 @@ export const fetchPosts = createAsyncThunk(
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    clearPosts: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.items = action.payload;
         state.loaded = true;
         state.hasError = false;
@@ -46,6 +52,8 @@ const postsSlice = createSlice({
       });
   },
 });
+
+export const { clearPosts } = postsSlice.actions;
 
 export const selectPosts = (state: RootState) => state.posts.items;
 export const selectPostsLoaded = (state: RootState) => state.posts.loaded;
