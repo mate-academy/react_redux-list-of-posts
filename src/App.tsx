@@ -11,22 +11,26 @@ import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
+
 import {
   clearAuthor,
   selectAuthor,
   setAuthor,
 } from './features/author/authorSlice';
+
 import {
   fetchPosts,
   selectPosts,
   selectPostsError,
   selectPostsLoaded,
 } from './features/posts/postsSlice';
+
 import {
   clearSelectedPost,
   selectPost,
   selectSelectedPost,
 } from './features/posts/selectedPostSlice';
+
 import { User } from './types/User';
 
 export const App: React.FC = () => {
@@ -45,11 +49,13 @@ export const App: React.FC = () => {
       dispatch(fetchPosts(user.id));
     } else {
       dispatch(clearAuthor());
+      dispatch(clearSelectedPost());
     }
   };
 
   useEffect(() => {
     dispatch(clearAuthor());
+    dispatch(clearSelectedPost());
   }, [dispatch]);
 
   return (

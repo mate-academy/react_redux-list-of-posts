@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../../api/users';
-import { RootState } from '../../app/store';
+import type { RootState } from '../../app/store';
+
 import { User } from '../../types/User';
 /* eslint-disable no-param-reassign */
 
@@ -46,5 +47,7 @@ const usersSlice = createSlice({
 
 export default usersSlice.reducer;
 
-export const selectUsers = (state: RootState) => state.users.items;
+export const selectUsersItems = (state: RootState) => state.users.items;
+export const selectUsersLoaded = (state: RootState) => state.users.loaded;
+export const selectUsersError = (state: RootState) => state.users.hasError;
 export { fetchUsers };
