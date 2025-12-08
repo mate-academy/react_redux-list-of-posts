@@ -1,38 +1,23 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { values, valuesError, submitting } = useAppSelector(
+    state => state.comments,
+  );
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const { selectedPost } = useAppSelector(state => state.posts);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const { name, email, body } = values;
+  const { email: emailError, body: bodyError, name: nameError } = valuesError;
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const id = selectedPost?.id;
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    dispatch(commentsActions.actions.clear());
   };
 
   const handleChange = (
@@ -40,32 +25,41 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    dispatch(commentsActions.actions.setValue({ ...values, [field]: value }));
+    dispatch(
+      commentsActions.actions.setError({ ...valuesError, [field]: false }),
+    );
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    const isNameError = !name;
+    const isEmailError = !email;
+    const isbodyError = !body;
 
-    if (!name || !email || !body) {
+    dispatch(
+      commentsActions.actions.setError({
+        name: isNameError,
+        email: isEmailError,
+        body: isbodyError,
+      }),
+    );
+
+    if (isNameError || isEmailError || isbodyError) {
       return;
     }
 
-    setSubmitting(true);
+    dispatch(
+      commentsActions.addComment({
+        name,
+        email,
+        body,
+        postId: id as number,
+      }),
+    );
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    dispatch(commentsActions.actions.setValue({ ...values, body: '' }));
   };
 
   return (
@@ -81,7 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', { 'is-danger': nameError })}
             value={name}
             onChange={handleChange}
           />
@@ -90,7 +84,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -100,7 +94,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.name && (
+        {nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -118,7 +112,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', { 'is-danger': emailError })}
             value={email}
             onChange={handleChange}
           />
@@ -127,7 +121,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -137,7 +131,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {errors.email && (
+        {emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -154,13 +148,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', { 'is-danger': bodyError })}
             value={body}
             onChange={handleChange}
           />
         </div>
 
-        {errors.body && (
+        {bodyError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
