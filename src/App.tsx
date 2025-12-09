@@ -11,18 +11,21 @@ import { UserSelector } from './components/UserSelector';
 
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts';
+import * as selectedPostActions from './features/selectedPost';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { author } = useAppSelector(state => state.users);
-  const { posts, loading, selectedPost, error } = useAppSelector(
-    state => state.posts,
-  );
+  const { author } = useAppSelector(state => state.author);
+
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     dispatch(postsActions.actions.reset());
+    dispatch(selectedPostActions.actions.selectedPost(null));
 
     if (author) {
       dispatch(postsActions.init(author.id));
@@ -44,9 +47,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loading && <Loader />}
+                {author && loaded && <Loader />}
 
-                {author && !loading && error && (
+                {author && !loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -55,13 +58,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && !loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && !loaded && !hasError && items.length > 0 && (
                   <PostsList />
                 )}
               </div>

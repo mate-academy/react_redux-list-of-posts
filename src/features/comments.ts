@@ -3,51 +3,16 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
-interface Value {
-  name: string;
-  email: string;
-  body: string;
-}
-interface ValueError {
-  name: boolean;
-  email: boolean;
-  body: boolean;
-}
-
 type CommentsState = {
-  comments: Comment[];
-  loading: boolean;
-  loadingNewComment: boolean;
-  error: string;
-  isRemove: boolean;
-  isError: string;
-  isNewCommentError: boolean;
-  valuesError: ValueError;
-  values: Value;
-  submitting: boolean;
-  visible: boolean;
+  items: Comment[];
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: CommentsState = {
-  comments: [],
-  loadingNewComment: false,
-  loading: false,
-  error: '',
-  isRemove: false,
-  isError: '',
-  valuesError: {
-    name: false,
-    body: false,
-    email: false,
-  },
-  values: {
-    name: '',
-    body: '',
-    email: '',
-  },
-  submitting: false,
-  isNewCommentError: false,
-  visible: false,
+  items: [],
+  loaded: false,
+  hasError: '',
 };
 
 export const init = createAsyncThunk('comments/fetch', (postId: number) => {
@@ -77,65 +42,33 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     reset: state => {
-      state.comments = [];
-      state.error = '';
-      state.loading = false;
+      state.items = [];
+      state.hasError = '';
+      state.loaded = false;
     },
     deleteComment: (state, { payload }: PayloadAction<number>) => {
-      state.comments = state.comments.filter(c => c.id !== payload);
-    },
-    setValue: (state, { payload }: PayloadAction<Value>) => {
-      state.values = payload;
-    },
-    setError: (state, { payload }: PayloadAction<ValueError>) => {
-      state.valuesError = payload;
-    },
-    clear: state => {
-      state.values = initialState.values;
-      state.valuesError = initialState.valuesError;
-    },
-    setVisible: (state, { payload }: PayloadAction<boolean>) => {
-      state.visible = payload;
+      state.items = state.items.filter(c => c.id !== payload);
     },
   },
   extraReducers(builder) {
     builder.addCase(init.pending, state => {
-      state.loading = true;
-      state.error = '';
+      state.loaded = true;
+      state.hasError = '';
     });
     builder.addCase(init.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
     builder.addCase(init.rejected, state => {
-      state.error = 'Error';
-      state.loading = false;
-    });
-    builder.addCase(removeComment.pending, state => {
-      state.isRemove = true;
+      state.hasError = 'Error';
+      state.loaded = false;
     });
     builder.addCase(removeComment.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(c => c.id !== action.payload);
-      state.isRemove = false;
+      state.items = state.items.filter(c => c.id !== action.payload);
     });
-    builder.addCase(removeComment.rejected, state => {
-      state.isRemove = false;
-      state.isError = 'Error Remove';
-    });
-    builder.addCase(addComment.pending, state => {
-      state.loadingNewComment = true;
-      state.isNewCommentError = false;
-      state.submitting = true;
-    });
+
     builder.addCase(addComment.fulfilled, (state, action) => {
-      state.loadingNewComment = false;
-      state.submitting = false;
-      state.comments = [...state.comments, action.payload];
-    });
-    builder.addCase(addComment.rejected, state => {
-      state.isNewCommentError = true;
-      state.submitting = false;
-      state.loadingNewComment = false;
+      state.items = [...state.items, action.payload];
     });
   },
 });

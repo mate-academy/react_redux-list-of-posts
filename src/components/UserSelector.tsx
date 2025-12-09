@@ -3,12 +3,13 @@ import classNames from 'classnames';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as usersActions from '../features/users';
-import * as commentsActions from '../features/comments';
+import { authorSlice } from '../features/author';
 
 export const UserSelector: React.FC = ({}) => {
   const [expanded, setExpanded] = useState(false);
 
-  const { author, users } = useAppSelector(state => state.users);
+  const { users } = useAppSelector(state => state.users);
+  const { author } = useAppSelector(state => state.author);
 
   const dispatch = useAppDispatch();
 
@@ -69,8 +70,7 @@ export const UserSelector: React.FC = ({}) => {
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                dispatch(usersActions.actions.currentAuthor(user));
-                dispatch(commentsActions.actions.setVisible(false));
+                dispatch(authorSlice.actions.currentAuthor(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === author?.id,

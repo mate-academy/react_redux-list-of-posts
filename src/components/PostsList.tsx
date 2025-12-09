@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import * as postsActions from '../features/posts';
-import * as commentsActions from '../features/comments';
+import * as selectedPostActions from '../features/selectedPost';
 
 export const PostsList: React.FC = () => {
-  const { selectedPost, posts } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const dispatch = useAppDispatch();
 
@@ -26,7 +26,7 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {items.map(post => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
@@ -39,11 +39,10 @@ export const PostsList: React.FC = () => {
                   })}
                   onClick={() => {
                     dispatch(
-                      postsActions.actions.selectedPost(
+                      selectedPostActions.actions.selectedPost(
                         post.id === selectedPost?.id ? null : post,
                       ),
                     );
-                    dispatch(commentsActions.actions.setVisible(false));
                   }}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}

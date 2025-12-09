@@ -4,17 +4,15 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 type PostsState = {
-  posts: Post[];
-  loading: boolean;
-  error: string;
-  selectedPost: Post | null;
+  items: Post[];
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: '',
-  selectedPost: null,
+  items: [],
+  loaded: false,
+  hasError: '',
 };
 
 export const init = createAsyncThunk('posts/fetch', (id: number) => {
@@ -26,30 +24,26 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts(state, { payload }: PayloadAction<[]>) {
-      state.posts = payload;
-    },
-    selectedPost(state, { payload }: PayloadAction<Post | null>) {
-      state.selectedPost = payload;
+      state.items = payload;
     },
     reset: state => {
-      state.error = '';
-      state.loading = false;
-      state.selectedPost = null;
+      state.hasError = '';
+      state.loaded = false;
     },
   },
   extraReducers(builder) {
     builder.addCase(init.pending, state => {
-      state.loading = true;
+      state.loaded = true;
     });
     builder.addCase(init.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.items = action.payload;
 
-      state.loading = false;
+      state.loaded = false;
     });
     builder.addCase(init.rejected, state => {
-      state.loading = false;
+      state.loaded = false;
 
-      state.error = 'Error';
+      state.hasError = 'Error';
     });
   },
 });
