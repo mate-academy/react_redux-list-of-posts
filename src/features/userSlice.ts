@@ -32,7 +32,7 @@ export const userSlice = createSlice({
     builder
       .addCase(loadUsers.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loaded = true;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
         state.hasError = false;
       })
@@ -44,7 +44,7 @@ export const userSlice = createSlice({
       })
       .addCase(loadUsers.rejected, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loaded = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
         state.hasError = true;
       });
