@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// src/components/PostDetails.tsx
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -8,11 +9,9 @@ import {
   addComment,
   deleteComment,
   loadComments,
-  selectCommentsByPostId,
+  selectComments,
   selectCommentsError,
-  selectCommentsLoading,
-  selectIsCommentFormVisibleForPost,
-  showCommentForm,
+  selectCommentsLoaded,
 } from '../features/commentsSlice';
 
 type Props = {
@@ -22,25 +21,23 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const comments = useAppSelector(selectCommentsByPostId(post.id));
-  const loading = useAppSelector(selectCommentsLoading);
+  const comments = useAppSelector(selectComments);
+  const loaded = useAppSelector(selectCommentsLoaded);
   const hasError = useAppSelector(selectCommentsError);
-  const visible = useAppSelector(selectIsCommentFormVisibleForPost(post.id));
+
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!post) {
-      return;
-    }
-
+    setVisible(false);
     dispatch(loadComments(post.id));
-  }, [dispatch, post, post.id]);
+  }, [dispatch, post.id]);
 
   const handleAddComment = async (data: CommentData) => {
     await dispatch(addComment({ postId: post.id, data }));
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    await dispatch(deleteComment({ postId: post.id, commentId }));
+    await dispatch(deleteComment(commentId));
   };
 
   return (
@@ -52,21 +49,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {loading && <Loader />}
+        {!loaded && <Loader />}
 
-        {!loading && hasError && (
+        {loaded && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {!loading && !hasError && comments.length === 0 && (
+        {loaded && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!loading && !hasError && comments.length > 0 && (
+        {loaded && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -100,18 +97,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !hasError && !visible && (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(showCommentForm(post.id))}
+            onClick={() => setVisible(true)}
           >
             Write a comment
           </button>
         )}
 
-        {!loading && !hasError && visible && (
+        {loaded && !hasError && visible && (
           <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>

@@ -5,13 +5,13 @@ import { RootState } from '../app/store';
 
 export type UserState = {
   items: User[];
-  loading: boolean;
+  loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: UserState = {
   items: [],
-  loading: false,
+  loaded: false,
   hasError: false,
 };
 
@@ -32,19 +32,19 @@ export const userSlice = createSlice({
     builder
       .addCase(loadUsers.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = true;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
         state.hasError = false;
       })
       .addCase(loadUsers.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
         state.items = action.payload;
       })
       .addCase(loadUsers.rejected, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
         state.hasError = true;
       });
@@ -55,5 +55,5 @@ export const usersReducer = userSlice.reducer;
 
 // Selectors
 export const selectUsers = (state: RootState) => state.users.items;
-export const selectUsersLoading = (state: RootState) => state.users.loading;
+export const selectUsersLoading = (state: RootState) => state.users.loaded;
 export const selectUsersError = (state: RootState) => state.users.hasError;

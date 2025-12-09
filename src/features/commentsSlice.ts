@@ -1,128 +1,105 @@
-/* eslint-disable @typescript-eslint/indent */
-// src/features/comments/commentsSlice.ts
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/extensions
+// src/features/commentsSlice.ts
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import type { RootState } from '../app/store';
 import { Comment, CommentData } from '../types/Comment';
 import * as commentsApi from '../api/comments';
-import type { RootState } from '../app/store';
 
 type CommentsState = {
-  itemsByPostId: Record<number, Comment[]>;
-  loading: boolean;
+  items: Comment[];
+  loaded: boolean;
   hasError: boolean;
-  visibleForPostId: number | null;
 };
 
 const initialState: CommentsState = {
-  itemsByPostId: {},
-  loading: false,
+  items: [],
+  loaded: false,
   hasError: false,
-  visibleForPostId: null,
 };
 
-export const loadComments = createAsyncThunk<
-  { postId: number; comments: Comment[] },
-  number
->('comments/loadComments', async (postId: number) => {
-  const comments = await commentsApi.getPostComments(postId);
+export const loadComments = createAsyncThunk<Comment[], number>(
+  'comments/loadComments',
+  async (postId: number) => {
+    const comments = await commentsApi.getPostComments(postId);
 
-  return { postId, comments };
-});
+    return comments;
+  },
+);
 
-export const addComment = createAsyncThunk<
-  { postId: number; comment: Comment },
-  { postId: number; data: CommentData }
+// eslint-disable-next-line max-len, prettier/prettier
+export const addComment = createAsyncThunk< Comment, { postId: number; data: CommentData }
 >('comments/addComment', async ({ postId, data }) => {
   const newComment = await commentsApi.createComment({
     ...data,
     postId,
   });
 
-  return { postId, comment: newComment };
+  return newComment;
 });
 
-// eslint-disable-next-line prettier/prettier, max-len
-export const deleteComment = createAsyncThunk<
-  { postId: number; commentId: number },
-  { postId: number; commentId: number }
->('comments/deleteComment', async ({ postId, commentId }) => {
-  // eslint-disable-next-line prettier/prettier
-  await commentsApi.deleteComment(commentId);
+export const deleteComment = createAsyncThunk<number, number>(
+  'comments/deleteComment',
+  async (commentId: number) => {
+    await commentsApi.deleteComment(commentId);
 
-  // eslint-disable-next-line @typescript-eslint/indent
-  return { postId, commentId };
-});
+    return commentId;
+  },
+);
 
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    showCommentForm(state, action: PayloadAction<number>) {
+    clearComments(state) {
       // eslint-disable-next-line no-param-reassign
-      state.visibleForPostId = action.payload;
-    },
-    hideCommentForm(state) {
+      state.items = [];
       // eslint-disable-next-line no-param-reassign
-      state.visibleForPostId = null;
+      state.loaded = false;
+      // eslint-disable-next-line no-param-reassign
+      state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(loadComments.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = true;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
         state.hasError = false;
+        // eslint-disable-next-line no-param-reassign
+        state.items = [];
       })
       .addCase(loadComments.fulfilled, (state, action) => {
-        const { postId, comments } = action.payload;
-
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
-        state.itemsByPostId[postId] = comments;
+        state.items = action.payload;
       })
       .addCase(loadComments.rejected, state => {
         // eslint-disable-next-line no-param-reassign
-        state.loading = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
         state.hasError = true;
+        // eslint-disable-next-line no-param-reassign
+        state.items = [];
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        const { postId, comment } = action.payload;
-        const current = state.itemsByPostId[postId] || [];
-
-        // eslint-disable-next-line no-param-reassign
-        state.itemsByPostId[postId] = [...current, comment];
+        state.items.push(action.payload);
       })
       .addCase(deleteComment.fulfilled, (state, action) => {
-        const { postId, commentId } = action.payload;
-        const current = state.itemsByPostId[postId] || [];
+        const id = action.payload;
 
         // eslint-disable-next-line no-param-reassign
-        state.itemsByPostId[postId] = current.filter(c => c.id !== commentId);
+        state.items = state.items.filter(c => c.id !== id);
       });
   },
 });
 
-export const { showCommentForm, hideCommentForm } = commentsSlice.actions;
+export const { clearComments } = commentsSlice.actions;
 export const commentsReducer = commentsSlice.reducer;
 
 // selectors
-export const selectCommentsByPostId =
-  // eslint-disable-next-line prettier/prettier, max-len
-
-
-    (postId: number) =>
-    (state: RootState): Comment[] =>
-      state.comments.itemsByPostId[postId] || [];
-
-export const selectCommentsLoading = (state: RootState) =>
-  state.comments.loading;
-
+export const selectComments = (state: RootState) => state.comments.items;
+// eslint-disable-next-line max-len
+export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;
 export const selectCommentsError = (state: RootState) =>
   state.comments.hasError;
-
-export const selectIsCommentFormVisibleForPost =
-  (postId: number) => (state: RootState) =>
-    state.comments.visibleForPostId === postId;
