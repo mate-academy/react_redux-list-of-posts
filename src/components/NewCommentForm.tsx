@@ -1,12 +1,9 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsActions from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -35,6 +32,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
+  const dispatch = useAppDispatch();
+  // const { values, valuesError } = useAppSelector(state => state.comments);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const postId = selectedPost?.id;
+
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -46,26 +48,36 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setSubmitting(true);
+
+    const isNameError = !name;
+    const isEmailError = !email;
+    const isbodyError = !body;
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: isNameError,
+      email: isEmailError,
+      body: isbodyError,
     });
 
-    if (!name || !email || !body) {
+    if (isNameError || isEmailError || isbodyError) {
+      setSubmitting(false);
+
       return;
     }
 
-    setSubmitting(true);
+    if (!postId) {
+      return;
+    }
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    const result = await dispatch(
+      commentsActions.addComment({ name, email, body, postId }),
+    );
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    if (result) {
+      setValues(current => ({ ...current, body: '' }));
+      setSubmitting(false);
+    }
   };
 
   return (
