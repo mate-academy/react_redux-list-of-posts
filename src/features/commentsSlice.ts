@@ -5,14 +5,12 @@ import * as commentsApi from '../api/comments';
 
 export interface CommentsState {
   items: Comment[];
-  postId: number | null;
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState = {
   items: [] as Comment[],
-  postId: null,
   loaded: false,
   hasError: false,
 };
@@ -52,6 +50,7 @@ export const commentsSlice = createSlice({
     builder
       .addCase(loadComments.pending, state => {
         state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadComments.fulfilled, (state, action) => {
         state.loaded = true;
