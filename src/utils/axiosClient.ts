@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://mate.academy/students-api',
+  baseURL: '',
   // application/json is a default Content-Type
 });
 
