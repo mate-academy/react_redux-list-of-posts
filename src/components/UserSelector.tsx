@@ -1,24 +1,35 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { initUsers, setSelectedUser } from '../features/UsersSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+// type Props = {
+//   value: User | null;
+//   onChange: (user: User) => void;
+// };
 
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector: React.FC = () => {
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+  // `value` та `onChange` – традиційні назви для поля форми
+  // `selectedUser` представляє те, що насправді тут зберігається
+
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // користувачі завантажуються з API, тому з міркувань продуктивності
+  // ми завантажуємо їх один раз в `UsersContext`, коли `App` відкривається
+  // і тепер ми можемо легко повторно використовувати `UserSelector` у будь-якій формі
+  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const selectedUser = useAppSelector(state => state.users.selectedUser);
+
+  useEffect(() => {
+    dispatch(initUsers());
+  }, [dispatch]);
+
+  const users = useAppSelector(state => state.users.users);
 
   useEffect(() => {
     if (!expanded) {
@@ -26,9 +37,12 @@ export const UserSelector: React.FC<Props> = ({
     }
 
     // we save a link to remove the listener later
+    // ми зберігаємо посилання, щоб пізніше видалити слухач
     const handleDocumentClick = () => {
       // we close the Dropdown on any click (inside or outside)
       // So there is not need to check if we clicked inside the list
+      // ми закриваємо випадаючий список при будь-якому кліку (всередині чи зовні)
+      // Тож немає потреби перевіряти, чи ми клацнули всередині списку
       setExpanded(false);
     };
 
@@ -40,6 +54,7 @@ export const UserSelector: React.FC<Props> = ({
     };
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
+    // ми не хочемо прослуховувати зовнішні кліки // коли випадаюче меню закрите
   }, [expanded]);
 
   return (
@@ -72,8 +87,10 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
+              onClick={e => {
+                e.preventDefault();
+                dispatch(setSelectedUser(user));
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,39 +9,57 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { initPosts, setSelectedPost } from './features/PostsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [author, setAuthor] = useState<User | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const { loaded, hasError, posts, selectedPost } = useAppSelector(
+    state => state.posts,
+  );
+  const selectedUser = useAppSelector(state => state.users.selectedUser);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
-    if (author) {
-      loadUserPosts(author.id);
+    if (selectedUser) {
+      dispatch(initPosts(selectedUser.id));
     } else {
-      setPosts([]);
+      dispatch(initPosts(0)); // або окремий clearPosts, якщо є
     }
-  }, [author]);
+  }, [selectedUser, dispatch]);
+
+  // function loadUserPosts(userId: number) {
+  //   setLoaded(false);
+
+  //   getUserPosts(userId)
+  //     .then(setPosts)
+  //     .catch(() => setError(true))
+  //     // We disable the spinner in any case
+  //     // Ми вимикаємо спінер у будь-якому випадку
+  //     .finally(() => setLoaded(true));
+  // }
+
+  // useEffect(() => {
+  //   // we clear the post when an author is changed
+  //   // not to confuse the user
+  //   // ми очищуємо публікацію, коли змінюється автор
+  //   // щоб не заплутати користувача
+  //   setSelectedPost(null);
+
+  //   if (author) {
+  //     loadUserPosts(author.id);
+  //   } else {
+  //     setPosts([]);
+  //   }
+  // }, [author]);
 
   return (
     <main className="section">
@@ -50,15 +68,17 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                {author && !loaded && <Loader />}
+                {selectedUser && !loaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {selectedUser && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,18 +87,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {selectedUser && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {selectedUser && loaded && !hasError && posts.length > 0 && (
+                  <PostsList posts={posts} selectedPost={selectedPost} />
                 )}
               </div>
             </div>
