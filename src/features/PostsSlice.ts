@@ -1,19 +1,17 @@
 /* eslint-disable no-param-reassign */
-
+// src/features/PostsSlice.ts
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
-type PostsState = {
-  posts: Post[];
-  selectedPost: Post | null;
+export type PostsState = {
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  selectedPost: null,
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -26,18 +24,19 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setSelectedPost: (state, action) => {
-      state.selectedPost = action.payload;
+    clearPosts: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
-  extraReducers(builder) {
+  extraReducers: builder => {
     builder.addCase(initPosts.pending, state => {
       state.loaded = false;
       state.hasError = false;
-      state.selectedPost = null;
     });
     builder.addCase(initPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.items = action.payload;
       state.loaded = true;
       state.hasError = false;
     });
@@ -48,5 +47,5 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setSelectedPost } = postsSlice.actions;
+export const { clearPosts } = postsSlice.actions;
 export default postsSlice.reducer;

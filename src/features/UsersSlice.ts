@@ -4,35 +4,46 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
-type UsersState = {
-  users: User[];
-  selectedUser: User | null;
+export type UsersState = {
+  items: User[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: UsersState = {
-  users: [],
-  selectedUser: null,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
-// Асинхронний thunk для завантаження користувачів
-export const initUsers = createAsyncThunk('users/fetch', () => {
-  return getUsers();
-});
+export const initUsers = createAsyncThunk('users/fetch', () => getUsers());
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setSelectedUser: (state, action) => {
-      state.selectedUser = action.payload;
+    clearUsers: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
-  extraReducers(builder) {
+  extraReducers: builder => {
+    builder.addCase(initUsers.pending, state => {
+      state.loaded = false;
+      state.hasError = false;
+    });
     builder.addCase(initUsers.fulfilled, (state, action) => {
-      state.users = action.payload;
+      state.items = action.payload;
+      state.loaded = true;
+      state.hasError = false;
+    });
+    builder.addCase(initUsers.rejected, state => {
+      state.loaded = true;
+      state.hasError = true;
     });
   },
 });
 
-export const { setSelectedUser } = usersSlice.actions;
+export const { clearUsers } = usersSlice.actions;
 export default usersSlice.reducer;

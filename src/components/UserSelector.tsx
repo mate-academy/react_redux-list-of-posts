@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { initUsers, setSelectedUser } from '../features/UsersSlice';
-
-// type Props = {
-//   value: User | null;
-//   onChange: (user: User) => void;
-// };
+import { initUsers } from '../features/UsersSlice';
+import { setAuthor } from '../features/AuthorSlice';
 
 export const UserSelector: React.FC = () => {
   // `value` and `onChange` are traditional names for the form field
@@ -21,15 +17,14 @@ export const UserSelector: React.FC = () => {
   // ми завантажуємо їх один раз в `UsersContext`, коли `App` відкривається
   // і тепер ми можемо легко повторно використовувати `UserSelector` у будь-якій формі
   // const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
-  const selectedUser = useAppSelector(state => state.users.selectedUser);
+  const [expanded, setExpanded] = useState(false);
+  const users = useAppSelector(state => state.users.items);
+  const selectedUser = useAppSelector(state => state.author);
 
   useEffect(() => {
     dispatch(initUsers());
   }, [dispatch]);
-
-  const users = useAppSelector(state => state.users.users);
 
   useEffect(() => {
     if (!expanded) {
@@ -89,7 +84,7 @@ export const UserSelector: React.FC = () => {
               href={`#user-${user.id}`}
               onClick={e => {
                 e.preventDefault();
-                dispatch(setSelectedUser(user));
+                dispatch(setAuthor(user));
                 setExpanded(false);
               }}
               className={classNames('dropdown-item', {

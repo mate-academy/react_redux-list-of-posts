@@ -10,56 +10,31 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { initPosts, setSelectedPost } from './features/PostsSlice';
+import { clearPosts, initPosts } from './features/PostsSlice';
+import { setSelectedPost } from './features/SelectedPostSlice';
+import { clearComments } from './features/CommentsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [hasError, setError] = useState(false);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
 
-  // const [author, setAuthor] = useState<User | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  const { loaded, hasError, posts, selectedPost } = useAppSelector(
-    state => state.posts,
-  );
-  const selectedUser = useAppSelector(state => state.users.selectedUser);
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const selectedUser = useAppSelector(state => state.author);
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
+    dispatch(clearComments());
 
-    if (selectedUser) {
+    if (selectedUser !== null) {
       dispatch(initPosts(selectedUser.id));
     } else {
-      dispatch(initPosts(0)); // або окремий clearPosts, якщо є
+      dispatch(clearPosts());
     }
   }, [selectedUser, dispatch]);
-
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     // We disable the spinner in any case
-  //     // Ми вимикаємо спінер у будь-якому випадку
-  //     .finally(() => setLoaded(true));
-  // }
-
-  // useEffect(() => {
-  //   // we clear the post when an author is changed
-  //   // not to confuse the user
-  //   // ми очищуємо публікацію, коли змінюється автор
-  //   // щоб не заплутати користувача
-  //   setSelectedPost(null);
-
-  //   if (author) {
-  //     loadUserPosts(author.id);
-  //   } else {
-  //     setPosts([]);
-  //   }
-  // }, [author]);
 
   return (
     <main className="section">
