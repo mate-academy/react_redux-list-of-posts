@@ -10,7 +10,7 @@ export interface UsersState {
 
 const initialState: UsersState = {
   users: [],
-  loading: true,
+  loading: false,
   error: null as string | null,
 };
 
@@ -25,7 +25,7 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(usersAsync.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = false;
+      state.loading = true;
     });
     builder.addCase(usersAsync.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
