@@ -20,16 +20,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   //const [comments, setComments] = useState<Comment[]>([]);
   //const [loaded, setLoaded] = useState(false);
   //const [hasError, setError] = useState(false);
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
     setVisible(false);
 
-    commentsAsync(post.id);
+    dispatch(commentsAsync(post.id));
   }
 
   useEffect(loadComments, [post.id]);
@@ -77,7 +79,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleDeleteComment = (commentId: number) => {
     dispatch(deleteComment(commentId));
-    deleteCommentAsync(commentId);
+    dispatch(deleteCommentAsync(commentId));
   };
 
   return (

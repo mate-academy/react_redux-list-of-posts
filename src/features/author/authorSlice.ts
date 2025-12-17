@@ -9,7 +9,7 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    set: (_state, action: PayloadAction<User>) => {
+    set: (_state, action: PayloadAction<User | null>) => {
       return action.payload;
     },
   },

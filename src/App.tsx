@@ -21,7 +21,11 @@ export const App: React.FC = () => {
   //const [loaded, setLoaded] = useState(false);
   //const [hasError, setError] = useState(false);
 
-  const { posts, hasError, loaded } = useAppSelector(state => state.posts);
+  const {
+    items: posts,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.posts);
 
   const dispatch = useAppDispatch();
   const author = useAppSelector(state => state.author);

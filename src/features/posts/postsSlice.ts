@@ -3,14 +3,14 @@ import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
 export interface PostState {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState: PostState = {
-  posts: [],
-  loaded: false,
+  items: [],
+  loaded: true,
   hasError: false,
 };
 
@@ -24,21 +24,25 @@ export const postsSlice = createSlice({
   reducers: {
     clearPosts: state => {
       // eslint-disable-next-line no-param-reassign
-      state.posts = [];
+      state.items = [];
     },
   },
   extraReducers: builder => {
     builder.addCase(postsAsync.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(postsAsync.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.posts = action.payload;
+      state.items = action.payload;
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = true;
     });
     builder.addCase(postsAsync.rejected, state => {
       // eslint-disable-next-line no-param-reassign
       state.hasError = true;
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = true;
     });
   },
 });

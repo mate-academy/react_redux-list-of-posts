@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUsers } from '../../api/users';
 import { User } from '../../types/User';
 
-interface UsersState {
+export interface UsersState {
   users: User[];
   loading: boolean;
   error: string | null;
@@ -10,7 +10,7 @@ interface UsersState {
 
 const initialState: UsersState = {
   users: [],
-  loading: false,
+  loading: true,
   error: null as string | null,
 };
 
@@ -25,7 +25,7 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(usersAsync.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = true;
+      state.loading = false;
     });
     builder.addCase(usersAsync.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign

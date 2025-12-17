@@ -3,7 +3,7 @@ import { Comment } from '../../types/Comment';
 import * as commentsApi from '../../api/comments';
 
 export interface Comments {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
@@ -16,7 +16,7 @@ export interface NewCommentData {
 }
 
 const initialState: Comments = {
-  comments: [],
+  items: [],
   loaded: true,
   hasError: false,
 };
@@ -53,7 +53,9 @@ export const commentsSlice = createSlice({
   reducers: {
     deleteComment: (state, action: PayloadAction<number>) => {
       // eslint-disable-next-line no-param-reassign
-      state.comments.filter(comment => comment.id !== action.payload);
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
     },
   },
   extraReducers: builder => {
@@ -63,15 +65,19 @@ export const commentsSlice = createSlice({
     });
     builder.addCase(commentsAsync.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.comments = action.payload;
+      state.items = action.payload;
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = true;
     });
     builder.addCase(commentsAsync.rejected, state => {
       // eslint-disable-next-line no-param-reassign
       state.hasError = true;
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = true;
     });
     builder.addCase(addCommentAsync.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.comments = [...state.comments, action.payload];
+      state.items = [...state.items, action.payload];
     });
     builder.addCase(addCommentAsync.rejected, state => {
       // eslint-disable-next-line no-param-reassign
