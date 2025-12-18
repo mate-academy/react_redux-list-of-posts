@@ -62,7 +62,6 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(addComment.pending, state => {
-        state.loaded = false;
         state.hasError = false;
       })
       .addCase(addComment.fulfilled, (state, action) => {
@@ -74,7 +73,6 @@ export const commentsSlice = createSlice({
         state.loaded = true;
       })
       .addCase(removeComment.pending, state => {
-        state.loaded = false;
         state.hasError = false;
       })
       .addCase(removeComment.fulfilled, (state, action) => {

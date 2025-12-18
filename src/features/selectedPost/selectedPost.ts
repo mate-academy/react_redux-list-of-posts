@@ -12,15 +12,11 @@ const initialState: SelectedPostState = {
 };
 
 export const selectPostById = (postId: number | null) => (state: RootState) => {
-  return (
-    state.posts.items?.find(post => post.id === postId) ||
-    state.posts.items.find(post => post.id === postId) ||
-    null
-  );
+  return state.posts.items.find(post => post.id === postId) || null;
 };
 
 export const selectedPostSlice = createSlice({
-  name: 'posts',
+  name: 'selectedPost',
   initialState,
   reducers: {
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
