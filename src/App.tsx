@@ -23,7 +23,7 @@ export const App: React.FC = () => {
   const userPosts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
-  const isUserPostsLoading = useAppSelector(state => state.posts.loaded);
+  const arePostsLoaded = useAppSelector(state => state.posts.loaded);
 
   const author = useAppSelector(state => state.author.author);
   const setAuthor = (user: User | null) => {
@@ -62,9 +62,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !isUserPostsLoading && <Loader />}
+                {author && !arePostsLoaded && <Loader />}
 
-                {author && isUserPostsLoading && hasPostsError && (
+                {author && arePostsLoaded && hasPostsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author &&
-                  isUserPostsLoading &&
+                  arePostsLoaded &&
                   !hasPostsError &&
                   userPosts.length === 0 && (
                     <div
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
                   )}
 
                 {author &&
-                  isUserPostsLoading &&
+                  arePostsLoaded &&
                   !hasPostsError &&
                   userPosts.length > 0 && (
                     <PostsList

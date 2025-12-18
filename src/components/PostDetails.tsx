@@ -26,6 +26,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(fetchComments(post.id));
   }, [post.id]);
 
+  useEffect(() => {
+    setVisible(false);
+  }, [post]);
+
   const handleSubmit = async (data: CommentData): Promise<void> => {
     await dispatch(
       addComment({
