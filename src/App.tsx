@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,39 +9,32 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+import { useAppSelector, useAppDispatch } from './app/hooks';
+import {
+  setAuthor,
+  fetchPosts,
+  setSelectedPost,
+} from './features/posts/postsSlice';
 import { User } from './types/User';
-import { Post } from './types/Post';
+// import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+    author,
+    selectedPost,
+  } = useAppSelector(state => state.posts);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
-  useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+  const handleAuthorChange = (user: User | null) => {
+    dispatch(setAuthor(user));
+    if (user) {
+      dispatch(fetchPosts(user.id));
     }
-  }, [author]);
+  };
 
   return (
     <main className="section">
@@ -50,7 +43,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={handleAuthorChange} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -77,7 +70,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
