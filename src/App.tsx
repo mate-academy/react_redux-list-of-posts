@@ -10,39 +10,36 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { fetchUsers, usersSlice } from './features/user/usersSlice';
+import { fetchUsers } from './features/users/users';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { User } from './types/User';
-import {
-  fetchUserPosts,
-  postsSlice,
-  setPosts,
-} from './features/post/postsSlice';
+import { fetchPosts, setPosts } from './features/posts/posts';
+import { setSelectedPost } from './features/selectedPost/selectedPost';
+import { authorSlice } from './features/author/author';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const userPosts = useAppSelector(state => state.posts.userPosts);
-  const selectedPost = useAppSelector(state => state.posts.selectedPost);
-  const setSelectedPost = (post: Post | null) =>
-    dispatch(postsSlice.actions.setSelectedPost(post));
+  const userPosts = useAppSelector(state => state.posts.items);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
-  const isUserPostsLoading =
-    useAppSelector(state => state.posts.userPostsStatus) === 'loading';
+  const isUserPostsLoading = useAppSelector(state => state.posts.loaded);
 
-  const author = useAppSelector(state => state.users.selectedUser);
+  const author = useAppSelector(state => state.author.author);
   const setAuthor = (user: User | null) => {
-    dispatch(usersSlice.actions.setUser(user));
+    dispatch(authorSlice.actions.setAuthor(user));
   };
 
-  const hasPostsError =
-    useAppSelector(state => state.posts.userPostsStatus) === 'failed';
+  const hasPostsError = useAppSelector(state => state.posts.hasError);
+  const setPost = (post: Post | null) => {
+    dispatch(setSelectedPost(post));
+  };
 
   useEffect(() => {
-    dispatch(setSelectedPost(null));
+    setPost(null);
 
     if (author) {
-      dispatch(fetchUserPosts(author.id));
+      dispatch(fetchPosts(author.id));
     } else {
       dispatch(setPosts([]));
     }
@@ -65,7 +62,7 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && isUserPostsLoading && <Loader />}
+                {author && !isUserPostsLoading && <Loader />}
 
                 {author && !isUserPostsLoading && hasPostsError && (
                   <div
@@ -77,7 +74,7 @@ export const App: React.FC = () => {
                 )}
 
                 {author &&
-                  !isUserPostsLoading &&
+                  isUserPostsLoading &&
                   !hasPostsError &&
                   userPosts.length === 0 && (
                     <div
@@ -89,13 +86,13 @@ export const App: React.FC = () => {
                   )}
 
                 {author &&
-                  !isUserPostsLoading &&
+                  isUserPostsLoading &&
                   !hasPostsError &&
                   userPosts.length > 0 && (
                     <PostsList
                       posts={userPosts}
                       selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
+                      onPostSelected={setPost}
                     />
                   )}
               </div>
