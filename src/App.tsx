@@ -35,7 +35,7 @@ export const App: React.FC = () => {
     getUsers().then(users => {
       dispatch(setUsers(users));
     });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
