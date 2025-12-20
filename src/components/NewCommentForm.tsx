@@ -44,16 +44,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
+  const isValid = !name.trim() || !email.trim() || !body.trim();
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
     });
 
-    if (!name || !email || !body) {
+    if (isValid) {
       return;
     }
 
