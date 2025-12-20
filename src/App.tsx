@@ -19,11 +19,7 @@ import { clearComments } from './features/comments';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const {
-    items: posts,
-    loaded,
-    hasError,
-  } = useAppSelector(selectPostState);
+  const { items: posts, loaded, hasError } = useAppSelector(selectPostState);
 
   const author = useAppSelector(selectAuthor);
   const selectedPost = useAppSelector(selectPost);
