@@ -62,12 +62,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const deleteComment = async (commentId: number) => {
+    const previousComments = [...comments];
+
     dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
 
     try {
       await commentsApi.deleteComment(commentId);
     } catch {
       dispatch(setCommentsError(true));
+      dispatch(setComments(previousComments));
     }
   };
 
