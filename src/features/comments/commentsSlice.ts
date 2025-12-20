@@ -3,7 +3,7 @@ import * as commentsApi from '../../api/comments';
 import { Comment } from '../../types/Comment';
 
 export const fetchComments = createAsyncThunk(
-  'comments/fetchComments',
+  'comments/fetchComment',
   async (postId: number) => {
     const comments = await commentsApi.getPostComments(postId);
 
@@ -12,7 +12,7 @@ export const fetchComments = createAsyncThunk(
 );
 
 export const addComment = createAsyncThunk(
-  'comments/addComments',
+  'comments/addComment',
   async (data: {
     name: string;
     email: string;
@@ -56,7 +56,7 @@ const initialState: CommentState = {
 };
 
 const commentSlice = createSlice({
-  name: 'comments',
+  name: 'comment',
   initialState,
   reducers: {
     clearComments: state => {

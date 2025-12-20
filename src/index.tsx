@@ -4,7 +4,7 @@ import { HashRouter as Router } from 'react-router-dom';
 
 import { store } from './app/store';
 import { App } from './App';
-import { fetchUsers } from './features/users/usesrsSlice';
+import { fetchUsers } from './features/users/usersSlice';
 
 store.dispatch(fetchUsers());
 
@@ -13,7 +13,6 @@ const root = createRoot(container);
 
 const Root = () => (
   <Provider store={store}>
-    {/* Remove UsersProvider when you move users to Redux store */}
     <Router>
       <App />
     </Router>

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
-import { User } from '../../types/User';
 
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
@@ -16,37 +15,25 @@ export interface PostsState {
   items: Post[];
   loaded: boolean;
   hasError: boolean;
-  author: User | null;
-  selectedPost: Post | null;
 }
 
 const initialState: PostsState = {
   items: [],
   loaded: false,
   hasError: false,
-  author: null,
-  selectedPost: null,
 };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setAuthor: (state, action: PayloadAction<User | null>) => {
-      // eslint-disable-next-line no-param-reassign
-      state.author = action.payload;
+    clearPosts: state => {
       // eslint-disable-next-line no-param-reassign
       state.items = [];
       // eslint-disable-next-line no-param-reassign
       state.loaded = false;
       // eslint-disable-next-line no-param-reassign
       state.hasError = false;
-      // eslint-disable-next-line no-param-reassign
-      state.selectedPost = null;
-    },
-    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
-      // eslint-disable-next-line no-param-reassign
-      state.selectedPost = action.payload;
     },
   },
   extraReducers: builder => {
@@ -72,6 +59,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setAuthor, setSelectedPost } = postsSlice.actions;
+export const { clearPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

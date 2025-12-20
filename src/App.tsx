@@ -10,11 +10,9 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppSelector, useAppDispatch } from './app/hooks';
-import {
-  setAuthor,
-  fetchPosts,
-  setSelectedPost,
-} from './features/posts/postsSlice';
+import { setAuthor } from './features/author/authorSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { clearPosts, fetchPosts } from './features/posts/postsSlice';
 import { User } from './types/User';
 // import { Post } from './types/Post';
 
@@ -25,12 +23,14 @@ export const App: React.FC = () => {
     items: posts,
     loaded,
     hasError,
-    author,
-    selectedPost,
   } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author.author);
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 
   const handleAuthorChange = (user: User | null) => {
     dispatch(setAuthor(user));
+    dispatch(setSelectedPost(null));
+    dispatch(clearPosts());
     if (user) {
       dispatch(fetchPosts(user.id));
     }
@@ -69,7 +69,7 @@ export const App: React.FC = () => {
                 {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
+                    selectedPost={selectedPost}
                     onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
