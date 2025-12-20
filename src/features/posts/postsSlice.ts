@@ -14,15 +14,15 @@ export const fetchPosts = createAsyncThunk(
 );
 
 type State = {
-  posts: Post[];
-  loading: boolean;
-  error: string;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: State = {
-  posts: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const postsSlice = createSlice({
@@ -32,15 +32,16 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        state.loading = true;
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.posts = action.payload;
+        state.items = action.payload;
+        state.loaded = true;
       })
       .addCase(fetchPosts.rejected, state => {
-        state.loading = false;
-        state.error = 'Error';
+        state.loaded = true;
+        state.hasError = true;
       });
   },
 });

@@ -8,39 +8,36 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+
 import { fetchUsers } from './features/users';
 import { fetchPosts, selectPostState } from './features/posts';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { selectAuthor } from './features/author';
 import { selectPost, setSelectedPost } from './features/selectedPost';
-import { clearComment } from './features/comments';
+import { clearComments } from './features/comments';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+
   const {
-    loading: loaded,
-    error: hasError,
-    posts,
+    items: posts,
+    loaded,
+    hasError,
   } = useAppSelector(selectPostState);
+
   const author = useAppSelector(selectAuthor);
   const selectedPost = useAppSelector(selectPost);
-
-  function loadUserPosts(userId: number) {
-    dispatch(fetchPosts(userId));
-  }
 
   useEffect(() => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      dispatch(setSelectedPost(null));
+      dispatch(fetchPosts(author.id));
     }
   }, [author, dispatch]);
 
   useEffect(() => {
-    dispatch(clearComment([]));
+    dispatch(clearComments());
   }, [author, dispatch]);
 
   useEffect(() => {
@@ -60,9 +57,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loaded && <Loader />}
+                {author && !loaded && <Loader />}
 
-                {author && !loaded && hasError && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -71,13 +68,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList />
                 )}
               </div>
@@ -96,7 +93,7 @@ export const App: React.FC = () => {
               },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>

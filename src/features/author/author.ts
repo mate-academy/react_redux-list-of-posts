@@ -15,7 +15,7 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    setAuthor: (state, action: PayloadAction<User>) => {
+    setAuthor: (state, action: PayloadAction<User | null>) => {
       state.author = action.payload;
     },
   },

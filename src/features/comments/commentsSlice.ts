@@ -1,11 +1,16 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '../../app/store';
 import { Comment } from '../../types/Comment';
-import { createComment, getPostComments } from '../../api/comments';
+import {
+  createComment,
+  getPostComments,
+  deleteComment as deleteCommentApi,
+} from '../../api/comments';
 
+/* CREATE COMMENT */
 export const create = createAsyncThunk(
-  'comment/create',
+  'comments/create',
   async (comment: Omit<Comment, 'id'>) => {
     const createdComment = await createComment(comment);
 
@@ -13,7 +18,8 @@ export const create = createAsyncThunk(
   },
 );
 
-export const fetchPostCommnets = createAsyncThunk(
+/* FETCH COMMENTS */
+export const fetchPostComments = createAsyncThunk(
   'comments/fetch',
   async (id: number) => {
     const comments = await getPostComments(id);
@@ -22,54 +28,71 @@ export const fetchPostCommnets = createAsyncThunk(
   },
 );
 
+/* DELETE COMMENT */
+export const deleteComment = createAsyncThunk(
+  'comments/delete',
+  async (commentId: number) => {
+    await deleteCommentApi(commentId);
+
+    return commentId;
+  },
+);
+
 type State = {
-  comments: Comment[];
-  loading: boolean;
-  error: boolean;
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: State = {
-  comments: [],
-  loading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    deleteCommentById(state, action: PayloadAction<number>) {
-      state.comments = state.comments.filter(
-        item => item.id !== action.payload,
-      );
-    },
-    clearComment(state, action: PayloadAction<[]>) {
-      state.comments = action.payload;
+    clearComments(state) {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchPostCommnets.pending, state => {
-        state.loading = true;
+      /* FETCH */
+      .addCase(fetchPostComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
       })
-      .addCase(fetchPostCommnets.fulfilled, (state, action) => {
-        state.loading = false;
-        state.comments = action.payload;
+      .addCase(fetchPostComments.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
       })
-      .addCase(fetchPostCommnets.rejected, state => {
-        state.loading = false;
-        state.error = true;
+      .addCase(fetchPostComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
       })
+
+      /* CREATE */
       .addCase(create.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(create.rejected, state => {
-        state.error = true;
+        state.hasError = true;
+      })
+
+      /* DELETE */
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          comment => comment.id !== action.payload,
+        );
       });
   },
 });
 
 export const selectCommentState = (state: RootState) => state.comments;
-
-export const { deleteCommentById, clearComment } = commentsSlice.actions;
+export const { clearComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
