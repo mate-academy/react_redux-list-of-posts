@@ -31,33 +31,23 @@ type CommentsState = {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
-  visible: boolean;
 };
 
 const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,
-  visible: false,
 };
 
 const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    showForm: state => {
-      state.visible = true;
-    },
-    hideForm: state => {
-      state.visible = false;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
         state.loaded = false;
         state.hasError = false;
-        state.visible = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.items = action.payload;
@@ -78,5 +68,4 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { showForm, hideForm } = commentsSlice.actions;
 export default commentsSlice.reducer;
