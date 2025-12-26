@@ -22,9 +22,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   // Redux
   const dispatch = useAppDispatch();
-  const { items: comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
 
   // carregar comentários ao trocar o post
   useEffect(() => {
@@ -33,8 +35,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [dispatch, post.id]);
 
   const handleAddComment = (data: CommentData) => {
-    return dispatch(addComment({ ...data, postId: post.id }))
-      .unwrap()
+    return dispatch(addComment({ ...data, postId: post.id })).unwrap();
   };
 
   const handleDeleteComment = (commentId: number) => {
@@ -113,4 +114,3 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     </div>
   );
 };
-
