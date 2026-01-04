@@ -13,7 +13,9 @@ import { postsSlice } from '../features/postsSlice';
 // };
 
 export const PostsList: React.FC = () => {
-  const { posts, selectedPost } = useAppSelector(state => state.postsSlice);
+  const { items: posts, selectedPost } = useAppSelector(
+    state => state.postsSlice,
+  );
   const dispatch = useAppDispatch();
 
   return (

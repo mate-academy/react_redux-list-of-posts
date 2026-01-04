@@ -23,6 +23,10 @@ export const PostDetails: React.FC = () => {
     dispatch(commentsInit(post.id));
   }, [post.id]);
 
+  if (!post) {
+    return null;
+  }
+
   // The same useEffect with async/await
   /*
   async function loadComments() {
@@ -54,8 +58,9 @@ export const PostDetails: React.FC = () => {
   };
 
   const deleteComment = (commentId: number) => {
-    dispatch(deleteOldComment(commentId));
-    dispatch(commentsSlice.actions.deleteLocalComment(commentId));
+    dispatch(deleteOldComment(commentId)).then(() => {
+      dispatch(commentsSlice.actions.deleteLocalComment(commentId));
+    });
   };
 
   return (

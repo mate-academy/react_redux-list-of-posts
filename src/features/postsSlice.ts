@@ -2,16 +2,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
+import { clear } from 'console';
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   selectedPost: Post | null;
   loading: boolean;
   error: string;
 };
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   selectedPost: null,
   loading: false,
   error: '',
@@ -28,6 +29,9 @@ export const postsSlice = createSlice({
     setSelectedPost(state, action) {
       state.selectedPost = action.payload;
     },
+    clearPosts(state) {
+      state.items = [];
+    }
   },
   extraReducers: builder => {
     builder
@@ -37,7 +41,7 @@ export const postsSlice = createSlice({
       })
       .addCase(postsInit.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.items = action.payload;
       })
       .addCase(postsInit.rejected, state => {
         state.loading = false;

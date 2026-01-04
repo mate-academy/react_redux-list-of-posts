@@ -14,7 +14,11 @@ import { usersInit } from './features/usersSlice';
 import { postsInit, postsSlice } from './features/postsSlice';
 
 export const App: React.FC = () => {
-  const { posts, loading, error } = useAppSelector(state => state.postsSlice);
+  const {
+    items: posts,
+    loading,
+    error,
+  } = useAppSelector(state => state.postsSlice);
 
   const dispatch = useAppDispatch();
 
@@ -23,7 +27,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(usersInit());
-  });
+  }, []);
 
   function loadUserPosts(userId: number) {
     dispatch(postsInit(userId));
@@ -37,7 +41,7 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      //setPosts([]);
+      dispatch(postsSlice.actions.clearPosts());
     }
   }, [author]);
 

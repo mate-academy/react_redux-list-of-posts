@@ -29,10 +29,12 @@ export const addNewComment = createAsyncThunk(
   },
 );
 
-export const deleteOldComment = createAsyncThunk(
+export const deleteOldComment = createAsyncThunk<number, number>(
   'comment/delete',
-  (commentId: number) => {
-    return deleteComment(commentId);
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
   },
 );
 
@@ -47,7 +49,7 @@ export const commentsSlice = createSlice({
       state.comments = state.comments.filter(
         comment => comment.id !== action.payload,
       );
-    }
+    },
   },
   extraReducers: builder => {
     builder
