@@ -4,7 +4,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { postsSlice } from '../features/postsSlice';
+import { selectedPostSlice } from '../features/selectedPostSlice';
 
 // type Props = {
 //   posts: Post[];
@@ -13,9 +13,10 @@ import { postsSlice } from '../features/postsSlice';
 // };
 
 export const PostsList: React.FC = () => {
-  const { items: posts, selectedPost } = useAppSelector(
+  const { items: posts } = useAppSelector(
     state => state.postsSlice,
   );
+  const selectedPost = useAppSelector(state => state.selectedPostSlice.post);
   const dispatch = useAppDispatch();
 
   return (
@@ -45,7 +46,7 @@ export const PostsList: React.FC = () => {
                   })}
                   onClick={() => {
                     dispatch(
-                      postsSlice.actions.setSelectedPost(
+                      selectedPostSlice.actions.setSelectedPost(
                         post.id === selectedPost?.id ? null : post,
                       ),
                     );

@@ -2,18 +2,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
-import { clear } from 'console';
 
 type PostsState = {
   items: Post[];
-  selectedPost: Post | null;
   loading: boolean;
   error: string;
 };
 
 const initialState: PostsState = {
   items: [],
-  selectedPost: null,
   loading: false,
   error: '',
 };
@@ -26,9 +23,6 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setSelectedPost(state, action) {
-      state.selectedPost = action.payload;
-    },
     clearPosts(state) {
       state.items = [];
     }
@@ -45,7 +39,7 @@ export const postsSlice = createSlice({
       })
       .addCase(postsInit.rejected, state => {
         state.loading = false;
-        state.error = 'Ошибка загрузки пользователей';
+        state.error = 'Error fetching posts';
       });
   },
 });

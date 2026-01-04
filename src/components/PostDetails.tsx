@@ -12,7 +12,7 @@ import {
 } from '../features/commentsSlice';
 
 export const PostDetails: React.FC = () => {
-  const post = useAppSelector(state => state.postsSlice.selectedPost);
+  const { post } = useAppSelector(state => state.selectedPostSlice);
   const { comments, loading, error } = useAppSelector(
     state => state.commentsSlice,
   );
@@ -26,32 +26,6 @@ export const PostDetails: React.FC = () => {
   if (!post) {
     return null;
   }
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
 
   const addComment = ({ name, email, body }: CommentData) => {
     dispatch(addNewComment({ name, email, body, postId: post.id }));

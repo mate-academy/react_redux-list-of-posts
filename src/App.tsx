@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -12,6 +12,7 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { usersInit } from './features/usersSlice';
 import { postsInit, postsSlice } from './features/postsSlice';
+import { selectedPostSlice } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const {
@@ -23,7 +24,7 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const author = useAppSelector(state => state.authorSlice.author);
-  const { selectedPost } = useAppSelector(state => state.postsSlice);
+  const selectedPost = useAppSelector(state => state.selectedPostSlice.post);
 
   useEffect(() => {
     dispatch(usersInit());
@@ -36,7 +37,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    dispatch(postsSlice.actions.setSelectedPost(null));
+    dispatch(selectedPostSlice.actions.setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
