@@ -10,15 +10,29 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
+// import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { initUsers } from './api/users';
+// import { set as setAuthorAction } from './api/author';
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(initUsers());
+  }, []);
+
+  const author = useAppSelector(state => state.author);
+
+  // const handleAuthorChange = (user: User | null) => {
+  //   dispatch(setAuthorAction(user));
+  // };
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
 
-  const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
@@ -27,13 +41,10 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
-      // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
@@ -49,8 +60,8 @@ export const App: React.FC = () => {
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+              <div className="block" data-cy="UserSelector">
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
