@@ -22,7 +22,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setError(false);
     setVisible(false);
 
-    commentsApi.getPostComments(post.id)
+    commentsApi
+      .getPostComments(post.id)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
@@ -65,9 +66,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(
-        currentComments => [...currentComments, newComment],
-      );
+      setComments(currentComments => [...currentComments, newComment]);
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,10 +81,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
-    setComments(
-      currentComments => currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
+    setComments(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
     );
 
     await commentsApi.deleteComment(commentId);
@@ -94,9 +91,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content">
       <div className="block">
-        <h2>
-          {`#${post.id}: ${post.title}`}
-        </h2>
+        <h2>{`#${post.id}: ${post.title}`}</h2>
         <p>{post.body}</p>
       </div>
 
@@ -104,9 +99,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {!loaded && <Loader />}
 
         {loaded && hasError && (
-          <div className="notification is-danger">
-            Something went wrong
-          </div>
+          <div className="notification is-danger">Something went wrong</div>
         )}
 
         {loaded && !hasError && comments.length === 0 && (
@@ -120,9 +113,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             {comments.map(comment => (
               <article className="message is-small" key={comment.id}>
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`}>
-                    {comment.name}
-                  </a>
+                  <a href={`mailto:${comment.email}`}>{comment.name}</a>
 
                   <button
                     type="button"
@@ -134,9 +125,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </button>
                 </div>
 
-                <div className="message-body">
-                  {comment.body}
-                </div>
+                <div className="message-body">{comment.body}</div>
               </article>
             ))}
           </>

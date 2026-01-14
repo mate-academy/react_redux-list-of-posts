@@ -3,9 +3,9 @@ import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
-  selectedPostId?: number,
-  onPostSelected: (post: Post | null) => void,
+  posts: Post[];
+  selectedPostId?: number;
+  onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -33,13 +33,9 @@ export const PostsList: React.FC<Props> = ({
             <td className="has-text-right is-vcentered">
               <button
                 type="button"
-                className={classNames(
-                  'button',
-                  'is-link',
-                  {
-                    'is-light': post.id !== selectedPostId,
-                  },
-                )}
+                className={classNames('button', 'is-link', {
+                  'is-light': post.id !== selectedPostId,
+                })}
                 onClick={() => {
                   onPostSelected(post.id === selectedPostId ? null : post);
                 }}

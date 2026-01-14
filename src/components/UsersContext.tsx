@@ -8,13 +8,8 @@ export const UsersProvider: React.FC = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers()
-      .then(setUsers);
+    getUsers().then(setUsers);
   }, []);
 
-  return (
-    <UserContext.Provider value={users}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={users}>{children}</UserContext.Provider>;
 };

@@ -66,9 +66,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {!name && (
-          <p className="help is-danger">Name is required</p>
-        )}
+        {!name && <p className="help is-danger">Name is required</p>}
       </div>
 
       <div className="field">
@@ -97,9 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           )}
         </div>
 
-        {!email && (
-          <p className="help is-danger">Email is required</p>
-        )}
+        {!email && <p className="help is-danger">Email is required</p>}
       </div>
 
       <div className="field">
@@ -117,9 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           />
         </div>
 
-        {!body && (
-          <p className="help is-danger">Enter some text</p>
-        )}
+        {!body && <p className="help is-danger">Enter some text</p>}
       </div>
 
       <div className="field is-grouped">
