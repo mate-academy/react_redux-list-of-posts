@@ -5,6 +5,7 @@ import { usersSlice } from '../api/users';
 import { authorSlice } from '../api/author';
 import { commentsSlice } from '../features/commentsSlice';
 import { postsSlice } from '../features/postsSlice';
+import { selectedPostSlice } from '../features/selectedPostSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     author: authorSlice.reducer,
     comments: commentsSlice.reducer,
     posts: postsSlice.reducer,
+    selectedPost: selectedPostSlice.reducer,
   },
 });
 
