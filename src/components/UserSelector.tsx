@@ -16,8 +16,6 @@ export const UserSelector: React.FC<Props> = ({
   onChange,
 }) => {
   // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
   const users = useSelector((state: RootState) => state.users);
   const [expanded, setExpanded] = useState(false);
 

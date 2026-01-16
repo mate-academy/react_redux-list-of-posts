@@ -34,26 +34,6 @@ export const App: React.FC = () => {
     items: posts,
   } = useSelector((state: RootState) => state.posts);
 
-  /*function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(userPosts => dispatch(setPosts(userPosts)))
-      .catch(() => dispatch(setError(true)))
-      // We disable the spinner in any case
-      .finally(() => dispatch(setLoaded(true)));
-  }
-
-  useEffect(() => {
-    setSelectedPost(null);
-
-    if (!author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
-*/
   useEffect(() => {
     dispatch(selectPost(null));
 
