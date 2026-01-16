@@ -39,7 +39,7 @@ export const removeComment = createAsyncThunk<number, number>(
 );
 
 const commentSlice = createSlice({
-  name: 'posts',
+  name: 'comments',
   initialState,
   reducers: {
     resetComment(state) {
