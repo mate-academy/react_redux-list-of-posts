@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
-// import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { loadByPostId, removeComment } from '../app/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
@@ -36,7 +33,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       email,
       body,
       postId: post.id,
-    } as Comment;
+    };
 
     await dispatch(addComment(newComment));
   };

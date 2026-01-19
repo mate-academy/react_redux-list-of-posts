@@ -32,7 +32,7 @@ export const postsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(set.type, state => {
       state.items = [];
-      state.loaded = true;
+      state.loaded = false;
       state.hasError = false;
     });
 

@@ -77,11 +77,11 @@ export const commentsSlice = createSlice({
 
 export const { add, remove, setError } = commentsSlice.actions;
 
-export function addComment(comment: Comment) {
+export function addComment(comment: Omit<Comment, 'id'>) {
   return async (dispatch: Dispatch) => {
     try {
-      await createComment(comment);
-      dispatch(add(comment));
+      const addedComment = await createComment(comment);
+      dispatch(add(addedComment));
     } catch (e) {
       dispatch(setError(true));
     }
@@ -90,9 +90,12 @@ export function addComment(comment: Comment) {
 
 export function removeComment(commentId: Comment['id']) {
   return async (dispatch: Dispatch) => {
-    await deleteComment(commentId);
-
-    dispatch(remove(commentId));
+    try {
+      await deleteComment(commentId);
+      dispatch(remove(commentId));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 }
 
