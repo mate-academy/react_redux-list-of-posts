@@ -10,7 +10,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { initAuthorPosts, PostsSlice } from './features/postsSlice';
+import { initAuthorPosts } from './features/postsSlice';
+import { selectedPostSlice } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,13 +19,14 @@ export const App: React.FC = () => {
     items: posts,
     loaded,
     hasError,
-    selectedPost,
   } = useAppSelector(state => state.posts);
+
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const { author } = useAppSelector(state => state.author);
 
   useEffect(() => {
-    dispatch(PostsSlice.actions.setSelectedPost(null));
+    dispatch(selectedPostSlice.actions.setSelectedPost(null));
 
     if (author) {
       dispatch(initAuthorPosts(author.id));

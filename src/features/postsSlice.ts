@@ -8,14 +8,12 @@ export interface PostsState {
   items: Post[];
   loaded: boolean;
   hasError: boolean;
-  selectedPost: Post | null;
 }
 
 const initialState: PostsState = {
   items: [],
   loaded: false,
   hasError: false,
-  selectedPost: null,
 };
 
 export const initAuthorPosts = createAsyncThunk(
@@ -30,11 +28,7 @@ export const initAuthorPosts = createAsyncThunk(
 export const PostsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setSelectedPost(state, action) {
-      state.selectedPost = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder.addCase(initAuthorPosts.pending, state => {
       state.loaded = false;

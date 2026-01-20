@@ -12,7 +12,7 @@ export const PostDetails: React.FC = ({}) => {
     loaded,
     hasError,
   } = useAppSelector(state => state.postComments);
-  const { selectedPost } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {

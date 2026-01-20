@@ -3,11 +3,12 @@
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { PostsSlice } from '../features/postsSlice';
+import { selectedPostSlice } from '../features/selectedPostSlice';
 
 export const PostsList: React.FC = ({}) => {
   const dispatch = useAppDispatch();
-  const { items: posts, selectedPost } = useAppSelector(state => state.posts);
+  const { items: posts } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (
     <div data-cy="PostsList">
@@ -36,7 +37,7 @@ export const PostsList: React.FC = ({}) => {
                   })}
                   onClick={() => {
                     dispatch(
-                      PostsSlice.actions.setSelectedPost(
+                      selectedPostSlice.actions.setSelectedPost(
                         post.id === selectedPost?.id ? null : post,
                       ),
                     );
