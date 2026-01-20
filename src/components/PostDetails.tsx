@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComent, initPostsComments } from '../features/commesntsSlice';
+import { deleteComent, initPostsComments } from '../features/commentSlice';
 
 export const PostDetails: React.FC = ({}) => {
   const dispatch = useAppDispatch();

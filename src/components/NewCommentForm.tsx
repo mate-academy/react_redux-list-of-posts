@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addComment } from '../features/commesntsSlice';
+import { addComment } from '../features/commentSlice';
 
 export const NewCommentForm: React.FC = ({}) => {
   const [submitting, setSubmitting] = useState(false);
@@ -22,8 +22,8 @@ export const NewCommentForm: React.FC = ({}) => {
 
   const clearForm = () => {
     setValues({
-      name,
-      email,
+      name: '',
+      email: '',
       body: '',
     });
 
