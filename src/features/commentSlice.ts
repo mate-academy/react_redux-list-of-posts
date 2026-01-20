@@ -27,13 +27,13 @@ export const initPostsComments = createAsyncThunk(
   },
 );
 
-export type AddCommnetProps = CommentData & {
+export type AddCommentProps = CommentData & {
   selectedPostId: number;
 };
 
 export const addComment = createAsyncThunk(
   'comments/addComments',
-  async ({ name, email, body, selectedPostId }: AddCommnetProps) => {
+  async ({ name, email, body, selectedPostId }: AddCommentProps) => {
     const newComment = await createComment({
       name,
       email,
@@ -45,7 +45,7 @@ export const addComment = createAsyncThunk(
   },
 );
 
-export const deleteComent = createAsyncThunk(
+export const deleteCommentThunk = createAsyncThunk(
   'comments/delete',
   async (commentId: number) => {
     await deleteComment(commentId);
@@ -63,7 +63,7 @@ export const commentsSlice = createSlice({
         return;
       }
 
-      state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
 
     restoreComment(state, action) {
@@ -98,7 +98,7 @@ export const commentsSlice = createSlice({
       state.hasError = true;
     });
 
-    builder.addCase(deleteComent.pending, (state, action) => {
+    builder.addCase(deleteCommentThunk.pending, (state, action) => {
       if (!state.items) {
         return;
       }
@@ -106,23 +106,23 @@ export const commentsSlice = createSlice({
       const id = action.meta.arg;
       const index = state.items?.findIndex(c => c.id === id);
 
-      if (index && index >= 0) {
+      if (index && index > -1) {
         state.optimisticallyRemoved[id] = {
           item: state?.items[index],
           index,
         };
-      }
 
-      state.items.splice(index, 1);
+        state.items.splice(index, 1);
+      }
     });
 
-    builder.addCase(deleteComent.fulfilled, (state, action) => {
+    builder.addCase(deleteCommentThunk.fulfilled, (state, action) => {
       const id = action.meta.arg;
 
       delete state.optimisticallyRemoved[id];
     });
 
-    builder.addCase(deleteComent.rejected, (state, action) => {
+    builder.addCase(deleteCommentThunk.rejected, (state, action) => {
       const id = action.meta.arg;
 
       const cached = state.optimisticallyRemoved[id];

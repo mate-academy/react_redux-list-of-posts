@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { deleteComent, initPostsComments } from '../features/commentSlice';
+import {
+  deleteCommentThunk,
+  initPostsComments,
+} from '../features/commentSlice';
 
 export const PostDetails: React.FC = ({}) => {
   const dispatch = useAppDispatch();
@@ -80,7 +83,7 @@ export const PostDetails: React.FC = ({}) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(deleteComent(comment.id))}
+                    onClick={() => dispatch(deleteCommentThunk(comment.id))}
                   >
                     delete button
                   </button>
