@@ -6,16 +6,16 @@ import { getPostComments } from '../../api/comments';
 import * as commentsApi from '../../api/comments';
 
 type CommentState = {
-  comments: Comment[];
+  items: Comment[];
   pendingDelete?: Comment;
-  loading: boolean;
-  error: string;
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: CommentState = {
-  comments: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: '',
 };
 
 export const loadComments = createAsyncThunk(
@@ -57,32 +57,33 @@ export const commentsSlice = createSlice({
     builder
       // load
       .addCase(loadComments.pending, state => {
-        state.loading = true;
-        state.error = '';
+        state.loaded = true;
+        state.hasError = '';
       })
       .addCase(loadComments.fulfilled, (state, action) => {
-        state.comments = action.payload;
-        state.loading = false;
+        state.items = action.payload;
+        state.loaded = false;
       })
       .addCase(loadComments.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Failed to load comments';
+        state.loaded = false;
+        state.hasError = action.error.message || 'Failed to load comments';
       })
 
       // add
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(addComment.rejected, (state, action) => {
-        state.error = action.payload || action.error.message || 'Unknown error';
+        state.hasError =
+          action.payload || action.error.message || 'Unknown error';
       })
 
       // delete
       .addCase(deleteComment.pending, (state, action) => {
         const id = action.meta.arg;
 
-        state.pendingDelete = state.comments.find(c => c.id === id);
-        state.comments = state.comments.filter(c => c.id !== id);
+        state.pendingDelete = state.items.find(c => c.id === id);
+        state.items = state.items.filter(c => c.id !== id);
       })
 
       .addCase(deleteComment.fulfilled, state => {
@@ -90,7 +91,7 @@ export const commentsSlice = createSlice({
       })
       .addCase(deleteComment.rejected, state => {
         if (state.pendingDelete) {
-          state.comments.push(state.pendingDelete);
+          state.items.push(state.pendingDelete);
           state.pendingDelete = undefined;
         }
       });

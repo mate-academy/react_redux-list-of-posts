@@ -14,10 +14,9 @@ import { loadPosts, postsSlice } from './features/Posts/PostsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { selectedUser: author } = useAppSelector(state => state.users);
-  const { items, selectedPost, loaded, hasError } = useAppSelector(
-    state => state.posts,
-  );
+  const { author } = useAppSelector(state => state.author);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const loadUserPosts = useCallback(
     (userId: number) => {

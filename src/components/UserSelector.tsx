@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers, usersSlice } from '../features/Users/UsersSlice';
+import { loadUsers } from '../features/Users/UsersSlice';
+import { authorSlice } from '../features/Author/AuthorSlice';
 
 export const UserSelector: React.FC = () => {
   const { items, selectedUser, loaded, hasError } = useAppSelector(
@@ -66,7 +67,7 @@ export const UserSelector: React.FC = () => {
                 key={user.id}
                 href={`#user-${user.id}`}
                 onClick={() => {
-                  dispatch(usersSlice.actions.selectUser(user));
+                  dispatch(authorSlice.actions.selectUser(user));
                 }}
                 className={classNames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
