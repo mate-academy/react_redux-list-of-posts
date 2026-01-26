@@ -4,17 +4,17 @@ import { getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
 
 type PostState = {
-  posts: Post[];
+  items: Post[];
   selectedPost: Post | null;
-  loading: boolean;
-  error: string;
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: PostState = {
-  posts: [],
+  items: [],
   selectedPost: null,
-  loading: false,
-  error: '',
+  loaded: false,
+  hasError: '',
 };
 
 export const loadPosts = createAsyncThunk('posts/fetch', (userId: number) =>
@@ -26,7 +26,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     clear: state => {
-      state.posts = [];
+      state.items = [];
     },
     selectPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
@@ -34,18 +34,18 @@ export const postsSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(loadPosts.pending, state => {
-      state.error = '';
-      state.loading = true;
+      state.hasError = '';
+      state.loaded = true;
     });
 
     builder.addCase(loadPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(loadPosts.rejected, (state, action) => {
-      state.error = action.error.message || '';
-      state.loading = false;
+      state.hasError = action.error.message || '';
+      state.loaded = false;
     });
   },
 });

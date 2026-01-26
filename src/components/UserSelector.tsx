@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loadUsers, usersSlice } from '../features/Users/UsersSlice';
 
 export const UserSelector: React.FC = () => {
-  const { users, selectedUser, loading, error } = useAppSelector(
+  const { items, selectedUser, loaded, hasError } = useAppSelector(
     state => state.users,
   );
   const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
-  const isListVisible = users.length >= 0 && !loading && !error;
+  const isListVisible = items.length >= 0 && !loaded && !hasError;
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -58,10 +58,10 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {loading && <p>User loading</p>}
-          {error && <p>{error}</p>}
+          {loaded && <p>User loading</p>}
+          {hasError && <p>{hasError}</p>}
           {isListVisible &&
-            users.map(user => (
+            items.map(user => (
               <a
                 key={user.id}
                 href={`#user-${user.id}`}

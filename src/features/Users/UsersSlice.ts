@@ -4,18 +4,18 @@ import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
 
 type UserState = {
-  users: User[];
+  items: User[];
   selectedUser: User | null;
 
-  loading: boolean;
-  error: string;
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: UserState = {
-  users: [],
+  items: [],
   selectedUser: null,
-  loading: false,
-  error: '',
+  loaded: false,
+  hasError: '',
 };
 
 export const loadUsers = createAsyncThunk('users/fetch', getUsers);
@@ -30,18 +30,18 @@ export const usersSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(loadUsers.pending, state => {
-      state.error = '';
-      state.loading = true;
+      state.hasError = '';
+      state.loaded = true;
     });
 
     builder.addCase(loadUsers.fulfilled, (state, action) => {
-      state.users = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(loadUsers.rejected, (state, action) => {
-      state.error = action.error.message || '';
-      state.loading = false;
+      state.hasError = action.error.message || '';
+      state.loaded = false;
     });
   },
 });
