@@ -67,6 +67,10 @@ export const commentsSlice = createSlice({
         comment => comment.id !== action.payload,
       );
     });
+
+    builder.addCase(remove.rejected, state => {
+      state.hasError = true;
+    });
   },
 });
 
