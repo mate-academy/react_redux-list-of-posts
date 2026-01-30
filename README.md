@@ -1,8 +1,6 @@
 # React + Redux list of posts
 
-You have the already implemented
-[Dynamic list of posts](https://github.com/mate-academy/react_dynamic-list-of-posts#react_dynamic-list-of-posts)
-and the `Counter` example of Redux Toolkit usage.
+This task is based on [Dynamic List of Posts](https://github.com/mate-academy/react_dynamic-list-of-posts#react_dynamic-list-of-posts). If you skipped that task in the React section, you need to complete it first and only then move on to connecting Redux to this task.
 
 > Here is the [working DEMO](https://mate-academy.github.io/react_redux-list-of-posts/)
 
