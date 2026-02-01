@@ -6,13 +6,13 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
+  selectedPost: Post | null;
   onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPost,
   onPostSelected,
 }) => (
   <div data-cy="PostsList">
@@ -28,26 +28,30 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
-            <td data-cy="PostTitle">{post.title}</td>
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={classNames('button', 'is-link', {
-                  'is-light': post.id !== selectedPostId,
-                })}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
-              >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
-              </button>
-            </td>
-          </tr>
-        ))}
+        {posts.map(post => {
+          const isSelected = selectedPost?.id === post.id;
+
+          return (
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button', 'is-link', {
+                    'is-light': !isSelected,
+                  })}
+                  onClick={() => {
+                    onPostSelected(isSelected ? null : post);
+                  }}
+                >
+                  {isSelected ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   </div>
