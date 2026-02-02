@@ -60,12 +60,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
+    // дуже легко забути про ключове слово `await`
     await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
+    // і спінер одразу зникне
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
+    // Зберігаємо введене ім'я та електронну пошту
   };
 
   return (

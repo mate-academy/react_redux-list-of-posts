@@ -30,6 +30,7 @@ export const client = {
 
   async delete(url: string) {
     // if we don't need the response data
+    // якщо нам не потрібні дані відповіді
     return instance.delete(url);
   },
 };

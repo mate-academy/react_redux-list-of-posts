@@ -1,32 +1,24 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-import classNames from 'classnames';
+// src/components/PostsList.tsx
 import React from 'react';
 import { Post } from '../types/Post';
+import classNames from 'classnames';
+import { useAppDispatch } from '../app/hooks';
+import { setSelectedPost } from '../features/SelectedPostSlice';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
+  selectedPost: Post | null;
 };
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC<Props> = ({ posts, selectedPost }) => {
+  const dispatch = useAppDispatch();
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  const handleSelect = (post: Post) => {
+    dispatch(setSelectedPost(post.id === selectedPost?.id ? null : post));
+  };
 
+  return (
+    <table className="table is-fullwidth" data-cy="PostsList">
       <tbody>
         {posts.map(post => (
           <tr key={post.id} data-cy="Post">
@@ -37,18 +29,16 @@ export const PostsList: React.FC<Props> = ({
                 type="button"
                 data-cy="PostButton"
                 className={classNames('button', 'is-link', {
-                  'is-light': post.id !== selectedPostId,
+                  'is-light': post.id !== selectedPost?.id,
                 })}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
+                onClick={() => handleSelect(post)}
               >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
+                {post.id === selectedPost?.id ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>
         ))}
       </tbody>
     </table>
-  </div>
-);
+  );
+};
