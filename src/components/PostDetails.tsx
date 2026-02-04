@@ -1,21 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  fetchComments,
-  addCommentFetch,
-  deleteCommentFetch,
-} from '../features/comments';
+import { fetchComments, deleteCommentFetch } from '../features/comments';
 
 export const PostDetails: React.FC = () => {
   const selectedPost = useAppSelector(state => state.selectedPost);
   const {
     items: comments,
     hasError,
-    loaded,
+    loading,
   } = useAppSelector(state => state.comments);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
@@ -30,15 +26,7 @@ export const PostDetails: React.FC = () => {
     dispatch(fetchComments(selectedPost?.id));
   }
 
-  useEffect(loadComments, [selectedPost?.id, dispatch]);
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    if (!selectedPost?.id) {
-      return;
-    }
-
-    dispatch(addCommentFetch({ name, email, body, postId: selectedPost?.id }));
-  };
+  useEffect(loadComments, [selectedPost?.id]);
 
   const deleteComment = (commentId: number) => {
     dispatch(deleteCommentFetch(commentId));
@@ -53,21 +41,21 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loading && <Loader />}
 
-        {loaded && hasError && (
+        {!loading && hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!loading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -101,7 +89,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loading && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -112,9 +100,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
+        {!loading && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );

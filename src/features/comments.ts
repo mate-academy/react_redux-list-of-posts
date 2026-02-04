@@ -4,15 +4,20 @@ import { Comment } from '../types/Comment';
 import { getPostComments, createComment, deleteComment } from '../api/comments';
 
 type CommentsState = {
-  loaded: boolean;
-  hasError: boolean;
   items: Comment[];
+  hasError: boolean;
+
+  loading: boolean;
+  adding: boolean;
+  deleting: boolean;
 };
 
 const initialState: CommentsState = {
-  loaded: false,
-  hasError: false,
   items: [],
+  hasError: false,
+  loading: false,
+  adding: false,
+  deleting: false,
 };
 
 export const fetchComments = createAsyncThunk(
@@ -25,7 +30,9 @@ export const fetchComments = createAsyncThunk(
 export const addCommentFetch = createAsyncThunk(
   'comments/addComment',
   async (newComment: Omit<Comment, 'id'>) => {
-    return createComment(newComment);
+    const response = await createComment(newComment);
+
+    return response;
   },
 );
 
@@ -46,47 +53,52 @@ const commentsSlice = createSlice({
     //#region fetch
     builder
       .addCase(fetchComments.pending, state => {
-        state.loaded = false;
+        state.loading = true;
         state.hasError = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.items = action.payload;
-        state.loaded = true;
+        state.loading = false;
       })
       .addCase(fetchComments.rejected, state => {
-        state.loaded = true;
+        state.loading = false;
         state.hasError = true;
       });
+
     //#endregion
 
     //#region add
     builder
       .addCase(addCommentFetch.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
+        state.adding = true;
       })
       .addCase(addCommentFetch.fulfilled, (state, action) => {
         state.items.push(action.payload);
-        state.loaded = true;
+        state.adding = false;
       })
       .addCase(addCommentFetch.rejected, state => {
-        state.loaded = true;
+        state.adding = false;
         state.hasError = true;
       });
+
     //#endregion
 
     //#region delete
     builder
+      .addCase(deleteCommentFetch.pending, state => {
+        state.deleting = true;
+      })
       .addCase(deleteCommentFetch.fulfilled, (state, action) => {
         state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
-        state.loaded = true;
+        state.deleting = false;
       })
       .addCase(deleteCommentFetch.rejected, state => {
-        state.loaded = true;
+        state.deleting = false;
         state.hasError = true;
       });
+
     //#endregion
   },
 });
