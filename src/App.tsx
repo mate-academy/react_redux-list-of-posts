@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,38 +10,47 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+
+import {
+  setAuthor,
+  setPosts,
+  setPostsLoading,
+  setPostsError,
+  setSelectedPost,
+  clearSelectedPost,
+} from './features/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
+  const authorId = useAppSelector(state => state.posts.selectedAuthorId);
+  const selectedPostId = useAppSelector(state => state.posts.selectedPostId);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    dispatch(setPostsLoading());
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .then(data => {
+        dispatch(setPosts(data));
+      })
+      .catch(() => dispatch(setPostsError()));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(clearSelectedPost());
 
-    if (author) {
-      loadUserPosts(author.id);
+    if (authorId) {
+      loadUserPosts(authorId);
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [authorId, dispatch]);
+
+  const selectedPost = posts.find(post => post.id === selectedPostId);
 
   return (
     <main className="section">
@@ -50,15 +59,18 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={authorId}
+                  onChange={userID => dispatch(setAuthor(userID))}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!authorId && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {authorId && !loaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {authorId && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,17 +79,23 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {authorId && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {authorId && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    selectedPostId={selectedPostId || undefined}
+                    onPostSelected={post => {
+                      if (post) {
+                        dispatch(setSelectedPost(post.id));
+                      } else {
+                        dispatch(clearSelectedPost());
+                      }
+                    }}
                   />
                 )}
               </div>
