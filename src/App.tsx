@@ -42,8 +42,6 @@ export const App: React.FC = () => {
 
     if (author) {
       loadUserPosts();
-    } else {
-      dispatch(fetchPosts(0));
     }
   }, [author]);
 

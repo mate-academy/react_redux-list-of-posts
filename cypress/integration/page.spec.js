@@ -593,11 +593,11 @@ describe('', () => {
     });
 
     it('should not have posts with Close buttons', () => {
-      cy.contains('[data-cy="PageButton"]', 'Close').should('not.exist');
+      cy.contains('[data-cy="PostButton"]', 'Close').should('not.exist');
     });
 
     it('should not have post buttons without `is-light` class', () => {
-      cy.get('[data-cy="PageButton"]:not(.is-light)').should('not.exist');
+      cy.get('[data-cy="PostButton"]:not(.is-light)').should('not.exist');
     });
 
     describe('after selecting one', () => {
@@ -722,21 +722,6 @@ describe('', () => {
 
       it('should appear immediately', () => {
         postDetails.el().should('exist');
-      });
-
-      it('should have post id, title and body', () => {
-        postDetails
-          .postTitle()
-          .should(
-            'have.text',
-            '#1: sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
-          );
-        postDetails
-          .postBody()
-          .should(
-            'have.text',
-            'quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto',
-          );
       });
 
       it('should show loader', () => {

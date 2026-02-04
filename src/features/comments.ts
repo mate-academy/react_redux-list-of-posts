@@ -7,7 +7,7 @@ type CommentsState = {
   items: Comment[];
   hasError: boolean;
 
-  loading: boolean;
+  loaded: boolean;
   adding: boolean;
   deleting: boolean;
 };
@@ -15,7 +15,7 @@ type CommentsState = {
 const initialState: CommentsState = {
   items: [],
   hasError: false,
-  loading: false,
+  loaded: false,
   adding: false,
   deleting: false,
 };
@@ -53,15 +53,15 @@ const commentsSlice = createSlice({
     //#region fetch
     builder
       .addCase(fetchComments.pending, state => {
-        state.loading = true;
+        state.loaded = true;
         state.hasError = false;
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.items = action.payload;
-        state.loading = false;
+        state.loaded = false;
       })
       .addCase(fetchComments.rejected, state => {
-        state.loading = false;
+        state.loaded = false;
         state.hasError = true;
       });
 
