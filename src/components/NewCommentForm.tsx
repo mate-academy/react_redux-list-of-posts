@@ -8,52 +8,22 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const isValid = Boolean(name && email && body);
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
-
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
+    if (!isValid) {
       return;
     }
 
@@ -61,16 +31,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-
     // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+
+    setBody('');
     // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
+    <form onSubmit={handleSubmit} onReset={clearForm}>
+      <div className="field">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
@@ -78,36 +48,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', { 'is-danger': !name })}
             value={name}
-            onChange={handleChange}
+            onChange={event => setName(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
+          {!name && (
+            <span className="icon is-small is-right has-text-danger">
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>
 
-        {errors.name && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
+        {!name && <p className="help is-danger">Name is required</p>}
       </div>
 
-      <div className="field" data-cy="EmailField">
+      <div className="field">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
@@ -115,36 +77,28 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', { 'is-danger': !email })}
             value={email}
-            onChange={handleChange}
+            onChange={event => setEmail(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
+          {!email && (
+            <span className="icon is-small is-right has-text-danger">
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
         </div>
 
-        {errors.email && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
+        {!email && <p className="help is-danger">Email is required</p>}
       </div>
 
-      <div className="field" data-cy="BodyField">
+      <div className="field">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
@@ -152,19 +106,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', { 'is-danger': !body })}
             value={body}
-            onChange={handleChange}
+            onChange={event => setBody(event.target.value)}
           />
         </div>
 
-        {errors.body && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
+        {!body && <p className="help is-danger">Enter some text</p>}
       </div>
 
       <div className="field is-grouped">
@@ -174,6 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            disabled={!isValid}
           >
             Add
           </button>
