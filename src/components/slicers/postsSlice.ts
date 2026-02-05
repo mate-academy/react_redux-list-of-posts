@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getUserPosts } from "../../api/posts";
 import { Post } from "../../types/Post";
 
@@ -11,9 +11,12 @@ export const postsThunk = createAsyncThunk(
 
 export const postsSlice = createSlice({
   name: 'posts',
-  initialState: {items: [] as Post[], loaded: false, hasError: false },
+  initialState: {items: [] as Post[], loaded: false, hasError: false, selectedPost: null as Post | null },
   reducers: {
     clear: (state) => {state.items.length = 0},
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(postsThunk.pending, state => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,28 +9,23 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './components/App/hooks';
 import { postsSlice, postsThunk } from './components/slicers/postsSlice';
 
 export const App: React.FC = () => {
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const dispatch = useAppDispatch();
-  const {items: posts, loaded, hasError} = useAppSelector(state => state.posts)
+  const { items: users, selectedUserId } = useAppSelector(state => state.users);
+  const { items: posts, loaded, hasError, selectedPost } = useAppSelector(state => state.posts)
+  const selectedUser = users.find(u => u.id === selectedUserId) || null
+
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
-
-    if (author) {
-      dispatch(postsThunk(author.id));
-    } else {
-      dispatch(postsSlice.actions.clear());
+    dispatch(postsSlice.actions.setSelectedPost(null))
+    if (selectedUserId) {
+      dispatch(postsThunk(selectedUserId))
+    } else if(selectedUserId === null) {
+      dispatch(postsSlice.actions.clear())
     }
-  }, [author]);
-
+  }, [selectedUserId])
   return (
     <main className="section">
       <div className="container">
@@ -38,15 +33,15 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector/>
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!selectedUser && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {selectedUser && !loaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {selectedUser && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -55,17 +50,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {selectedUser && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {selectedUser && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
