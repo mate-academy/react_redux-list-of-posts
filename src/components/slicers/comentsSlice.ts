@@ -22,7 +22,7 @@ export const commentsThunkDelete = createAsyncThunk(
     return deleteComment(commentId)
   }
 )
-export const comentsSlice = createSlice({
+export const commentsSlice = createSlice({
   name: 'comments',
   initialState: {items: [] as Comment[], loaded: false, hasError: false },
   reducers: { clear: (state) => { state.items = []; } },
@@ -35,7 +35,7 @@ export const comentsSlice = createSlice({
     },
     )
     builder.addCase(commentsThunkGet.fulfilled, (state, action) => {
-      state.items = action.payload,
+      state.items = action.payload;
       state.loaded = true;
     },
     )
@@ -63,4 +63,4 @@ export const comentsSlice = createSlice({
   }
 })
 
-export default comentsSlice.reducer;
+export default commentsSlice.reducer;

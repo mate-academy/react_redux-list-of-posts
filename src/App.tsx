@@ -11,21 +11,29 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './components/App/hooks';
 import { postsSlice, postsThunk } from './components/slicers/postsSlice';
+import { setSelectedPost } from './components/slicers/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { items: users, selectedUserId } = useAppSelector(state => state.users);
-  const { items: posts, loaded, hasError, selectedPost } = useAppSelector(state => state.posts)
-  const selectedUser = users.find(u => u.id === selectedUserId) || null
+  const { items: users,  } = useAppSelector(state => state.users);
+  const { selectedUserId } = useAppSelector(state => state.author);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
+  const selectedUser = users.find(u => u.id === selectedUserId) || null;
 
   useEffect(() => {
-    dispatch(postsSlice.actions.setSelectedPost(null))
+    dispatch(setSelectedPost(null));
     if (selectedUserId) {
-      dispatch(postsThunk(selectedUserId))
-    } else if(selectedUserId === null) {
-      dispatch(postsSlice.actions.clear())
+      dispatch(postsThunk(selectedUserId));
+    } else if (selectedUserId === null) {
+      dispatch(postsSlice.actions.clear());
     }
-  }, [selectedUserId])
+  }, [selectedUserId]);
+
   return (
     <main className="section">
       <div className="container">
@@ -33,11 +41,13 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector/>
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {selectedUser && !loaded && <Loader />}
 
@@ -57,9 +67,7 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                  />
+                  <PostsList posts={posts} />
                 )}
               </div>
             </div>

@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from './App/hooks';
-import { usersSlice, usersThunk } from './slicers/usersSlice';
+import { usersThunk } from './slicers/usersSlice';
+import { authorSlice } from './slicers/authorSlice';
 
-
-export const UserSelector: React.FC= () => {
-  const dispatch = useAppDispatch()
+export const UserSelector: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
-  const { items: users, selectedUserId } = useAppSelector(state => state.users);
-  const selectedUser = users.find(u => u.id === selectedUserId) || null
+  const { items: users } = useAppSelector(state => state.users);
+  const { selectedUserId } = useAppSelector(state => state.author);
+  const selectedUser = users.find(u => u.id === selectedUserId) || null;
+
   useEffect(() => {
-    dispatch(usersThunk())
-  }, [])
+    dispatch(usersThunk());
+  }, []);
   useEffect(() => {
     if (!expanded) {
       return;
     }
-    const handleDocumentClick = () => {
 
+    const handleDocumentClick = () => {
       setExpanded(false);
     };
 
@@ -27,7 +29,6 @@ export const UserSelector: React.FC= () => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-
   }, [expanded]);
 
   return (
@@ -60,9 +61,10 @@ export const UserSelector: React.FC= () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                dispatch(usersSlice.actions.setSelectedUser(user.id)
-                )
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(authorSlice.actions.setAuthor(user.id));
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUserId,
