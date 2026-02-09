@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(npm run build:*)",
+      "Bash(./node_modules/.bin/tsc:*)"
+    ]
+  }
+}
