@@ -81,17 +81,17 @@ export const commentsSlice = createSlice({
     });
 
     builder.addCase(fetchDeleteComment.pending, state => {
-      state.delete.addHasError = false;
+      state.delete.deleteHasError = false;
     });
 
     builder.addCase(fetchDeleteComment.fulfilled, (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-      state.delete.addHasError = false;
-      state.delete.addLoaded = true;
+      state.delete.deleteHasError = false;
+      state.delete.deleteLoaded = true;
     });
 
     builder.addCase(fetchDeleteComment.rejected, state => {
-      state.delete.addHasError = true;
+      state.delete.deleteHasError = true;
     });
   },
 });

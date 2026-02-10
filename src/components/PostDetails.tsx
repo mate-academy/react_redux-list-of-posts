@@ -5,7 +5,6 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  commentsSlice,
   fetchAddComment,
   fetchComments,
   fetchDeleteComment,
