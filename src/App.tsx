@@ -1,48 +1,46 @@
-import React, { useEffect, useState } from 'react';
+// src/App.tsx
+
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+// Importa componentes
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+
+// Importa Slices e Thunks
+import { fetchUsers } from './features/users/usersSlice';
+import {
+  fetchPosts,
+  selectSelectedPostId,
+  selectPostsLoaded,
+  selectPostsHasError,
+} from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // 1. LÊ O ESTADO PRINCIPAL DO REDUX
+  const selectedPostId = useAppSelector(selectSelectedPostId);
+  const loaded = useAppSelector(selectPostsLoaded);
+  const hasError = useAppSelector(selectPostsHasError);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
+  // 2. EFEITO: Carrega dados essenciais UMA VEZ na montagem do App
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    // Carrega a lista de usuários
+    dispatch(fetchUsers());
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
+    // Carrega a lista inicial de posts (a filtragem por autor ocorre no PostsList)
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
+  // 3. RENDERIZAÇÃO: Usa o estado do Redux e move a lógica para os componentes filhos
   return (
     <main className="section">
       <div className="container">
@@ -50,15 +48,19 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                {/* UserSelector AGORA LÊ E ESCREVE DIRETAMENTE NO REDUX */}
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {/* Lógica de status simplificada com base no Redux */}
 
-                {author && !loaded && <Loader />}
+                {/* Se não houver autor, mostramos a lista completa de posts (PostsList filtra) */}
+                {/* O PostsList já lida com o estado de 'No posts yet' e 'Posts Loading Error' */}
 
-                {author && loaded && hasError && (
+                {!loaded && <Loader />}
+
+                {loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,19 +69,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
-                )}
+                {/* PostsList AGORA LÊ posts e selectedPostId DIRETAMENTE DO REDUX */}
+                {loaded && !hasError && <PostsList />}
               </div>
             </div>
           </div>
@@ -92,12 +83,14 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost,
+                // A barra lateral está aberta se um post estiver selecionado no Redux
+                'Sidebar--open': selectedPostId,
               },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {/* PostDetails AGORA LÊ o post selecionado DIRETAMENTE DO REDUX */}
+              {selectedPostId && <PostDetails />}
             </div>
           </div>
         </div>

@@ -1,14 +1,29 @@
+// src/components/NewCommentForm.tsx
+
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
+  // A função onSubmit agora é assíncrona para suportar o estado de loading
   onSubmit: (data: CommentData) => Promise<void>;
+
+  // Função para cancelar e fechar o formulário
+  onCancel: () => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
+  // A lógica de estado local (inputs, erros, submitting) é MANTIDA.
+
+  // No Redux, o 'submitting' (loading) não é gerenciado localmente,
+  // mas sim pelo Redux. No entanto, para fins práticos (e para manter o spinner
+  // de forma simples), podemos mantê-lo aqui, mas ele deve ser resetado
+  // logo após o dispatch.
+  // Alternativamente, se o onSubmit for o Thunk, o PostDetails gerencia o async.
+  // Vamos manter a prop original para simplificar.
   const [submitting, setSubmitting] = useState(false);
 
+  // ... (Restante do estado local: errors, values) ...
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -58,23 +73,26 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      // Aguarda a conclusão da submissão
+      await onSubmit({ name, email, body });
+      // Limpa o corpo do comentário apenas após sucesso
+      setValues(current => ({ ...current, body: '' }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
+  // 3. Renderização: Adiciona o botão de Cancelar e a chamada a onCancel
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {/* ... (Todos os campos do formulário permanecem inalterados) ... */}
+
+      {/* CAMPO NOME */}
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -85,11 +103,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={name}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
           {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -99,7 +115,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
@@ -107,11 +122,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         )}
       </div>
 
+      {/* CAMPO EMAIL */}
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -122,11 +137,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={email}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
           {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -136,7 +149,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
@@ -144,11 +156,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         )}
       </div>
 
+      {/* CAMPO BODY */}
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -159,7 +171,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             onChange={handleChange}
           />
         </div>
-
         {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
@@ -172,6 +183,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
+              // A lógica de 'is-loading' é mantida no componente, mas você deve
+              // garantir que o setSubmitting seja usado no PostDetails se quiser
+              // refletir o estado de carregamento do Thunk.
               'is-loading': submitting,
             })}
           >
@@ -180,9 +194,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
+          </button>
+        </div>
+
+        {/* NOVO: Botão de Cancelar */}
+        <div className="control">
+          <button
+            type="button" // Use 'button' para evitar submissão do form
+            className="button is-danger is-light"
+            onClick={onCancel}
+          >
+            Cancel
           </button>
         </div>
       </div>
