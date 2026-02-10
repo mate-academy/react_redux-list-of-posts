@@ -25,3 +25,12 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+.my-container{
+  display: flex;
+  gap: 15px;
+
+  & > .tile {
+    flex: 1 1 auto;
+  }
+}
