@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
 
-type Props = {
-  post: Post;
-};
-
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails = () => {
+  const post = useSelector((state: RootState) => state.selectedPost);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
+    if (!post) {
+      return;
+    }
+
     setLoaded(false);
     setError(false);
     setVisible(false);
@@ -29,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .finally(() => setLoaded(true)); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [post]);
 
   // The same useEffect with async/await
   /*
@@ -59,6 +61,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
+      if (!post) {
+        return;
+      }
+
       const newComment = await commentsApi.createComment({
         name,
         email,
@@ -92,9 +98,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        {post && <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>}
 
-        <p data-cy="PostBody">{post.body}</p>
+        {post && <p data-cy="PostBody">{post.body}</p>}
       </div>
 
       <div className="block">

@@ -1,24 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import { setUser } from '../features/user';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector = () => {
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const dispatch = useDispatch();
+  const users = useSelector((state: RootState) => state.allUsers);
   const [expanded, setExpanded] = useState(false);
+  const selectedUser = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (!expanded) {
@@ -31,6 +26,8 @@ export const UserSelector: React.FC<Props> = ({
       // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
 
     document.addEventListener('click', handleDocumentClick);
 
@@ -73,7 +70,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(setUser(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
