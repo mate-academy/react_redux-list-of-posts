@@ -1,49 +1,45 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-import classNames from 'classnames';
 import React from 'react';
+import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
+  selectedPostId: number | null;
   onPostSelected: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPostId,
   onPostSelected,
 }) => (
-  <div data-cy="PostsList">
+  <div>
     <p className="title">Posts:</p>
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+    <table className="table is-fullwidth is-striped">
       <thead>
-        <tr className="has-background-link-light">
+        <tr>
           <th>#</th>
           <th>Title</th>
-          <th> </th>
+          <th />
         </tr>
       </thead>
-
       <tbody>
         {posts.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
-            <td data-cy="PostTitle">{post.title}</td>
-            <td className="has-text-right is-vcentered">
+          <tr key={post.id}>
+            <td>{post.id}</td>
+            <td>{post.title}</td>
+            <td className="has-text-right">
               <button
-                type="button"
-                data-cy="PostButton"
-                className={classNames('button', 'is-link', {
-                  'is-light': post.id !== selectedPostId,
+                className={classNames('button', {
+                  'is-light': selectedPostId !== post.id,
+                  'is-link': selectedPostId === post.id,
                 })}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
+                onClick={() =>
+                  onPostSelected(selectedPostId === post.id ? null : post)
+                }
               >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
+                {selectedPostId === post.id ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>
