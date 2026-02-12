@@ -6,7 +6,7 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
+  selectedPostId: number | null;
   onPostSelected: (post: Post | null) => void;
 };
 
