@@ -1,12 +1,17 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+//import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComment } from '../features/comments/commentsSlice';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  //onSubmit: (data: CommentData) => Promise<void>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = () => {
+  const dispatch = useAppDispatch();
+  const post = useAppSelector(state => state.posts.selectedPost);
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -44,6 +49,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setErrors(current => ({ ...current, [field]: false }));
   };
 
+  // const handleAddComment = async (commentData: CommentData) => {
+  //   if (post) {
+  //     dispatch(addComment({ ...commentData, postId: post.id }));
+  //   }
+  // };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -58,13 +69,34 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
+    try {
+      if (post) {
+        await dispatch(
+          addComment({
+            name,
+            email,
+            body,
+            postId: post.id,
+          }),
+        );
+        setValues(current => ({ ...current, body: '' }));
+      }
+    } catch {
+      setErrors({
+        name: !name,
+        email: !email,
+        body: !body,
+      });
+    } finally {
+      setSubmitting(false);
+    }
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    //await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+
+    //setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
 
