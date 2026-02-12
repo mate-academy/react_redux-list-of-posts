@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { PostCommentData } from '../types/PostComment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: PostCommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    // setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
