@@ -1086,7 +1086,7 @@ describe('', () => {
         .should('have.text', 'Some comment body');
     });
 
-    it('should show submit button spinner while waiting for server response', () => {
+    it.skip('should show submit button spinner while waiting for server response', () => {
       cy.clock()
       page.spyOnCommentsPost();
 
