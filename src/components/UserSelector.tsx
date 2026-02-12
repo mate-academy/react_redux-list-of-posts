@@ -1,24 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsers } from '../features/users';
+import { AppDispatch, RootState } from '../app/store';
+import { getSelectedUser } from '../features/user';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
   value: selectedUser,
-  onChange,
 }) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
+
+  const { users } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
     if (!expanded) {
@@ -41,6 +45,10 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   return (
     <div
@@ -73,7 +81,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(getSelectedUser(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
