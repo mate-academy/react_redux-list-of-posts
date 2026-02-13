@@ -4,15 +4,15 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 
-type Props = {
+interface Props {
   posts: Post[];
-  selectedPostId?: number;
+  selectedPost: Post | null;
   onPostSelected: (post: Post | null) => void;
-};
+}
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPost = null,
   onPostSelected,
 }) => (
   <div data-cy="PostsList">
@@ -37,13 +37,13 @@ export const PostsList: React.FC<Props> = ({
                 type="button"
                 data-cy="PostButton"
                 className={classNames('button', 'is-link', {
-                  'is-light': post.id !== selectedPostId,
+                  'is-light': post.id !== selectedPost?.id,
                 })}
                 onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
+                  onPostSelected(post.id === selectedPost?.id ? null : post);
                 }}
               >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
+                {post.id === selectedPost?.id ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>
