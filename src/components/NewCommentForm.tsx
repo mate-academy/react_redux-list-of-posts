@@ -6,6 +6,8 @@ type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
+const trimmer = (value: string) => value.trim();
+
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
@@ -53,7 +55,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       body: !body,
     });
 
-    if (!name || !email || !body) {
+    if (!trimmer(name) || !trimmer(email) || !trimmer(body)) {
       return;
     }
 
