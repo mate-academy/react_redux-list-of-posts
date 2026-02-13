@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addComment,
+  deleteComment,
+  setCommentsError,
+  loadComments,
+} from '../features/commentsSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.comments,
+  );
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
+  useEffect(() => {
     setVisible(false);
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
+    dispatch(loadComments(post.id));
+  }, [dispatch, post.id]);
 
   // The same useEffect with async/await
   /*
@@ -37,27 +35,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setLoaded(false);
     setVisible(false);
     setError(false);
-
-    try {
+      try {
       const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
+        setComments(commentsFromServer);
     } catch (error) {
       setError(true);
     } finally {
       setLoaded(true);
     }
   };
-
   useEffect(() => {
     loadComments();
   }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
+   useEffect(loadComments, [post.id]); // Wrong!
   // effect can return only a function but not a Promise
   */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -66,7 +59,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(addComment(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -74,17 +67,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      setCommentsError(true);
     }
   };
 
-  const deleteComment = async (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(deleteComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -132,12 +123,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
                 </div>
-
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>
@@ -145,7 +135,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             ))}
           </>
         )}
-
         {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
@@ -158,7 +147,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+          <NewCommentForm onSubmit={handleAddComment} />
         )}
       </div>
     </div>
