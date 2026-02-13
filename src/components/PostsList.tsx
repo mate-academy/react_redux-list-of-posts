@@ -1,18 +1,17 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
+  selectedPostId: number | null;
+  onPostSelected: (postId: number | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPostId = null,
   onPostSelected,
 }) => (
   <div data-cy="PostsList">
@@ -40,7 +39,7 @@ export const PostsList: React.FC<Props> = ({
                   'is-light': post.id !== selectedPostId,
                 })}
                 onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
+                  onPostSelected(post.id === selectedPostId ? null : post.id);
                 }}
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}

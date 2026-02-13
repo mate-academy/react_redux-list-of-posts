@@ -4,17 +4,15 @@ import { CommentData } from '../types/Comment';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
+  submitting: boolean;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, submitting }) => {
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
-
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
@@ -22,17 +20,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    setValues({ name: '', email: '', body: '' });
+    setErrors({ name: false, email: false, body: false });
   };
 
   const handleChange = (
@@ -57,15 +46,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       return;
     }
 
-    setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -74,7 +57,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -85,11 +67,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={name}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
           {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -99,7 +79,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
@@ -111,7 +90,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -122,11 +100,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             value={email}
             onChange={handleChange}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
           {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -136,7 +112,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
@@ -148,7 +123,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -159,7 +133,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             onChange={handleChange}
           />
         </div>
-
         {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
@@ -178,9 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             Add
           </button>
         </div>
-
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
