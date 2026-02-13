@@ -1,15 +1,14 @@
-// import { client } from '../utils/axiosClient';
-import { client } from '../utils/fetchClient';
+import { fetchClient } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
-export const getPostComments = (postId: number) => {
-  return client.get<Comment[]>(`/comments?postId=${postId}`);
+export const getPostComments = async (postId: number) => {
+  return fetchClient.get<Comment[]>(`/posts/${postId}/comments`);
 };
 
-export const createComment = (data: Omit<Comment, 'id'>) => {
-  return client.post<Comment>('/comments', data);
+export const createComment = async (comment: Comment) => {
+  return fetchClient.post<Comment>('/comments', comment);
 };
 
-export const deleteComment = (commentId: number) => {
-  return client.delete(`/comments/${commentId}`);
+export const deleteComment = async (commentId: number) => {
+  return fetchClient.delete(`/comments/${commentId}`);
 };
