@@ -1,13 +1,28 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import * as commentsAction from '../features/postComments/postComments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm = () => {
   const [submitting, setSubmitting] = useState(false);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const dispatch = useAppDispatch();
+
+  const addComment = async ({ name, email, body }: CommentData) => {
+    if (selectedPost === null) {
+      return;
+    }
+
+    await dispatch(
+      commentsAction.addNewComment({
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      }),
+    );
+  };
 
   const [errors, setErrors] = useState({
     name: false,
@@ -60,7 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    await addComment({ name, email, body });
 
     // and the spinner will disappear immediately
     setSubmitting(false);
