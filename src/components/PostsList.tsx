@@ -1,20 +1,18 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import React from 'react';
 import { Post } from '../types/Post';
+import {useAppDispatch, useAppSelector} from '../app/hooks';
+import { actions as currentPostActions } from '../features/currentPost';
 
-type Props = {
-  posts: Post[];
-  selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
-};
+export const PostsList = () => {
+  const dispatch = useAppDispatch();
+  const { currentUserPosts } = useAppSelector(store => store.currentUser);
+  const { currentPost } = useAppSelector(store => store.currentPost);
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
+  const setCurrentPost = (post: Post | null) => dispatch(currentPostActions.setCurrentPost(post));
+
+  return (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -28,7 +26,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
+        {currentUserPosts.map(post => (
           <tr key={post.id} data-cy="Post">
             <td data-cy="PostId">{post.id}</td>
             <td data-cy="PostTitle">{post.title}</td>
@@ -37,13 +35,13 @@ export const PostsList: React.FC<Props> = ({
                 type="button"
                 data-cy="PostButton"
                 className={classNames('button', 'is-link', {
-                  'is-light': post.id !== selectedPostId,
+                  'is-light': post.id !== currentPost?.id,
                 })}
                 onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
+                  setCurrentPost(post.id === currentPost?.id ? null : post);
                 }}
               >
-                {post.id === selectedPostId ? 'Close' : 'Open'}
+                {post.id === currentPost?.id ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>
@@ -51,4 +49,4 @@ export const PostsList: React.FC<Props> = ({
       </tbody>
     </table>
   </div>
-);
+)};

@@ -25,3 +25,12 @@ iframe {
 .message-body {
   white-space: pre-line;
 }
+
+.is-ancestor {
+  display: flex;
+  gap: 20px;
+}
+
+.is-parent {
+  flex: 1;
+}
