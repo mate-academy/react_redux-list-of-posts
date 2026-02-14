@@ -1,19 +1,32 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../app/hooks';
+import { Post } from '../types/Post';
+import {
+  addComment,
+  actions as newCommentActions,
+} from '../features/NewCommentFormSlice';
+import { actions as comentsActions } from '../features/commentsSlice';
+import { validateEmail } from '../utils/validateEmail';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  post: Post;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+export const NewCommentForm: React.FC<Props> = ({ post }) => {
+  const dispatch = useDispatch<ThunkDispatch<unknown, unknown, AnyAction>>();
+  const { errors, submitting, submitError } = useAppSelector(
+    state => state.newCommentForm,
+  );
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const addNewComment = (comment: CommentData) => {
+    const newComment: Omit<Comment, 'id'> = { ...comment, postId: post.id };
+
+    return dispatch(addComment(newComment));
+  };
 
   const [{ name, email, body }, setValues] = useState({
     name: '',
@@ -22,16 +35,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const clearForm = () => {
+    dispatch(
+      newCommentActions.setErrors({
+        name: false,
+        email: false,
+        body: false,
+      }),
+    );
+
+    dispatch(newCommentActions.clearInputs());
+    dispatch(newCommentActions.clearErrors());
+
     setValues({
       name: '',
       email: '',
       body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
     });
   };
 
@@ -41,35 +59,54 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
+    const normalizedBody = body.trim();
+    const checkEmail = validateEmail(normalizedEmail);
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    dispatch(
+      newCommentActions.setErrors({
+        name: normalizedName,
+        email: checkEmail,
+        body: normalizedBody,
+      }),
+    );
 
-    if (!name || !email || !body) {
+    if (!normalizedName || !normalizedEmail || !normalizedBody) {
       return;
     }
 
-    setSubmitting(true);
+    await addNewComment({ name, email, body });
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    if (!submitError) {
+      const uniqueId = Date.now();
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+      dispatch(
+        comentsActions.addComment({
+          name,
+          email,
+          body,
+          postId: post.id,
+          id: `${name}${uniqueId} `,
+        }),
+      );
+    }
+
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={clearForm}
+      data-cy="NewCommentForm"
+      autoComplete="off"
+      noValidate
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -114,7 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -180,7 +217,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
