@@ -7,8 +7,10 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   selectedPostId?: number;
-  onPostSelected: (post: Post | null) => void;
+  onPostSelected: (value: SelectedPostType) => void;
 };
+
+type SelectedPostType = null | Post;
 
 export const PostsList: React.FC<Props> = ({
   posts,
