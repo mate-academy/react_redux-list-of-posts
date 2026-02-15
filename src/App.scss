@@ -2,6 +2,34 @@ iframe {
   display: none;
 }
 
+.tile {
+  align-items: stretch;
+  display: block;
+  flex-basis: 0;
+  flex-grow: 1;
+  min-height: min-content;
+}
+
+.tile.is-ancestor {
+  margin-left: -.75rem;
+  margin-right: -.75rem;
+  margin-top: -.75rem;
+}
+
+.tile.is-ancestor:last-child {
+  margin-bottom: -.75rem;
+}
+
+.tile.is-parent {
+  padding: .75rem;
+}
+
+@media print, screen and (min-width: 769px) {
+  .tile:not(.is-child) {
+      display: flex;
+  }
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
