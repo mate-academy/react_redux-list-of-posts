@@ -59,13 +59,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+    await new Promise(resolve => setTimeout(resolve, 300));
+
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    setSubmitting(false);
   };
 
   return (
@@ -180,7 +179,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
