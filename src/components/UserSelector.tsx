@@ -1,24 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loadUsers, actions as usersActions } from '../features/users';
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector = () => {
   const [expanded, setExpanded] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { selectedUser, users } = useAppSelector(state => state.users);
 
   useEffect(() => {
     if (!expanded) {
@@ -42,6 +32,11 @@ export const UserSelector: React.FC<Props> = ({
     // when the Dopdown is closed
   }, [expanded]);
 
+  useEffect(() => {
+    dispatch(loadUsers());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -55,7 +50,8 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={e => {
             e.stopPropagation();
-            setExpanded(current => !current);
+            setExpanded(!expanded);
+            // setExpanded(current => !current);
           }}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
@@ -73,7 +69,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                dispatch(usersActions.setSelectedUser(user));
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
