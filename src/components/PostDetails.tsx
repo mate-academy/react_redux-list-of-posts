@@ -6,6 +6,7 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+//import { useSelector, useDispatch } from 'react-redux';
 
 type Props = {
   post: Post;
@@ -16,6 +17,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  //const dispatch = useDispatch<AppDispatch>();
 
   function loadComments() {
     setLoaded(false);
