@@ -1,11 +1,19 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
-import counterReducer from '../features/counter/counterSlice';
+import api from '../api/api';
+import usersReducer from '../features/users/usersSlice';
+import postsReducer from '../features/posts/postsSlice';
+import commentsReducer from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    [api.reducerPath]: api.reducer,
+    users: usersReducer,
+    posts: postsReducer,
+    comments: commentsReducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(api.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
