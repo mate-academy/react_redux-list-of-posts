@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
