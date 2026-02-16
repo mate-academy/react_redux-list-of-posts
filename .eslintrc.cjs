@@ -37,6 +37,13 @@ module.exports = {
     'prettier'
   ],
   rules: {
+    "no-param-reassign": [
+    "error",
+    {
+      "props": true,
+      "ignorePropertyModificationsFor": ["state"]
+    }
+  ],
     // JS
     'semi': 'off',
     '@typescript-eslint/semi': ['error', 'always'],
