@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
@@ -14,10 +14,8 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // Get users from Redux store
+  const users = useAppSelector(state => state.users.items);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -53,6 +51,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          data-cy="DropdownButton"
           onClick={e => {
             e.stopPropagation();
             setExpanded(current => !current);
@@ -68,7 +67,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map((user: User) => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
