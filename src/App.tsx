@@ -13,7 +13,7 @@ import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { Counter } from './features/counter/Counter';
+import { Post } from './types/Post';
 import { User } from './types/User';
 
 export const App: React.FC = () => {
@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const loaded: boolean = useAppSelector(state => state.posts.loaded);
   const hasError: boolean = useAppSelector(state => state.posts.hasError);
   const author: User | null = useAppSelector(state => state.author.author);
-  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+  const selectedPost: Post | null = useAppSelector(state => state.selectedPost.selectedPost);
 
   const dispatch = useAppDispatch();
 
@@ -97,7 +97,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </div>
-      <Counter />
     </main>
   );
 };
