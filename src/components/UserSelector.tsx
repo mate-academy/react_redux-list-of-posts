@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { loadUsers } from '../app/store/usersSlice';
+import { loadUsers } from '../app/store/userSlice';
 import { User } from '../types/User';
 
 type Props = {
