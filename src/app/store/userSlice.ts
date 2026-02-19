@@ -37,11 +37,7 @@ const usersSlice = createSlice({
       .addCase(loadUsers.rejected, state => {
         state.hasError = true;
         state.loading = false;
-      })
-      .addMatcher(
-        () => false,
-        () => {},
-      );
+      });
   },
 });
 

@@ -18,6 +18,12 @@ module.exports = {
       'rules': {
         'react/jsx-filename-extension': ['off'],
       }
+    },
+     {
+      "files": ["src/app/store/**", "src/features/**"],
+      "rules": {
+        "no-param-reassign": "off"
+      }
     }
   ],
   parser: '@typescript-eslint/parser',
