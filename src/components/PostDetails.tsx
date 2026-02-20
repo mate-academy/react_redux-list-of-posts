@@ -1,118 +1,83 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../app/store';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { UserDisplay } from '../components/UserDisplay';
 
-import * as commentsApi from '../api/comments';
+import {
+  fetchCommentsByPostId,
+  clearComments,
+  deleteComment,
+} from '../features/comments/commentsSlice';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
 
-type Props = {
-  post: Post;
-};
+  const selectedPost = useSelector(
+    (state: RootState) => state.selectedPost.selectedPost,
+  );
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const {
+    items: comments,
+    loaded: commentsLoaded,
+    hasError: commentsHasError,
+  } = useSelector((state: RootState) => state.comments);
+
   const [visible, setVisible] = useState(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
-
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
   useEffect(() => {
-    loadComments();
-  }, []);
+    dispatch(clearComments());
+    setVisible(false);
 
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
+    if (selectedPost) {
+      dispatch(fetchCommentsByPostId(selectedPost.id));
     }
+  }, [selectedPost, dispatch]);
+
+  const handleDeleteComment = (commentId: number) => {
+    dispatch(deleteComment(commentId));
   };
 
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
+  if (!selectedPost) {
+    return (
+      <div className="content" data-cy="PostDetails">
+        <div className="block">
+          <h2 className="title is-4">Post Details</h2>
+          <p>Please select a post to view its details.</p>
+        </div>
+      </div>
     );
-
-    await commentsApi.deleteComment(commentId);
-  };
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
-
-        <p data-cy="PostBody">{post.body}</p>
+        <h2 data-cy="PostTitle">{`#${selectedPost.id}: ${selectedPost.title}`}</h2>
+        <p data-cy="PostBody">{selectedPost.body}</p>
+        <p>
+          <small>
+            by <UserDisplay userId={selectedPost.userId} />
+          </small>
+        </p>
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {!commentsLoaded && <Loader />}
 
-        {loaded && hasError && (
+        {commentsLoaded && commentsHasError && (
           <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+            Something went wrong while loading comments!
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {commentsLoaded && !commentsHasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {commentsLoaded && !commentsHasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -126,13 +91,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -146,7 +110,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {commentsLoaded && !commentsHasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -157,8 +121,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
+        {commentsLoaded && !commentsHasError && visible && (
+          <NewCommentForm postId={selectedPost.id} />
         )}
       </div>
     </div>

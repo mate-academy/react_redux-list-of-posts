@@ -1,10 +1,10 @@
 import { client } from '../utils/fetchClient';
-import { User } from '../types/User';
+import { User as UserType } from '../types/User';
 
-export const getUsers = () => {
-  return client.get<User[]>('/users');
+export const getUsers = (): Promise<UserType[]> => {
+  return client.get<UserType[]>('/users');
 };
 
-export const getUser = (id: number) => {
-  return client.get<User[]>(`/users/${id}`);
+export const getUser = (id: number): Promise<UserType> => {
+  return client.get<UserType>(`/users/${id}`);
 };
