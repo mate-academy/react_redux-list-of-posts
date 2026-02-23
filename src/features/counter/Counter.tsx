@@ -16,10 +16,20 @@ export function Counter() {
   const count = useAppSelector(selectCount);
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState(2);
+  const loading = useAppSelector(state => state.counter.status === 'loading');
+  const error = useAppSelector(state => state.counter.status === 'failed');
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIncrementAmount(+event.target.value);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <div>
