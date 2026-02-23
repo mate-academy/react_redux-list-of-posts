@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchUsers } from '../features/users/usersSlice';
 import { User } from '../types/User';
+import { Loader } from './Loader';
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
 type Props = {
   value: User | null;
@@ -17,7 +20,10 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+
+  const dispatch = useAppDispatch();
+  const { users, loading, error } = useAppSelector(state => state.users);
+
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -41,6 +47,28 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+
+  useEffect(() => {
+    if (users.length === 0) {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, users.length]);
+
+  if (loading) {
+    return (
+      <div data-cy="UserSelector">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div data-cy="UserSelector">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -74,6 +102,8 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               onClick={() => {
                 onChange(user);
+                dispatch(setSelectedPost(null));
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
