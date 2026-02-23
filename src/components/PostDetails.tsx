@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
 import * as commentsApi from '../api/comments';
-
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 
@@ -26,7 +24,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .getPostComments(post.id)
       .then(setComments) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .finally(() => {
+        setLoaded(true);
+      }); // hide the spinner
   }
 
   useEffect(loadComments, [post.id]);
