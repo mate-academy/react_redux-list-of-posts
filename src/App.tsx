@@ -16,7 +16,10 @@ import { authorSlice } from './features/authorSlice';
 import { fetchUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const postsState = useAppSelector(state => state.posts);
+  const posts = postsState.items;
+  const loaded = postsState.loaded;
+  const hasError = postsState.hasError;
   const author = useAppSelector(state => state.author.author);
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
 

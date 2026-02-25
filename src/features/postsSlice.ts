@@ -17,14 +17,14 @@ export const fetchPosts = createAsyncThunk(
 );
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: string | null;
 };
 
 const initialState: PostsState = {
-  posts: [],
-  loaded: true,
+  items: [],
+  loaded: false,
   hasError: null,
 };
 
@@ -40,7 +40,7 @@ const postSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loaded = true;
-        state.posts = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loaded = true;

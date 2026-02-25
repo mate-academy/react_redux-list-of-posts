@@ -43,13 +43,13 @@ export const deleteCommentThunk = createAsyncThunk(
 );
 
 type CommentsState = {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: string | null;
 };
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: null,
 };
@@ -66,17 +66,17 @@ const commentsSlice = createSlice({
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.loaded = true;
-        state.comments = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchComments.rejected, (state, action) => {
         state.loaded = true;
         state.hasError = action.payload as string;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(deleteCommentThunk.fulfilled, (state, action) => {
-        state.comments = state.comments.filter(c => c.id !== action.payload);
+        state.items = state.items.filter(c => c.id !== action.payload);
       });
   },
 });

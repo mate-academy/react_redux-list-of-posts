@@ -9,14 +9,9 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
   const users = useAppSelector(state => state.users.users);
   const [expanded, setExpanded] = useState(false);
 
