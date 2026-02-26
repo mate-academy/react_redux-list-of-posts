@@ -8,13 +8,15 @@ type Props = {
   posts: Post[];
   selectedPostId?: number;
   onPostSelected: (post: Post | null) => void;
+  userId: number;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
   onPostSelected,
-}) => (
+}) => {
+  return (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -51,4 +53,5 @@ export const PostsList: React.FC<Props> = ({
       </tbody>
     </table>
   </div>
-);
+  )
+};
