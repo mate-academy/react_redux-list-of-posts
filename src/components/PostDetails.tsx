@@ -11,9 +11,9 @@ export const PostDetails: React.FC = () => {
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
   const [visible, setVisible] = useState(false);
   const {
-    comments,
+    items: comments,
     loaded,
-    error: hasError,
+    hasError,
   } = useAppSelector(state => state.comments);
 
   useEffect(() => {

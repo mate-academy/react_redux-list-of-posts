@@ -8,8 +8,8 @@ export const NewCommentForm: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { selectedPost: post } = useAppSelector(state => state.selectedPost);
-  const { submitted } = useAppSelector(state => state.comments);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -65,10 +65,16 @@ export const NewCommentForm: React.FC = () => {
       postId: post!.id,
     };
 
+    setIsSubmitting(true);
+
     dispatch(commentsAction.addComment(newCommentData))
       .unwrap()
       .then(() => {
         setValues(current => ({ ...current, body: '' }));
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
@@ -176,7 +182,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': !submitted,
+              'is-loading': isSubmitting,
             })}
           >
             Add

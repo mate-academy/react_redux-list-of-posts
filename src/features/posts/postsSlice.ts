@@ -4,15 +4,15 @@ import { getUserPosts } from '../../api/posts';
 import { User } from '../../types/User';
 
 type PostsState = {
-  posts: Post[] | null;
+  items: Post[] | null;
   loaded: boolean;
-  error: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: null,
+  items: null,
   loaded: false,
-  error: false,
+  hasError: false,
 };
 
 export const init = createAsyncThunk('posts/init', (user: User) => {
@@ -24,24 +24,24 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     clear: state => {
-      state.posts = null; // eslint-disable-line no-param-reassign
+      state.items = null; // eslint-disable-line no-param-reassign
       state.loaded = false; // eslint-disable-line no-param-reassign
-      state.error = false; // eslint-disable-line no-param-reassign
+      state.hasError = false; // eslint-disable-line no-param-reassign
     },
   },
   extraReducers: builder => {
     builder
       .addCase(init.pending, state => {
         state.loaded = false; // eslint-disable-line no-param-reassign
-        state.error = false; // eslint-disable-line no-param-reassign
+        state.hasError = false; // eslint-disable-line no-param-reassign
       })
       .addCase(init.fulfilled, (state, action) => {
         state.loaded = true; // eslint-disable-line no-param-reassign
-        state.posts = action.payload; // eslint-disable-line no-param-reassign
+        state.items = action.payload; // eslint-disable-line no-param-reassign
       })
       .addCase(init.rejected, state => {
         state.loaded = true; // eslint-disable-line no-param-reassign
-        state.error = true; // eslint-disable-line no-param-reassign
+        state.hasError = true; // eslint-disable-line no-param-reassign
       });
   },
 });

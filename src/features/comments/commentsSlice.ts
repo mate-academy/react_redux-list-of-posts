@@ -8,17 +8,15 @@ import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 
 type CommentsState = {
-  comments: Comment[] | null;
+  items: Comment[] | null;
   loaded: boolean;
-  submitted: boolean;
-  error: boolean;
+  hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loaded: false,
-  submitted: true,
-  error: false,
+  hasError: false,
 };
 
 export const init = createAsyncThunk('comments/init', async (post: Post) => {
@@ -51,43 +49,40 @@ const commentsSlice = createSlice({
     builder
       .addCase(init.pending, state => {
         state.loaded = false; // eslint-disable-line no-param-reassign
-        state.comments = null; // eslint-disable-line no-param-reassign
-        state.error = false; // eslint-disable-line no-param-reassign
+        state.items = null; // eslint-disable-line no-param-reassign
+        state.hasError = false; // eslint-disable-line no-param-reassign
       })
       .addCase(init.fulfilled, (state, action) => {
         state.loaded = true; // eslint-disable-line no-param-reassign
-        state.comments = action.payload; // eslint-disable-line no-param-reassign
+        state.items = action.payload; // eslint-disable-line no-param-reassign
       })
       .addCase(init.rejected, state => {
         state.loaded = true; // eslint-disable-line no-param-reassign
-        state.error = true; // eslint-disable-line no-param-reassign
+        state.hasError = true; // eslint-disable-line no-param-reassign
       })
       .addCase(addComment.pending, state => {
-        state.submitted = false; // eslint-disable-line no-param-reassign
-        state.error = false; // eslint-disable-line no-param-reassign
+        state.hasError = false; // eslint-disable-line no-param-reassign
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        state.submitted = true; // eslint-disable-line no-param-reassign
-        state.comments?.push(action.payload);
+        state.items?.push(action.payload);
       })
       .addCase(addComment.rejected, state => {
-        state.error = true; // eslint-disable-line no-param-reassign
-        state.submitted = true; // eslint-disable-line no-param-reassign
+        state.hasError = true; // eslint-disable-line no-param-reassign
       })
       .addCase(
         removeComment.fulfilled,
         (state, action: PayloadAction<number>) => {
-          if (state.comments) {
-            state.comments = state.comments.filter(
-              // eslint-disable-line no-param-reassign
-
+          if (state.items) {
+            // eslint-disable-line no-param-reassign
+            // eslint-disable-next-line no-param-reassign
+            state.items = state.items.filter(
               comment => comment.id !== action.payload,
             );
           }
         },
       )
       .addCase(removeComment.rejected, state => {
-        state.error = true; // eslint-disable-line no-param-reassign
+        state.hasError = true; // eslint-disable-line no-param-reassign
       });
   },
 });

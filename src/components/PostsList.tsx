@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
+  const { items: posts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { user } = useAppSelector(state => state.user);
 

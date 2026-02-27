@@ -17,9 +17,9 @@ export const App: React.FC = () => {
   const { user } = useAppSelector(state => state.user);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const {
-    posts,
+    items: posts,
     loaded,
-    error: hasError,
+    hasError,
   } = useAppSelector(state => state.posts);
 
   useEffect(() => {
