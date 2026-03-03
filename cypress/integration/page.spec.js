@@ -164,11 +164,6 @@ const newCommentForm = {
 
 let failed = false;
 
-Cypress.on('fail', (e) => {
-  failed = true;
-  throw e;
-});
-
 describe('', () => {
   beforeEach(() => {
     if (failed) Cypress.runner.stop();
