@@ -11,6 +11,8 @@ import {
   setComments,
   setLoaded,
   setError,
+  addComment as addCommentAction,
+  deleteComment as deleteCommentAction,
 } from '../features/comments/CommentsSlice';
 
 type Props = {
@@ -20,7 +22,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
-  const comments = useAppSelector(state => state.comments.comments);
+  const comments = useAppSelector(state => state.comments.items);
   const loaded = useAppSelector(state => state.comments.loaded);
   const hasError = useAppSelector(state => state.comments.hasError);
 
@@ -51,17 +53,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      dispatch(setComments([...comments, newComment]));
+      dispatch(addCommentAction(newComment));
     } catch {
       dispatch(setError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // eslint-disable-next-line max-len
-    dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
+    try {
+      await commentsApi.deleteComment(commentId);
 
-    await commentsApi.deleteComment(commentId);
+      dispatch(deleteCommentAction(commentId));
+    } catch (error) {
+      dispatch(setError(true));
+    }
   };
 
   return (

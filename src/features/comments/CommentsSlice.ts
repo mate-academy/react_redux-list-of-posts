@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../../types/Comment';
 
 type CommentsState = {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -19,15 +19,15 @@ const commentsSlice = createSlice({
   reducers: {
     setComments(state, action: PayloadAction<Comment[]>) {
       // eslint-disable-next-line no-param-reassign
-      state.comments = action.payload;
+      state.items = action.payload;
     },
     addComment(state, action: PayloadAction<Comment>) {
       // eslint-disable-next-line no-param-reassign
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
     deleteComment(state, action: PayloadAction<number>) {
       // eslint-disable-next-line no-param-reassign
-      state.comments = state.comments.filter(c => c.id !== action.payload);
+      state.items = state.items.filter(c => c.id !== action.payload);
     },
     setLoaded(state, action: PayloadAction<boolean>) {
       // eslint-disable-next-line no-param-reassign
