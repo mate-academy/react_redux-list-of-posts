@@ -11,7 +11,7 @@ import { CommentData } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useAppDispatch();
-  const post = useAppSelector(state => state.selectedPost)!;
+  const post = useAppSelector(state => state.selectedPost);
   const {
     items: comments,
     loaded,
@@ -22,10 +22,17 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     // Sempre que o post muda, fechamos o formulário e recarregamos os comentários dele.
     setVisible(false);
-    dispatch(fetchComments(post.id));
-  }, [post.id, dispatch]);
+
+    if (post) {
+      dispatch(fetchComments(post.id));
+    }
+  }, [post, dispatch]);
 
   const handleAddComment = async ({ name, email, body }: CommentData) => {
+    if (!post) {
+      return;
+    }
+
     // O thunk encapsula a chamada de API e a atualização da lista em caso de sucesso.
     await dispatch(
       addComment({
@@ -41,6 +48,11 @@ export const PostDetails: React.FC = () => {
     // Mantemos a exclusão centralizada no slice para simplificar a UI.
     dispatch(removeComment(commentId));
   };
+
+  // Proteção: sem post selecionado, não renderiza nada.
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className="content" data-cy="PostDetails">

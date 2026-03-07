@@ -31,9 +31,9 @@ export const addComment = createAsyncThunk(
 
 export const removeComment = createAsyncThunk(
   'comments/remove',
-  (commentId: number) => {
-    // Mantemos a chamada no thunk para concentrar regra de integração com API.
-    commentsApi.deleteComment(commentId);
+  async (commentId: number) => {
+    // Aguarda a exclusão na API antes de atualizar o estado local.
+    await commentsApi.deleteComment(commentId);
 
     return commentId;
   },
