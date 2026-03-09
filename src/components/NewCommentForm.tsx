@@ -35,7 +35,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  const handleChange = async (
+  const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: field, value } = event.target;

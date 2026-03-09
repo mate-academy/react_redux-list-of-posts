@@ -4,14 +4,14 @@ import { getUserPosts } from '../api/posts';
 /* eslint-disable no-param-reassign */
 
 type InitialState = {
-  posts: Post[];
-  loader: boolean;
+  items: Post[];
+  loaded: boolean;
   hasError: string;
 };
 
 const initialState: InitialState = {
-  posts: [],
-  loader: true,
+  items: [],
+  loaded: true,
   hasError: '',
 };
 
@@ -26,16 +26,16 @@ const postsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(getPosts.pending, state => {
       state.hasError = '';
-      state.loader = true;
+      state.loaded = true;
     });
 
     builder.addCase(getPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
-      state.loader = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(getPosts.rejected, state => {
-      state.loader = false;
+      state.loaded = false;
       state.hasError = 'Fetch Post Error';
     });
   },
