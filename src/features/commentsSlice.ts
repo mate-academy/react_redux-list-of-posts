@@ -8,15 +8,15 @@ import { Comment } from '../types/Comment';
 /* eslint-disable no-param-reassign */
 
 type InitialState = {
-  comments: Comment[];
-  loading: boolean;
-  error: string;
+  items: Comment[];
+  loaded: boolean;
+  hasError: string;
 };
 
 const initialState: InitialState = {
-  comments: [],
-  loading: false,
-  error: '',
+  items: [],
+  loaded: false,
+  hasError: '',
 };
 
 export const fetchComments = createAsyncThunk(
@@ -44,26 +44,26 @@ const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => {
-      state.loading = true;
-      state.error = '';
+      state.loaded = true;
+      state.hasError = '';
     });
 
     builder.addCase(fetchComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.loading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(fetchComments.rejected, state => {
-      state.loading = false;
-      state.error = 'Fetch Comments Error';
+      state.loaded = false;
+      state.hasError = 'Fetch Comments Error';
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     });
 
     builder.addCase(deleteComment.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(
+      state.items = state.items.filter(
         comment => comment.id !== action.payload,
       );
     });
