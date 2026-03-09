@@ -15,21 +15,26 @@ import { Post } from './types/Post';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from './app/store';
 import { fetchUsers } from './features/usersApi';
-import { setPosts, setLoaded, setHasError, clearPosts } from './features/postsApi';
-import  { setAuthor } from './features/authorApi';
+import {
+  setPosts,
+  setLoaded,
+  setHasError,
+  clearPosts,
+} from './features/postsApi';
+import { setAuthor } from './features/authorApi';
 
 export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const { data: users } = useSelector(
-    (state: RootState) => state.users
-  );
+  const { data: users } = useSelector((state: RootState) => state.users);
 
   const author = useSelector((state: RootState) => state.author);
 
-  const {items:posts, loaded: postsLoaded, hasError: postsError } = useSelector(
-    (state: RootState) => state.posts
-  );
+  const {
+    items: posts,
+    loaded: postsLoaded,
+    hasError: postsError,
+  } = useSelector((state: RootState) => state.posts);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -37,17 +42,19 @@ export const App: React.FC = () => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-useEffect(() => {
+  useEffect(() => {
     dispatch(clearPosts());
     setSelectedPost(null);
-    if (!author) return;
+    if (!author) {
+      return;
+    }
 
     dispatch(setLoaded(false));
     dispatch(setHasError(false));
 
     getUserPosts(author.id)
-      .then(posts => {
-        dispatch(setPosts(posts));
+      .then(data => {
+        dispatch(setPosts(data));
         dispatch(setLoaded(true));
       })
       .catch(() => {

@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
 type Props = {
   value: User | null;
   onChange: (user: User) => void;
-  users: User[]; 
-
+  users: User[];
 };
 
 export const UserSelector: React.FC<Props> = ({

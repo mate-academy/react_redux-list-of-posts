@@ -16,7 +16,7 @@ import {
   clearComments,
 } from '../features/commentsApi';
 
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 
 type Props = {
   post: Post;
@@ -26,9 +26,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
-  const {items: comments, loaded, hasError } = useSelector(
-    (state: RootState) => state.comments
-  );
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useSelector((state: RootState) => state.comments);
 
   useEffect(() => {
     dispatch(clearComments());
@@ -47,7 +49,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   }, [post.id, dispatch]);
 
-  const handleAddComment = async ({ name, email, body }: any) => {
+  const handleAddComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
         name,
@@ -55,6 +57,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
         postId: post.id,
       });
+
       dispatch(addComment(newComment));
       setVisible(false);
     } catch {

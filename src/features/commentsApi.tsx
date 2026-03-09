@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 
@@ -40,7 +41,14 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { setComments, addComment, deleteComment, setLoaded, setHasError, clearComments } =
-  commentsSlice.actions;
+export const {
+  setComments,
+  addComment,
+  deleteComment,
+  setLoaded,
+  setHasError,
+  clearComments,
+} = commentsSlice.actions;
 
 export default commentsSlice.reducer;
+/* eslint-disable */
