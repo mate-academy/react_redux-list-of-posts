@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,7 +10,6 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { Post } from './types/Post';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from './app/store';
@@ -22,32 +21,28 @@ import {
   clearPosts,
 } from './features/postsApi';
 import { setAuthor } from './features/authorApi';
+import { setSelectedPost } from './features/selectedApi';
 
 export const App: React.FC = () => {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  const { data: users } = useSelector((state: RootState) => state.users);
-
-  const author = useSelector((state: RootState) => state.author);
-
-  const {
-    items: posts,
-    loaded: postsLoaded,
-    hasError: postsError,
-  } = useSelector((state: RootState) => state.posts);
-
   const dispatch = useDispatch<AppDispatch>();
 
+  const { data: users } = useSelector((state: RootState) => state.users);
+  const author = useSelector((state: RootState) => state.author);
+  const { items: posts, loaded: postsLoaded, hasError: postsError } =
+    useSelector((state: RootState) => state.posts);
+  const selectedPost = useSelector((state: RootState) => state.selectedPost);
+
+  // Завантаження користувачів
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
+  // Завантаження постів користувача
   useEffect(() => {
     dispatch(clearPosts());
-    setSelectedPost(null);
-    if (!author) {
-      return;
-    }
+    dispatch(setSelectedPost(null)); // закриваємо Sidebar при зміні користувача
+
+    if (!author) return;
 
     dispatch(setLoaded(false));
     dispatch(setHasError(false));
@@ -67,6 +62,7 @@ export const App: React.FC = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
+          {/* Ліва колонка */}
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
@@ -83,10 +79,7 @@ export const App: React.FC = () => {
                 {author && !postsLoaded && <Loader />}
 
                 {author && postsLoaded && postsError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
+                  <div className="notification is-danger" data-cy="PostsLoadingError">
                     Something went wrong!
                   </div>
                 )}
@@ -101,7 +94,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => {
+                       dispatch(setSelectedPost(post))
+                    }}
                   />
                 )}
               </div>
@@ -115,12 +110,10 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
