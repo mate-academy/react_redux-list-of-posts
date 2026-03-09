@@ -10,38 +10,51 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
 
-export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from './app/store';
+import { fetchUsers } from './features/usersApi';
+import { setPosts, setLoaded, setHasError, clearPosts } from './features/postsApi';
+import  { setAuthor } from './features/authorApi';
 
-  const [author, setAuthor] = useState<User | null>(null);
+export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const { data: users } = useSelector(
+    (state: RootState) => state.users
+  );
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const author = useSelector((state: RootState) => state.author);
+
+  const {items:posts, loaded: postsLoaded, hasError: postsError } = useSelector(
+    (state: RootState) => state.posts
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
+useEffect(() => {
+    dispatch(clearPosts());
+    setSelectedPost(null);
+    if (!author) return;
+
+    dispatch(setLoaded(false));
+    dispatch(setHasError(false));
+
+    getUserPosts(author.id)
+      .then(posts => {
+        dispatch(setPosts(posts));
+        dispatch(setLoaded(true));
+      })
+      .catch(() => {
+        dispatch(setHasError(true));
+        dispatch(setLoaded(true));
+      });
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -50,15 +63,19 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                  users={users}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !postsLoaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {author && postsLoaded && postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -67,13 +84,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && postsLoaded && !postsError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && postsLoaded && !postsError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
