@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,74 +10,93 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from './app/store';
+import { fetchUsers } from './features/usersApi';
+import {
+  setPosts,
+  setLoaded,
+  setHasError,
+  clearPosts,
+} from './features/postsApi';
+import { setAuthor } from './features/authorApi';
+import { setSelectedPost } from './features/selectedApi';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { data: users } = useSelector((state: RootState) => state.users);
+  const author = useSelector((state: RootState) => state.author);
+  const { items: posts, loaded: postsLoaded, hasError: postsError } =
+    useSelector((state: RootState) => state.posts);
+  const selectedPost = useSelector((state: RootState) => state.selectedPost);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
-
+  // Завантаження користувачів
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
+  // Завантаження постів користувача
+  useEffect(() => {
+    dispatch(clearPosts());
+    dispatch(setSelectedPost(null)); // закриваємо Sidebar при зміні користувача
+
+    if (!author) return;
+
+    dispatch(setLoaded(false));
+    dispatch(setHasError(false));
+
+    getUserPosts(author.id)
+      .then(data => {
+        dispatch(setPosts(data));
+        dispatch(setLoaded(true));
+      })
+      .catch(() => {
+        dispatch(setHasError(true));
+        dispatch(setLoaded(true));
+      });
+  }, [author, dispatch]);
 
   return (
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
+          {/* Ліва колонка */}
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                  users={users}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !postsLoaded && <Loader />}
 
-                {author && loaded && hasError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
+                {author && postsLoaded && postsError && (
+                  <div className="notification is-danger" data-cy="PostsLoadingError">
                     Something went wrong!
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && postsLoaded && !postsError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && postsLoaded && !postsError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => {
+                       dispatch(setSelectedPost(post))
+                    }}
                   />
                 )}
               </div>
@@ -91,12 +110,10 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
+            <div className="tile is-child box is-success">
               {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
