@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
+import * as usersActions from '../features/users';
 
 type Props = {
   value: User | null;
@@ -14,11 +15,15 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // `users` are loaded from the API once and stored in Redux,
+  // so this selector can be reused in any form
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    dispatch(usersActions.init());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -72,7 +77,8 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={event => {
+                event.preventDefault();
                 onChange(user);
               }}
               className={classNames('dropdown-item', {
