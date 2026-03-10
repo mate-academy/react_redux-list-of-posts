@@ -18,16 +18,12 @@ type LoadableItems<T> = {
   items: T[];
 };
 
-type CommentsState = LoadableItems<Comment> & {
-  visible: boolean;
-};
-
 export interface PostsState {
   users: User[];
   author: User | null;
   posts: LoadableItems<Post>;
   selectedPost: Post | null;
-  comments: CommentsState;
+  comments: LoadableItems<Comment>;
 }
 
 const initialState: PostsState = {
@@ -43,7 +39,6 @@ const initialState: PostsState = {
     loaded: false,
     hasError: false,
     items: [],
-    visible: false,
   },
 };
 
@@ -87,7 +82,6 @@ const resetCommentsState = (state: PostsState) => {
   state.comments.loaded = false;
   state.comments.hasError = false;
   state.comments.items = [];
-  state.comments.visible = false;
 };
 
 const postsSlice = createSlice({
@@ -105,12 +99,6 @@ const postsSlice = createSlice({
     setSelectedPost(state, action: PayloadAction<Post | null>) {
       state.selectedPost = action.payload;
       resetCommentsState(state);
-    },
-    showCommentForm(state) {
-      state.comments.visible = true;
-    },
-    hideCommentForm(state) {
-      state.comments.visible = false;
     },
   },
   extraReducers: builder => {
@@ -135,7 +123,6 @@ const postsSlice = createSlice({
         state.comments.loaded = false;
         state.comments.hasError = false;
         state.comments.items = [];
-        state.comments.visible = false;
       })
       .addCase(fetchCommentsByPost.fulfilled, (state, action) => {
         state.comments.loaded = true;
@@ -162,8 +149,7 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setAuthor, setSelectedPost, showCommentForm, hideCommentForm } =
-  postsSlice.actions;
+export const { setAuthor, setSelectedPost } = postsSlice.actions;
 
 export const selectUsers = (state: RootState) => state.posts.users;
 export const selectAuthor = (state: RootState) => state.posts.author;
