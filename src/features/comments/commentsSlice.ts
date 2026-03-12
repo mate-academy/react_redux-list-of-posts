@@ -12,13 +12,13 @@ export const fetchComments = createAsyncThunk(
   },
 );
 
-export interface CommetsState {
+export interface CommentsState {
   items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
 
-const initialState: CommetsState = {
+const initialState: CommentsState = {
   items: [],
   loaded: false,
   hasError: false,

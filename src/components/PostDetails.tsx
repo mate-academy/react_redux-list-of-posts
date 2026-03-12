@@ -55,7 +55,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleDeleteComment = async (commentId: number) => {
     dispatch(deleteComment(commentId));
 
-    await commentsApi.deleteComment(commentId);
+    try {
+      await commentsApi.deleteComment(commentId);
+    } catch (error) {
+      dispatch(fetchComments(post.id));
+    }
   };
 
   return (
