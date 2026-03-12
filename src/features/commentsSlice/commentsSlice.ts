@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   createComment,
@@ -52,33 +53,23 @@ export const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchComments.pending, state => {
-        const nextState = state;
-
-        nextState.loaded = false;
-        nextState.hasError = false;
-        nextState.items = [];
+        state.loaded = false;
+        state.hasError = false;
+        state.items = [];
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        const nextState = state;
-
-        nextState.loaded = true;
-        nextState.items = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
       .addCase(fetchComments.rejected, state => {
-        const nextState = state;
-
-        nextState.loaded = true;
-        nextState.hasError = true;
+        state.loaded = true;
+        state.hasError = true;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        const nextState = state;
-
-        nextState.items.push(action.payload);
+        state.items.push(action.payload);
       })
-      .addCase(deleteComment.pending, (state, action) => {
-        const nextState = state;
-
-        nextState.items = nextState.items.filter(
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(
           comment => comment.id !== action.meta.arg,
         );
       });

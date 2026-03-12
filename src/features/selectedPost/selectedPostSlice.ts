@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
@@ -14,9 +15,7 @@ export const selectedPostSlice = createSlice({
   initialState,
   reducers: {
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
-      const newState = state;
-
-      newState.post = action.payload;
+      state.post = action.payload;
     },
   },
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
@@ -28,33 +29,25 @@ export const postsSlice = createSlice({
   initialState: initialState,
   reducers: {
     clearPosts: state => {
-      const nextState = state;
-
-      nextState.items = [];
-      nextState.loaded = false;
-      nextState.hasError = false;
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
     },
   },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
-        const nextState = state;
-
-        nextState.loaded = false;
-        nextState.hasError = false;
-        nextState.items = [];
+        state.loaded = false;
+        state.hasError = false;
+        state.items = [];
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        const nextState = state;
-
-        nextState.loaded = true;
-        nextState.items = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, state => {
-        const nextState = state;
-
-        nextState.loaded = true;
-        nextState.hasError = true;
+        state.loaded = true;
+        state.hasError = true;
       });
   },
 });
