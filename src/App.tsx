@@ -9,39 +9,31 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { RootState } from './app/store';
+import { User } from './types/User';
+import { fetchPost } from './slisers/asyncThunk';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const hasError = useAppSelector((state: RootState) => state.posts.hasError);
+  const loaded = useAppSelector((state: RootState) => state.posts.loaded);
+  const posts = useAppSelector((state: RootState) => state.posts.items);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const author: User | null = useAppSelector((state: RootState) => state.user);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
     setSelectedPost(null);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+    if (author !== null) {
+      dispatch(fetchPost(author.id));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -50,7 +42,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">

@@ -1,10 +1,18 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import counterReducer from '../features/counter/counterSlice';
+import users from '../slisers/users';
+import user from '../slisers/user';
+import posts from '../slisers/post';
+import comments from '../slisers/comments';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    users: users,
+    user: user,
+    posts: posts,
+    comments: comments,
   },
 });
 
@@ -18,4 +26,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
-/* eslint-enable @typescript-eslint/indent */
