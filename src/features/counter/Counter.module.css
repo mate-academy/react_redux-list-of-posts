@@ -56,7 +56,8 @@
 
 .asyncButton {
   /* stylelint-disable-next-line property-no-unknown */
-  composes: button;
+
+  /* composes: button; */
   position: relative;
 }
 
