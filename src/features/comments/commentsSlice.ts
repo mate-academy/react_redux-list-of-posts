@@ -47,11 +47,13 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => {
       state.loaded = false;
+      state.hasError = false;
     });
 
     builder.addCase(fetchComments.fulfilled, (state, action) => {
       state.loaded = true;
       state.items = action.payload;
+      state.hasError = false;
     });
 
     builder.addCase(fetchComments.rejected, state => {
@@ -61,12 +63,14 @@ const commentsSlice = createSlice({
 
     builder.addCase(addComment.fulfilled, (state, action) => {
       state.items.push(action.payload);
+      state.hasError = false;
     });
 
     builder.addCase(removeComment.fulfilled, (state, action) => {
       state.items = state.items.filter(
         comment => comment.id !== action.meta.arg,
       );
+      state.hasError = false;
     });
   },
 });
