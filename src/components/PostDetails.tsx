@@ -4,32 +4,36 @@ import { NewCommentForm } from './NewCommentForm';
 
 import * as commentsApi from '../api/comments';
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+// import { Post } from '../types/Post';
+import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setItems, setError, setLoaded } from '../slices/comments';
 
-type Props = {
-  post: Post;
-};
+// type Props = {
+//   post: Post;
+// };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+export const PostDetails: React.FC = () => {
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
+
+  //we keep visible here
   const [visible, setVisible] = useState(false);
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setLoaded(false));
+    dispatch(setError(false));
     setVisible(false);
 
     commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .getPostComments(selectedPost ? selectedPost.id : 0)
+      .then(comments => dispatch(setItems(comments))) // save the loaded comments
+      .catch(() => dispatch(setError(true))) // show an error when something went wrong
+      .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
 
-  useEffect(loadComments, [post.id]);
+  useEffect(loadComments, [selectedPost?.id]);
 
   // The same useEffect with async/await
   /*
@@ -63,10 +67,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         name,
         email,
         body,
-        postId: post.id,
+        postId: selectedPost ? selectedPost.id : 0,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(setItems([...items, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -74,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setError(true));
     }
   };
 
@@ -82,9 +86,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(setItems(items.filter(comment => comment.id !== commentId)));
 
     await commentsApi.deleteComment(commentId);
   };
@@ -92,9 +94,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">
@@ -106,17 +108,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}
