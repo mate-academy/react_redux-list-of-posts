@@ -18,10 +18,11 @@ import {
   fetchUserPosts,
   setItems,
 } from './features/posts/postSlice';
+import { setAuthorId, selectAuthorId } from './features/author/authorSlice';
 import {
-  setSelectedUserId,
-  setSelectedPostId,
-} from './features/selection/selectionSlice';
+  setPostId,
+  selectSelectedPostId,
+} from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,12 +31,8 @@ export const App: React.FC = () => {
   const loading = useAppSelector(selectPostsLoading);
   const error = useAppSelector(selectPostsError);
 
-  const selectedUserId = useAppSelector(
-    state => state.selection.selectedUserId,
-  );
-  const selectedPostId = useAppSelector(
-    state => state.selection.selectedPostId,
-  );
+  const selectedUserId = useAppSelector(selectAuthorId);
+  const selectedPostId = useAppSelector(selectSelectedPostId);
 
   const author = useAppSelector(state => {
     return selectUsers(state).find(user => user.id === selectedUserId) || null;
@@ -46,7 +43,7 @@ export const App: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(setSelectedPostId(null));
+    dispatch(setPostId(null));
 
     if (selectedUserId) {
       dispatch(fetchUserPosts(selectedUserId));
@@ -64,7 +61,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   value={author}
-                  onChange={u => dispatch(setSelectedUserId(u.id))}
+                  onChange={u => dispatch(setAuthorId(u.id))}
                 />
               </div>
 
@@ -92,9 +89,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPostId ?? undefined}
-                    onPostSelected={p =>
-                      dispatch(setSelectedPostId(p ? p.id : null))
-                    }
+                    onPostSelected={p => dispatch(setPostId(p ? p.id : null))}
                   />
                 )}
               </div>
@@ -108,9 +103,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': !!selectedPost,
-              },
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">

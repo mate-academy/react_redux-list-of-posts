@@ -3,14 +3,16 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import usersSlice from '../features/users/usersSlice';
 import postsSlice from '../features/posts/postSlice';
 import commentsSlice from '../features/comments/commentsSlice';
-import selectionSlice from '../features/selection/selectionSlice';
+import authorSlice from '../features/author/authorSlice';
+import selectedPostSlice from '../features/selectedPost/selectedPostSlice';
 
 export const store = configureStore({
   reducer: {
     users: usersSlice,
     posts: postsSlice,
     comments: commentsSlice,
-    selection: selectionSlice,
+    author: authorSlice,
+    selectedPost: selectedPostSlice,
   },
 });
 
@@ -24,4 +26,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
-/* eslint-enable @typescript-eslint/indent */
