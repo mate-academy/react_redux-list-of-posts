@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { Comment } from '../../types/Comment';
+import {
+  getPostComments,
+  createComment,
+  deleteComment,
+} from '../../api/comments';
 
 export interface CommentState {
   items: Comment[];
@@ -15,23 +20,57 @@ const initialState: CommentState = {
   hasError: false,
 };
 
+export const fetchComments = createAsyncThunk(
+  'comments/fetchByPost',
+  async (postId: number) => {
+    return getPostComments(postId);
+  },
+);
+
+export const addComment = createAsyncThunk(
+  'comments/add',
+  async (commentData: Omit<Comment, 'id'>) => {
+    return createComment(commentData);
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'comments/delete',
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
-  reducers: {
-    setItems: (state, action: PayloadAction<Comment[]>) => {
-      state.items = action.payload;
-    },
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
-    },
-    setHasError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      })
+      .addCase(fetchComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          comment => comment.id !== action.payload,
+        );
+      });
   },
 });
-
-export const { setItems, setLoaded, setHasError } = commentsSlice.actions;
 
 export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoading = (state: RootState) =>

@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
+import { getPosts, getUserPosts } from '../../api/posts';
 
 export interface PostState {
   items: Post[];
@@ -15,23 +16,49 @@ const initialState: PostState = {
   hasError: false,
 };
 
+export const fetchPosts = createAsyncThunk('posts/fetchAll', async () => {
+  return getPosts();
+});
+
+export const fetchUserPosts = createAsyncThunk(
+  'posts/fetchByUser',
+  async (userId: number) => {
+    return getUserPosts(userId);
+  },
+);
+
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setItems: (state, action: PayloadAction<Post[]>) => {
-      state.items = action.payload;
-    },
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
-    },
-    setHasError: (state, action: PayloadAction<boolean>) => {
-      state.hasError = action.payload;
-    },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchPosts.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      })
+      .addCase(fetchPosts.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      })
+      .addCase(fetchUserPosts.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(fetchUserPosts.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      })
+      .addCase(fetchUserPosts.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      });
   },
 });
-
-export const { setItems, setLoaded, setHasError } = postsSlice.actions;
 
 export const selectPosts = (state: RootState) => state.posts.items;
 export const selectPostsLoading = (state: RootState) => !state.posts.loaded;
