@@ -56,18 +56,29 @@ export const commentsSlice = createSlice({
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.items = action.payload;
         state.loaded = true;
+        state.hasError = false;
       })
       .addCase(fetchComments.rejected, state => {
         state.loaded = true;
         state.hasError = true;
       })
+      .addCase(addComment.pending, state => {
+        state.hasError = false;
+      })
       .addCase(addComment.fulfilled, (state, action) => {
         state.items.push(action.payload);
+        state.hasError = false;
+      })
+      .addCase(addComment.rejected, state => {
+        state.hasError = true;
       })
       .addCase(removeComment.fulfilled, (state, action) => {
         state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
+      })
+      .addCase(removeComment.rejected, state => {
+        state.hasError = true;
       });
   },
 });
@@ -75,7 +86,6 @@ export const commentsSlice = createSlice({
 export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoading = (state: RootState) =>
   !state.comments.loaded;
-
 export const selectCommentsError = (state: RootState) =>
   state.comments.hasError;
 
