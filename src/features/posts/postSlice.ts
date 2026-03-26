@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { Post } from '../../types/Post';
 import { getPosts, getUserPosts } from '../../api/posts';
@@ -30,7 +30,11 @@ export const fetchUserPosts = createAsyncThunk(
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    setItems: (state, action: PayloadAction<Post[]>) => {
+      state.items = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
@@ -59,6 +63,8 @@ export const postsSlice = createSlice({
       });
   },
 });
+
+export const { setItems } = postsSlice.actions;
 
 export const selectPosts = (state: RootState) => state.posts.items;
 export const selectPostsLoading = (state: RootState) => !state.posts.loaded;
