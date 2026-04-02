@@ -33,7 +33,7 @@ export const usersSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(loadUsers.rejected, state => {
-        state.loaded = false;
+        state.loaded = true;
         state.hasError = true;
       });
   },

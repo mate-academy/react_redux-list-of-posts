@@ -6,13 +6,11 @@ type CommentsState = {
   loaded: boolean;
   hasError: boolean;
   items: Comment[];
-  visible: boolean;
 };
 const initialState: CommentsState = {
   loaded: false,
   hasError: false,
   items: [],
-  visible: false,
 };
 
 export const loadedComments = createAsyncThunk(
@@ -26,12 +24,6 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    showCommentForm: state => {
-      state.visible = true;
-    },
-    hideCommentForm: state => {
-      state.visible = false;
-    },
     removeComment: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(
         comment => comment.id !== action.payload,
@@ -50,7 +42,6 @@ export const commentsSlice = createSlice({
       .addCase(loadedComments.fulfilled, (state, action) => {
         state.items = action.payload;
         state.loaded = true;
-        state.visible = false;
       })
       .addCase(loadedComments.rejected, state => {
         state.loaded = true;
@@ -59,11 +50,6 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const {
-  showCommentForm,
-  hideCommentForm,
-  removeComment,
-  addCommentToState,
-} = commentsSlice.actions;
+export const { removeComment, addCommentToState } = commentsSlice.actions;
 
 export default commentsSlice.reducer;

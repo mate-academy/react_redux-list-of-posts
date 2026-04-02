@@ -3,13 +3,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 type PostsState = {
-  loading: boolean;
+  loaded: boolean;
   hasError: boolean;
   items: Post[];
 };
 
 const initialState: PostsState = {
-  loading: false,
+  loaded: false,
   hasError: false,
   items: [],
 };
@@ -29,15 +29,15 @@ export const postSlice = createSlice({
     builder
       .addCase(postsLoaded.pending, state => {
         state.hasError = false;
-        state.loading = false;
+        state.loaded = false;
       })
       .addCase(postsLoaded.fulfilled, (state, action) => {
         state.items = action.payload;
-        state.loading = true;
+        state.loaded = true;
       })
       .addCase(postsLoaded.rejected, state => {
         state.hasError = true;
-        state.loading = true;
+        state.loaded = true;
       });
   },
 });

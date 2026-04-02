@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -11,7 +11,6 @@ import {
   addCommentToState,
   loadedComments,
   removeComment,
-  showCommentForm,
 } from '../features/CommentsSlice';
 
 type Props = {
@@ -19,10 +18,13 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
+  const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const { items, loaded, hasError, visible } = useAppSelector(
-    state => state.comments,
-  );
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
+
+  useEffect(() => {
+    setVisible(false);
+  }, [post.id]);
 
   useEffect(() => {
     dispatch(loadedComments(post.id));
@@ -70,7 +72,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // because it takes the `comments` cached during the first render
       // not the actual ones
     } catch (error) {
-      console.error('Failed to add comment');
+      new Error('Failed to add comment');
     }
   };
 
@@ -145,7 +147,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => dispatch(showCommentForm())}
+            onClick={() => setVisible(true)}
           >
             Write a comment
           </button>
