@@ -10,7 +10,7 @@ import {
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
+  const { items: posts } = useAppSelector(state => state.posts);
   const { post: selectedPost } = useAppSelector(state => state.selectedPost);
 
   return (

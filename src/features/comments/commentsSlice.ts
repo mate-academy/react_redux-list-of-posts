@@ -9,13 +9,13 @@ import {
 
 export interface Comments {
   loaded: boolean;
-  comments: Comment[];
+  items: Comment[];
   hasError: string;
 }
 
 const initialState: Comments = {
   loaded: false,
-  comments: [],
+  items: [],
   hasError: '',
 };
 
@@ -44,7 +44,7 @@ export const commentsSlice = createSlice({
   reducers: {
     clearComments: state => {
       state.loaded = false;
-      state.comments = [];
+      state.items = [];
       state.hasError = '';
     },
   },
@@ -54,7 +54,7 @@ export const commentsSlice = createSlice({
       state.loaded = false;
     });
     builder.addCase(loadComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
+      state.items = action.payload;
       state.loaded = true;
     });
     builder.addCase(loadComments.rejected, state => {
@@ -63,7 +63,7 @@ export const commentsSlice = createSlice({
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
       state.loaded = true;
     });
     builder.addCase(addComment.rejected, state => {
@@ -72,7 +72,7 @@ export const commentsSlice = createSlice({
     });
 
     builder.addCase(removeComment.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(
+      state.items = state.items.filter(
         comment => comment.id !== action.payload,
       );
       state.loaded = true;

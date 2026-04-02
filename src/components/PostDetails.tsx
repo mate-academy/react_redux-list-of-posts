@@ -12,9 +12,11 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { loaded, hasError, comments } = useAppSelector(
-    state => state.comments,
-  );
+  const {
+    loaded,
+    hasError,
+    items: comments,
+  } = useAppSelector(state => state.comments);
   const { post } = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export const PostDetails: React.FC = () => {
     if (post) {
       dispatch(loadComments(post.id));
     }
-  }, [post?.id, dispatch]);
+  }, [post?.id]);
 
   if (!post) {
     return null;
