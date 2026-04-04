@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { CommentData } from '../../types/Comment.js';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
