@@ -28,6 +28,16 @@ const commentsSlice = createSlice({
       state.items.push(action.payload);
     },
 
+    removeComment: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
+    },
+
+    setCommentsError: (state, action: PayloadAction<string | null>) => {
+      state.hasError = action.payload;
+    },
+
     clearComments(state) {
       state.items = [];
       state.loaded = false;
@@ -53,4 +63,5 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { clearComments, addComment } = commentsSlice.actions;
+export const { clearComments, addComment, removeComment, setCommentsError } =
+  commentsSlice.actions;

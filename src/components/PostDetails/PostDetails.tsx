@@ -11,6 +11,8 @@ import {
   clearComments,
   fetchComments,
   addComment as addCommentAction,
+  removeComment,
+  setCommentsError,
 } from '../../features/commentsSlice';
 
 type Props = {
@@ -46,15 +48,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       dispatch(addCommentAction(newComment));
-      setVisible(false);
     } catch (error) {}
   };
 
   const deleteComment = async (commentId: number) => {
+    dispatch(setCommentsError(null));
+    dispatch(removeComment(commentId));
+
     try {
       await commentsApi.deleteComment(commentId);
+    } catch (error) {
+      dispatch(setCommentsError('Unable to delete a comment'));
       dispatch(fetchComments(post.id));
-    } catch (error) {}
+      setTimeout(() => {
+        dispatch(setCommentsError(null));
+      }, 3000);
+    }
   };
 
   return (
