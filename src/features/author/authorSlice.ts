@@ -1,0 +1,25 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../types/User';
+
+interface AuthorState {
+  value: User | null;
+}
+
+const initialState: AuthorState = {
+  value: null,
+};
+
+const authorSlice = createSlice({
+  name: 'author',
+  initialState,
+  reducers: {
+    setAuthor: (state, action: PayloadAction<User | null>) => {
+      return {
+        value: action.payload,
+      };
+    },
+  },
+});
+
+export const { setAuthor } = authorSlice.actions;
+export default authorSlice;
