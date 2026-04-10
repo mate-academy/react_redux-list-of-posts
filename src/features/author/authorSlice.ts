@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/indent */
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 
@@ -14,9 +16,7 @@ const authorSlice = createSlice({
   initialState,
   reducers: {
     setAuthor: (state, action: PayloadAction<User | null>) => {
-      return {
-        value: action.payload,
-      };
+      state.value = action.payload;
     },
   },
 });

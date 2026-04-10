@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable  @typescript-eslint/indent */
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
@@ -12,6 +14,8 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/author/authorSlice';
 import { fetchUserPosts, clearPosts } from './features/posts/postsSlice';
+import { User } from './types/User';
+import { Post } from './types/Post';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
@@ -33,11 +37,11 @@ export const App: React.FC = () => {
     }
   }, [author, dispatch]);
 
-  const handleAuthorChange = (user: any) => {
+  const handleAuthorChange = (user: User | null) => {
     dispatch(setAuthor(user));
   };
 
-  const handlePostSelect = (post: any) => {
+  const handlePostSelect = (post: Post | null) => {
     dispatch(setSelectedPost(post));
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 import { getUsers } from '../../api/users';
@@ -26,18 +27,26 @@ const usersSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchUsers.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
+      .addCase(fetchUsers.pending, () => {
+        return {
+          items: [],
+          loaded: false,
+          hasError: false,
+        };
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loaded = true;
-        state.hasError = false;
+      .addCase(fetchUsers.fulfilled, (_state, action) => {
+        return {
+          items: action.payload,
+          loaded: true,
+          hasError: false,
+        };
       })
-      .addCase(fetchUsers.rejected, state => {
-        state.loaded = true;
-        state.hasError = true;
+      .addCase(fetchUsers.rejected, () => {
+        return {
+          items: [],
+          loaded: true,
+          hasError: true,
+        };
       });
   },
 });
