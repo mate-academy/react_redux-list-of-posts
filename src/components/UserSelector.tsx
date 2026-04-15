@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useAppSelector } from '../app/hooks';
+import { usersList } from '../features/users/usersSlice';
 
 type Props = {
   value: User | null;
@@ -17,11 +18,11 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const users = useAppSelector(usersList);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!expanded) {
+    if (!visible) {
       return;
     }
 
@@ -29,7 +30,7 @@ export const UserSelector: React.FC<Props> = ({
     const handleDocumentClick = () => {
       // we close the Dropdown on any click (inside or outside)
       // So there is not need to check if we clicked inside the list
-      setExpanded(false);
+      setVisible(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -40,12 +41,12 @@ export const UserSelector: React.FC<Props> = ({
     };
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
-  }, [expanded]);
+  }, [visible]);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': visible })}
     >
       <div className="dropdown-trigger">
         <button
@@ -55,10 +56,10 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={e => {
             e.stopPropagation();
-            setExpanded(current => !current);
+            setVisible(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -72,8 +73,10 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={event => {
+                event.preventDefault();
                 onChange(user);
+                setVisible(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,

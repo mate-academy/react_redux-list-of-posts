@@ -5,6 +5,10 @@ export const getUsers = () => {
   return client.get<User[]>('/users');
 };
 
+export const users = () => {
+  return getUsers();
+};
+
 export const getUser = (id: number) => {
-  return client.get<User[]>(`/users/${id}`);
+  return client.get<User>(`/users/${id}`);
 };
