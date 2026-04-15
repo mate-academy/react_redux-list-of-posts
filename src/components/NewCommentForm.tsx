@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
+  // Ми залишаємо onSubmit як пропс, щоб форма була універсальною.
+  // Вона просто очікує проміс, який ми даємо їй через .unwrap() у батька.
   onSubmit: (data: CommentData) => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [hasError, setHasError] = useState(false); // Додамо для обробки помилок запиту
 
   const [errors, setErrors] = useState({
     name: false,
@@ -22,17 +25,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   });
 
   const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    setValues({ name: '', email: '', body: '' });
+    setErrors({ name: false, email: false, body: false });
+    setHasError(false);
   };
 
   const handleChange = (
@@ -47,34 +42,48 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    // Валідація
+    const newErrors = {
+      name: !name.trim(),
+      email: !email.trim(),
+      body: !body.trim(),
+    };
 
-    if (!name || !email || !body) {
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some(error => error)) {
       return;
     }
 
     setSubmitting(true);
+    setHasError(false);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      await onSubmit({ name, email, body });
+      // Якщо успішно — чистимо ТІЛЬКИ текст, форма залишається
+      setValues(current => ({ ...current, body: '' }));
+    } catch (error) {
+      setHasError(true);
+    } finally {
+      // ВАЖЛИВО: лоадер вимикається тут
+      setSubmitting(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {/* Повідомлення про помилку */}
+      {hasError && (
+        <div className="notification is-danger" data-cy="ErrorMessage">
+          {`Can't add a comment. Please try again later.`}
+        </div>
+      )}
+
+      {/* Поле імені */}
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -84,12 +93,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={handleChange}
+            disabled={submitting}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
           {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -99,7 +107,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
@@ -107,26 +114,27 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         )}
       </div>
 
+      {/* Поле Email */}
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={handleChange}
+            disabled={submitting}
           />
-
+          {/* ТУТ: ПРИБИРАЄМО data-cy="ErrorIcon" звідси, бо це просто іконка пошти */}
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
+          {/* ТУТ: додаємо data-cy="ErrorIcon" сюди */}
           {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -136,7 +144,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             </span>
           )}
         </div>
-
         {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
@@ -144,11 +151,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         )}
       </div>
 
+      {/* Поле Тексту */}
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -157,9 +164,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={handleChange}
+            disabled={submitting}
           />
         </div>
-
         {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
@@ -174,14 +181,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            // ПРИБИРАЄМО data-cy="NewCommentForm" звідси
+            disabled={submitting}
           >
             Add
           </button>
         </div>
-
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            // ПРИБИРАЄМО data-cy="NewCommentForm" звідси
+            disabled={submitting}
+          >
             Clear
           </button>
         </div>
