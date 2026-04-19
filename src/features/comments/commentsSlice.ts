@@ -29,7 +29,12 @@ const commentsSlice = createSlice({
     });
 
     builder.addCase(fetchComments.fulfilled, (state, action) => {
-      return { ...state, loaded: true, items: action.payload };
+      return {
+        ...state,
+        loaded: true,
+        items: action.payload,
+        hasError: false,
+      };
     });
 
     builder.addCase(fetchComments.rejected, state => {

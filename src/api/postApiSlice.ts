@@ -37,6 +37,7 @@ const postSlice = createSlice({
         ...state,
         loaded: true,
         items: action.payload,
+        hasError: false,
       };
     });
 
