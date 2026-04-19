@@ -8,15 +8,15 @@ export const fetchPostsByUserId = createAsyncThunk(
 );
 
 export interface PostState {
-  posts: Post[];
-  loading: boolean;
-  error: string | undefined;
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: PostState = {
-  posts: [],
-  loading: false,
-  error: undefined,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 const postSlice = createSlice({
@@ -27,23 +27,24 @@ const postSlice = createSlice({
     builder.addCase(fetchPostsByUserId.pending, state => {
       return {
         ...state,
-        loading: true,
+        loaded: false,
+        hasError: false,
       };
     });
 
     builder.addCase(fetchPostsByUserId.fulfilled, (state, action) => {
       return {
         ...state,
-        loading: false,
-        posts: action.payload,
+        loaded: true,
+        items: action.payload,
       };
     });
 
-    builder.addCase(fetchPostsByUserId.rejected, (state, action) => {
+    builder.addCase(fetchPostsByUserId.rejected, state => {
       return {
         ...state,
-        loading: false,
-        error: action.error.message,
+        loaded: true,
+        hasError: true,
       };
     });
   },

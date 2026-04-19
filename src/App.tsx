@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,20 +10,24 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchPostsByUserId } from './api/postApiSlice';
+import { setAuthor } from './features/author/authorSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const { posts, error, loading } = useAppSelector(state => state.posts);
+  const {
+    items: posts,
+    hasError,
+    loaded,
+  } = useAppSelector(state => state.posts);
+  const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const handleAuthorChange = (user: User | null) => {
-    setAuthor(user);
-    setSelectedPost(null);
+    dispatch(setAuthor(user));
+    dispatch(setSelectedPost(null));
   };
 
   useEffect(() => {
@@ -45,9 +49,9 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && loading && <Loader />}
+                {author && !loaded && <Loader />}
 
-                {author && !loading && error && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -56,17 +60,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length === 0 && (
+                {author && loaded && !hasError && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && !loading && !error && posts.length > 0 && (
+                {author && loaded && !hasError && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
