@@ -52,7 +52,8 @@ module.exports = {
     'brace-style': [2, '1tbs'],
     'arrow-body-style': 0,
     'arrow-parens': 0,
-    'no-param-reassign': [2, { props: true }],
+    // 'no-param-reassign': [2, { props: true }],
+    "no-param-reassign": ["error", { "props": false }],
     'padding-line-between-statements': [
       2,
       { blankLine: 'always', prev: '*', next: 'return' },
@@ -61,7 +62,7 @@ module.exports = {
       { blankLine: 'always', prev: 'directive', next: '*' },
       { blankLine: 'always', prev: 'block-like', next: '*' },
     ],
-    'implicit-arrow-linebreak:': 0,
+    'implicit-arrow-linebreak': 0,
 
     // React
     'react/prop-types': 0,
