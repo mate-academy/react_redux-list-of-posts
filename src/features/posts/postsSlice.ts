@@ -4,13 +4,13 @@ import { getUserPosts } from '../../api/posts';
 
 type PostState = {
   loaded: boolean;
-  hasError: string;
+  hasError: boolean;
   items: Post[];
 };
 
 const initialState: PostState = {
   loaded: false,
-  hasError: '',
+  hasError: false,
   items: [],
 };
 
@@ -32,7 +32,7 @@ export const postsSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.loaded = false;
       // eslint-disable-next-line no-param-reassign
-      state.hasError = '';
+      state.hasError = false;
     });
     builder.addCase(initPosts.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
@@ -42,7 +42,7 @@ export const postsSlice = createSlice({
     });
     builder.addCase(initPosts.rejected, state => {
       // eslint-disable-next-line no-param-reassign
-      state.hasError = 'Something went wrong';
+      state.hasError = true;
       // eslint-disable-next-line no-param-reassign
       state.loaded = true;
     });
