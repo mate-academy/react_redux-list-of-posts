@@ -1,51 +1,35 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { User } from '../types/User';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setSelectedUserId } from '../features/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
+export const UserSelector: React.FC = () => {
+  const [selectIsOpen, setSelectIsOpen] = useState<boolean>(false);
 
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const { items: users } = useAppSelector(state => state.users);
+  const { selectedUserId } = useAppSelector(state => state.author);
+
+  const currentUser = users.find(user => user.id === selectedUserId) || null;
 
   useEffect(() => {
-    if (!expanded) {
+    if (!selectIsOpen) {
       return;
     }
 
-    // we save a link to remove the listener later
-    const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
-      setExpanded(false);
+    const handleOutClick = () => {
+      setSelectIsOpen(false);
     };
 
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', handleOutClick);
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
-  }, [expanded]);
+    return () => document.removeEventListener('click', handleOutClick);
+  }, [selectIsOpen]);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', { 'is-active': selectIsOpen })}
     >
       <div className="dropdown-trigger">
         <button
@@ -55,13 +39,23 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={e => {
             e.stopPropagation();
-            setExpanded(current => !current);
+            setSelectIsOpen(state => !state);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          {currentUser ? (
+            <span>{currentUser.name}</span>
+          ) : (
+            <span>Choose a user</span>
+          )}
 
           <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
+            <i
+              className={classNames(
+                'fas',
+                !selectIsOpen ? 'fa-angle-down' : 'fa-angle-up',
+              )}
+              aria-hidden="false"
+            />
           </span>
         </button>
       </div>
@@ -72,12 +66,15 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': selectedUserId === user.id,
               })}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                dispatch(setSelectedUserId(user.id));
+                setSelectIsOpen(false);
+              }}
             >
               {user.name}
             </a>
