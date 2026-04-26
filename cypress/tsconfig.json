@@ -1,6 +1,10 @@
 {
   "extends": "@mate-academy/students-ts-config",
+  "include": ["src"],
   "compilerOptions": {
-    "sourceMap": false
+    "sourceMap": false,
+    "types": ["node", "cypress"],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "."
   }
 }
