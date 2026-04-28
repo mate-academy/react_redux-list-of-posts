@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,15 +9,15 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { set } from './features/author';
+import { set as setAuthor } from './features/author';
+import { set as setSelectedPost } from './features/selectedPost';
 import { fetchPosts, clearPosts } from './features/posts';
 
 export const App: React.FC = () => {
   const author = useAppSelector(state => state.author);
+  const selectedPost = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const {
     loaded,
     hasError,
@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(fetchPosts(author.id));
@@ -45,7 +45,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   value={author}
-                  onChange={user => dispatch(set(user))}
+                  onChange={user => dispatch(setAuthor(user))}
                 />
               </div>
 
@@ -73,7 +73,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
