@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: CommentData) => Promise<unknown>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+const NewCommentFormBase: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -180,7 +180,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
@@ -189,3 +188,5 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     </form>
   );
 };
+
+export const NewCommentForm = React.memo(NewCommentFormBase);

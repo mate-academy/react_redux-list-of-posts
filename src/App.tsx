@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,39 +9,50 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { loadPosts } from './features/posts/postsSlice';
+import { setAuthor } from './features/author/authorSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const author = useAppSelector(state => state.author);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const selectedPost = useAppSelector(state => state.selectedPost);
+
+  const handleSetAuthor = useCallback(
+    (user: User) => {
+      dispatch(setAuthor(user));
+    },
+    [dispatch],
+  );
+
+  const selectPost = useCallback(
+    (post: Post | null) => {
+      dispatch(setSelectedPost(post));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    selectPost(null);
 
-    if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
-    }
-  }, [author]);
+    dispatch(loadPosts());
+  }, [dispatch, author, selectPost]);
+
+  const hasNoPostsError = author && loaded && !hasError;
+  const hasPostsError = author && loaded && hasError;
+  const isNoPosts = hasNoPostsError && posts.length === 0;
+  const isPostsLoaded = hasNoPostsError && posts.length > 0;
 
   return (
     <main className="section">
@@ -50,7 +61,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} onChange={handleSetAuthor} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -58,26 +69,26 @@ export const App: React.FC = () => {
 
                 {author && !loaded && <Loader />}
 
-                {author && loaded && hasError && (
+                {hasPostsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    Something went wrong while loading posts.
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {isNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {isPostsLoaded && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={selectPost}
                   />
                 )}
               </div>

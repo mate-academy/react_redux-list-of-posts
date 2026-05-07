@@ -2,6 +2,7 @@
 
 import classNames from 'classnames';
 import React from 'react';
+
 import { Post } from '../types/Post';
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   onPostSelected: (post: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({
+const PostsListBase: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
   onPostSelected,
@@ -52,3 +53,5 @@ export const PostsList: React.FC<Props> = ({
     </table>
   </div>
 );
+
+export const PostsList = React.memo(PostsListBase);
