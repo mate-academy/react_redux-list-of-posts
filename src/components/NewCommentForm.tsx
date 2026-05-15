@@ -11,16 +11,18 @@ export const NewCommentForm: React.FC = () => {
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const createComment = ({ name, email, body }: CommentData) => {
-    if (selectedPost) {
-      dispatch(
-        addComment({
-          name,
-          email,
-          body,
-          postId: selectedPost.id,
-        }),
-      );
+    if (!selectedPost) {
+      return Promise.resolve();
     }
+
+    return dispatch(
+      addComment({
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      }),
+    );
   };
 
   const [errors, setErrors] = useState({
@@ -74,11 +76,12 @@ export const NewCommentForm: React.FC = () => {
     setSubmitting(true);
 
     // it is very easy to forget about `await` keyword
-    createComment({ name, email, body });
+    await createComment({ name, email, body });
+
+    setValues(current => ({ ...current, body: '' }));
+    setSubmitting(false);
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
   };
 
