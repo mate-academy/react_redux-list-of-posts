@@ -1,0 +1,4 @@
+
+ interface UsersState {
+  value: number;
+}
