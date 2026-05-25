@@ -1,8 +1,9 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 import { getUserPosts } from '../../api/posts';
 
-interface PostsState {
+export interface PostsState {
   items: Post[];
   loaded: boolean;
   hasError: boolean;

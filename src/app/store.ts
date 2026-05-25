@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import usersReducer from '../features/users/usersSlice';
 import authorReducer from '../features/author/authorSlice';

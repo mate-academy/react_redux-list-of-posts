@@ -16,6 +16,7 @@ export const UserSelector: React.FC = () => {
     }
 
     const handleDocumentClick = () => setExpanded(false);
+
     document.addEventListener('click', handleDocumentClick);
 
     // eslint-disable-next-line consistent-return

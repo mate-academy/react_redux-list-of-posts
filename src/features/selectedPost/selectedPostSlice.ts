@@ -1,7 +1,8 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
-interface SelectedPostState {
+export interface SelectedPostState {
   selectedPost: Post | null;
 }
 
