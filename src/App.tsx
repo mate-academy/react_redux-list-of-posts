@@ -14,15 +14,17 @@ import { useDispatch } from 'react-redux';
 import { setAuthor } from './features/author/author-slice';
 import { useAppSelector } from './app/hooks';
 import { setPosts } from './features/posts/posts-slice';
-import { setLoaded } from './features/loaded-slice/loaded-slice';
-import { setError } from './features/hasError/hasError-slice';
+import { setLoaded } from './features/posts/posts-slice';
+import { setError } from './features/posts/posts-slice';
 import { setSelectedPost } from './features/selectedPost/selectedpost-slice';
+import { getUsers } from './api/users';
+import { setUsers } from './features/users/users-slice';
 
 export const App: React.FC = () => {
-  const posts = useAppSelector(state => state.posts.selectedPost);
-  const author = useAppSelector(state => state.author.seletedAuthor);
-  const loaded = useAppSelector(state => state.loaded.loaded);
-  const hasError = useAppSelector(state => state.hasError.hasError);
+  const posts = useAppSelector(state => state.posts.items);
+  const author = useAppSelector(state => state.author.selectedAuthor);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
   const selectedPost = useAppSelector(state => state.selectedPost.post);
 
   const dispatch = useDispatch();
@@ -42,12 +44,19 @@ export const App: React.FC = () => {
     // we clear the post when an author is changed
     // not t o confuse the user
     dispatch(setSelectedPost(null));
-    if (author) {
+    if (author && author.id) {
+      dispatch(setLoaded(false));
       loadUserPosts(author.id);
     } else {
       dispatch(setPosts([]));
     }
   }, [author, dispatch, loadUserPosts]);
+
+   useEffect(() => {
+    getUsers()
+      .then(dados => dispatch(setUsers(dados)))
+      .catch();
+  }, [dispatch]);
 
   return (
     <main className="section">

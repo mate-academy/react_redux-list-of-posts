@@ -3,11 +3,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
 export interface PostsState {
-  selectedPost: Post[];
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 }
 
 const initialState: PostsState = {
-  selectedPost: [],
+  items: [],
+  loaded: false,
+   hasError: false,
 };
 
 const postSlice = createSlice({
@@ -15,11 +19,17 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
-      state.selectedPost = action.payload;
+      state.items = action.payload;
+    },
+     setError: (state, action: PayloadAction<boolean>) => {
+      state.hasError = action.payload;
+    },
+     setLoaded: (state, action: PayloadAction<boolean>) => {
+      state.loaded = action.payload;
     },
   },
 });
 
-export const { setPosts } = postSlice.actions;
+export const { setPosts, setError, setLoaded } = postSlice.actions;
 
 export default postSlice.reducer;

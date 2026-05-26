@@ -17,7 +17,7 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useAppSelector(state => state.users.selectedUsers);
+  const users = useAppSelector(state => state.users.users) || [];
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users?.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}

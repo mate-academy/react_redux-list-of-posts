@@ -3,11 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/User';
 
 export interface UsersState {
-  selectedUsers: User[];
+  users: User[];
 }
 
 const initialState: UsersState = {
-  selectedUsers: [],
+  users: [],
 };
 
 const userSlice = createSlice({
@@ -15,7 +15,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
-      state.selectedUsers = action.payload;
+      state.users = action.payload;
     },
   },
 });

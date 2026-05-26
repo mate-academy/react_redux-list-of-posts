@@ -8,8 +8,8 @@ import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppSelector } from '../app/hooks';
 import { useDispatch } from 'react-redux';
-import { setError } from '../features/hasError/hasError-slice';
-import { setLoaded } from '../features/loaded-slice/loaded-slice';
+import { setError } from '../features/comment/comment-slice';
+import { setLoaded } from '../features/comment/comment-slice';
 import {
   addComment,
   removeComment,
@@ -21,9 +21,9 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const comments = useAppSelector(state => state.selectedComments.comments);
-  const loaded = useAppSelector(state => state.loaded.loaded);
-  const hasError = useAppSelector(state => state.hasError.hasError);
+  const comments = useAppSelector(state => state.comments.items);
+  const loaded = useAppSelector(state => state.comments.loaded);
+  const hasError = useAppSelector(state => state.comments.hasError);
   const [visible, setVisible] = useState(false);
 
   const dispatch = useDispatch();
