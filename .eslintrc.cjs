@@ -37,6 +37,13 @@ module.exports = {
     'prettier'
   ],
   rules: {
+    'no-param-reassign': [
+      'error',
+      {
+        props: true,
+        ignorePropertyModificationsFor: ['state'],
+      },
+    ],
     // JS
     'semi': 'off',
     '@typescript-eslint/semi': ['error', 'always'],
@@ -52,7 +59,6 @@ module.exports = {
     'brace-style': [2, '1tbs'],
     'arrow-body-style': 0,
     'arrow-parens': 0,
-    'no-param-reassign': [2, { props: true }],
     'padding-line-between-statements': [
       2,
       { blankLine: 'always', prev: '*', next: 'return' },
