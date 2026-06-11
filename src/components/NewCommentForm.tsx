@@ -5,7 +5,7 @@ import { CommentData } from '../types/Comment';
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
 };
-
+// my own NewCommentForm
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
 
