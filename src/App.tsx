@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,27 +9,25 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setAuthor as actionSetAuthor } from './features/author/authorSlice';
+/*eslint max-len: ["error", { "code": 280 }]*/
+import { setSelectedPost as actionSetSelectedPost } from './features/selectedPost/selectedPost';
+import { init as postsInit } from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const setAuthor = (value: User) => dispatch(actionSetAuthor(value));
+  const author = useAppSelector(state => state.author);
+  const posts = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const setSelectedPost = useCallback(
+    (value: Post | null) => dispatch(actionSetSelectedPost(value)),
+    [dispatch],
+  );
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -37,11 +35,10 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      dispatch(postsInit(author.id));
     }
-  }, [author]);
+  }, [author, dispatch, setSelectedPost]);
+  /* eslint-disable @typescript-eslint/indent */
 
   return (
     <main className="section">
@@ -55,10 +52,8 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
-
-                {author && !loaded && <Loader />}
-
-                {author && loaded && hasError && (
+                {author && !posts.loaded && !posts.hasError && <Loader />}
+                {posts.hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -66,16 +61,19 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-
-                {author && loaded && !hasError && posts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {author && loaded && !hasError && posts.length > 0 && (
+                {posts.loaded &&
+                  !posts.hasError &&
+                  posts.items.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
+                {posts.loaded && !posts.hasError && posts.items.length > 0 && (
                   <PostsList
-                    posts={posts}
+                    posts={posts.items}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={setSelectedPost}
                   />
