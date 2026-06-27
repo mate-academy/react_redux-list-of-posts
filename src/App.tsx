@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,13 +9,13 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init as initUsers } from './features/users/usersSlice';
 import {
   init as initPosts,
   clear as clearPosts,
 } from './features/posts/postsSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,14 +25,14 @@ export const App: React.FC = () => {
     hasError,
     items: posts,
   } = useAppSelector(state => state.posts);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     dispatch(initUsers());
   }, [dispatch]);
 
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(initPosts(author.id));
@@ -75,7 +75,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
