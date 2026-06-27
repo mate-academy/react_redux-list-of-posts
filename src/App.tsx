@@ -12,8 +12,11 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch } from './app/hooks';
+import { init as initUsers } from './features/users/usersSlice';
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
@@ -27,13 +30,10 @@ export const App: React.FC = () => {
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
-      // We disable the spinner in any case
       .finally(() => setLoaded(true));
   }
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     setSelectedPost(null);
 
     if (author) {
@@ -42,6 +42,10 @@ export const App: React.FC = () => {
       setPosts([]);
     }
   }, [author]);
+
+  useEffect(() => {
+    dispatch(initUsers());
+  }, [dispatch]);
 
   return (
     <main className="section">
