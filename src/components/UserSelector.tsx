@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setAuthor } from '../features/author/authorSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = () => {
   const users = useAppSelector(state => state.users);
+  const selectedUser = useAppSelector(state => state.author);
+  const dispatch = useAppDispatch();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -31,6 +26,10 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [expanded]);
+
+  const handleChange = (user: User) => {
+    dispatch(setAuthor(user));
+  };
 
   return (
     <div
@@ -63,7 +62,7 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               onClick={() => {
-                onChange(user);
+                handleChange(user);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
