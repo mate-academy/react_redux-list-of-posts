@@ -9,42 +9,37 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { init as initUsers } from './features/users/usersSlice';
+import {
+  init as initPosts,
+  clear as clearPosts,
+} from './features/posts/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const author = useAppSelector(state => state.author);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
+  const {
+    loaded,
+    hasError,
+    items: posts,
+  } = useAppSelector(state => state.posts);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      .finally(() => setLoaded(true));
-  }
+  useEffect(() => {
+    dispatch(initUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     setSelectedPost(null);
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(initPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(clearPosts());
     }
-  }, [author]);
-
-  useEffect(() => {
-    dispatch(initUsers());
-  }, [dispatch]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
