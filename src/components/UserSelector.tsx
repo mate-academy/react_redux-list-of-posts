@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
@@ -14,10 +14,9 @@ export const UserSelector: React.FC<Props> = ({
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  // `users` are loaded from the API into Redux store
+  // we read them from the store via `useAppSelector`
+  const users = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
