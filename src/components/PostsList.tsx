@@ -31,14 +31,14 @@ export const PostsList: React.FC = () => {
                 // Додаємо клас для підсвічування обраного рядка (якщо потрібно за стилями)
                 className={isSelected ? 'has-background-link-light' : ''}
               >
-                <td>{post.id}</td>
-                <td>{post.title}</td>
+                <td data-cy="PostId">{post.id}</td>
+                <td data-cy="PostTitle">{post.title}</td>
                 <td className="has-text-right is-vcentered">
                   <button
                     type="button"
                     data-cy="PostButton"
                     className={
-                      isSelected ? 'button is-link is-light' : 'button is-link'
+                      isSelected ? 'button is-link' : 'button is-link is-light'
                     }
                     onClick={() => {
                       // Якщо клікаємо по вже відкритому посту — закриваємо його, інакше — відкриваємо

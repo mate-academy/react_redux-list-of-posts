@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPostComments } from '../api/comments';
+import { getPostComments, createComment, deleteComment } from '../api/comments';
 import type { Comment } from '../types/Comment';
 
 export const fetchComments = createAsyncThunk<Comment[], number>(
@@ -9,6 +9,24 @@ export const fetchComments = createAsyncThunk<Comment[], number>(
     const comments = await getPostComments(postId);
 
     return comments;
+  },
+);
+
+export const addComment = createAsyncThunk<Comment, Omit<Comment, 'id'>>(
+  'comments/add',
+  async data => {
+    const newComment = await createComment(data);
+
+    return newComment;
+  },
+);
+
+export const removeComment = createAsyncThunk<number, number>(
+  'comments/remove',
+  async commentId => {
+    await deleteComment(commentId);
+
+    return commentId;
   },
 );
 
@@ -44,6 +62,14 @@ const commentsSlice = createSlice({
       .addCase(fetchComments.rejected, state => {
         state.loaded = true;
         state.hasError = true;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          comment => comment.id !== action.payload,
+        );
       });
   },
 });
