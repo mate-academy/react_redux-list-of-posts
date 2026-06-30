@@ -1,166 +1,131 @@
 import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  fetchComments,
+  addComment,
+  removeComment,
+} from '../features/commentsSlice';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { RootState } from '../app/store';
+import type { CommentData } from '../types/Comment';
 
-import * as commentsApi from '../api/comments';
+export const PostDetails: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+  const selectedPost = useAppSelector((state: RootState) => state.selectedPost);
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector((state: RootState) => state.comments);
 
-type Props = {
-  post: Post;
-};
+  const [areCommentsVisible, setAreCommentsVisible] = useState(false);
+  const [isAddingComment, setIsAddingComment] = useState(false);
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
+  // Завантажуємо коментарі щоразу, як змінюється вибраний пост
+  useEffect(() => {
+    if (selectedPost) {
+      dispatch(fetchComments(selectedPost.id));
+      setAreCommentsVisible(true); // Автоматично відкриваємо блок
+      setIsAddingComment(false); // Ховаємо форму при зміні поста
+    }
+  }, [selectedPost, dispatch]);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
-
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+  if (!selectedPost) {
+    return null;
   }
 
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
+  const handleCommentSubmit = async (data: CommentData) => {
+    await dispatch(addComment({ ...data, postId: selectedPost.id })).unwrap();
   };
 
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
-
-  const addComment = async ({ name, email, body }: CommentData) => {
-    try {
-      const newComment = await commentsApi.createComment({
-        name,
-        email,
-        body,
-        postId: post.id,
-      });
-
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
-    } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
-    }
-  };
-
-  const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
-
-    await commentsApi.deleteComment(commentId);
+  const handleCommentDelete = (commentId: number) => {
+    // Видаляємо коментар одразу з UI, не чекаючи відповіді сервера
+    dispatch(removeComment(commentId));
   };
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+      {/* Заголовок з правильним форматуванням та атрибутом */}
+      <h2 className="title" data-cy="PostTitle">
+        #{selectedPost.id}: {selectedPost.title}
+      </h2>
 
-        <p data-cy="PostBody">{post.body}</p>
-      </div>
+      {/* Тіло поста */}
+      <p data-cy="PostBody">{selectedPost.body}</p>
 
-      <div className="block">
-        {!loaded && <Loader />}
+      <button
+        type="button"
+        className="button is-link"
+        onClick={() => setAreCommentsVisible(!areCommentsVisible)}
+      >
+        {areCommentsVisible ? 'Hide comments' : 'Show comments'}
+      </button>
 
-        {loaded && hasError && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )}
+      {areCommentsVisible && (
+        <div className="box mt-4">
+          <h3 className="title is-5">Comments:</h3>
 
-        {loaded && !hasError && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-        )}
+          {/* Показуємо лоадер, поки йде завантаження */}
+          {!loaded && !hasError && <Loader />}
 
-        {loaded && !hasError && comments.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
+          {hasError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong with loading comments.
+            </div>
+          )}
 
-            {comments.map(comment => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
+          {/* Показуємо коментарі та кнопку додавання ТІЛЬКИ після завантаження */}
+          {loaded && !hasError && (
+            <>
+              {comments.length === 0 ? (
+                <p data-cy="NoCommentsMessage">No comments yet</p>
+              ) : (
+                <ul>
+                  {comments.map(comment => (
+                    <li key={comment.id} className="mb-3" data-cy="Comment">
+                      <div className="message-header">
+                        <a
+                          href={`mailto:${comment.email}`}
+                          data-cy="CommentAuthor"
+                        >
+                          {comment.name}
+                        </a>
 
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+                        <button
+                          type="button"
+                          className="delete"
+                          aria-label="delete"
+                          onClick={() => handleCommentDelete(comment.id)}
+                        />
+                      </div>
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
-          </>
-        )}
+                      <p data-cy="CommentBody">{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-        {loaded && !hasError && !visible && (
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setVisible(true)}
-          >
-            Write a comment
-          </button>
-        )}
+              <hr />
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
-      </div>
+              {/* Логіка відображення форми чи кнопки */}
+              {!isAddingComment ? (
+                <button
+                  type="button"
+                  className="button is-link"
+                  data-cy="WriteCommentButton"
+                  onClick={() => setIsAddingComment(true)}
+                >
+                  Write a comment
+                </button>
+              ) : (
+                <NewCommentForm onSubmit={handleCommentSubmit} />
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
