@@ -1,6 +1,7 @@
-const { defineConfig } = require('cypress');
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { defineConfig } from 'cypress';
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/integration/**/*.spec.{js,ts,jsx,tsx}',
