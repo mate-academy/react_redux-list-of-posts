@@ -17,7 +17,30 @@ const initialState: CommentsState = {
   hasError: false,
 };
 
-export const fetchUCommentsAsync = createAsyncThunk(
+export const addCommentAsync = createAsyncThunk(
+  'comments/addComment',
+  async (newComment: {
+    postId: number;
+    name: string;
+    email: string;
+    body: string;
+  }) => {
+    const data = await client.post<Comment>('/comments', newComment);
+
+    return data;
+  },
+);
+
+export const deleteCommentAsync = createAsyncThunk(
+  'comments/deleteComment',
+  async (commentId: number) => {
+    await client.delete(`/comments/${commentId}`);
+
+    return commentId;
+  },
+);
+
+export const fetchCommentsAsync = createAsyncThunk(
   'comments/fetchCount',
   async (postId: number) => {
     const data = await client.get<Comment[]>(`/comments?postId=${postId}`);
@@ -30,10 +53,7 @@ export const commentsSlice = createSlice({
   name: 'comments',
   initialState,
   reducers: {
-    addComments: (state, action: PayloadAction<Comment>) => {
-      state.items.push(action.payload);
-    },
-    clearComments: state => {
+    clearComment: state => {
       state.items = [];
       state.loaded = false;
       state.hasError = false;
@@ -42,25 +62,39 @@ export const commentsSlice = createSlice({
 
   extraReducers: builder => {
     builder
-      .addCase(fetchUCommentsAsync.pending, state => {
+      .addCase(fetchCommentsAsync.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
       .addCase(
-        fetchUCommentsAsync.fulfilled,
+        fetchCommentsAsync.fulfilled,
         (state, action: PayloadAction<Comment[]>) => {
           state.loaded = true;
           state.items = action.payload;
         },
       )
-      .addCase(fetchUCommentsAsync.rejected, state => {
+      .addCase(
+        addCommentAsync.fulfilled,
+        (state, action: PayloadAction<Comment>) => {
+          state.items.push(action.payload);
+        },
+      )
+      .addCase(
+        deleteCommentAsync.fulfilled,
+        (state, action: PayloadAction<number>) => {
+          state.items = state.items.filter(
+            comment => comment.id !== action.payload,
+          );
+        },
+      )
+      .addCase(fetchCommentsAsync.rejected, state => {
         state.loaded = true;
         state.hasError = true;
       });
   },
 });
 
-export const { addComments, clearComments } = commentsSlice.actions;
+export const { clearComment } = commentsSlice.actions;
 
 export const selectComments = (state: RootState) => state.comments.items;
 export const selectCommentsLoaded = (state: RootState) => state.comments.loaded;

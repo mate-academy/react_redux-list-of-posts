@@ -10,7 +10,7 @@ const initialState: AuthorState = null;
 
 export const authorSlice = createSlice({
   name: 'author',
-  initialState,
+  initialState: initialState as AuthorState,
   reducers: {
     setAuthor: (_state, action: PayloadAction<User>) => action.payload,
     clearAuthor: () => null,

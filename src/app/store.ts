@@ -3,8 +3,8 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { usersSlice } from '../features/users/usersSlice';
 import { authorSlice } from '../features/author/authorSlice';
 import { postsSlice } from '../features/posts/postsSlice';
-import { selectedPostSlice } from '../features/selectedPost/selectedPost';
-import { commentsSlice } from '../features/comments/comments';
+import { selectedPostSlice } from '../features/selectedPost/selectedPostSlice';
+import { commentsSlice } from '../features/comments/commentsSlice';
 
 export const store = configureStore({
   reducer: {

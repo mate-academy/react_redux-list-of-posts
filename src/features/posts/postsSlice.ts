@@ -17,7 +17,7 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-export const fetchUPostssAsync = createAsyncThunk(
+export const fetchPostsAsync = createAsyncThunk(
   'posts/fetchCount',
   async (userId: number) => {
     const data = await client.get<Post[]>(`/posts?userId=${userId}`);
@@ -39,18 +39,18 @@ export const postsSlice = createSlice({
 
   extraReducers: builder => {
     builder
-      .addCase(fetchUPostssAsync.pending, state => {
+      .addCase(fetchPostsAsync.pending, state => {
         state.loaded = false;
         state.hasError = false;
       })
       .addCase(
-        fetchUPostssAsync.fulfilled,
+        fetchPostsAsync.fulfilled,
         (state, action: PayloadAction<Post[]>) => {
           state.loaded = true;
           state.items = action.payload;
         },
       )
-      .addCase(fetchUPostssAsync.rejected, state => {
+      .addCase(fetchPostsAsync.rejected, state => {
         state.loaded = true;
         state.hasError = true;
       });

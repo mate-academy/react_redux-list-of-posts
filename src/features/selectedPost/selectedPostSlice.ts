@@ -10,14 +10,15 @@ const initialState: SelectedPostState = null;
 
 export const selectedPostSlice = createSlice({
   name: 'selectedPost',
-  initialState,
+  initialState: initialState as SelectedPostState,
   reducers: {
-    setPost: (_state, action: PayloadAction<Post>) => action.payload,
+    setSelectedPost: (_state, action: PayloadAction<Post | null>) =>
+      action.payload,
     clearSelectedPost: () => null,
   },
 });
 
-export const { setPost, clearSelectedPost } = selectedPostSlice.actions;
-export const selectAuthor = (state: RootState) => state.selectedPost;
+export const { setSelectedPost, clearSelectedPost } = selectedPostSlice.actions;
+export const selectSelectedPost = (state: RootState) => state.selectedPost;
 
 export default selectedPostSlice.reducer;
