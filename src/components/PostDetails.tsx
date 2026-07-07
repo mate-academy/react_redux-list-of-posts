@@ -1,61 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-
+import { useDispatch, useSelector } from 'react-redux';
 import * as commentsApi from '../api/comments';
+import {
+  setCommentsError,
+  setCommentsLoaded,
+} from '../features/counter/AppSlice';
 
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { RootState } from '../app/store';
+import { setComments } from '../features/counter/AppSlice';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  const comments = useSelector((state: RootState) => state.app.comments.items);
+  const loaded = useSelector((state: RootState) => state.app.comments.loaded);
+  const hasError = useSelector(
+    (state: RootState) => state.app.comments.hasError,
+  );
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
   function loadComments() {
-    setLoaded(false);
-    setError(false);
+    dispatch(setCommentsLoaded(false));
+    dispatch(setCommentsError(false));
     setVisible(false);
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
+      .then(postComments => dispatch(setComments(postComments)))
+      .catch(() => dispatch(setCommentsError(true)))
+      .finally(() => dispatch(setCommentsLoaded(true)));
   }
 
-  useEffect(loadComments, [post.id]);
-
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
+  useEffect(loadComments, [post.id, dispatch]);
 
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
@@ -65,26 +48,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
         postId: post.id,
       });
-
-      setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
+      dispatch(setComments([...comments, newComment]));
     } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
+      dispatch(setCommentsError(true));
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(setComments(comments.filter(comment => comment.id !== commentId)));
 
     await commentsApi.deleteComment(commentId);
   };
