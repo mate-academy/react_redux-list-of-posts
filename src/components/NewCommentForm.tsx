@@ -1,34 +1,36 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { CommentData } from '../types/Comment';
+
+type FormValues = { name: string; email: string; body: string };
+type FormErrors = { name: boolean; email: boolean; body: boolean };
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
+  values: FormValues;
+  errors: FormErrors;
+  onValuesChange: (values: FormValues) => void;
+  onErrorsChange: (errors: FormErrors) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
-
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+export const NewCommentForm: React.FC<Props> = ({
+  onSubmit,
+  values,
+  errors,
+  onValuesChange,
+  onErrorsChange,
+}) => {
+  const [submitting, setSubmitting] = React.useState(false);
+  const { name, email, body } = values;
 
   const clearForm = () => {
-    setValues({
+    onValuesChange({
       name: '',
       email: '',
       body: '',
     });
 
-    setErrors({
+    onErrorsChange({
       name: false,
       email: false,
       body: false,
@@ -40,14 +42,14 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    onValuesChange({ ...values, [field]: value });
+    onErrorsChange({ ...errors, [field]: false });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
+    onErrorsChange({
       name: !name,
       email: !email,
       body: !body,
@@ -58,14 +60,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
-
-    // it is very easy to forget about `await` keyword
     await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
     setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    onValuesChange({ ...values, body: '' });
   };
 
   return (
