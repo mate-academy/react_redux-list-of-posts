@@ -15,13 +15,13 @@ import {
 export const PostDetails = () => {
   const [visible, setVisible] = useState(false);
 
-  const { selectedPost: post } = useAppSelector(state => state.selectedPost);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
   const { items, loaded, hasError } = useAppSelector(state => state.comments);
 
   const dispatch = useAppDispatch();
 
   function loadComments() {
-    if (!post) {
+    if (!selectedPost) {
       return;
     }
 
@@ -30,13 +30,13 @@ export const PostDetails = () => {
     setVisible(false);
 
     commentsApi
-      .getPostComments(post.id)
+      .getPostComments(selectedPost.id)
       .then(data => dispatch(setComments(data))) // save the loaded comments
       .catch(() => dispatch(setError(true))) // show an error when something went wrong
       .finally(() => dispatch(setLoaded(true))); // hide the spinner
   }
 
-  useEffect(loadComments, [post, dispatch]);
+  useEffect(loadComments, [selectedPost, dispatch]);
 
   // The same useEffect with async/await
   /*
@@ -65,7 +65,7 @@ export const PostDetails = () => {
   */
 
   const addComment = async ({ name, email, body }: CommentData) => {
-    if (!post) {
+    if (!selectedPost) {
       return;
     }
 
@@ -74,7 +74,7 @@ export const PostDetails = () => {
         name,
         email,
         body,
-        postId: post.id,
+        postId: selectedPost.id,
       });
 
       dispatch(setComments([...items, newComment]));
@@ -101,9 +101,9 @@ export const PostDetails = () => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-        <p data-cy="PostBody">{post?.body}</p>
+        <p data-cy="PostBody">{selectedPost?.body}</p>
       </div>
 
       <div className="block">

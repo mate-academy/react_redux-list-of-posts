@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
 
 export const PostsList = () => {
-  const { posts } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ export const PostsList = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {items.map(post => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
