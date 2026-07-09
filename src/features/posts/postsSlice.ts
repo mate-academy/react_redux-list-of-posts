@@ -3,13 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
 
 type PostsState = {
-  posts: Post[];
+  items: Post[];
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -20,7 +20,7 @@ export const postsSlice = createSlice({
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
       // eslint-disable-next-line no-param-reassign
-      state.posts = action.payload;
+      state.items = action.payload;
     },
     setLoaded: (state, action: PayloadAction<boolean>) => {
       state.loaded = action.payload;

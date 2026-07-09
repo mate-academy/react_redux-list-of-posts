@@ -3,10 +3,12 @@ import { User } from '../../types/User';
 
 type UsersState = {
   users: User[];
+  loaded: boolean;
 };
 
 const initialState: UsersState = {
   users: [],
+  loaded: false,
 };
 
 export const userSlice = createSlice({
@@ -17,8 +19,12 @@ export const userSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.users = action.payload;
     },
+    setLoaded: (state, action: PayloadAction<boolean>) => {
+      // eslint-disable-next-line no-param-reassign
+      state.loaded = action.payload;
+    },
   },
 });
 
-export const { setUsers } = userSlice.actions;
+export const { setUsers, setLoaded } = userSlice.actions;
 export default userSlice.reducer;

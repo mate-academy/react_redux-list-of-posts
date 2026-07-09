@@ -15,7 +15,7 @@ import { setError, setLoaded, setPosts } from './features/posts/postsSlice';
 import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {
-  const { posts, loaded, hasError } = useAppSelector(state => state.posts);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
   const { author } = useAppSelector(state => state.author);
@@ -50,7 +50,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -67,13 +67,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && items.length > 0 && (
                   <PostsList />
                 )}
               </div>
