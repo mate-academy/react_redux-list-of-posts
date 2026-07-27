@@ -15,9 +15,9 @@ export const loadComments = createAsyncThunk(
 );
 
 const initialState = {
-  comments: [] as Comment[],
-  loaded: true,
-  hasError: '',
+  items: [] as Comment[],
+  loaded: false,
+  hasError: false,
 };
 
 const commentsSlice = createSlice({
@@ -25,28 +25,27 @@ const commentsSlice = createSlice({
   initialState,
   reducers: {
     add: (state, action: PayloadAction<Comment>) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     },
     remove: (state, action: PayloadAction<number>) => {
-      state.comments = state.comments.filter(
-        comment => comment.id !== action.payload,
-      );
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
-    causeError: (state, action: PayloadAction<string>) => {
-      state.hasError = action.payload;
+    causeError: state => {
+      state.hasError = true;
     },
   },
   extraReducers(builder) {
     builder.addCase(loadComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.loaded = true;
-    });
-    builder.addCase(loadComments.pending, state => {
+      state.items = action.payload;
+      state.hasError = false;
       state.loaded = false;
     });
-    builder.addCase(loadComments.rejected, (state, action) => {
+    builder.addCase(loadComments.pending, state => {
       state.loaded = true;
-      state.hasError = action.error.message || '';
+    });
+    builder.addCase(loadComments.rejected, state => {
+      state.loaded = false;
+      state.hasError = true;
     });
   },
 });
@@ -78,7 +77,7 @@ export const addComment = (
 
       dispatch(add(newComment));
     } catch (error) {
-      dispatch(causeError('Error'));
+      dispatch(causeError());
       throw error;
     }
   };
