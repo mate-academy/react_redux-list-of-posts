@@ -10,6 +10,7 @@ import { authorSlice } from '../features/authorSlice';
 import { userSlice } from '../features/userSlice';
 import { postsSlice } from '../features/postsSlice';
 import { selectedPostSlice } from '../features/selectedPostSlice';
+import { commentsSlice } from '../features/commentsSlice';
 
 const reducer = combineReducers({
   counter: counterReducer,
@@ -17,6 +18,7 @@ const reducer = combineReducers({
   users: userSlice.reducer,
   posts: postsSlice.reducer,
   selectedPost: selectedPostSlice.reducer,
+  comments: commentsSlice.reducer,
 });
 
 export const store = configureStore({
