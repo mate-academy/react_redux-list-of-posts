@@ -38,13 +38,13 @@ const commentsSlice = createSlice({
     builder.addCase(loadComments.fulfilled, (state, action) => {
       state.items = action.payload;
       state.hasError = false;
-      state.loaded = false;
-    });
-    builder.addCase(loadComments.pending, state => {
       state.loaded = true;
     });
-    builder.addCase(loadComments.rejected, state => {
+    builder.addCase(loadComments.pending, state => {
       state.loaded = false;
+    });
+    builder.addCase(loadComments.rejected, state => {
+      state.loaded = true;
       state.hasError = true;
     });
   },

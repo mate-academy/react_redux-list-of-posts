@@ -21,20 +21,28 @@ const initialState = {
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    setPosts: () => ({
+      items: [],
+      loaded: false,
+      hasError: false,
+    }),
+  },
   extraReducers(builder) {
     builder.addCase(loadUserPosts.fulfilled, (state, action) => {
-      state.loaded = false;
+      state.loaded = true;
+      state.hasError = false;
       state.items = action.payload;
     });
     builder.addCase(loadUserPosts.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
     });
     builder.addCase(loadUserPosts.rejected, state => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = true;
     });
   },
 });
 
 export default postsSlice.reducer;
+export const { setPosts } = postsSlice.actions;
