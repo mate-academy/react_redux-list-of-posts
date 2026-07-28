@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { Loader } from './Loader';
 
 export const PostsList = () => {
-  const { posts, loaded, hasError } = useAppSelector(selectPostsState);
+  const { items, loaded, hasError } = useAppSelector(selectPostsState);
   const author = useAppSelector(selectAuthor);
   const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
@@ -32,13 +32,13 @@ export const PostsList = () => {
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length === 0 && (
+      {author && loaded && !hasError && items.length === 0 && (
         <div className="notification is-warning" data-cy="NoPostsYet">
           No posts yet
         </div>
       )}
 
-      {author && loaded && !hasError && posts.length > 0 && (
+      {author && loaded && !hasError && items.length > 0 && (
         <div data-cy="PostsList">
           <p className="title">Posts:</p>
 
@@ -52,7 +52,7 @@ export const PostsList = () => {
             </thead>
 
             <tbody>
-              {posts.map(post => (
+              {items.map(post => (
                 <tr key={post.id} data-cy="Post">
                   <td data-cy="PostId">{post.id}</td>
                   <td data-cy="PostTitle">{post.title}</td>

@@ -11,7 +11,7 @@ import {
 import { selectSelectedPost } from '../features/selectedPost';
 
 export const PostDetails = () => {
-  const { comments, loaded, hasError } = useAppSelector(selectCommentsState);
+  const { items, loaded, hasError } = useAppSelector(selectCommentsState);
   const selectedPost = useAppSelector(selectSelectedPost);
   const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
@@ -45,17 +45,17 @@ export const PostDetails = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}

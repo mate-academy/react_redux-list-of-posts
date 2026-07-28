@@ -6,13 +6,13 @@ import { Post } from '../types/Post';
 import { getUserPosts } from '../api/posts';
 
 export interface PostsState {
-  posts: Post[] | [];
+  items: Post[] | [];
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState: PostsState = {
-  posts: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -38,7 +38,7 @@ export const postsSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loaded = true;
-        state.posts = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchPosts.rejected, state => {
         state.loaded = true;

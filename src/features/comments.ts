@@ -6,13 +6,13 @@ import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 export interface CommentsState {
-  comments: Comment[];
+  items: Comment[];
   loaded: boolean;
   hasError: boolean;
 }
 
 const initialState: CommentsState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -53,15 +53,15 @@ export const commentsSlice = createSlice({
     builder
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.loaded = true;
-        state.comments = action.payload;
+        state.items = action.payload;
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.loaded = true;
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(removeComment.fulfilled, (state, action) => {
         state.loaded = true;
-        state.comments = state.comments.filter(
+        state.items = state.items.filter(
           (item: Comment) => item.id !== action.payload,
         );
       })

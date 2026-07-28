@@ -28,7 +28,6 @@ export const NewCommentForm = () => {
     event.preventDefault();
 
     const notValidFields = { ...errorsFields };
-
     // eslint-disable-next-line prettier/prettier
     for (const key of Object.keys(state.errors) as (keyof Omit<NewCommentFormState, 'errors'>)[]) {
       if (state[key] === '') {
