@@ -38,6 +38,7 @@ export const postsSlice = createSlice({
       return {
         ...state,
         loaded: false,
+        hasError: false,
       };
     });
 
@@ -46,12 +47,14 @@ export const postsSlice = createSlice({
         ...state,
         items: action.payload,
         loaded: true,
+        hasError: false,
       };
     });
 
     builder.addCase(loadUserPosts.rejected, state => {
       return {
         ...state,
+        loaded: true,
         hasError: true,
       };
     });

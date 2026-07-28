@@ -15,7 +15,7 @@ export const loadUsers = createAsyncThunk('users/loadUsers', async () => {
 });
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: 'users',
   initialState,
   reducers: {
     set: (state, action: PayloadAction<User[]>) => {

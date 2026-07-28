@@ -75,6 +75,7 @@ export const commentsSlice = createSlice({
       return {
         ...state,
         loaded: false,
+        hasError: false,
       };
     });
 
@@ -83,12 +84,14 @@ export const commentsSlice = createSlice({
         ...state,
         items: action.payload,
         loaded: true,
+        hasError: false,
       };
     });
 
     builder.addCase(loadPostComments.rejected, state => {
       return {
         ...state,
+        loaded: true,
         hasError: true,
       };
     });

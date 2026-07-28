@@ -24,6 +24,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setVisible(false);
+  }, [post.id]);
+
+  useEffect(() => {
     if (post) {
       dispatch(loadPostComments(post.id));
     } else {
