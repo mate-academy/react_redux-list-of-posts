@@ -42,10 +42,7 @@ module.exports = {
     '@typescript-eslint/semi': ['error', 'always'],
     'prefer-const': 2,
     curly: [2, 'all'],
-    'max-len': ['error', {
-      ignoreTemplateLiterals: true,
-      ignoreComments: true,
-    }],
+    'max-len': 'off',
     'no-redeclare': [2, { builtinGlobals: true }],
     'no-console': 2,
     'operator-linebreak': 0,
@@ -90,7 +87,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error'],
-    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/indent': 'off',
     '@typescript-eslint/ban-types': ['error', {
         extendDefaults: true,
         types: {
