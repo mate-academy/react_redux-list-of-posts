@@ -48,8 +48,13 @@ export const NewCommentForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add a comment</h2>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleSubmit}
+    >
+      <h2>
+        Add a comment
+      </h2>
 
       {error && (
         <p>
@@ -58,6 +63,7 @@ export const NewCommentForm = ({
       )}
 
       <input
+        data-cy="NewCommentName"
         type="text"
         placeholder="Name"
         value={name}
@@ -66,6 +72,7 @@ export const NewCommentForm = ({
       />
 
       <input
+        data-cy="NewCommentEmail"
         type="email"
         placeholder="Email"
         value={email}
@@ -74,6 +81,7 @@ export const NewCommentForm = ({
       />
 
       <textarea
+        data-cy="NewCommentBody"
         placeholder="Comment"
         value={body}
         onChange={event => setBody(event.target.value)}
@@ -82,6 +90,7 @@ export const NewCommentForm = ({
 
       <button
         type="submit"
+        data-cy="NewCommentSubmit"
         disabled={
           isLoading
           || !name

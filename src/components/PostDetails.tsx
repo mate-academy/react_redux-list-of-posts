@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-
-import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Loader } from './Loader';
+
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 import {
   loadComments,
@@ -35,7 +35,6 @@ export const PostDetails = ({ post }: Props) => {
     }
 
     dispatch(loadComments(post.id));
-
     setVisible(false);
   }, [post, dispatch]);
 
@@ -43,8 +42,8 @@ export const PostDetails = ({ post }: Props) => {
     return null;
   }
 
-  const handleAddComment = async (data: CommentData) => {
-    await dispatch(
+  const handleAddComment = (data: CommentData) => {
+    dispatch(
       addComment({
         ...data,
         postId: post.id,
@@ -57,33 +56,46 @@ export const PostDetails = ({ post }: Props) => {
   };
 
   return (
-    <div className="content" data-cy="PostDetails">
+    <div
+      className="content"
+      data-cy="PostDetails"
+    >
       <div className="block">
         <h2 data-cy="PostTitle">
           #{post.id}: {post.title}
         </h2>
 
-        <p data-cy="PostBody">{post.body}</p>
+        <p data-cy="PostBody">
+          {post.body}
+        </p>
       </div>
 
       <div className="block">
         {!loaded && <Loader />}
 
         {loaded && hasError && (
-          <div className="notification is-danger" data-cy="CommentsError">
+          <div
+            className="notification is-danger"
+            data-cy="CommentsError"
+          >
             Something went wrong
           </div>
         )}
 
         {loaded && !hasError && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
+          <p
+            className="title is-4"
+            data-cy="NoCommentsMessage"
+          >
             No comments yet
           </p>
         )}
 
         {loaded && !hasError && comments.length > 0 && (
           <>
-            <p className="title is-4">Comments:</p>
+            <p className="title is-4">
+              Comments:
+            </p>
 
             {comments.map(comment => (
               <article
@@ -92,7 +104,10 @@ export const PostDetails = ({ post }: Props) => {
                 data-cy="Comment"
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  <a
+                    href={`mailto:${comment.email}`}
+                    data-cy="CommentAuthor"
+                  >
                     {comment.name}
                   </a>
 
@@ -105,7 +120,10 @@ export const PostDetails = ({ post }: Props) => {
                   />
                 </div>
 
-                <div className="message-body" data-cy="CommentBody">
+                <div
+                  className="message-body"
+                  data-cy="CommentBody"
+                >
                   {comment.body}
                 </div>
               </article>
@@ -125,7 +143,10 @@ export const PostDetails = ({ post }: Props) => {
         )}
 
         {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={handleAddComment} />
+          <NewCommentForm
+            postId={post.id}
+            onAddComment={handleAddComment}
+          />
         )}
       </div>
     </div>
