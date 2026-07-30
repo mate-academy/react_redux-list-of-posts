@@ -1,0 +1,1770 @@
+===== src/api/comments.ts =====
+// import { client } from '../utils/axiosClient';
+import { client } from '../utils/fetchClient';
+import { Comment } from '../types/Comment';
+
+export const getPostComments = (postId: number) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const createComment = (data: Omit<Comment, 'id'>) => {
+  return client.post<Comment>('/comments', data);
+};
+
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
+===== src/api/posts.ts =====
+import { client } from '../utils/fetchClient';
+import { Post } from '../types/Post';
+
+export const getUserPosts = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getPosts = () => {
+  return client.get<Post[]>('/posts');
+};
+===== src/api/store.tsx =====
+import { configureStore } from '@reduxjs/toolkit';
+
+import usersReducer from '../features/users/usersSlice';
+import postsReducer from '../features/posts/postsSlice';
+import commentsReducer from '../features/comments/commentsSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+
+export const store = configureStore({
+  reducer: {
+    users: usersReducer,
+    posts: postsReducer,
+    comments: commentsReducer,
+    selectedPost: selectedPostReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+===== src/api/users.ts =====
+import { client } from '../utils/fetchClient';
+import { User } from '../types/User';
+
+export const getUsers = () => {
+  return client.get<User[]>('/users');
+};
+
+export const getUser = (id: number) => {
+  return client.get<User[]>(`/users/${id}`);
+};
+===== src/app/hooks.ts =====
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+
+import type { RootState, AppDispatch } from './store';
+
+export const useAppDispatch = () =>
+  useDispatch<AppDispatch>();
+
+export const useAppSelector: TypedUseSelectorHook<RootState> =
+  useSelector;
+===== src/app/store.ts =====
+import { configureStore } from '@reduxjs/toolkit';
+
+import usersReducer from '../features/users/usersSlice';
+import authorReducer from '../features/author/authorSlice';
+import postsReducer from '../features/posts/postsSlice';
+import commentsReducer from '../features/comments/commentsSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+
+export const store = configureStore({
+  reducer: {
+    users: usersReducer,
+    author: authorReducer,
+    posts: postsReducer,
+    comments: commentsReducer,
+    selectedPost: selectedPostReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+
+export type AppDispatch = typeof store.dispatch;
+===== src/App.scss =====
+iframe {
+  display: none;
+}
+
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition-property: max-width, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+
+  @media (min-width: 769px) {
+    max-width: 0;
+  }
+
+  &--open {
+    opacity: 1;
+
+    @media (min-width: 769px) {
+      max-width: 50%;
+    }
+  }
+}
+
+.message-body {
+  white-space: pre-line;
+}
+===== src/App.tsx =====
+import React, { useEffect } from 'react';
+import classNames from 'classnames';
+
+import 'bulma/css/bulma.css';
+import '@fortawesome/fontawesome-free/css/all.css';
+import './App.scss';
+
+import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
+import { UserSelector } from './components/UserSelector';
+import { Loader } from './components/Loader';
+
+import { useAppDispatch, useAppSelector } from './app/hooks';
+
+import { fetchUsers } from './features/users/usersThunk';
+
+import { fetchPosts } from './features/posts/postsThunk';
+import { clearPosts } from './features/posts/postsSlice';
+
+import {
+  clearSelectedPost,
+} from './features/selectedPost/selectedPostSlice';
+
+
+export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+
+  const author = useAppSelector(
+    state => state.author.author,
+  );
+
+
+  const posts = useAppSelector(
+    state => state.posts.items,
+  );
+
+
+  const loaded = useAppSelector(
+    state => state.posts.loaded,
+  );
+
+
+  const hasError = useAppSelector(
+    state => state.posts.hasError,
+  );
+
+
+  const selectedPost = useAppSelector(
+    state => state.selectedPost.selectedPost,
+  );
+
+
+  // Carrega usuários ao abrir a página
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+
+
+  // Carrega posts quando troca usuário
+  useEffect(() => {
+
+    dispatch(clearSelectedPost());
+
+
+    if (author) {
+
+      dispatch(fetchPosts(author.id));
+
+    } else {
+
+      dispatch(clearPosts());
+
+    }
+
+  }, [author, dispatch]);
+
+
+
+  return (
+    <main
+      className="section"
+      data-cy="app"
+    >
+
+      <div className="container">
+
+        <div className="tile is-ancestor">
+
+
+          <div className="tile is-parent">
+
+            <div className="tile is-child box is-success">
+
+
+              <div className="block">
+
+                <UserSelector />
+
+              </div>
+
+
+
+              <div
+                className="block"
+                data-cy="MainContent"
+              >
+
+
+                {!author && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+
+
+
+                {author && !loaded && (
+                  <Loader />
+                )}
+
+
+
+
+                {author && loaded && hasError && (
+
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+
+                    Something went wrong!
+
+                  </div>
+
+                )}
+
+
+
+
+                {author &&
+                  loaded &&
+                  !hasError &&
+                  posts.length === 0 && (
+
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+
+                    No posts yet
+
+                  </div>
+
+                )}
+
+
+
+
+
+                {author &&
+                  loaded &&
+                  !hasError &&
+                  posts.length > 0 && (
+
+                  <PostsList />
+
+                )}
+
+
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+
+
+
+
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': !!selectedPost,
+              },
+            )}
+          >
+
+
+            <div className="tile is-child box is-success">
+
+
+              {selectedPost && (
+
+                <PostDetails />
+
+              )}
+
+
+            </div>
+
+
+          </div>
+
+
+
+        </div>
+
+
+      </div>
+
+
+    </main>
+  );
+};
+===== src/components/Loader/index.tsx =====
+export * from './Loader';
+===== src/components/Loader/Loader.scss =====
+.Loader {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  &__content {
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    margin: 1em auto;
+    border: 0.3em solid #ddd;
+    border-left-color: #000;
+    animation: load8 1.2s infinite linear;
+  }
+}
+
+@keyframes load8 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+===== src/components/Loader/Loader.tsx =====
+export const Loader = () => {
+  return (
+    <div className="Loader" data-cy="Loader">
+      Loading...
+    </div>
+  );
+};
+===== src/components/NewCommentForm.tsx =====
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { CommentData } from '../types/Comment';
+
+type Props = {
+  onSubmit: (data: CommentData) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+
+  const [{ name, email, body }, setValues] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const clearForm = () => {
+    setValues({
+      name: '',
+      email: '',
+      body: '',
+    });
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: field, value } = event.target;
+
+    setValues(current => ({ ...current, [field]: value }));
+    setErrors(current => ({ ...current, [field]: false }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setErrors({
+      name: !name,
+      email: !email,
+      body: !body,
+    });
+
+    if (!name || !email || !body) {
+      return;
+    }
+
+    setSubmitting(true);
+
+    // it is very easy to forget about `await` keyword
+    await onSubmit({ name, email, body });
+
+    // and the spinner will disappear immediately
+    setSubmitting(false);
+    setValues(current => ({ ...current, body: '' }));
+    // We keep the entered name and email
+  };
+
+  return (
+    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      <div className="field" data-cy="NameField">
+        <label className="label" htmlFor="comment-author-name">
+          Author Name
+        </label>
+
+        <div className="control has-icons-left has-icons-right">
+          <input
+            type="text"
+            name="name"
+            id="comment-author-name"
+            placeholder="Name Surname"
+            className={classNames('input', { 'is-danger': errors.name })}
+            value={name}
+            onChange={handleChange}
+          />
+
+          <span className="icon is-small is-left">
+            <i className="fas fa-user" />
+          </span>
+
+          {errors.name && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
+        </div>
+
+        {errors.name && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
+      </div>
+
+      <div className="field" data-cy="EmailField">
+        <label className="label" htmlFor="comment-author-email">
+          Author Email
+        </label>
+
+        <div className="control has-icons-left has-icons-right">
+          <input
+            type="text"
+            name="email"
+            id="comment-author-email"
+            placeholder="email@test.com"
+            className={classNames('input', { 'is-danger': errors.email })}
+            value={email}
+            onChange={handleChange}
+          />
+
+          <span className="icon is-small is-left">
+            <i className="fas fa-envelope" />
+          </span>
+
+          {errors.email && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
+        </div>
+
+        {errors.email && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
+      </div>
+
+      <div className="field" data-cy="BodyField">
+        <label className="label" htmlFor="comment-body">
+          Comment Text
+        </label>
+
+        <div className="control">
+          <textarea
+            id="comment-body"
+            name="body"
+            placeholder="Type comment here"
+            className={classNames('textarea', { 'is-danger': errors.body })}
+            value={body}
+            onChange={handleChange}
+          />
+        </div>
+
+        {errors.body && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
+      </div>
+
+      <div className="field is-grouped">
+        <div className="control">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': submitting,
+            })}
+          >
+            Add
+          </button>
+        </div>
+
+        <div className="control">
+          {/* eslint-disable-next-line react/button-has-type */}
+          <button type="reset" className="button is-link is-light">
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+};
+===== src/components/Post.tsx =====
+type PostType = {
+  id: number;
+  title: string;
+  body: string;
+};
+
+type Props = {
+  post: PostType;
+  selectedPost: PostType | null;
+  onSelect: (post: PostType) => void;
+};
+
+export const Post = ({
+  post,
+  selectedPost,
+  onSelect,
+}: Props) => {
+  const isSelected =
+    selectedPost?.id === post.id;
+
+  return (
+    <article
+      data-cy="Post"
+      className="card"
+    >
+      <div className="card-content">
+
+        <button
+          type="button"
+          data-cy="PostButton"
+          className={
+            isSelected
+              ? 'button'
+              : 'button is-light'
+          }
+          onClick={() => onSelect(post)}
+        >
+          {isSelected ? 'Close' : 'Open'}
+        </button>
+
+
+        <p data-cy="PostId">
+          {post.id}
+        </p>
+
+
+        <h3 className="title is-5">
+          {post.title}
+        </h3>
+
+
+        <p>
+          {post.body}
+        </p>
+
+      </div>
+    </article>
+  );
+};
+===== src/components/PostDetails.tsx =====
+import { useEffect, useState } from 'react';
+
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+
+import { Loader } from './Loader';
+import { NewCommentForm } from './NewCommentForm';
+
+import {
+  loadComments,
+  addComment,
+  deleteComment,
+} from '../features/comments/commentsSlice';
+
+import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+
+
+type Props = {
+  post: Post | null;
+};
+
+
+export const PostDetails = ({ post }: Props) => {
+  const dispatch = useAppDispatch();
+
+
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
+
+
+  const [visible, setVisible] = useState(false);
+
+
+
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
+
+    dispatch(loadComments(post.id));
+
+    setVisible(false);
+
+  }, [post, dispatch]);
+
+
+
+  if (!post) {
+    return null;
+  }
+
+
+
+  const handleAddComment = async (
+    data: CommentData,
+  ) => {
+    await dispatch(
+      addComment({
+        ...data,
+        postId: post.id,
+      }),
+    );
+  };
+
+
+
+  const handleDeleteComment = (
+    commentId: number,
+  ) => {
+    dispatch(deleteComment(commentId));
+  };
+
+
+
+  return (
+    <div
+      className="content"
+      data-cy="PostDetails"
+    >
+
+
+      <div className="block">
+
+        <h2 data-cy="PostTitle">
+          #{post.id}: {post.title}
+        </h2>
+
+
+        <p data-cy="PostBody">
+          {post.body}
+        </p>
+
+      </div>
+
+
+
+      <div className="block">
+
+
+        {!loaded && (
+          <Loader />
+        )}
+
+
+
+        {loaded && hasError && (
+
+          <div
+            className="notification is-danger"
+            data-cy="CommentsError"
+          >
+            Something went wrong
+          </div>
+
+        )}
+
+
+
+
+        {loaded &&
+          !hasError &&
+          comments.length === 0 && (
+
+          <p
+            className="title is-4"
+            data-cy="NoCommentsMessage"
+          >
+            No comments yet
+          </p>
+
+        )}
+
+
+
+
+
+
+        {loaded &&
+          !hasError &&
+          comments.length > 0 && (
+
+          <>
+
+            <p className="title is-4">
+              Comments:
+            </p>
+
+
+
+            {comments.map(comment => (
+
+              <article
+                className="message is-small"
+                key={comment.id}
+                data-cy="Comment"
+              >
+
+
+                <div className="message-header">
+
+
+                  <a
+                    href={`mailto:${comment.email}`}
+                    data-cy="CommentAuthor"
+                  >
+                    {comment.name}
+                  </a>
+
+
+
+                  <button
+                    type="button"
+                    className="delete is-small"
+                    data-cy="CommentDelete"
+                    aria-label="delete"
+                    onClick={() =>
+                      handleDeleteComment(comment.id)
+                    }
+                  >
+                    delete
+                  </button>
+
+
+                </div>
+
+
+
+                <div
+                  className="message-body"
+                  data-cy="CommentBody"
+                >
+                  {comment.body}
+                </div>
+
+
+
+              </article>
+
+            ))}
+
+
+          </>
+
+        )}
+
+
+
+
+
+
+        {loaded &&
+          !hasError &&
+          !visible && (
+
+          <button
+            type="button"
+            className="button is-link"
+            data-cy="WriteCommentButton"
+            onClick={() => setVisible(true)}
+          >
+            Write a comment
+          </button>
+
+        )}
+
+
+
+
+
+
+        {loaded &&
+          !hasError &&
+          visible && (
+
+          <NewCommentForm
+            onSubmit={handleAddComment}
+          />
+
+        )}
+
+
+
+      </div>
+
+    </div>
+  );
+};
+===== src/components/PostsList.tsx =====
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+
+import { setSelectedPost } from '../features/selectedPost/selectedPostSlice';
+
+import { Post } from './Post';
+
+export const PostsList = () => {
+  const dispatch = useAppDispatch();
+
+  const posts = useAppSelector(state => state.posts.items);
+
+  const selectedPost = useAppSelector(
+    state => state.selectedPost.post,
+  );
+
+  const handleSelect = (post: typeof posts[number]) => {
+    if (selectedPost?.id === post.id) {
+      dispatch(setSelectedPost(null));
+    } else {
+      dispatch(setSelectedPost(post));
+    }
+  };
+
+  return (
+    <div data-cy="PostsList">
+      {posts.map(post => (
+        <Post
+          key={post.id}
+          post={post}
+          selectedPost={selectedPost}
+          onSelect={() => handleSelect(post)}
+        />
+      ))}
+    </div>
+  );
+};
+===== src/components/UsersContext.tsx =====
+import React, { useEffect, useState } from 'react';
+import { getUsers } from '../api/users';
+import { User } from '../types/User';
+
+export const UserContext = React.createContext<User[]>([]);
+
+type Props = {
+  children: React.ReactNode;
+};
+
+export const UsersProvider: React.FC<Props> = ({ children }) => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
+
+  return <UserContext.Provider value={users}>{children}</UserContext.Provider>;
+};
+===== src/components/UserSelector.tsx =====
+import { useEffect, useRef, useState } from 'react';
+
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { setAuthor } from '../features/author/authorSlice';
+
+type User = {
+  id: number;
+  name: string;
+};
+
+export const UserSelector: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const users = useAppSelector(state => state.users.items);
+  const author = useAppSelector(state => state.author.author);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectorRef = useRef<HTMLDivElement>(null);
+
+  const selectedUser = users.find(
+    user => user.id === author?.id,
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        selectorRef.current &&
+        !selectorRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      'click',
+      handleClickOutside,
+    );
+
+    return () => {
+      document.removeEventListener(
+        'click',
+        handleClickOutside,
+      );
+    };
+  }, []);
+
+  const handleSelect = (user: User) => {
+    dispatch(setAuthor(user));
+    setIsOpen(false);
+  };
+
+  return (
+    <div
+      ref={selectorRef}
+      data-cy="UserSelector"
+      className={`dropdown ${
+        isOpen ? 'is-active' : ''
+      }`}
+    >
+      <div className="dropdown-trigger">
+        <button
+          type="button"
+          className="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            setIsOpen(current => !current);
+          }}
+        >
+          <span>
+            {selectedUser
+              ? selectedUser.name
+              : 'Choose a user'}
+          </span>
+        </button>
+      </div>
+
+      <div className="dropdown-menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href="#"
+              className={
+                user.id === author?.id
+                  ? 'dropdown-item is-active'
+                  : 'dropdown-item'
+              }
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                handleSelect(user);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+===== src/features/author/authorSlice.ts =====
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../types/User';
+
+type AuthorState = User | null;
+
+const initialState: AuthorState = null;
+
+const authorSlice = createSlice({
+  name: 'author',
+  initialState,
+
+  reducers: {
+    setAuthor: (
+      _state,
+      action: PayloadAction<User | null>,
+    ) => {
+      return action.payload;
+    },
+
+    clearAuthor: () => null,
+  },
+});
+
+export const {
+  setAuthor,
+  clearAuthor,
+} = authorSlice.actions;
+
+export default authorSlice.reducer;
+===== src/features/comments/commentsSlice.ts =====
+import {
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
+
+import * as commentsApi from '../../api/comments';
+
+import { Comment, CommentData } from '../../types/Comment';
+
+
+type CommentsState = {
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
+};
+
+
+const initialState: CommentsState = {
+  items: [],
+  loaded: false,
+  hasError: false,
+};
+
+
+
+// carregar comentários
+
+export const loadComments = createAsyncThunk(
+  'comments/load',
+  async (postId: number) => {
+    const comments = await commentsApi.getPostComments(postId);
+
+    return comments;
+  },
+);
+
+
+
+// adicionar comentário
+
+export const addComment = createAsyncThunk(
+  'comments/add',
+  async (data: CommentData & { postId: number }) => {
+    const comment =
+      await commentsApi.createComment(data);
+
+    return comment;
+  },
+);
+
+
+
+// deletar comentário
+
+export const deleteComment = createAsyncThunk(
+  'comments/delete',
+  async (commentId: number) => {
+    await commentsApi.deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
+
+
+const commentsSlice = createSlice({
+  name: 'comments',
+
+  initialState,
+
+  reducers: {},
+
+
+  extraReducers: builder => {
+
+
+    builder.addCase(
+      loadComments.pending,
+      state => {
+        state.loaded = false;
+        state.hasError = false;
+      },
+    );
+
+
+    builder.addCase(
+      loadComments.fulfilled,
+      (state, action) => {
+        state.items = action.payload;
+        state.loaded = true;
+      },
+    );
+
+
+    builder.addCase(
+      loadComments.rejected,
+      state => {
+        state.loaded = true;
+        state.hasError = true;
+      },
+    );
+
+
+
+    builder.addCase(
+      addComment.fulfilled,
+      (state, action) => {
+        state.items.push(action.payload);
+      },
+    );
+
+
+
+    builder.addCase(
+      addComment.rejected,
+      state => {
+        state.hasError = true;
+      },
+    );
+
+
+
+    builder.addCase(
+      deleteComment.fulfilled,
+      (state, action) => {
+        state.items =
+          state.items.filter(
+            comment =>
+              comment.id !== action.payload,
+          );
+      },
+    );
+
+  },
+});
+
+
+export default commentsSlice.reducer;
+===== src/features/counter/Counter.tsx =====
+import React, { useState } from 'react';
+
+import styles from './Counter.module.css';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+  incrementAsync,
+  incrementIfOdd,
+  selectCount,
+} from './counterSlice';
+
+export function Counter() {
+  const count = useAppSelector(selectCount);
+  const dispatch = useAppDispatch();
+  const [incrementAmount, setIncrementAmount] = useState(2);
+
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIncrementAmount(+event.target.value);
+  };
+
+  return (
+    <div>
+      <div className={styles.row}>
+        <button
+          type="button"
+          className={styles.button}
+          aria-label="Decrement value"
+          onClick={() => dispatch(decrement())}
+        >
+          -
+        </button>
+
+        <span className={styles.value}>{count}</span>
+
+        <button
+          type="button"
+          className={styles.button}
+          aria-label="Increment value"
+          onClick={() => dispatch(increment())}
+        >
+          +
+        </button>
+      </div>
+
+      <div className={styles.row}>
+        <input
+          className={styles.textbox}
+          aria-label="Set increment amount"
+          value={incrementAmount}
+          onChange={handleAmountChange}
+        />
+
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => dispatch(incrementByAmount(incrementAmount))}
+        >
+          Add Amount
+        </button>
+
+        <button
+          type="button"
+          className={styles.asyncButton}
+          onClick={() => dispatch(incrementAsync(incrementAmount))}
+        >
+          Add Async
+        </button>
+
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => dispatch(incrementIfOdd(incrementAmount))}
+        >
+          Add If Odd
+        </button>
+      </div>
+    </div>
+  );
+}
+===== src/features/counter/counterAPI.ts =====
+// Create a promise that resolves with a given amount after 500ms
+export function fetchCount(amount = 1) {
+  return new Promise<number>(resolve => {
+    setTimeout(() => resolve(amount), 500);
+  });
+}
+===== src/features/counter/counterSlice.ts =====
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+// eslint-disable-next-line import/no-cycle
+import { RootState, AppThunk } from '../../app/store';
+import { fetchCount } from './counterAPI';
+
+export interface CounterState {
+  value: number;
+  status: 'idle' | 'loading' | 'failed';
+}
+
+const initialState: CounterState = {
+  value: 0,
+  status: 'idle',
+};
+
+// The function below is called a thunk and allows us to perform async logic. It
+// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
+// will call the thunk with the `dispatch` function as the first argument. Async
+// code can then be executed and other actions can be dispatched. Thunks are
+// typically used to make async requests.
+export const incrementAsync = createAsyncThunk(
+  'counter/fetchCount',
+  async (amount: number) => {
+    const value = await fetchCount(amount);
+
+    // The value we return becomes the `fulfilled` action payload
+    return value;
+  },
+);
+
+export const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  // The `reducers` field lets us define reducers and generate associated actions
+  reducers: {
+    increment: state => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.value += 1;
+    },
+    decrement: state => {
+      state.value -= 1;
+    },
+    // Use the PayloadAction type to declare the contents of `action.payload`
+    incrementByAmount: (state, action: PayloadAction<number>) => {
+      state.value += action.payload;
+    },
+  },
+  // The `extraReducers` field lets the slice handle actions defined elsewhere,
+  // including actions generated by createAsyncThunk or in other slices.
+  extraReducers: builder => {
+    builder
+      .addCase(incrementAsync.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(incrementAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.value += action.payload;
+      })
+      .addCase(incrementAsync.rejected, state => {
+        state.status = 'failed';
+      });
+  },
+});
+
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+
+// The function below is called a selector and allows us to select a value from
+// the state. Selectors can also be defined inline where they're used instead of
+// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
+export const selectCount = (state: RootState) => state.counter.value;
+
+// We can also write thunks by hand, which may contain both sync and async logic.
+// Here's an example of conditionally dispatching actions based on current state.
+export const incrementIfOdd = (amount: number): AppThunk => {
+  return (dispatch, getState) => {
+    const currentValue = selectCount(getState());
+
+    if (currentValue % 2 === 1) {
+      dispatch(incrementByAmount(amount));
+    }
+  };
+};
+
+export default counterSlice.reducer;
+===== src/features/posts/postsSlice.ts =====
+import { createSlice } from '@reduxjs/toolkit';
+import { Post } from '../../types/Post';
+import { fetchPosts } from './postsThunk';
+
+
+type PostsState = {
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
+};
+
+
+const initialState: PostsState = {
+  items: [],
+  loaded: false,
+  hasError: false,
+};
+
+
+const postsSlice = createSlice({
+  name: 'posts',
+  initialState,
+
+  reducers: {
+    clearPosts: state => {
+      state.items = [];
+      state.loaded = false;
+      state.hasError = false;
+    },
+  },
+
+
+  extraReducers: builder => {
+    builder
+
+      .addCase(fetchPosts.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+        state.items = [];
+      })
+
+
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.hasError = false;
+        state.items = action.payload;
+      })
+
+
+      .addCase(fetchPosts.rejected, state => {
+        state.loaded = false;
+        state.hasError = true;
+      });
+  },
+});
+
+
+export const {
+  clearPosts,
+} = postsSlice.actions;
+
+
+export default postsSlice.reducer;
+===== src/features/posts/postsThunk.ts =====
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getPosts } from '../../api/posts';
+
+
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPosts',
+
+  async (
+    userId: number,
+    { rejectWithValue },
+  ) => {
+    try {
+      return await getPosts(userId);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+===== src/features/selectedPost/selectedPostSlice.ts =====
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { Post } from '../../types/Post';
+
+interface SelectedPostState {
+  selectedPost: Post | null;
+}
+
+const initialState: SelectedPostState = {
+  selectedPost: null,
+};
+
+const selectedPostSlice = createSlice({
+  name: 'selectedPost',
+
+  initialState,
+
+  reducers: {
+    setSelectedPost(
+      state,
+      action: PayloadAction<Post | null>,
+    ) {
+      state.selectedPost = action.payload;
+    },
+
+    clearSelectedPost(state) {
+      state.selectedPost = null;
+    },
+  },
+});
+
+export const {
+  setSelectedPost,
+  clearSelectedPost,
+} = selectedPostSlice.actions;
+
+export default selectedPostSlice.reducer;
+===== src/features/users/usersSlice.ts =====
+import { createSlice } from '@reduxjs/toolkit';
+
+import { User } from '../../types/User';
+import { fetchUsers } from './usersThunk';
+
+
+interface UsersState {
+  items: User[];
+  loaded: boolean;
+  hasError: boolean;
+}
+
+
+const initialState: UsersState = {
+  items: [],
+  loaded: false,
+  hasError: false,
+};
+
+
+const usersSlice = createSlice({
+
+  name: 'users',
+
+  initialState,
+
+
+  reducers: {},
+
+
+  extraReducers: (builder) => {
+
+    builder
+
+      .addCase(fetchUsers.pending, (state) => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+
+
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+
+        state.items = action.payload;
+        state.loaded = true;
+
+      })
+
+
+      .addCase(fetchUsers.rejected, (state) => {
+
+        state.loaded = true;
+        state.hasError = true;
+
+      });
+
+  },
+
+});
+
+
+export default usersSlice.reducer;
+===== src/features/users/usersThunk.ts =====
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
+import { getUsers } from '../../api/users';
+import { User } from '../../types/User';
+
+
+export const fetchUsers = createAsyncThunk<User[]>(
+  'users/fetchUsers',
+  async () => {
+    const users = await getUsers();
+
+    return users;
+  },
+);
+===== src/index.tsx =====
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { HashRouter as Router } from 'react-router-dom';
+
+import { store } from './app/store';
+import { App } from './App';
+
+const container = document.getElementById('root') as HTMLElement;
+const root = createRoot(container);
+
+const Root = () => (
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>
+);
+
+root.render(<Root />);
+===== src/store/hooks.tsx =====
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import type { RootState, AppDispatch } from './store';
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+===== src/store/store.tsx =====
+import { configureStore } from '@reduxjs/toolkit';
+
+import usersReducer from '../features/users/usersSlice';
+import authorReducer from '../features/author/authorSlice';
+import postsReducer from '../features/posts/postsSlice';
+import commentsReducer from '../features/comments/commentsSlice';
+import selectedPostReducer from '../features/selectedPost/selectedPostSlice';
+
+
+export const store = configureStore({
+  reducer: {
+    users: usersReducer,
+    author: authorReducer,
+    posts: postsReducer,
+    comments: commentsReducer,
+    selectedPost: selectedPostReducer,
+  },
+});
+
+
+// Tipos do Redux
+
+export type RootState = ReturnType<
+  typeof store.getState
+>;
+
+export type AppDispatch = typeof store.dispatch;
+===== src/types/Comment.ts =====
+export interface Comment {
+  id: number;
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
+export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+===== src/types/Post.ts =====
+export interface Post {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}
+===== src/types/User.ts =====
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+}
+===== src/utils/axiosClient.ts =====
+// axios docs https://axios-http.com/docs/intro
+import axios from 'axios';
+
+const instance = axios.create({
+  baseURL: 'https://mate.academy/students-api',
+  // application/json is a default Content-Type
+});
+
+export const client = {
+  async get<T>(url: string) {
+    const response = await instance.get<T>(url);
+
+    // no need to run `response.json()` data is already prepared
+    return response.data;
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async post<T>(url: string, data: any) {
+    const response = await instance.post<T>(url, data);
+
+    return response.data;
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async patch<T>(url: string, data: any) {
+    const response = await instance.patch<T>(url, data);
+
+    return response.data;
+  },
+
+  async delete(url: string) {
+    // if we don't need the response data
+    return instance.delete(url);
+  },
+};
+===== src/utils/fetchClient.ts =====
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const BASE_URL = 'https://mate.academy/students-api';
+
+// a promise resolved after a given delay
+function wait(delay: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
+// To have autocompletion and avoid mistypes
+type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+
+function request<T>(
+  url: string,
+  method: RequestMethod = 'GET',
+  data: any = null, // we can send any data to the server
+): Promise<T> {
+  const options: RequestInit = { method };
+
+  if (data) {
+    // We add body and Content-Type only for the requests with data
+    options.body = JSON.stringify(data);
+    options.headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+  }
+
+  // for a demo purpose we emulate a delay to see if Loaders work
+  return wait(300)
+    .then(() => fetch(BASE_URL + url, options))
+    .then(response => response.json());
+}
+
+export const client = {
+  get: <T>(url: string) => request<T>(url),
+  post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
+  patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
+  delete: (url: string) => request(url, 'DELETE'),
+};
+===== src/utils/localClient.ts =====
+// function wait(delay: number) {
+//   return new Promise(done => setTimeout(done, delay));
+// }
+
+function read(key: string) {
+  const data = window.localStorage.getItem(key);
+
+  try {
+    return data && JSON.parse(data);
+  } catch (error) {
+    return null;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function write(key: string, data: any) {
+  window.localStorage.setItem(key, JSON.stringify(data));
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function init(key: string, initialData: any) {
+  if (!read(key)) {
+    write(key, initialData);
+  }
+}
+===== src/vite-env.d.ts =====
+/// <reference types="vite/client" />
