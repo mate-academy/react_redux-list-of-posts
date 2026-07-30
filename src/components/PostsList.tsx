@@ -7,7 +7,7 @@ import { actions as postActions } from '../features/selectedPost/selectedPost';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
+  const { items } = useAppSelector(state => state.posts);
   const selectedPostId = useAppSelector(state => state.selectedPost?.id);
 
   return (
@@ -24,22 +24,22 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+          {items.map(item => (
+            <tr key={item.id} data-cy="Post">
+              <td data-cy="PostId">{item.id}</td>
+              <td data-cy="PostTitle">{item.title}</td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button', 'is-link', {
-                    'is-light': post.id !== selectedPostId,
+                    'is-light': item.id !== selectedPostId,
                   })}
                   onClick={() => {
-                    dispatch(postActions.togglePost(post));
+                    dispatch(postActions.togglePost(item));
                   }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {item.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

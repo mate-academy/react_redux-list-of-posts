@@ -5,11 +5,11 @@ import { getUsers } from '../../api/users';
 export const fetchUsers = createAsyncThunk('users/fetch', () => getUsers());
 
 type UsersState = {
-  users: User[];
+  items: User[];
 };
 
 const initialState: UsersState = {
-  users: [],
+  items: [],
 };
 
 export const usersSlice = createSlice({
@@ -17,12 +17,12 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
+      state.items = action.payload;
     },
   },
   extraReducers: builder => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.users = action.payload;
+      state.items = action.payload;
     });
   },
 });

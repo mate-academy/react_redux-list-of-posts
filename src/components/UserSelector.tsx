@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/users/usersSlice';
 import { actions as authorActions } from '../features/author/authorSlice';
 
-export const UserSelector: React.FC = (
-  {
-    // `value` and `onChange` are traditional names for the form field
-    // `selectedUser` represents what actually stored here
-  },
-) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
+export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector(state => state.users);
+  const { items } = useAppSelector(state => state.users);
   const selectedUser = useAppSelector(state => state.author);
 
   useEffect(() => {
@@ -71,18 +64,18 @@ export const UserSelector: React.FC = (
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {items.map(item => (
             <a
-              key={user.id}
-              href={`#user-${user.id}`}
+              key={item.id}
+              href={`#user-${item.id}`}
               onClick={() => {
-                dispatch(authorActions.setUser(user));
+                dispatch(authorActions.setUser(item));
               }}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': item.id === selectedUser?.id,
               })}
             >
-              {user.name}
+              {item.name}
             </a>
           ))}
         </div>

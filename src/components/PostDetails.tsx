@@ -15,9 +15,7 @@ export const PostDetails: React.FC = () => {
   const postId = useAppSelector(state => state.selectedPost?.id);
   const post = useAppSelector(state => state.selectedPost);
 
-  const { comments, isLoading, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
 
   useEffect(() => {
     if (postId) {
@@ -36,33 +34,33 @@ export const PostDetails: React.FC = () => {
       </div>
 
       <div className="block">
-        {isLoading && <Loader />}
+        {loaded && <Loader />}
 
-        {hasError && !isLoading && (
+        {hasError && !loaded && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {comments.length === 0 && !isLoading && !hasError && (
+        {items.length === 0 && !loaded && !hasError && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {comments.length > 0 && !isLoading && !hasError && (
+        {items.length > 0 && !loaded && !hasError && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(item => (
               <article
                 className="message is-small"
-                key={comment.id}
+                key={item.id}
                 data-cy="Comment"
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
+                  <a href={`mailto:${item.email}`} data-cy="CommentAuthor">
+                    {item.name}
                   </a>
 
                   <button
@@ -70,21 +68,21 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => dispatch(removeComment(comment.id))}
+                    onClick={() => dispatch(removeComment(item.id))}
                   >
                     delete button
                   </button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
+                  {item.body}
                 </div>
               </article>
             ))}
           </>
         )}
 
-        {!isLoading && !hasError && !visible && (
+        {!loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -95,7 +93,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {visible && !isLoading && !hasError && <NewCommentForm />}
+        {visible && !loaded && !hasError && <NewCommentForm />}
       </div>
     </div>
   );

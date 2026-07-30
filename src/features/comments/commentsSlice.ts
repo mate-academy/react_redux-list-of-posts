@@ -27,14 +27,14 @@ export const removeComment = createAsyncThunk(
 );
 
 type CommentsState = {
-  comments: Comment[];
-  isLoading: boolean;
+  items: Comment[];
+  loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: CommentsState = {
-  comments: [],
-  isLoading: false,
+  items: [],
+  loaded: false,
   hasError: false,
 };
 
@@ -44,26 +44,26 @@ export const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => {
-      state.isLoading = true;
+      state.loaded = true;
       state.hasError = false;
     });
 
     builder.addCase(fetchComments.fulfilled, (state, action) => {
-      state.comments = action.payload;
-      state.isLoading = false;
+      state.items = action.payload;
+      state.loaded = false;
     });
 
     builder.addCase(fetchComments.rejected, state => {
-      state.isLoading = false;
+      state.loaded = false;
       state.hasError = true;
     });
 
     builder.addCase(addComment.fulfilled, (state, action) => {
-      state.comments.push(action.payload);
+      state.items.push(action.payload);
     });
 
     builder.addCase(removeComment.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(
+      state.items = state.items.filter(
         comment => comment.id !== action.payload,
       );
     });
