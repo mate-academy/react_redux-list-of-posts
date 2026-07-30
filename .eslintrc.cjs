@@ -126,7 +126,7 @@ module.exports = {
       },
     ],
 
-    'implicit-arrow-linebreak:': 0,
+    'implicit-arrow-linebreak': 0,
 
 
     // React
