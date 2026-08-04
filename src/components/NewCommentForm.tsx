@@ -8,6 +8,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -33,6 +34,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       email: false,
       body: false,
     });
+    setSubmitError(false);
   };
 
   const handleChange = (
@@ -42,6 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setValues(current => ({ ...current, [field]: value }));
     setErrors(current => ({ ...current, [field]: false }));
+    setSubmitError(false);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -58,18 +61,26 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     setSubmitting(true);
+    setSubmitError(false);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
-
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+    try {
+      await onSubmit({ name, email, body });
+      setValues(current => ({ ...current, body: '' }));
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+      {submitError && (
+        <div className="notification is-danger" data-cy="AddCommentError">
+          Could not add the comment. Please try again.
+        </div>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -174,6 +185,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button', 'is-link', {
               'is-loading': submitting,
             })}
+            disabled={submitting}
           >
             Add
           </button>
