@@ -46,33 +46,50 @@ const commentsSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(loadComments.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
-        state.items = [];
-      })
-      .addCase(loadComments.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.items = action.payload;
-      })
+      .addCase(loadComments.pending, state => ({
+        ...state,
+        loaded: false,
+        hasError: false,
+        items: [],
+      }))
+      .addCase(loadComments.fulfilled, (state, action) => ({
+        ...state,
+        loaded: true,
+        hasError: false,
+        items: action.payload,
+      }))
       .addCase(loadComments.rejected, (state, action) => {
-        if (!action.meta.aborted) {
-          state.loaded = true;
-          state.hasError = true;
+        if (action.meta.aborted) {
+          return state;
         }
+
+        return {
+          ...state,
+          loaded: true,
+          hasError: true,
+        };
       })
-      .addCase(addComment.fulfilled, (state, action) => {
-        state.items.push(action.payload);
-      })
-      .addCase(deleteComment.pending, (state, action) => {
-        state.items = state.items.filter(
+      .addCase(addComment.fulfilled, (state, action) => ({
+        ...state,
+        items: [...state.items, action.payload],
+      }))
+      .addCase(deleteComment.pending, (state, action) => ({
+        ...state,
+        items: state.items.filter(
           comment => comment.id !== action.meta.arg.comment.id,
-        );
-      })
+        ),
+      }))
       .addCase(deleteComment.rejected, (state, action) => {
         const { comment, index } = action.meta.arg;
 
-        state.items.splice(index, 0, comment);
+        return {
+          ...state,
+          items: [
+            ...state.items.slice(0, index),
+            comment,
+            ...state.items.slice(index),
+          ],
+        };
       });
   },
 });
