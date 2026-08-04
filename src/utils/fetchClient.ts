@@ -29,7 +29,15 @@ function request<T>(
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+
+      const text = await response.text();
+
+      return (text ? JSON.parse(text) : undefined) as T;
+    });
 }
 
 export const client = {
