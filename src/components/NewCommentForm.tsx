@@ -1,6 +1,10 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
+import * as commentService from '../api/comments';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { Loader } from '../components/Loader';
+import { fetchComments } from '../features/comments';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -8,7 +12,7 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-
+  const dispatch = useAppDispatch();
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -20,6 +24,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: '',
     body: '',
   });
+
+  const { comments, loaded, hasError } = useAppSelector(
+    state => state.comments,
+  );
 
   const clearForm = () => {
     setValues({

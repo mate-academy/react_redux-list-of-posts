@@ -8,11 +8,7 @@ import { fetchPosts } from '../features/posts';
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
-  const {
-    items,
-    loaded: loaded,
-    hasError,
-  } = useAppSelector(state => state.posts);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
 
   useEffect(() => {
     dispatch(fetchPosts());

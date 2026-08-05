@@ -1,5 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
+import { getPostComments } from '../api/comments';
+
+export const fetchComments = createAsyncThunk(
+  'comment/fetchComments',
+  async () => {
+    const comments = await getPostComments();
+
+    return comments;
+});
 
 type CommentStatus = {
   comments: Comment[];
@@ -18,19 +27,23 @@ export const commentsSlice = createSlice({
   initialState,
   reducers: {
     setComments: (state, action: PayloadAction<Comment[]>) => {
-      const currentState = state;
-
-      currentState.comments = action.payload;
-    },
-    setLoaded: (state, action: PayloadAction<boolean>) => {
-      return { ...state, loaded: action.payload };
-    },
-
-    setHasError: (state, action: PayloadAction<string>) => {
-      return { ...state, hasError: action.payload };
+      return { ...state, comments: action.payload };
     },
   },
+  extraReducers: builder => {
+     builder.addCase(fetchComments.pending, state => {
+       state.loaded = true;
+     });
+     builder.addCase(fetchComments.fulfilled, (state, action) => {
+       state.items = action.payload;
+       state.loaded = false;
+     });
+     builder.addCase(fetchComments.rejected, state => {
+       state.loaded = false;
+       state.hasError = 'Failed to load users';
+     });
+   },
 });
 
-export const { setComments, setLoaded, setHasError } = commentsSlice.actions;
+export const { setComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
