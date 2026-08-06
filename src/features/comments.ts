@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Comment } from '../types/Comment';
 import { getPostComments } from '../api/comments';
 
 export const fetchComments = createAsyncThunk(
   'comment/fetchComments',
-  async () => {
-    const comments = await getPostComments();
+  async (postId: number) => {
+    const comments = await getPostComments(postId);
 
     return comments;
 });

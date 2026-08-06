@@ -1,18 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost';
 import { Loader } from '../components/Loader';
-import { fetchPosts } from '../features/posts';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost.selectedPost);
   const { items, loaded, hasError } = useAppSelector(state => state.posts);
-
-  useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
 
   if (loaded) {
     return <Loader />;
