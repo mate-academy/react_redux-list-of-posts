@@ -8,7 +8,6 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-
   const [errors, setErrors] = useState({
     name: false,
     email: false,
