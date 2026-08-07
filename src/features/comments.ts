@@ -8,7 +8,8 @@ export const fetchComments = createAsyncThunk(
     const comments = await getPostComments(postId);
 
     return comments;
-});
+  },
+);
 
 type CommentStatus = {
   comments: Comment[];
@@ -31,18 +32,18 @@ export const commentsSlice = createSlice({
     },
   },
   extraReducers: builder => {
-     builder.addCase(fetchComments.pending, state => {
-       state.loaded = true;
-     });
-     builder.addCase(fetchComments.fulfilled, (state, action) => {
-       state.items = action.payload;
-       state.loaded = false;
-     });
-     builder.addCase(fetchComments.rejected, state => {
-       state.loaded = false;
-       state.hasError = 'Failed to load users';
-     });
-   },
+    builder.addCase(fetchComments.pending, state => {
+      state.loaded = true;
+    });
+    builder.addCase(fetchComments.fulfilled, (state, action) => {
+      state.comments = action.payload;
+      state.loaded = false;
+    });
+    builder.addCase(fetchComments.rejected, state => {
+      state.loaded = false;
+      state.hasError = 'Failed to load users';
+    });
+  },
 });
 
 export const { setComments } = commentsSlice.actions;

@@ -1,10 +1,7 @@
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import * as commentService from '../api/comments';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { Loader } from '../components/Loader';
-import { fetchComments } from '../features/comments';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
