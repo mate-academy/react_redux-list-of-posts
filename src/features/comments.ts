@@ -30,21 +30,26 @@ export const commentsSlice = createSlice({
     setComments: (state, action: PayloadAction<Comment[]>) => {
       return { ...state, comments: action.payload };
     },
+    setError: (state, action: PayloadAction<string>) => {
+      return { ...state, hasError: action.payload };
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchComments.pending, state => {
-      state.loaded = true;
+      state.loaded = false;
+      state.hasError = '';
+      state.comments = [];
     });
     builder.addCase(fetchComments.fulfilled, (state, action) => {
       state.comments = action.payload;
-      state.loaded = false;
+      state.loaded = true;
     });
     builder.addCase(fetchComments.rejected, state => {
-      state.loaded = false;
+      state.loaded = true;
       state.hasError = 'Failed to load users';
     });
   },
 });
 
-export const { setComments } = commentsSlice.actions;
+export const { setComments, setError } = commentsSlice.actions;
 export default commentsSlice.reducer;

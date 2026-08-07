@@ -44,7 +44,7 @@ export const PostsList: React.FC = () => {
                     type="button"
                     data-cy="PostButton"
                     className={cn('button', 'is-link', {
-                      'is-light': currentSelectedPost,
+                      'is-light': !currentSelectedPost,
                     })}
                     onClick={() => {
                       dispatch(

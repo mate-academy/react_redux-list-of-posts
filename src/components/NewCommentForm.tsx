@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
 
 type Props = {
   onSubmit: (data: CommentData) => Promise<void>;
@@ -9,7 +8,6 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [submitting, setSubmitting] = useState(false);
-  const dispatch = useAppDispatch();
   const [errors, setErrors] = useState({
     name: false,
     email: false,
@@ -21,10 +19,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     email: '',
     body: '',
   });
-
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
 
   const clearForm = () => {
     setValues({

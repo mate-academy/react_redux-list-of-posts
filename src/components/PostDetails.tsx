@@ -3,12 +3,18 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { deleteComment, createComment } from '../api/comments';
-import { fetchComments, setComments } from '../features/comments';
+import { fetchComments } from '../features/comments';
+import { Post } from '../types/Post';
 
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { setComments, setError } from '../features/comments';
 
-export const PostDetails: React.FC = ({ post }) => {
+type Props = {
+  post: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
 
   const { comments, loaded, hasError } = useAppSelector(
@@ -18,9 +24,7 @@ export const PostDetails: React.FC = ({ post }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!post.id || !post.id) {
-      return;
-    }
+    setVisible(false);
 
     dispatch(fetchComments(post.id));
   }, [post.id, dispatch]);
@@ -74,7 +78,7 @@ export const PostDetails: React.FC = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(setComments([...comments, newComment]));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,7 +86,7 @@ export const PostDetails: React.FC = ({ post }) => {
       // not the actual ones
     } catch (error) {
       // we show an error message in case of any error
-      setError(true);
+      dispatch(setError('Unable to add comment'));
     }
   };
 
@@ -91,8 +95,8 @@ export const PostDetails: React.FC = ({ post }) => {
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
     dispatch(
-      setComments(currentComments =>
-        currentComments.filter(comment => comment.id !== commentId),
+      setComments(
+        comments.filter((comment: { id: number }) => comment.id !== commentId),
       ),
     );
 
