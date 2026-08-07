@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUsers } from '../features/users';
 import { setAuthor } from '../features/author';
-import { Loader } from '../components/Loader';
 
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
