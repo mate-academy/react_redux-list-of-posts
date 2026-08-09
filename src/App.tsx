@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,38 +10,61 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { User } from './types/User';
-import { Post } from './types/Post';
+import { useAppDispatch } from '../src/app/hooks';
+import { useAppSelector } from '../src/app/hooks';
+import { setPosts, setLoaded, setHasError } from './features/posts/postsSlice';
+import { setUsers } from './features/users/usersSlice';
+import { setAuthor } from './features/author/authorSlice';
+import { setSelectedPost } from './features/selectedPost/selectedPostSlice';
+import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loaded, setLoaded] = useState(false);
+  // const [hasError, setError] = useState(false);
+  // const [author, setAuthor] = useState<User | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const dispatch = useAppDispatch();
 
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
+  const users = useAppSelector(state => state.users.items);
+  const author = useAppSelector(state => state.author.value);
+  const selectedPost = useAppSelector(state => state.selectedPost.value);
 
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const posts = useAppSelector(state => state.posts.items);
+  const loaded = useAppSelector(state => state.posts.loaded);
+  const hasError = useAppSelector(state => state.posts.hasError);
 
   useEffect(() => {
+    getUsers().then(data => {
+      dispatch(setUsers(data));
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    function loadUserPosts(userId: number) {
+      dispatch(setLoaded(false));
+
+      getUserPosts(userId)
+        .then(data => {
+          dispatch(setPosts(data));
+          dispatch(setHasError(false));
+        })
+        .catch(() => dispatch(setHasError(true)))
+        // We disable the spinner in any case
+        .finally(() => dispatch(setLoaded(true)));
+    }
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
-  }, [author]);
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -50,7 +73,11 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector
+                  value={author}
+                  onChange={user => dispatch(setAuthor(user))}
+                  users={users}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -77,7 +104,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
