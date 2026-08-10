@@ -21,16 +21,18 @@ export const fetchPosts = createAsyncThunk(
   },
 );
 
+/* eslint-disable no-param-reassign */
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clear: () => {
-      return;
+    clear: state => {
+      state.items = [];
+      state.loaded = true;
+      state.hasError = false;
     },
   },
   extraReducers(builder) {
-    /* eslint-disable no-param-reassign */
 
     builder.addCase(fetchPosts.pending, state => {
       state.hasError = false;
