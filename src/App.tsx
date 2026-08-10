@@ -75,7 +75,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
+                {!author && <p data-cy="NoSelectedUser">No user selected.</p>}
 
                 {author && !loaded && <Loader />}
 
