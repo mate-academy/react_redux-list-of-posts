@@ -10,7 +10,7 @@ type InitialType = {
 
 const initialState: InitialType = {
   items: [],
-  loaded: true,
+  loaded: false,
   hasError: false,
 };
 

@@ -3,8 +3,8 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
-import { useDispatch } from 'react-redux';
 import { selectedPost } from '../features/selectedPost/selectedPost';
+import { useAppDispatch } from '../app/hooks';
 
 type Props = {
   posts: Post[];
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div data-cy="PostsList">

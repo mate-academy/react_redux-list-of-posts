@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { fetchUsers } from '../features/users/userSlice';
+import { useAppDispatch } from '../app/hooks';
 
 type Props = {
   value: User | null;
@@ -21,7 +22,7 @@ export const UserSelector: React.FC<Props> = ({
   // and now we can easily reuse the `UserSelector` in any form
   const { users } = useSelector((state: RootState) => state.users);
   const [expanded, setExpanded] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchUsers());

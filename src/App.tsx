@@ -28,16 +28,14 @@ export const App: React.FC = () => {
   const post = useSelector((state: RootState) => state.selectedPost);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
     dispatch(selectedPost.actions.setSelectedPost(null));
 
-    if (author) {
-      dispatch(fetchPosts(author.id));
+    if (id) {
+      dispatch(fetchPosts(id));
     } else {
       dispatch(postsSlice.actions.clear());
     }
-  }, [dispatch, id, author]);
+  }, [dispatch, id]);
 
   return (
     <main className="section">
