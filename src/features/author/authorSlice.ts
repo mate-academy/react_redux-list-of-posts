@@ -3,7 +3,7 @@ import { User } from '../../types/User';
 
 export const authorSlice = createSlice({
   name: 'author',
-  initialState: {} as User | null,
+  initialState: null as User | null,
   reducers: {
     setAuthor: (state, action: PayloadAction<User | null>) => {
       return action.payload;

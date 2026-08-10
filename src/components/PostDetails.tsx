@@ -3,19 +3,20 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import {
-  commentsSlice,
+  removeComment,
   fetchComments,
 } from '../features/comments/commentsSlice';
+import { useAppDispatch } from '../app/hooks';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { items, loaded, hasError } = useSelector(
     (state: RootState) => state.comments,
   );
@@ -71,9 +72,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() =>
-                      dispatch(commentsSlice.actions.deleteComment(comment.id))
-                    }
+                    onClick={() => dispatch(removeComment(comment.id))}
                   >
                     delete button
                   </button>
@@ -98,7 +97,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && <NewCommentForm />}
+        {loaded && !hasError && visible && <NewCommentForm postId={post.id} />}
       </div>
     </div>
   );

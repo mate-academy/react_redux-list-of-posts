@@ -20,16 +20,12 @@ export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const author = useSelector((state: RootState) => state.author);
-  const { id } = author;
+  const id = author?.id;
 
   const { items, hasError, loaded } = useSelector(
     (state: RootState) => state.posts,
   );
   const post = useSelector((state: RootState) => state.selectedPost);
-
-  function loadUserPosts(userId: number) {
-    dispatch(fetchPosts(userId));
-  }
 
   useEffect(() => {
     // we clear the post when an author is changed
@@ -37,11 +33,11 @@ export const App: React.FC = () => {
     dispatch(selectedPost.actions.setSelectedPost(null));
 
     if (author) {
-      loadUserPosts(id);
+      dispatch(fetchPosts(author.id));
     } else {
       dispatch(postsSlice.actions.clear());
     }
-  }, [dispatch, id, loadUserPosts, author]);
+  }, [dispatch, id, author]);
 
   return (
     <main className="section">
