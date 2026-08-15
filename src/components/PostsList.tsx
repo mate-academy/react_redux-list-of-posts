@@ -1,7 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Post } from '../types/Post';
 
 type Props = {
@@ -12,7 +15,7 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPostId = 0,
+  selectedPostId,
   onPostSelected,
 }) => (
   <div data-cy="PostsList">
@@ -31,7 +34,9 @@ export const PostsList: React.FC<Props> = ({
         {posts.map(post => (
           <tr key={post.id} data-cy="Post">
             <td data-cy="PostId">{post.id}</td>
+
             <td data-cy="PostTitle">{post.title}</td>
+
             <td className="has-text-right is-vcentered">
               <button
                 type="button"
@@ -52,3 +57,18 @@ export const PostsList: React.FC<Props> = ({
     </table>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+
+  selectedPostId: PropTypes.number,
+
+  onPostSelected: PropTypes.func.isRequired,
+};
