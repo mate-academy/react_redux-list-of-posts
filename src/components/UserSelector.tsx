@@ -1,6 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import PropTypes from 'prop-types';
+
+import { useAppSelector } from '../app/hooks';
 import { User } from '../types/User';
 
 type Props = {
@@ -9,15 +12,10 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
   value: selectedUser,
   onChange,
 }) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+  const users = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -25,27 +23,23 @@ export const UserSelector: React.FC<Props> = ({
       return;
     }
 
-    // we save a link to remove the listener later
     const handleDocumentClick = () => {
-      // we close the Dropdown on any click (inside or outside)
-      // So there is not need to check if we clicked inside the list
       setExpanded(false);
     };
 
     document.addEventListener('click', handleDocumentClick);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-    // we don't want to listening for outside clicks
-    // when the Dopdown is closed
   }, [expanded]);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': expanded })}
+      className={classNames('dropdown', {
+        'is-active': expanded,
+      })}
     >
       <div className="dropdown-trigger">
         <button
@@ -53,8 +47,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={e => {
-            e.stopPropagation();
+          onClick={event => {
+            event.stopPropagation();
             setExpanded(current => !current);
           }}
         >
@@ -72,7 +66,8 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={event => {
+                event.preventDefault();
                 onChange(user);
               }}
               className={classNames('dropdown-item', {
@@ -86,4 +81,14 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
+};
+
+UserSelector.propTypes = {
+  value: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    phone: PropTypes.string.isRequired,
+  }),
+  onChange: PropTypes.func.isRequired,
 };
