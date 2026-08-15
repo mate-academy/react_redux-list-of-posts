@@ -2,15 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { User } from '../../types/User';
 
-const initialState: User | null = null;
+type AuthorState = User | null;
+
+const initialState = null as AuthorState;
 
 const authorSlice = createSlice({
   name: 'author',
-  initialState: initialState as User | null,
+  initialState,
   reducers: {
-    setAuthor: (_state: User | null, action: PayloadAction<User | null>) => {
-      return action.payload;
-    },
+    setAuthor: (_state: AuthorState, action: PayloadAction<User | null>) =>
+      action.payload,
   },
 });
 

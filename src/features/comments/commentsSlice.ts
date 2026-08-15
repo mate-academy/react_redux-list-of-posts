@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
@@ -32,12 +34,11 @@ type AddCommentPayload = {
 
 export const addComment = createAsyncThunk(
   'comments/addComment',
-  async ({ postId, data }: AddCommentPayload) => {
-    return createComment({
+  async ({ postId, data }: AddCommentPayload) =>
+    createComment({
       ...data,
       postId,
-    });
-  },
+    }),
 );
 
 export const deleteCommentRequest = createAsyncThunk(
@@ -54,53 +55,63 @@ const commentsSlice = createSlice({
   initialState,
 
   reducers: {
-    clearComments: () => initialState,
+    clearComments: state => {
+      state.loaded = false;
+      state.hasError = false;
+      state.items = [];
+    },
 
-    removeComment: (state, action) => ({
-      ...state,
-      items: state.items.filter(comment => comment.id !== action.payload),
-    }),
+    removeComment: (state, action) => {
+      state.items = state.items.filter(
+        comment => comment.id !== action.payload,
+      );
+    },
 
-    restoreComment: (state, action) => ({
-      ...state,
-      items: [...state.items, action.payload],
-    }),
+    restoreComment: (state, action) => {
+      state.items.push(action.payload);
+    },
+
+    clearCommentsError: state => {
+      state.hasError = false;
+    },
   },
 
   extraReducers: builder => {
     builder
-      .addCase(loadComments.pending, () => ({
-        loaded: false,
-        hasError: false,
-        items: [],
-      }))
+      .addCase(loadComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+        state.items = [];
+      })
 
-      .addCase(loadComments.fulfilled, (_state, action) => ({
-        loaded: true,
-        hasError: false,
-        items: action.payload,
-      }))
+      .addCase(loadComments.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.hasError = false;
+        state.items = action.payload;
+      })
 
-      .addCase(loadComments.rejected, () => ({
-        loaded: true,
-        hasError: true,
-        items: [],
-      }))
+      .addCase(loadComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+        state.items = [];
+      })
 
-      .addCase(addComment.fulfilled, (state, action) => ({
-        ...state,
-        hasError: false,
-        items: [...state.items, action.payload],
-      }))
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+        state.hasError = false;
+      })
 
-      .addCase(addComment.rejected, state => ({
-        ...state,
-        hasError: true,
-      }));
+      .addCase(addComment.rejected, state => {
+        state.hasError = true;
+      });
   },
 });
 
-export const { clearComments, removeComment, restoreComment } =
-  commentsSlice.actions;
+export const {
+  clearComments,
+  removeComment,
+  restoreComment,
+  clearCommentsError,
+} = commentsSlice.actions;
 
 export default commentsSlice.reducer;

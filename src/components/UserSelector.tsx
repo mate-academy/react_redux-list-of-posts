@@ -8,7 +8,7 @@ import { User } from '../types/User';
 
 type Props = {
   value: User | null;
-  onChange: (user: User) => void;
+  onChange: (user: User | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -66,13 +66,13 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
               onClick={event => {
                 event.preventDefault();
                 onChange(user);
               }}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
             >
               {user.name}
             </a>
@@ -90,5 +90,6 @@ UserSelector.propTypes = {
     email: PropTypes.string.isRequired,
     phone: PropTypes.string.isRequired,
   }),
+
   onChange: PropTypes.func.isRequired,
 };

@@ -4,15 +4,15 @@ import { Post } from '../../types/Post';
 
 type SelectedPostState = Post | null;
 
-const initialState: SelectedPostState = null;
+const initialState = null as SelectedPostState;
 
 const selectedPostSlice = createSlice({
   name: 'selectedPost',
-  initialState: initialState as SelectedPostState,
+  initialState,
   reducers: {
     setSelectedPost: (
       _state: SelectedPostState,
-      action: PayloadAction<SelectedPostState>,
+      action: PayloadAction<Post | null>,
     ) => action.payload,
 
     clearSelectedPost: () => null,

@@ -23,6 +23,7 @@ import { User } from './types/User';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
+  const users = useAppSelector(state => state.users);
   const author = useAppSelector(state => state.author);
   const posts = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost);
@@ -55,6 +56,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector value={author} onChange={handleUserChange} />
+
+                {users.length === 0 && <Loader />}
               </div>
 
               <div className="block" data-cy="MainContent">

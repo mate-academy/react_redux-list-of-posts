@@ -18,8 +18,8 @@ import {
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   post: Post;
@@ -71,14 +71,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     setDeleteError(false);
 
-    // Remove immediately from the UI.
     dispatch(removeComment(commentId));
 
     try {
-      // This is a createAsyncThunk, so unwrap() is available.
       await dispatch(deleteCommentRequest(commentId)).unwrap();
     } catch {
-      // Restore the comment if DELETE failed.
       dispatch(restoreComment(comment));
       setDeleteError(true);
     }
