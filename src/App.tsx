@@ -29,7 +29,7 @@ export const App: React.FC = () => {
     dispatch(setSelectedPost(null));
 
     if (author) {
-      dispatch(fetchPosts());
+      dispatch(fetchPosts(author.id));
     } else {
       dispatch(clearPosts());
     }

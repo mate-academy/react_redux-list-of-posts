@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Post } from '../../types/Post';
-import { getPosts } from '../../api/posts';
+import { getUserPosts } from '../../api/posts';
 
 export interface PostsState {
   items: Post[];
@@ -14,11 +14,14 @@ const initialState: PostsState = {
   hasError: false,
 };
 
-export const fetchPosts = createAsyncThunk('posts/fetch', async () => {
-  const posts = await getPosts();
+export const fetchPosts = createAsyncThunk(
+  'posts/fetch',
+  async (userId: number) => {
+    const posts = await getUserPosts(userId);
 
-  return posts;
-});
+    return posts;
+  },
+);
 
 export const postsSlice = createSlice({
   name: 'posts',
