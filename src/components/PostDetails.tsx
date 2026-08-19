@@ -7,6 +7,7 @@ import {
   fetchComments,
   addComment,
   removeComment,
+  clearComments,
 } from '../features/comments/comments';
 import { Comment, CommentData } from '../types/Comment';
 
@@ -28,6 +29,8 @@ export const PostDetails: React.FC = () => {
 
     if (postId) {
       dispatch(fetchComments(postId));
+    } else {
+      dispatch(clearComments());
     }
   }, [postId, dispatch]);
 

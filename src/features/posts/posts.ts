@@ -27,20 +27,25 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    clearPosts: state => {
-      return { ...state, items: [], loaded: false, hasError: false };
-    },
+    clearPosts: () => initialState,
   },
   extraReducers: builder => {
-    builder.addCase(fetchPosts.pending, state => {
-      return { ...state, loaded: false, hasError: false };
-    });
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      return { ...state, loaded: true, items: action.payload };
-    });
-    builder.addCase(fetchPosts.rejected, state => {
-      return { ...state, loaded: true, hasError: true };
-    });
+    builder
+      .addCase(fetchPosts.pending, state => ({
+        ...state,
+        loaded: false,
+        hasError: false,
+      }))
+      .addCase(fetchPosts.fulfilled, (state, action) => ({
+        ...state,
+        loaded: true,
+        items: action.payload,
+      }))
+      .addCase(fetchPosts.rejected, state => ({
+        ...state,
+        loaded: true,
+        hasError: true,
+      }));
   },
 });
 
