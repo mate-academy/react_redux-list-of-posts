@@ -1,12 +1,18 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+
+import { useAppDispatch } from '../app/hooks';
+import { createComment } from '../features/comments/commentsSlice';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  postId: number;
+  onSuccess: () => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, onSuccess }) => {
+  const dispatch = useAppDispatch();
+
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -40,36 +46,69 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   ) => {
     const { name: field, value } = event.target;
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
+    setValues(current => ({
+      ...current,
+      [field]: value,
+    }));
+
+    setErrors(current => ({
+      ...current,
+      [field]: false,
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
+    const newErrors = {
       name: !name,
       email: !email,
       body: !body,
-    });
+    };
 
-    if (!name || !email || !body) {
+    setErrors(newErrors);
+
+    if (newErrors.name || newErrors.email || newErrors.body) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    try {
+      const commentData: CommentData & { postId: number } = {
+        name,
+        email,
+        body,
+        postId,
+      };
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+      await dispatch(createComment(commentData)).unwrap();
+
+      setValues(current => ({
+        ...current,
+        body: '',
+      }));
+
+      setErrors({
+        name: false,
+        email: false,
+        body: false,
+      });
+
+      onSuccess();
+    } catch {
+      setErrors({
+        name: false,
+        email: false,
+        body: true,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -81,7 +120,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errors.name })}
+            className={classNames('input', {
+              'is-danger': errors.name,
+            })}
             value={name}
             onChange={handleChange}
           />
@@ -118,7 +159,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errors.email })}
+            className={classNames('input', {
+              'is-danger': errors.email,
+            })}
             value={email}
             onChange={handleChange}
           />
@@ -154,7 +197,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
+            className={classNames('textarea', {
+              'is-danger': errors.body,
+            })}
             value={body}
             onChange={handleChange}
           />
@@ -180,8 +225,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearForm}
+          >
             Clear
           </button>
         </div>
