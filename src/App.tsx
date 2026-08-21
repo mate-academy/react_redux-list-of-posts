@@ -19,8 +19,8 @@ import { initUsers } from './features/usersSlice';
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  // Дістаємо список користувачів та інші дані зі стору
-  const { items: users } = useAppSelector(state => state.users);
+  // Дістаємо items та loaded (як usersLoaded) із usersSlice
+  const { loaded: usersLoaded } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const {
     items: posts,
@@ -29,16 +29,15 @@ export const App: React.FC = () => {
   } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
 
-  // Завантажуємо користувачів лише один раз, якщо їх ще немає в стейті
+  // Викликаємо initUsers лише якщо вони ще не завантажені
   useEffect(() => {
-    if (users.length === 0) {
+    if (!usersLoaded) {
       dispatch(initUsers());
     }
-  }, [dispatch, users.length]);
+  }, [dispatch, usersLoaded]);
 
   // Ефект для завантаження постів при зміні автора
   useEffect(() => {
-    // Очищаємо обраний пост при зміні автора
     dispatch(setSelectedPost(null));
 
     if (author) {
