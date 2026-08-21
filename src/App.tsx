@@ -14,9 +14,15 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/authorSlice';
 import { fetchUserPosts } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
+import { initUsers } from './features/usersSlice'; // Додано імпорт завантаження користувачів
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
+
+  // Завантажуємо список користувачів при запуску програми
+  useEffect(() => {
+    dispatch(initUsers());
+  }, [dispatch]);
 
   // Дістаємо дані зі стору за допомогою хуків
   const { author } = useAppSelector(state => state.author);
