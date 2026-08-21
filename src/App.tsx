@@ -14,17 +14,13 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setAuthor } from './features/authorSlice';
 import { fetchUserPosts } from './features/postsSlice';
 import { setSelectedPost } from './features/selectedPostSlice';
-import { initUsers } from './features/usersSlice'; // Додано імпорт завантаження користувачів
+import { initUsers } from './features/usersSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  // Завантажуємо список користувачів при запуску програми
-  useEffect(() => {
-    dispatch(initUsers());
-  }, [dispatch]);
-
-  // Дістаємо дані зі стору за допомогою хуків
+  // Дістаємо список користувачів та інші дані зі стору
+  const { items: users } = useAppSelector(state => state.users);
   const { author } = useAppSelector(state => state.author);
   const {
     items: posts,
@@ -32,6 +28,13 @@ export const App: React.FC = () => {
     hasError,
   } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
+
+  // Завантажуємо користувачів лише один раз, якщо їх ще немає в стейті
+  useEffect(() => {
+    if (users.length === 0) {
+      dispatch(initUsers());
+    }
+  }, [dispatch, users.length]);
 
   // Ефект для завантаження постів при зміні автора
   useEffect(() => {
