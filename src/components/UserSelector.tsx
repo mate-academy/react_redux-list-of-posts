@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
 import { User } from '../types/User';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import { fetchUsers } from '../features/usersSlice';
+import { useAppDispatch } from '../app/hooks';
 
 type Props = {
   value: User | null;
@@ -17,8 +20,14 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+
+  const { items: users } = useSelector((state: RootState) => state.users);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -33,11 +42,12 @@ export const UserSelector: React.FC<Props> = ({
     };
 
     document.addEventListener('click', handleDocumentClick);
-
     // eslint-disable-next-line consistent-return
+
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
+
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
