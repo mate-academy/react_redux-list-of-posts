@@ -7,7 +7,7 @@ export const fetchPosts = createAsyncThunk('posts/fetch', (id: number) => {
 });
 
 const initialState = {
-  posts: [] as Post[],
+  items: [] as Post[],
   selectedPost: null as Post | null,
   loaded: false,
   hasError: false,
@@ -19,11 +19,7 @@ export const postsSlice = createSlice({
   reducers: {
     setPosts: (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.posts = action.payload;
-    },
-    setSelectedPost: (state, action) => {
-      // eslint-disable-next-line no-param-reassign
-      state.selectedPost = action.payload;
+      state.items = action.payload;
     },
   },
   extraReducers: builder => {
@@ -33,7 +29,7 @@ export const postsSlice = createSlice({
     });
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.posts = action.payload;
+      state.items = action.payload;
       // eslint-disable-next-line no-param-reassign
       state.loaded = true;
       // eslint-disable-next-line no-param-reassign
@@ -48,5 +44,5 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setPosts, setSelectedPost } = postsSlice.actions;
+export const { setPosts } = postsSlice.actions;
 export default postsSlice.reducer;

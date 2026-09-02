@@ -12,14 +12,18 @@ import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUsers } from './features/usersSlice';
 import { setAuthor } from './features/authorSlice';
-import { fetchPosts, setPosts, setSelectedPost } from './features/postsSlice';
+import { fetchPosts, setPosts } from './features/postsSlice';
+import { setSelectedPost } from './features/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const { author } = useAppSelector(state => state.author);
-  const { posts, selectedPost, loaded, hasError } = useAppSelector(
-    state => state.posts,
-  );
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPosts);
 
   useEffect(() => {
     dispatch(fetchUsers());

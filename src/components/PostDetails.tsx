@@ -12,9 +12,11 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [visible, setVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const { comments, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const {
+    items: comments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
 
   useEffect(() => {
     dispatch(fetchComments(post.id));

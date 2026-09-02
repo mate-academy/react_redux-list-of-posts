@@ -7,7 +7,7 @@ export const fetchUsers = createAsyncThunk('users/fetch', () => {
 });
 
 const initialState = {
-  users: [] as User[],
+  items: [] as User[],
   loading: false,
   error: '',
 };
@@ -23,7 +23,7 @@ export const usersSlice = createSlice({
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.users = action.payload;
+      state.items = action.payload;
       // eslint-disable-next-line no-param-reassign
       state.loading = false;
     });

@@ -25,7 +25,7 @@ export const removeComment = createAsyncThunk(
 );
 
 const initialState = {
-  comments: [] as Comment[],
+  items: [] as Comment[],
   loaded: false,
   hasError: false,
 };
@@ -36,7 +36,7 @@ export const commentsSlice = createSlice({
   reducers: {
     setComments: (state, action) => {
       // eslint-disable-next-line no-param-reassign
-      state.comments = action.payload;
+      state.items = action.payload;
     },
   },
   extraReducers: builder => {
@@ -47,7 +47,7 @@ export const commentsSlice = createSlice({
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.comments = action.payload;
+        state.items = action.payload;
         // eslint-disable-next-line no-param-reassign
         state.loaded = true;
         // eslint-disable-next-line no-param-reassign
@@ -61,11 +61,11 @@ export const commentsSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(removeComment.pending, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.comments = state.comments.filter(
+        state.items = state.items.filter(
           comment => comment.id !== action.meta.arg,
         );
       });
