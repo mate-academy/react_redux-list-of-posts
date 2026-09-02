@@ -8,8 +8,8 @@ export const fetchUsers = createAsyncThunk('users/fetch', () => {
 
 const initialState = {
   items: [] as User[],
-  loading: false,
-  error: '',
+  loaded: false,
+  hasError: false,
 };
 
 export const usersSlice = createSlice({
@@ -19,19 +19,19 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(fetchUsers.pending, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = true;
+      state.loaded = true;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       // eslint-disable-next-line no-param-reassign
       state.items = action.payload;
       // eslint-disable-next-line no-param-reassign
-      state.loading = false;
+      state.loaded = false;
     });
     builder.addCase(fetchUsers.rejected, state => {
       // eslint-disable-next-line no-param-reassign
-      state.loading = false;
+      state.loaded = false;
       // eslint-disable-next-line no-param-reassign
-      state.error = 'Error';
+      state.hasError = true;
     });
   },
 });

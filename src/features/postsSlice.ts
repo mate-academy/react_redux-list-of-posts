@@ -8,7 +8,6 @@ export const fetchPosts = createAsyncThunk('posts/fetch', (id: number) => {
 
 const initialState = {
   items: [] as Post[],
-  selectedPost: null as Post | null,
   loaded: false,
   hasError: false,
 };

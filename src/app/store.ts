@@ -12,7 +12,7 @@ export const store = configureStore({
     author: authorReducer,
     posts: postsReducer,
     comments: commentsReducer,
-    selectedPosts: selectedPostReducer,
+    selectedPost: selectedPostReducer,
   },
 });
 

@@ -23,7 +23,7 @@ export const App: React.FC = () => {
     loaded,
     hasError,
   } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.selectedPosts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -33,7 +33,7 @@ export const App: React.FC = () => {
     if (author) {
       dispatch(fetchPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(setPosts([]));
     }
   }, [dispatch, author]);
 
