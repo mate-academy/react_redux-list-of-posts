@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,28 +9,22 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import * as postsActions from './features/posts';
+import * as selectedPostActions from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const dispatch = useAppDispatch();
-  const {
-    posts,
-    loaded: loading,
-    error,
-  } = useAppSelector(state => state.posts);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
+  const { author } = useAppSelector(state => state.author);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
 
   function loadUserPosts(userId: number) {
     dispatch(postsActions.init(userId));
   }
 
   useEffect(() => {
-    setSelectedPost(null);
+    dispatch(selectedPostActions.setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
@@ -46,15 +40,15 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector value={author} onChange={setAuthor} />
+                <UserSelector value={author} />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loading && <Loader />}
+                {author && !loaded && <Loader />}
 
-                {author && loading && error && (
+                {author && loaded && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -63,18 +57,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loading && !error && posts?.length === 0 && (
+                {author && loaded && !hasError && items?.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts && author && loading && !error && posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
-                  />
+                {items && author && loaded && !hasError && items.length > 0 && (
+                  <PostsList posts={items} selectedPostId={selectedPost?.id} />
                 )}
               </div>
             </div>

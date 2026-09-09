@@ -3,13 +3,13 @@ import { Comment } from '../types/Comment';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 
 type InitialState = {
-  comments: Comment[] | null;
+  items: Comment[] | null;
   loaded: boolean;
   hasError: boolean;
 };
 
 const initialState: InitialState = {
-  comments: [],
+  items: [],
   loaded: false,
   hasError: false,
 };
@@ -40,9 +40,7 @@ export const commentsSlice = createSlice({
   reducers: {
     setComments: (state, action: PayloadAction<Comment>) => ({
       ...state,
-      comments: state.comments
-        ? [...state.comments, action.payload]
-        : [action.payload],
+      items: state.items ? [...state.items, action.payload] : [action.payload],
     }),
   },
   extraReducers: builder => {
@@ -54,7 +52,7 @@ export const commentsSlice = createSlice({
     builder.addCase(init.fulfilled, (state, action) => ({
       ...state,
       loaded: true,
-      comments: action.payload,
+      items: action.payload,
     }));
     builder.addCase(init.rejected, state => ({
       ...state,
@@ -69,9 +67,7 @@ export const commentsSlice = createSlice({
     builder.addCase(addNewComment.fulfilled, (state, action) => ({
       ...state,
       loaded: true,
-      comments: state.comments
-        ? [...state.comments, action.payload]
-        : [action.payload],
+      items: state.items ? [...state.items, action.payload] : [action.payload],
     }));
     builder.addCase(addNewComment.rejected, state => ({
       ...state,
@@ -84,8 +80,8 @@ export const commentsSlice = createSlice({
     }));
     builder.addCase(removeComment.fulfilled, (state, action) => ({
       ...state,
-      comments: state.comments
-        ? state.comments.filter(comment => comment.id !== action.payload)
+      items: state.items
+        ? state.items.filter(comment => comment.id !== action.payload)
         : [],
     }));
     builder.addCase(removeComment.rejected, state => ({
