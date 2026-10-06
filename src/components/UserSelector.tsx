@@ -1,24 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { getUsers } from '../api/users';
+import { saveSelectedPost } from '../features/selectedPost';
+import { setUsers } from '../features/users';
+import { setAuthor } from '../features/author';
 import { User } from '../types/User';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
-  // `users` are loaded from the API, so for the performance reasons
-  // we load them once in the `UsersContext` when the `App` is opened
-  // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+export const UserSelector: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users);
+  const author = useAppSelector(state => state.author);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    getUsers().then(usersData => {
+      dispatch(setUsers(usersData));
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!expanded) {
@@ -42,6 +41,16 @@ export const UserSelector: React.FC<Props> = ({
     // when the Dopdown is closed
   }, [expanded]);
 
+  const handleChangeUser = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    user: User,
+  ) => {
+    event.preventDefault();
+    dispatch(setAuthor(user));
+    dispatch(saveSelectedPost(null));
+    setExpanded(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -58,7 +67,7 @@ export const UserSelector: React.FC<Props> = ({
             setExpanded(current => !current);
           }}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{author?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -72,11 +81,9 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
-                onChange(user);
-              }}
+              onClick={e => handleChangeUser(e, user)}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === author?.id,
               })}
             >
               {user.name}

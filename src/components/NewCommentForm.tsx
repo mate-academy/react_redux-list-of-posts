@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
+  onSubmit: (data: CommentData) => Promise<void> | void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
@@ -21,7 +21,20 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     body: '',
   });
 
-  const clearForm = () => {
+  const clearFormAfterSubmit = () => {
+    setValues(current => ({
+      ...current,
+      body: '',
+    }));
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
+
+  const handleReset = () => {
     setValues({
       name: '',
       email: '',
@@ -47,29 +60,41 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const hasNameError = !name.trim();
+    const hasEmailError = !email.trim();
+    const hasBodyError = !body.trim();
+
     setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
+      name: hasNameError,
+      email: hasEmailError,
+      body: hasBodyError,
     });
 
-    if (!name || !email || !body) {
+    if (hasNameError || hasEmailError || hasBodyError) {
       return;
     }
 
     setSubmitting(true);
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    try {
+      await onSubmit({
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
+      });
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
+      clearFormAfterSubmit();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
