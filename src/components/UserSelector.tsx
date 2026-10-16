@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { /*useContext ,*/ useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+//import { UserContext } from './UsersContext';
 import { User } from '../types/User';
-
+import { selectUsers } from '../features/users/userSlice';
+import { useAppSelector } from '../app/hooks';
 type Props = {
   value: User | null;
   onChange: (user: User) => void;
@@ -17,7 +18,11 @@ export const UserSelector: React.FC<Props> = ({
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
+
+  //const users = useContext(UserContext);
+
+  const users = useAppSelector(selectUsers);
+
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
