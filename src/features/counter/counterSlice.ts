@@ -19,15 +19,12 @@ const initialState: CounterState = {
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
-export const incrementAsync = createAsyncThunk(
-  'counter/fetchCount',
-  async (amount: number) => {
-    const value = await fetchCount(amount);
+export const incrementAsync = createAsyncThunk('counter/fetchCount', async (amount: number) => {
+  const value = await fetchCount(amount);
 
-    // The value we return becomes the `fulfilled` action payload
-    return value;
-  },
-);
+  // The value we return becomes the `fulfilled` action payload
+  return value;
+});
 
 export const counterSlice = createSlice({
   name: 'counter',

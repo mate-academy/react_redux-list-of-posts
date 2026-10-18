@@ -35,9 +35,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name: field, value } = event.target;
 
     setValues(current => ({ ...current, [field]: value }));
@@ -91,10 +89,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </span>
 
           {errors.name && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
+            <span className="icon is-small is-right has-text-danger" data-cy="ErrorIcon">
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
@@ -128,10 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           </span>
 
           {errors.email && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
+            <span className="icon is-small is-right has-text-danger" data-cy="ErrorIcon">
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}

@@ -10,11 +10,7 @@ type Props = {
   onPostSelected: (post: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId = 0,
-  onPostSelected,
-}) => (
+export const PostsList: React.FC<Props> = ({ posts, selectedPostId = 0, onPostSelected }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
