@@ -10,38 +10,67 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { getUsers } from './api/users';
+import * as usersActions from './features/users';
 import { User } from './types/User';
-import { Post } from './types/Post';
+import * as postsActions from './features/posts';
+import * as selectedPostActions from './features/selectedPost';
+import * as commentsActions from './features/comments';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
+  const dispatch = useAppDispatch();
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
   const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    let active = true;
 
+    getUsers()
+      .then(users => {
+        if (active) {
+          dispatch(usersActions.set(users));
+        }
+      })
+      .catch(() => {
+        if (active) {
+          dispatch(usersActions.set([]));
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [dispatch]);
+  useEffect(() => {
+    let active = true;
+
+    dispatch(selectedPostActions.set(null));
+    dispatch(commentsActions.reset());
+    dispatch(postsActions.reset());
     if (author) {
-      loadUserPosts(author.id);
-    } else {
-      setPosts([]);
+      getUserPosts(author.id)
+        .then(items => {
+          if (active) {
+            dispatch(postsActions.received(items));
+          }
+        })
+        .catch(() => {
+          if (active) {
+            dispatch(postsActions.failed());
+          }
+        });
     }
-  }, [author]);
+
+    return () => {
+      active = false;
+    };
+  }, [author, dispatch]);
 
   return (
     <main className="section">
@@ -77,7 +106,9 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={post =>
+                      dispatch(selectedPostActions.set(post))
+                    }
                   />
                 )}
               </div>
@@ -97,7 +128,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost && (
+                <PostDetails key={selectedPost.id} post={selectedPost} />
+              )}
             </div>
           </div>
         </div>
