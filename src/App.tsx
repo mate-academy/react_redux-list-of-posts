@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -9,39 +9,40 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { fetchPosts, postsSlice } from './features/posts';
+import { selectedPostSlice } from './features/selectedPost';
+import { authorSlice } from './features/author';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
-
-  const [author, setAuthor] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  function loadUserPosts(userId: number) {
-    setLoaded(false);
-
-    getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
-      // We disable the spinner in any case
-      .finally(() => setLoaded(true));
-  }
+  const dispatch = useAppDispatch();
+  const {
+    items: posts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
+  const { selectedPost } = useAppSelector(state => state.selectedPost);
+  const { author } = useAppSelector(state => state.author);
 
   useEffect(() => {
-    // we clear the post when an author is changed
-    // not to confuse the user
-    setSelectedPost(null);
+    dispatch(selectedPostSlice.actions.reset());
 
     if (author) {
-      loadUserPosts(author.id);
+      dispatch(fetchPosts(author.id));
     } else {
-      setPosts([]);
+      dispatch(postsSlice.actions.clear());
     }
   }, [author]);
+
+  const setSelectedPost = (item: Post | null) => {
+    dispatch(selectedPostSlice.actions.setSelectedPost(item));
+  };
+
+  const setAuthor = (item: User | null) => {
+    dispatch(authorSlice.actions.setAuthor(item));
+  };
 
   return (
     <main className="section">
@@ -56,7 +57,7 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {author && !loaded && <Loader />}
+                {author && !loaded && !hasError && <Loader />}
 
                 {author && loaded && hasError && (
                   <div
