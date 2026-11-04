@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
+import { setPost } from './features/selectedPost';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -12,7 +13,6 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { loadUserPosts } from './features/postSlice/postSlice';
 import { setAuthor as setAuthorAction } from './features/autorSlice';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
@@ -25,10 +25,10 @@ export const App: React.FC = () => {
   } = useAppSelector(state => state.posts);
 
   const author = useAppSelector(state => state.authors.author);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const selectedPost = useAppSelector(state => state.selectedPost.items);
 
   React.useEffect(() => {
-    setSelectedPost(null);
+    dispatch(setPost(null));
 
     if (author) {
       dispatch(loadUserPosts(author.id));
@@ -81,7 +81,7 @@ export const App: React.FC = () => {
                     <PostsList
                       posts={posts}
                       selectedPostId={selectedPost?.id}
-                      onPostSelected={setSelectedPost}
+                      onPostSelected={post => dispatch(setPost(post))}
                     />
                   )}
               </div>
