@@ -20,7 +20,7 @@ export const loadComments = createAsyncThunk(
 );
 
 export const commentsSlice = createSlice({
-  name: 'commets',
+  name: 'comments',
   initialState,
   reducers: {
     addComment: (state, action: PayloadAction<Comment>) => {
