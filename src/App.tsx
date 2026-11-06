@@ -17,6 +17,7 @@ import { setAuthor } from './store/author/author';
 import { User } from './types/User';
 import { setUsers, setUsersError, setUsersLoading } from './store/users/users';
 import { getUsers } from './api/users';
+import { selectPost } from './store/selectedPost/selectedPost';
 
 export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
@@ -45,6 +46,7 @@ export const App: React.FC = () => {
   }
 
   useEffect(() => {
+    dispatch(selectPost(null));
     // we clear the post when an author is changed
     // not to confuse the user
     // setSelectedPost(null);

@@ -22,7 +22,7 @@ const usersSlice = createSlice({
     },
     setUsersError(state) {
       state.hasError = true;
-      state.loaded = false;
+      state.loaded = true;
     },
   },
 });
