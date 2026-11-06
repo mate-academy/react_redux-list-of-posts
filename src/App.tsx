@@ -10,11 +10,13 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
-import { useAppSelector, useAppDispatch } from './app/hooks';
+import { useAppSelector, useAppDispatch } from './store/hooks';
 import { setPosts, setError } from './store/posts/posts';
 import { setLoading } from './store/posts/posts';
 import { setAuthor } from './store/author/author';
 import { User } from './types/User';
+import { setUsers, setUsersError, setUsersLoading } from './store/users/users';
+import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
@@ -26,6 +28,13 @@ export const App: React.FC = () => {
   const user = useAppSelector(
     state => state.users.items.find((u: User) => u.id === author?.id) || null,
   );
+
+  useEffect(() => {
+    dispatch(setUsersLoading());
+    getUsers()
+      .then(users => dispatch(setUsers(users)))
+      .catch(() => dispatch(setUsersError()));
+  }, [dispatch]);
 
   function loadUserPosts(userId: number) {
     dispatch(setLoading());
