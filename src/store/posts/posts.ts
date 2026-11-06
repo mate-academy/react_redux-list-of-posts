@@ -23,7 +23,7 @@ const postsSlice = createSlice({
     },
     setError(state) {
       state.hasError = true;
-      state.loaded = false;
+      state.loaded = true;
     },
     setLoading: state => {
       state.loaded = false;
