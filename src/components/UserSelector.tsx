@@ -1,24 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loadPosts } from '../features/counter/Users/selectedUsersSlice';
 import { User } from '../types/User';
+import { addUsersId } from '../features/counter/Users/selectedUsersSlice';
+import { clearSelectedPost } from '../features/counter/Posts/postSelectedSlice';
 
-type Props = {
-  value: User | null;
-  onChange: (user: User) => void;
-};
-
-export const UserSelector: React.FC<Props> = ({
-  // `value` and `onChange` are traditional names for the form field
-  // `selectedUser` represents what actually stored here
-  value: selectedUser,
-  onChange,
-}) => {
+export const UserSelector: React.FC = (
+  {
+    // `value` and `onChange` are traditional names for the form field
+    // `selectedUser` represents what actually stored here
+  },
+) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
-  const users = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users.users);
+  const selectedUser = useAppSelector(state => state.posts.userSelected);
 
   useEffect(() => {
     if (!expanded) {
@@ -41,6 +41,14 @@ export const UserSelector: React.FC<Props> = ({
     // we don't want to listening for outside clicks
     // when the Dopdown is closed
   }, [expanded]);
+  function onChange(user: User) {
+    if (user.id !== selectedUser?.id) {
+      dispatch(clearSelectedPost());
+    }
+
+    dispatch(addUsersId(user));
+    dispatch(loadPosts(user.id));
+  }
 
   return (
     <div
@@ -72,8 +80,12 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 onChange(user);
+                setExpanded(false);
               }}
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
