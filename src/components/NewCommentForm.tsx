@@ -1,75 +1,92 @@
+/* eslint-disable no-param-reassign */
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+  addEmail,
+  addName,
+  addPostIdNewComment,
+  addText,
+  checkForErrors,
+  creatNewComment,
+  resetForm,
+} from '../features/Coments/newCommentSlice';
+// import { CommentData } from '../types/Comment';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
+// type Props = {
+//   onSubmit: (data: CommentData) => Promise<void>;
+// };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
+type Field = 'name' | 'email' | 'text';
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+export const NewCommentForm: React.FC = () => {
+  const id = useAppSelector(state => state.setPost.postSelected?.id);
 
-  const [{ name, email, body }, setValues] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const dispatch = useAppDispatch();
+  const name = useAppSelector(state => state.newComment.name);
+  const email = useAppSelector(state => state.newComment.email);
+  const text = useAppSelector(state => state.newComment.text);
+  const errors = useAppSelector(state => state.newComment.errors);
+  const postId = useAppSelector(state => state.newComment.postId);
+  const loading = useAppSelector(state => state.newComment.loading);
 
-  const clearForm = () => {
-    setValues({
-      name: '',
-      email: '',
-      body: '',
-    });
+  useEffect(() => {
+    if (id !== undefined) {
+      dispatch(addPostIdNewComment(id));
+    }
+  }, [id, dispatch]);
+  // const [{ name, email, body }, setValues] = useState({
+  //   name: '',
+  //   email: '',
+  //   body: '',
+  // });
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
-  };
+  // const clearForm = () => {
+  //   setValues({
+  //     name: '',
+  //     email: '',
+  //     body: '',
+  //   });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name: field, value } = event.target;
+  //   setErrors({
+  //     name: false,
+  //     email: false,
+  //     body: false,
+  //   });
+  // };
 
-    setValues(current => ({ ...current, [field]: value }));
-    setErrors(current => ({ ...current, [field]: false }));
-  };
+  function handleChange(item: string, type: Field) {
+    if (type === 'name') {
+      dispatch(addName(item));
+    }
+
+    if (type === 'email') {
+      dispatch(addEmail(item));
+    }
+
+    if (type === 'text') {
+      dispatch(addText(item));
+    }
+  }
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
-
-    if (!name || !email || !body) {
+    dispatch(checkForErrors());
+    if (name.length === 0 || email.length === 0 || text.length === 0) {
       return;
     }
 
-    setSubmitting(true);
-
     // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+    // await onSubmit({ name, email, body });
 
     // and the spinner will disappear immediately
-    setSubmitting(false);
-    setValues(current => ({ ...current, body: '' }));
+    // setValues(current => ({ ...current, body: '' }));
     // We keep the entered name and email
+    dispatch(creatNewComment({ name, email, body: text, postId }));
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={clearForm} data-cy="NewCommentForm">
+    <form onSubmit={handleSubmit} data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -82,8 +99,9 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
+            // value={name}
             value={name}
-            onChange={handleChange}
+            onChange={event => handleChange(event.target.value, 'name')}
           />
 
           <span className="icon is-small is-left">
@@ -120,7 +138,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
-            onChange={handleChange}
+            onChange={event => handleChange(event.target.value, 'email')}
           />
 
           <span className="icon is-small is-left">
@@ -154,13 +172,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errors.body })}
-            value={body}
-            onChange={handleChange}
+            className={classNames('textarea', { 'is-danger': errors.text })}
+            value={text}
+            onChange={event => handleChange(event.target.value, 'text')}
           />
         </div>
 
-        {errors.body && (
+        {errors.text && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -172,7 +190,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': loading,
             })}
           >
             Add
@@ -181,7 +199,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => dispatch(resetForm())}
+          >
             Clear
           </button>
         </div>
