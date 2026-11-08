@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   } = useAppSelector(state => state.comments);
 
   useEffect(() => {
+    setVisible(false);
     dispatch(loadComments(post.id));
   }, [post.id, dispatch]);
 
