@@ -5,6 +5,8 @@ export const getUsers = () => {
   return client.get<User[]>('/users');
 };
 
-export const getUser = (id: number) => {
-  return client.get<User[]>(`/users/${id}`);
+export const getUser = async (id: number) => {
+  const response = await client.get<User>(`/users/${id}`);
+
+  return response;
 };
