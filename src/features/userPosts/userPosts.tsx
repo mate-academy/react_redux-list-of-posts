@@ -25,13 +25,19 @@ const userPostsSlice = createSlice({
       .addCase(loadUserPosts.pending, state => {
         /* eslint-disable no-param-reassign */
         state.loading = true;
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadUserPosts.fulfilled, (state, action) => {
+        state.loading = false;
         state.loaded = true;
+        state.hasError = false;
         state.items = action.payload;
       })
       .addCase(loadUserPosts.rejected, state => {
         state.hasError = true;
+        state.loading = false;
+        state.loaded = false;
       });
   },
 });

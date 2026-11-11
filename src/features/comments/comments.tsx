@@ -35,12 +35,18 @@ const commentsSlice = createSlice({
     builder
       .addCase(loadPostComments.pending, state => {
         state.loading = true;
+        state.loaded = false;
+        state.hasError = false;
       })
       .addCase(loadPostComments.fulfilled, (state, action) => {
-        state.loading = true;
+        state.loading = false;
+        state.loaded = true;
+        state.hasError = false;
         state.items = action.payload;
       })
       .addCase(loadPostComments.rejected, state => {
+        state.loading = false;
+        state.loaded = false;
         state.hasError = true;
       })
       .addCase(deletePostComment.pending, state => {

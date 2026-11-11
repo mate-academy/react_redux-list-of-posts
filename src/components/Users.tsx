@@ -12,7 +12,6 @@ export const Users = () => {
   const users = useAppSelector(state => state.users.value);
   const author = useAppSelector(state => state.author.value);
   const [expanded, setExpanded] = useState(false);
-  const loadedUserIds = useAppSelector(state => state.userPosts.loadedUserIds);
   const usersStatus = useAppSelector(state => state.users.status);
 
   useEffect(() => {
@@ -65,10 +64,7 @@ export const Users = () => {
                 onClick={() => {
                   dispatch(selectPost(null));
                   dispatch(setAuthor(user));
-
-                  if (!loadedUserIds.includes(user.id)) {
-                    dispatch(loadUserPosts(user.id));
-                  }
+                  dispatch(loadUserPosts(user.id));
                 }}
                 className={classNames('dropdown-item', {
                   'is-active': author?.id === user.id,

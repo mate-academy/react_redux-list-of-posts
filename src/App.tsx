@@ -20,6 +20,8 @@ export const App: React.FC = () => {
   const userPosts = useAppSelector(state => state.userPosts);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
 
+	console.log(userPosts);
+
   const {
     items: posts,
     loaded: postsLoaded,

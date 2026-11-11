@@ -21,6 +21,7 @@ const postsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadPosts.fulfilled, (state, action) => {
+        /* eslint-disable no-param-reassign */
         state.loaded = true;
         state.items = action.payload;
       })
