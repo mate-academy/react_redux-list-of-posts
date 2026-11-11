@@ -5,14 +5,12 @@ import userReducer from '../features/author/authorSlice';
 import userPostsReducer from '../features/userPosts/userPosts';
 import selectedPostReducer from '../features/selectedPost/selectedPost';
 import postCommentsReducer from '../features/comments/comments';
-import Posts from '../features/posts/postsSlice';
 
 export const store = configureStore({
   reducer: {
     users: usersReducer,
     author: userReducer,
-    posts: Posts,
-    userPosts: userPostsReducer,
+    posts: userPostsReducer,
     selectedPost: selectedPostReducer,
     comments: postCommentsReducer,
   },

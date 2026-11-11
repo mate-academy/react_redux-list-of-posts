@@ -6,7 +6,7 @@ import { selectPost } from '../features/selectedPost/selectedPost';
 import { Post } from '../types/Post';
 
 export const PostsList = () => {
-  const posts = useAppSelector(state => state.userPosts.items);
+  const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
 
   const dispatch = useDispatch<AppDispatch>();

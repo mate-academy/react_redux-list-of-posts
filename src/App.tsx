@@ -17,10 +17,8 @@ import { loadUsers } from './features/users/usersThunk';
 export const App: React.FC = () => {
   const usersStatus = useAppSelector(state => state.users.status);
   const author = useAppSelector(state => state.author.value);
-  const userPosts = useAppSelector(state => state.userPosts);
+  const userPosts = useAppSelector(state => state.posts);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
-
-	console.log(userPosts);
 
   const {
     items: posts,

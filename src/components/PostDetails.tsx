@@ -46,7 +46,7 @@ export const PostDetails = () => {
   }, [post]);
 
   if (!post) {
-    return;
+    return null;
   }
 
   const { id, title, body } = post;
