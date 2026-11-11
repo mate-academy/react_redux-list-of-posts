@@ -4,14 +4,16 @@ import { loadUserPosts } from './userPostsThunk';
 
 type PostsState = {
   items: Post[];
-  loadedUserIds: number[];
-  status: 'idle' | 'loading' | 'loaded' | 'failed';
+  loading: boolean;
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
   items: [],
-  loadedUserIds: [],
-  status: 'idle',
+  loading: false,
+  loaded: false,
+  hasError: false,
 };
 
 const userPostsSlice = createSlice({
@@ -22,15 +24,14 @@ const userPostsSlice = createSlice({
     builder
       .addCase(loadUserPosts.pending, state => {
         /* eslint-disable no-param-reassign */
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(loadUserPosts.fulfilled, (state, action) => {
-        state.status = 'loaded';
-        state.loadedUserIds.push(action.meta.arg);
+        state.loaded = true;
         state.items = action.payload;
       })
       .addCase(loadUserPosts.rejected, state => {
-        state.status = 'failed';
+        state.hasError = true;
       });
   },
 });

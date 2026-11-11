@@ -5,15 +5,19 @@ import { deletePostComment } from './thunks/deleteComment';
 import { createPostComment } from './thunks/createComment';
 
 type CommentsState = {
-  value: PostComment[];
-  loadStatus: 'idle' | 'loading' | 'loaded' | 'failed';
+  items: PostComment[];
+  loading: boolean;
+  loaded: boolean;
+  hasError: boolean;
   deleteStatus: 'idle' | 'deleting' | 'failed';
   createStatus: 'idle' | 'creating' | 'failed';
 };
 
 const initialState: CommentsState = {
-  value: [],
-  loadStatus: 'idle',
+  items: [],
+  loading: false,
+  loaded: false,
+  hasError: false,
   deleteStatus: 'idle',
   createStatus: 'idle',
 };
@@ -30,21 +34,21 @@ const commentsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadPostComments.pending, state => {
-        state.loadStatus = 'loading';
+        state.loading = true;
       })
       .addCase(loadPostComments.fulfilled, (state, action) => {
-        state.loadStatus = 'loaded';
-        state.value = action.payload;
+        state.loading = true;
+        state.items = action.payload;
       })
       .addCase(loadPostComments.rejected, state => {
-        state.loadStatus = 'failed';
+        state.hasError = true;
       })
       .addCase(deletePostComment.pending, state => {
         state.deleteStatus = 'deleting';
       })
       .addCase(deletePostComment.fulfilled, (state, action) => {
         state.deleteStatus = 'idle';
-        state.value = state.value.filter(
+        state.items = state.items.filter(
           comment => comment.id !== action.payload,
         );
       })
@@ -53,7 +57,7 @@ const commentsSlice = createSlice({
       })
       .addCase(createPostComment.fulfilled, (state, action) => {
         state.createStatus = 'idle';
-        state.value.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(createPostComment.rejected, state => {
         state.createStatus = 'failed';

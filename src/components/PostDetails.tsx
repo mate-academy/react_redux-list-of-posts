@@ -12,10 +12,7 @@ export const PostDetails = () => {
   const [showForm, setShowForm] = useState(false);
 
   const post = useAppSelector(state => state.selectedPost.value);
-  const comments = useAppSelector(state => state.comments.value);
-  const commentLoadingStatus = useAppSelector(
-    state => state.comments.loadStatus,
-  );
+  const postComments = useAppSelector(state => state.comments);
   const commentDeleteStatus = useAppSelector(
     state => state.comments.deleteStatus,
   );
@@ -53,6 +50,12 @@ export const PostDetails = () => {
   }
 
   const { id, title, body } = post;
+  const {
+    items: comments,
+    loading: loadingComments,
+    loaded: commentsLoaded,
+    hasError,
+  } = postComments;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -63,21 +66,21 @@ export const PostDetails = () => {
       </div>
 
       <div className="block">
-        {commentLoadingStatus === 'loading' && <Loader />}
+        {loadingComments && <Loader />}
 
-        {commentLoadingStatus === 'failed' && (
+        {hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong while loading comments!
           </div>
         )}
 
-        {commentLoadingStatus === 'loaded' && comments.length === 0 && (
+        {commentsLoaded && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {commentLoadingStatus === 'loaded' && comments.length > 0 && (
+        {commentsLoaded && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -112,7 +115,7 @@ export const PostDetails = () => {
           </>
         )}
 
-        {commentLoadingStatus === 'loaded' && !showForm && (
+        {commentsLoaded && !showForm && (
           <button
             data-cy="WriteCommentButton"
             type="button"

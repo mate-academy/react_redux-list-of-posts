@@ -3,13 +3,15 @@ import { Post } from '../../types/Post';
 import { loadPosts } from './postsThunk';
 
 type PostsState = {
-  value: Post[];
-  status: 'idle' | 'loading' | 'loaded' | 'failed';
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostsState = {
-  value: [],
-  status: 'idle',
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 const postsSlice = createSlice({
@@ -18,16 +20,12 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(loadPosts.pending, state => {
-        /* eslint-disable no-param-reassign */
-        state.status = 'loading';
-      })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        state.status = 'loaded';
-        state.value = action.payload;
+        state.loaded = true;
+        state.items = action.payload;
       })
       .addCase(loadPosts.rejected, state => {
-        state.status = 'failed';
+        state.hasError = true;
       });
   },
 });

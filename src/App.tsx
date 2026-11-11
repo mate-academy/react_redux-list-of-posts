@@ -17,9 +17,15 @@ import { loadUsers } from './features/users/usersThunk';
 export const App: React.FC = () => {
   const usersStatus = useAppSelector(state => state.users.status);
   const author = useAppSelector(state => state.author.value);
-  const userPosts = useAppSelector(state => state.userPosts.items);
-  const userPostsStatus = useAppSelector(state => state.userPosts.status);
+  const userPosts = useAppSelector(state => state.userPosts);
   const selectedPost = useAppSelector(state => state.selectedPost.value);
+
+  const {
+    items: posts,
+    loaded: postsLoaded,
+    loading: postsLoading,
+    hasError,
+  } = userPosts;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -31,8 +37,7 @@ export const App: React.FC = () => {
     window.history.replaceState(null, '', window.location.pathname);
   }, []);
 
-  const hasNoPosts =
-    author && userPostsStatus === 'loaded' && !userPosts.length;
+  const hasNoPosts = author && postsLoaded && !posts.length;
 
   return (
     <main className="section">
@@ -51,8 +56,8 @@ export const App: React.FC = () => {
               </div>
               <div className="block" data-cy="MainContent">
                 {!author && <p data-cy="NoSelectedUser">No user selected</p>}{' '}
-                {userPostsStatus === 'loading' && <Loader />}
-                {userPostsStatus === 'failed' && (
+                {postsLoading && <Loader />}
+                {hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -65,9 +70,7 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-                {author &&
-                  userPostsStatus === 'loaded' &&
-                  userPosts.length > 0 && <PostsList />}
+                {author && postsLoaded && posts.length > 0 && <PostsList />}
               </div>
             </div>
           </div>
