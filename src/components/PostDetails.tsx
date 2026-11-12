@@ -6,7 +6,10 @@ import { useDispatch } from 'react-redux';
 import { Loader } from './Loader';
 import { deletePostComment } from '../features/comments/thunks/deleteComment';
 import { NewCommentForm } from './NewCommentForm';
-import { resetCommentCreateStatus } from '../features/comments/comments';
+import {
+  resetCommentCreateStatus,
+  resetCommentDeleteStatus,
+} from '../features/comments/comments';
 
 export const PostDetails = () => {
   const [showForm, setShowForm] = useState(false);
@@ -25,21 +28,29 @@ export const PostDetails = () => {
 
   useEffect(() => {
     if (post) {
+      dispatch(resetCommentCreateStatus());
+      dispatch(resetCommentDeleteStatus());
       dispatch(loadPostComments(post.id));
     }
   }, [dispatch, post, post?.id]);
 
   useEffect(() => {
-    if (commentCreateStatus !== 'failed') {
+    if (commentCreateStatus !== 'failed' && commentDeleteStatus !== 'failed') {
       return;
     }
 
     const timer = setTimeout(() => {
-      dispatch(resetCommentCreateStatus());
+      if (commentCreateStatus === 'failed') {
+        dispatch(resetCommentCreateStatus());
+      }
+
+      if (commentDeleteStatus === 'failed') {
+        dispatch(resetCommentDeleteStatus());
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [commentCreateStatus, post, dispatch]);
+  }, [commentCreateStatus, commentDeleteStatus, dispatch]);
 
   useEffect(() => {
     setShowForm(false);
@@ -83,7 +94,11 @@ export const PostDetails = () => {
         {commentsLoaded && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-
+            {commentDeleteStatus === 'failed' && (
+              <div className="notification is-danger">
+                Something went wrong while deleting users!
+              </div>
+            )}
             {comments.map(comment => (
               <article
                 className="message is-small"
@@ -111,7 +126,7 @@ export const PostDetails = () => {
                   {comment.body}
                 </div>
               </article>
-            ))}
+            ))}{' '}
           </>
         )}
 

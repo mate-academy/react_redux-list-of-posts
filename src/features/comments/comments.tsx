@@ -30,6 +30,10 @@ const commentsSlice = createSlice({
       /* eslint-disable no-param-reassign */
       state.createStatus = 'idle';
     },
+    resetCommentDeleteStatus: state => {
+      /* eslint-disable no-param-reassign */
+      state.deleteStatus = 'idle';
+    },
   },
   extraReducers: builder => {
     builder
@@ -58,6 +62,9 @@ const commentsSlice = createSlice({
           comment => comment.id !== action.payload,
         );
       })
+      .addCase(deletePostComment.rejected, state => {
+        state.deleteStatus = 'failed';
+      })
       .addCase(createPostComment.pending, state => {
         state.createStatus = 'creating';
       })
@@ -72,4 +79,5 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const { resetCommentCreateStatus } = commentsSlice.actions;
+export const { resetCommentCreateStatus, resetCommentDeleteStatus } =
+  commentsSlice.actions;

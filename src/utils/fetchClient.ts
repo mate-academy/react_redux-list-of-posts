@@ -25,7 +25,15 @@ function request<T>(
 
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => {
+          throw new Error(err.message || 'Something went wrong');
+        });
+      }
+
+      return response.json();
+    });
 }
 
 export const client = {

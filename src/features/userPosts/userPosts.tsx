@@ -7,6 +7,7 @@ type PostsState = {
   loading: boolean;
   loaded: boolean;
   hasError: boolean;
+  requestId: null | string;
 };
 
 const initialState: PostsState = {
@@ -14,21 +15,27 @@ const initialState: PostsState = {
   loading: false,
   loaded: false,
   hasError: false,
+  requestId: null,
 };
 
 const userPostsSlice = createSlice({
-  name: 'userPosts',
+  name: 'posts',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(loadUserPosts.pending, state => {
+      .addCase(loadUserPosts.pending, (state, action) => {
         /* eslint-disable no-param-reassign */
         state.loading = true;
         state.loaded = false;
         state.hasError = false;
+        state.requestId = action.meta.requestId;
       })
       .addCase(loadUserPosts.fulfilled, (state, action) => {
+        if (state.requestId !== action.meta.requestId) {
+          return;
+        }
+
         state.loading = false;
         state.loaded = true;
         state.hasError = false;

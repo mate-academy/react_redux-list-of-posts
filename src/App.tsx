@@ -86,8 +86,11 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <p data-cy="NoSelectedPost">Choose a post</p>
-              <PostDetails />
+              {selectedPost ? (
+                <PostDetails />
+              ) : (
+                <p data-cy="NoSelectedPost">Choose a post</p>
+              )}
             </div>
           </div>
         </div>
