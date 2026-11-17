@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
-type initialUser = {
+type InitialUser = {
   currentUser: User | null;
 };
 
-const initialState: initialUser = {
+const initialState: InitialUser = {
   currentUser: null,
 };
 

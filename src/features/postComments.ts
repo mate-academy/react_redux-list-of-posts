@@ -48,21 +48,28 @@ const postCommentsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchPostComments.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-param-reassign
         state.postComments = action.payload;
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = false;
       })
       .addCase(fetchPostComments.pending, state => {
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = true;
+        // eslint-disable-next-line no-param-reassign
         state.error = false;
       })
       .addCase(fetchPostComments.rejected, state => {
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = false;
+        // eslint-disable-next-line no-param-reassign
         state.error = true;
       })
       .addCase(addPostComment.fulfilled, (state, action) => {
         state.postComments.push(action.payload);
       })
       .addCase(deletePostComment.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-param-reassign
         state.postComments = state.postComments.filter(
           comment => comment.id != action.payload,
         );

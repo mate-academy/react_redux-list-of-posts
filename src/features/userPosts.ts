@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
-type initialUserPosts = {
+type InitialUserPosts = {
   userPosts: Post[];
   isLoading: boolean;
   error: string;
 };
 
-const initialState: initialUserPosts = {
+const initialState: InitialUserPosts = {
   userPosts: [],
   isLoading: false,
   error: '',
