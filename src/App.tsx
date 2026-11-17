@@ -50,7 +50,7 @@ export const App: React.FC = () => {
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
-              <div className="block">
+              <div className="block" data-cy="UserSelector">
                 <UserSelector value={author} onChange={setAuthor} />
               </div>
 
@@ -101,7 +101,7 @@ export const App: React.FC = () => {
             })}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails post={selectedPost} />
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

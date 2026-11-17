@@ -25,36 +25,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       return;
     }
 
+    setVisible(false);
     dispatch(loadComments(post.id));
   }, [post, dispatch]);
 
-  const { loading, hasError } = useAppSelector(state => state.comments);
+  const { items, loading, hasError } = useAppSelector(state => state.comments);
 
-  // The same useEffect with async/await
-  /*
-  async function loadComments() {
-    setLoaded(false);
-    setVisible(false);
-    setError(false);
-
-    try {
-      const commentsFromServer = await commentsApi.getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoaded(true);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
-  }, []);
-
-  useEffect(loadComments, [post.id]); // Wrong!
-  // effect can return only a function but not a Promise
-  */
+  useEffect(() => setComments(items), [items]);
 
   if (!post) {
     return (
@@ -74,20 +51,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       setComments(currentComments => [...currentComments, newComment]);
-
-      // setComments([...comments, newComment]);
-      // works wrong if we wrap `addComment` with `useCallback`
-      // because it takes the `comments` cached during the first render
-      // not the actual ones
     } catch (error) {
       setIsErrorOccurred(true);
     }
   };
 
   const deleteComment = async (commentId: number) => {
-    // we delete the comment immediately so as
-    // not to make the user wait long for the actual deletion
-    // eslint-disable-next-line max-len
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),
     );
@@ -112,13 +81,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </div>
         )}
 
-        {!loading && !hasError && comments.length > 0 && (
+        {!loading && !hasError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loading && !hasError && comments.length > 0 && (
+        {!loading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -152,7 +121,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!loading && !visible && (
+        {!loading && !visible && !hasError && (
           <button
             data-cy="WriteCommentButton"
             type="button"
