@@ -6,30 +6,29 @@ import * as commentsApi from '../api/comments';
 
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loadComments } from '../app/commentsSlice';
 
 type Props = {
-  post: Post;
+  post?: Post | null;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [isErrorOccurred, setIsErrorOccurred] = useState<boolean>(false);
 
-  function loadComments() {
-    setLoaded(false);
-    setError(false);
-    setVisible(false);
+  const dispatch = useAppDispatch();
 
-    commentsApi
-      .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
-      .catch(() => setError(true)) // show an error when something went wrong
-      .finally(() => setLoaded(true)); // hide the spinner
-  }
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
 
-  useEffect(loadComments, [post.id]);
+    dispatch(loadComments(post.id));
+  }, [post, dispatch]);
+
+  const { loading, hasError } = useAppSelector(state => state.comments);
 
   // The same useEffect with async/await
   /*
@@ -57,6 +56,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   // effect can return only a function but not a Promise
   */
 
+  if (!post) {
+    return (
+      <div className="content" data-cy="PostDetails">
+        <span data-cy="NoPostSelected">Choose a post</span>
+      </div>
+    );
+  }
+
   const addComment = async ({ name, email, body }: CommentData) => {
     try {
       const newComment = await commentsApi.createComment({
@@ -73,8 +80,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       // because it takes the `comments` cached during the first render
       // not the actual ones
     } catch (error) {
-      // we show an error message in case of any error
-      setError(true);
+      setIsErrorOccurred(true);
     }
   };
 
@@ -98,21 +104,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
-        {!loaded && <Loader />}
+        {loading && <Loader />}
 
-        {loaded && hasError && (
+        {!loading && (hasError || isErrorOccurred) && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {!loading && !hasError && comments.length > 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loading && !hasError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -146,7 +152,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {!loading && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -157,9 +163,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         )}
 
-        {loaded && !hasError && visible && (
-          <NewCommentForm onSubmit={addComment} />
-        )}
+        {!loading && visible && <NewCommentForm onSubmit={addComment} />}
       </div>
     </div>
   );
