@@ -37,8 +37,8 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
-    setLoaded(false);
+    // setLoaded(false);
+    dispatch(setLoaded(false));
     dispatch(setError(false));
 
     getUserPosts(userId)
