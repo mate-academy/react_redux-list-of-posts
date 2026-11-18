@@ -27,15 +27,21 @@ const userSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUsers.pending, state => {
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = true;
+        // eslint-disable-next-line no-param-reassign
         state.error = '';
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = false;
+        // eslint-disable-next-line no-param-reassign
         state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, state => {
+        // eslint-disable-next-line no-param-reassign
         state.isLoading = false;
+        // eslint-disable-next-line no-param-reassign
         state.error = 'Something went wrong';
       });
   },
