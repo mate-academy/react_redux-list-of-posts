@@ -13,23 +13,25 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUserPosts } from './features/userPosts';
 
 export const App: React.FC = () => {
-  const { currentUser } = useAppSelector(state => state.currentUser);
+  const { author } = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { userPosts, isLoading, error } = useAppSelector(
-    state => state.userPosts,
-  );
+  const {
+    items: userPosts,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (currentUser) {
-      dispatch(fetchUserPosts(currentUser.id));
+    if (author) {
+      dispatch(fetchUserPosts(author.id));
     }
-  }, [currentUser, dispatch]);
+  }, [author, dispatch]);
 
-  const loading = currentUser && isLoading;
-  const hasError = currentUser && !isLoading && error;
-  const loaded = currentUser && !isLoading && !error && userPosts.length > 0;
-  const noPosts = currentUser && !isLoading && !error && userPosts.length === 0;
+  const isLoading = author && !loaded && !hasError;
+  const postsError = author && hasError;
+  const hasPosts = author && loaded && !hasError && userPosts.length > 0;
+  const noPosts = author && loaded && !hasError && userPosts.length === 0;
 
   return (
     <main className="section">
@@ -42,13 +44,11 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!currentUser && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                )}
+                {!author && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {loading && <Loader />}
+                {isLoading && <Loader />}
 
-                {hasError && (
+                {postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -63,7 +63,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {loaded && <PostsList />}
+                {hasPosts && <PostsList />}
               </div>
             </div>
           </div>

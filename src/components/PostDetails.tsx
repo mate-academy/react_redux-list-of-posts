@@ -8,9 +8,11 @@ import { CommentDetails } from './CommentDetails';
 export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
-  const { postComments, isLoading, error } = useAppSelector(
-    state => state.postComments,
-  );
+  const {
+    items: postComments,
+    loaded,
+    hasError,
+  } = useAppSelector(state => state.comments);
 
   const dispatch = useAppDispatch();
 
@@ -21,10 +23,9 @@ export const PostDetails: React.FC = () => {
     }
   }, [selectedPost, dispatch]);
 
-  const hasError = !isLoading && error;
-  const loaded = !isLoading && !error;
-  const hasComments = loaded && postComments.length > 0;
-  const noComments = loaded && postComments.length === 0;
+  const isLoading = !loaded && !hasError;
+  const hasComments = loaded && !hasError && postComments.length > 0;
+  const noComments = loaded && !hasError && postComments.length === 0;
 
   if (!selectedPost) {
     return <h2 data-cy="PostTitle">There is no selected post</h2>;
@@ -63,7 +64,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !visible && (
+        {loaded && !hasError && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -74,7 +75,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && visible && <NewCommentForm />}
+        {loaded && !hasError && visible && <NewCommentForm />}
       </div>
     </div>
   );

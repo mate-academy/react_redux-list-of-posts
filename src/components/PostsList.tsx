@@ -1,12 +1,10 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost';
 
 export const PostsList: React.FC = () => {
-  const { userPosts } = useAppSelector(state => state.userPosts);
+  const { items: userPosts } = useAppSelector(state => state.posts);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const dispatch = useAppDispatch();
 

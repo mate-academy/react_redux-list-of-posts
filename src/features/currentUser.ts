@@ -1,24 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/User';
 
-type InitialUser = {
-  currentUser: User | null;
+type CurrentUserState = {
+  author: User | null;
 };
 
-const initialState: InitialUser = {
-  currentUser: null,
+const initialState: CurrentUserState = {
+  author: null,
 };
 
 const currentUserSlice = createSlice({
-  name: 'currentUser',
+  name: 'author',
   initialState,
   reducers: {
-    setCurrentUser: (state, action: PayloadAction<User | null>) => {
+    setAuthor: (state, action: PayloadAction<User | null>) => {
       // eslint-disable-next-line no-param-reassign
-      state.currentUser = action.payload;
+      state.author = action.payload;
     },
   },
 });
 
-export const { setCurrentUser } = currentUserSlice.actions;
+export const { setAuthor: setCurrentUser } = currentUserSlice.actions;
 export const currentUserReducer = currentUserSlice.reducer;

@@ -3,19 +3,19 @@ import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 type PostCommentsState = {
-  postComments: Comment[];
-  isLoading: boolean;
-  error: boolean;
+  items: Comment[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
 const initialState: PostCommentsState = {
-  postComments: [],
-  isLoading: false,
-  error: false,
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const fetchPostComments = createAsyncThunk(
-  'postComments/fetchpostComments',
+  'comments/fetchPostComments',
   async (postId: number) => {
     const response = await getPostComments(postId);
 
@@ -24,7 +24,7 @@ export const fetchPostComments = createAsyncThunk(
 );
 
 export const addPostComment = createAsyncThunk(
-  'postComments/addPostComments',
+  'comments/addPostComment',
   async (data: Omit<Comment, 'id'>) => {
     const response = await createComment(data);
 
@@ -33,7 +33,7 @@ export const addPostComment = createAsyncThunk(
 );
 
 export const deletePostComment = createAsyncThunk(
-  'postComments/deletePostComment',
+  'comments/deletePostComment',
   async (id: number) => {
     await deleteComment(id);
 
@@ -42,36 +42,38 @@ export const deletePostComment = createAsyncThunk(
 );
 
 const postCommentsSlice = createSlice({
-  name: 'postComments',
+  name: 'comments',
   initialState,
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(fetchPostComments.fulfilled, (state, action) => {
-        // eslint-disable-next-line no-param-reassign
-        state.postComments = action.payload;
-        // eslint-disable-next-line no-param-reassign
-        state.isLoading = false;
-      })
       .addCase(fetchPostComments.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoading = true;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
-        state.error = false;
+        state.hasError = false;
+      })
+      .addCase(fetchPostComments.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-param-reassign
+        state.items = action.payload;
+        // eslint-disable-next-line no-param-reassign
+        state.loaded = true;
+        // eslint-disable-next-line no-param-reassign
+        state.hasError = false;
       })
       .addCase(fetchPostComments.rejected, state => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoading = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
-        state.error = true;
+        state.hasError = true;
       })
       .addCase(addPostComment.fulfilled, (state, action) => {
-        state.postComments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(deletePostComment.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.postComments = state.postComments.filter(
-          comment => comment.id != action.payload,
+        state.items = state.items.filter(
+          comment => comment.id !== action.payload,
         );
       });
   },

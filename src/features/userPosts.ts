@@ -2,20 +2,20 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
-type InitialUserPosts = {
-  userPosts: Post[];
-  isLoading: boolean;
-  error: string;
+type UserPostsState = {
+  items: Post[];
+  loaded: boolean;
+  hasError: boolean;
 };
 
-const initialState: InitialUserPosts = {
-  userPosts: [],
-  isLoading: false,
-  error: '',
+const initialState: UserPostsState = {
+  items: [],
+  loaded: false,
+  hasError: false,
 };
 
 export const fetchUserPosts = createAsyncThunk(
-  'userPosts/fetchUserPosts',
+  'posts/fetchUserPosts',
   async (userId: number) => {
     const data = await getUserPosts(userId);
 
@@ -24,28 +24,30 @@ export const fetchUserPosts = createAsyncThunk(
 );
 
 const postsSlice = createSlice({
-  name: 'userPosts',
+  name: 'posts',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoading = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
-        state.userPosts = action.payload;
+        state.items = action.payload;
+        // eslint-disable-next-line no-param-reassign
+        state.hasError = false;
       })
       .addCase(fetchUserPosts.pending, state => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoading = true;
+        state.loaded = false;
         // eslint-disable-next-line no-param-reassign
-        state.error = '';
+        state.hasError = false;
       })
       .addCase(fetchUserPosts.rejected, state => {
         // eslint-disable-next-line no-param-reassign
-        state.isLoading = false;
+        state.loaded = true;
         // eslint-disable-next-line no-param-reassign
-        state.error = 'Something went wrong';
+        state.hasError = true;
       });
   },
 });

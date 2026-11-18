@@ -8,10 +8,10 @@ import { postCommentsReducer } from '../features/postComments';
 export const store = configureStore({
   reducer: {
     users: userReducer,
-    currentUser: currentUserReducer,
-    userPosts: userPostsReducer,
+    author: currentUserReducer,
+    posts: userPostsReducer,
     selectedPost: selectedPostReducer,
-    postComments: postCommentsReducer,
+    comments: postCommentsReducer,
   },
 });
 
