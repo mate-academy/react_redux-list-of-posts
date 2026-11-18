@@ -12,23 +12,46 @@ import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import {
+  setPosts,
+  setError,
+  setLoaded,
+} from './features/Posts.reducers.actions';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from './app/store';
+
+// import { useDispatch, useSelector } from 'react-redux';
+// import { AppDispatch, RootState } from './app/store';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setError] = useState(false);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const posts = useSelector((state: RootState) => state.posts.items);
+  const posts = useSelector((state: RootState) => state.posts);
+  const hasError = useSelector((state: RootState) => state.posts.hasError);
+  const loaded = useSelector((state: RootState) => state.posts.loaded);
+  // const dispatch = useDispatch<AppDispatch>();
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   function loadUserPosts(userId: number) {
     setLoaded(false);
+    setLoaded(false);
+    dispatch(setError(false));
 
     getUserPosts(userId)
-      .then(setPosts)
-      .catch(() => setError(true))
+      .then(data => dispatch(setPosts(data)))
+      .catch(error => {
+        dispatch(setError(true));
+        // eslint-disable-next-line no-console
+        console.error(error);
+      })
       // We disable the spinner in any case
-      .finally(() => setLoaded(true));
+      .finally(() => {
+        dispatch(setLoaded(true));
+      });
   }
 
   useEffect(() => {
@@ -39,7 +62,8 @@ export const App: React.FC = () => {
     if (author) {
       loadUserPosts(author.id);
     } else {
-      setPosts([]);
+      // eslint-disable-next-line no-console
+      console.log('test');
     }
   }, [author]);
 
@@ -67,15 +91,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && posts.items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && posts.items.length > 0 && (
                   <PostsList
-                    posts={posts}
+                    posts={posts.items}
                     selectedPostId={selectedPost?.id}
                     onPostSelected={setSelectedPost}
                   />
