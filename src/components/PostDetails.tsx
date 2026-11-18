@@ -17,12 +17,14 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     if (selectedPost) {
       dispatch(fetchPostComments(selectedPost.id));
+      setVisible(false);
     }
   }, [selectedPost, dispatch]);
 
   const hasError = !isLoading && error;
-  const loaded = !isLoading && !error && postComments.length > 0;
-  const noComments = !isLoading && !error && postComments.length === 0;
+  const loaded = !isLoading && !error;
+  const hasComments = loaded && postComments.length > 0;
+  const noComments = loaded && postComments.length === 0;
 
   if (!selectedPost) {
     return <h2 data-cy="PostTitle">There is no selected post</h2>;
@@ -51,7 +53,7 @@ export const PostDetails: React.FC = () => {
           </p>
         )}
 
-        {loaded && (
+        {hasComments && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -61,7 +63,7 @@ export const PostDetails: React.FC = () => {
           </>
         )}
 
-        {loaded && !hasError && !visible && (
+        {loaded && !visible && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -72,7 +74,7 @@ export const PostDetails: React.FC = () => {
           </button>
         )}
 
-        {loaded && !hasError && visible && <NewCommentForm />}
+        {loaded && visible && <NewCommentForm />}
       </div>
     </div>
   );

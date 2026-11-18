@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch } from '../app/hooks';
 import { deletePostComment } from '../features/postComments';
+import { Comment } from '../types/Comment';
 
 type Props = { comment: Comment };
 
@@ -8,7 +9,7 @@ export const CommentDetails: React.FC<Props> = ({ comment }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <article className="message is-small" key={comment.id} data-cy="Comment">
+    <article className="message is-small" data-cy="Comment">
       <div className="message-header">
         <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
           {comment.name}
