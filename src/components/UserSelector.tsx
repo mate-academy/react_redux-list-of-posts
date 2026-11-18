@@ -9,7 +9,7 @@ import { setSelectedPost } from '../features/selectedPost';
 export const UserSelector: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
   const { users } = useAppSelector(state => state.users);
-  const { author } = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

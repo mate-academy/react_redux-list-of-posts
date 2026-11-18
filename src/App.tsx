@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { fetchUserPosts } from './features/userPosts';
 
 export const App: React.FC = () => {
-  const { author } = useAppSelector(state => state.author);
+  const author = useAppSelector(state => state.author);
   const { selectedPost } = useAppSelector(state => state.selectedPost);
   const {
     items: userPosts,
