@@ -1,18 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
-import { User } from '../types/User';
 import { Comment } from '../types/Comment';
 
 /* eslint-disable no-param-reassign */
 
-interface PostsState {
+export interface PostsState {
   loaded: boolean;
   hasError: boolean;
   expanded: boolean;
   items: Post[];
-  author: User | null;
   selectedPost: Post | null;
-  selectedUser: User | null;
   comments: Comment[];
 }
 
@@ -21,9 +18,7 @@ const initialState: PostsState = {
   hasError: false,
   expanded: false,
   items: [],
-  author: null,
   selectedPost: null,
-  selectedUser: null,
   comments: [],
 };
 
@@ -41,9 +36,6 @@ const postsSlice = createSlice({
     },
     setLoaded: (state, action: PayloadAction<boolean>) => {
       state.loaded = action.payload;
-    },
-    setAuthor: (state, action: PayloadAction<User | null>) => {
-      state.author = action.payload;
     },
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
@@ -72,7 +64,6 @@ export const {
   setPosts,
   setError,
   setLoaded,
-  setAuthor,
   setSelectedPost,
   setExpanded,
   toggleExpanded,

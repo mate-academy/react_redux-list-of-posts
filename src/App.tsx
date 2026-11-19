@@ -16,9 +16,9 @@ import {
   setPosts,
   setError,
   setLoaded,
-  setAuthor,
   setSelectedPost,
 } from './features/Posts.reducers.actions';
+import { setAuthor } from './features/Author.reducers.actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from './app/store';
 
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
   const posts = useSelector((state: RootState) => state.posts);
   const hasError = useSelector((state: RootState) => state.posts.hasError);
   const loaded = useSelector((state: RootState) => state.posts.loaded);
-  const author = useSelector((state: RootState) => state.posts.author);
+  const author = useSelector((state: RootState) => state.author.author);
   const selectedPost = useSelector(
     (state: RootState) => state.posts.selectedPost,
   );
