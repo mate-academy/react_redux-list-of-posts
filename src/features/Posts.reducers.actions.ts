@@ -1,14 +1,32 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 /* eslint-disable no-param-reassign */
+
+interface PostsState {
+  loaded: boolean;
+  hasError: boolean;
+  expanded: boolean;
+  items: Post[];
+  author: User | null;
+  selectedPost: Post | null;
+  selectedUser: User | null;
+}
+
+const initialState: PostsState = {
+  loaded: false,
+  hasError: false,
+  expanded: false,
+  items: [],
+  author: null,
+  selectedPost: null,
+  selectedUser: null,
+};
 
 const postsSlice = createSlice({
   name: 'posts',
-  initialState: {
-    loaded: false,
-    hasError: false,
-    items: [] as Post[],
-  },
+  initialState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
       state.items = action.payload;
@@ -21,8 +39,28 @@ const postsSlice = createSlice({
     setLoaded: (state, action: PayloadAction<boolean>) => {
       state.loaded = action.payload;
     },
+    setAuthor: (state, action: PayloadAction<User | null>) => {
+      state.author = action.payload;
+    },
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
+    },
+    setExpanded: (state, action: PayloadAction<boolean>) => {
+      state.expanded = action.payload;
+    },
+    toggleExpanded: state => {
+      state.expanded = !state.expanded;
+    },
   },
 });
 
-export const { setPosts, setError, setLoaded } = postsSlice.actions;
+export const {
+  setPosts,
+  setError,
+  setLoaded,
+  setAuthor,
+  setSelectedPost,
+  setExpanded,
+  toggleExpanded,
+} = postsSlice.actions;
 export default postsSlice.reducer;
