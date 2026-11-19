@@ -9,7 +9,7 @@ import {
   setComments,
   addComments,
   removeComment,
-} from '../features/Posts.reducers.actions';
+} from '../features/Comments.reducers.actions';
 
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
