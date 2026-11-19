@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { useSelector, useDispatch } from 'react-redux';
 
 import * as commentsApi from '../api/comments';
 
+import {
+  setComments,
+  addComments,
+  removeComment,
+} from '../features/Comments.reducers.actions';
+
 import { Post } from '../types/Post';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
+import { RootState, AppDispatch } from '../app/store';
 
 type Props = {
   post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  // const [comments, setComments] = useState<Comment[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const comments = useSelector((state: RootState) => state.posts.comments);
   const [loaded, setLoaded] = useState(false);
   const [hasError, setError] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -24,7 +34,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     commentsApi
       .getPostComments(post.id)
-      .then(setComments) // save the loaded comments
+      .then(comm => dispatch(setComments(comm))) // save the loaded comments
       .catch(() => setError(true)) // show an error when something went wrong
       .finally(() => setLoaded(true)); // hide the spinner
   }
@@ -66,7 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      setComments(currentComments => [...currentComments, newComment]);
+      dispatch(addComments(newComment));
 
       // setComments([...comments, newComment]);
       // works wrong if we wrap `addComment` with `useCallback`
@@ -82,9 +92,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     // we delete the comment immediately so as
     // not to make the user wait long for the actual deletion
     // eslint-disable-next-line max-len
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
+    dispatch(removeComment(commentId));
 
     await commentsApi.deleteComment(commentId);
   };

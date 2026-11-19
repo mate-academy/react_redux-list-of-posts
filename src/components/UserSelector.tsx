@@ -1,24 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import classNames from 'classnames';
 import { UserContext } from './UsersContext';
 import { User } from '../types/User';
 
+import {
+  setExpanded,
+  toggleExpanded,
+} from '../features/Posts.reducers.actions';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../app/store';
+
 type Props = {
-  value: User | null;
+  // value: User | null;
   onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   // `value` and `onChange` are traditional names for the form field
   // `selectedUser` represents what actually stored here
-  value: selectedUser,
+  // value: selectedUser,
   onChange,
 }) => {
   // `users` are loaded from the API, so for the performance reasons
   // we load them once in the `UsersContext` when the `App` is opened
   // and now we can easily reuse the `UserSelector` in any form
   const users = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const expanded = useSelector((state: RootState) => state.posts.expanded);
+  const selectedUser = useSelector(
+    (state: RootState) => state.posts.selectedUser,
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (!expanded) {
@@ -29,7 +42,7 @@ export const UserSelector: React.FC<Props> = ({
     const handleDocumentClick = () => {
       // we close the Dropdown on any click (inside or outside)
       // So there is not need to check if we clicked inside the list
-      setExpanded(false);
+      dispatch(setExpanded(false));
     };
 
     document.addEventListener('click', handleDocumentClick);
@@ -55,7 +68,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={e => {
             e.stopPropagation();
-            setExpanded(current => !current);
+            dispatch(toggleExpanded());
           }}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
