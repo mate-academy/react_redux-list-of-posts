@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -11,16 +11,13 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './api/posts';
 import { User } from './types/User';
-import { Post } from './types/Post';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { getUsers } from './api/users';
 import { setUsers } from './app/slices/usersSlice';
 import { setAuthor } from './app/slices/authorSlice';
-import { setError, setLoaded, setPosts } from './app/slices/postsSlice';
+import { setError, setLoaded, setPosts, setSelectedPost } from './app/slices/postsSlice';
 
 export const App: React.FC = () => {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const dispatch = useAppDispatch();
 
   const author = useAppSelector(state => state.author);
@@ -28,6 +25,7 @@ export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
+  const selectedPost = useAppSelector(state => state.posts.selectedPost);
 
   function loadUserPosts(userId: number) {
     dispatch(setLoaded(false));
@@ -49,7 +47,7 @@ export const App: React.FC = () => {
         const users = await getUsers();
 
         dispatch(setUsers(users));
-      } catch {}
+      } catch { }
     };
 
     loadusers();
@@ -58,7 +56,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     // we clear the post when an author is changed
     // not to confuse the user
-    setSelectedPost(null);
+    dispatch(setSelectedPost(null));
 
     if (author) {
       loadUserPosts(author.id);
@@ -101,7 +99,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={setSelectedPost}
+                    onPostSelected={(post) => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
