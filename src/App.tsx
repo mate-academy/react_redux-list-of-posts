@@ -19,8 +19,8 @@ import {
   setError,
   setLoaded,
   setPosts,
-  setSelectedPost,
 } from './app/slices/postsSlice';
+import { setSelectedPost } from './app/slices/selectedPostSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const posts = useAppSelector(state => state.posts.items);
   const loaded = useAppSelector(state => state.posts.loaded);
   const hasError = useAppSelector(state => state.posts.hasError);
-  const selectedPost = useAppSelector(state => state.posts.selectedPost);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   function loadUserPosts(userId: number) {
     dispatch(setLoaded(false));
@@ -52,11 +52,11 @@ export const App: React.FC = () => {
         const users = await getUsers();
 
         dispatch(setUsers(users));
-      } catch {}
+      } catch { }
     };
 
     loadusers();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     // we clear the post when an author is changed

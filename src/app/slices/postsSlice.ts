@@ -5,7 +5,6 @@ const initialState = {
   items: [] as Post[],
   loaded: false,
   hasError: false,
-  selectedPost: null as Post | null,
 };
 
 export const postsSlice = createSlice({
@@ -25,13 +24,9 @@ export const postsSlice = createSlice({
       ...state,
       hasError: action.payload,
     }),
-    setSelectedPost: (state, action: PayloadAction<Post | null>) => ({
-      ...state,
-      selectedPost: action.payload,
-    }),
   },
 });
 
-export const { setPosts, setLoaded, setError, setSelectedPost } =
+export const { setPosts, setLoaded, setError } =
   postsSlice.actions;
 export const postsReducer = postsSlice.reducer;
