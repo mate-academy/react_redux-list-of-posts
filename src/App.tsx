@@ -49,7 +49,7 @@ export const App: React.FC = () => {
         const users = await getUsers();
 
         dispatch(setUsers(users));
-      } catch { }
+      } catch {}
     };
 
     loadusers();
