@@ -15,7 +15,12 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { getUsers } from './api/users';
 import { setUsers } from './app/slices/usersSlice';
 import { setAuthor } from './app/slices/authorSlice';
-import { setError, setLoaded, setPosts, setSelectedPost } from './app/slices/postsSlice';
+import {
+  setError,
+  setLoaded,
+  setPosts,
+  setSelectedPost,
+} from './app/slices/postsSlice';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,7 +52,7 @@ export const App: React.FC = () => {
         const users = await getUsers();
 
         dispatch(setUsers(users));
-      } catch { }
+      } catch {}
     };
 
     loadusers();
@@ -99,7 +104,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
-                    onPostSelected={(post) => dispatch(setSelectedPost(post))}
+                    onPostSelected={post => dispatch(setSelectedPost(post))}
                   />
                 )}
               </div>
