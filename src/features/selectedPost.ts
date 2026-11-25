@@ -8,11 +8,11 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     selectPost: (
-      post: Post | null = initialState,
+      selectedPost: Post | null = initialState,
       action: PayloadAction<Post | null>,
-    ) => (post = action.payload ?? null),
+    ) => (selectedPost = action.payload ?? null),
   },
 });
 
-export const postActions = postSlice.actions;
-export const postReducer = postSlice.reducer;
+export const selectedPostActions = postSlice.actions;
+export const selectedPostReducer = postSlice.reducer;

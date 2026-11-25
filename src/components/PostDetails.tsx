@@ -9,13 +9,13 @@ export const PostDetails: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const post = useAppSelector(state => state.post);
-  const { comments, loaded, hasError } = useAppSelector(
+  const selectedPost = useAppSelector(state => state.selectedPost);
+  const { items, loaded, hasError } = useAppSelector(
     state => state.comments,
   );
 
   function loadComments() {
-    dispatch(getComments(post!.id));
+    dispatch(getComments(selectedPost!.id));
   }
 
   function deleteComment(commentId: number) {
@@ -25,14 +25,14 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     loadComments();
     setVisible(false);
-  }, [post, post?.id]);
+  }, [selectedPost, selectedPost?.id]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        <h2 data-cy="PostTitle">{`#${post!.id}: ${post!.title}`}</h2>
+        <h2 data-cy="PostTitle">{`#${selectedPost!.id}: ${selectedPost!.title}`}</h2>
 
-        <p data-cy="PostBody">{post!.body}</p>
+        <p data-cy="PostBody">{selectedPost!.body}</p>
       </div>
 
       <div className="block">
@@ -44,17 +44,17 @@ export const PostDetails: React.FC = () => {
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {loaded && !hasError && items.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && items.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {items.map(comment => (
               <article
                 className="message is-small"
                 key={comment.id}

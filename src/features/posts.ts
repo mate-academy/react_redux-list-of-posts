@@ -5,13 +5,13 @@ import { getUserPosts } from '../api/posts';
 export interface PostsState {
   loaded: boolean;
   hasError: boolean;
-  posts: Post[];
+  items: Post[];
 }
 
 const initialState: PostsState = {
   loaded: false,
   hasError: false,
-  posts: [],
+  items: [],
 };
 
 export const getPosts = createAsyncThunk(
@@ -30,12 +30,12 @@ export const postsSlice = createSlice({
       .addCase(getPosts.pending, state => {
         state.loaded = false;
         state.hasError = false;
-        state.posts = [];
+        state.items = [];
       })
       .addCase(getPosts.fulfilled, (state, action) => {
         state.loaded = true;
         state.hasError = false;
-        state.posts = action.payload;
+        state.items = action.payload;
       })
       .addCase(getPosts.rejected, state => {
         state.loaded = true;

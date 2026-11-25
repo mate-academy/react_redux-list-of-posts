@@ -5,14 +5,14 @@ import { Comment, CommentData } from '../types/Comment';
 export interface CommentsState {
   loaded: boolean;
   hasError: boolean;
-  comments: Comment[];
+  items: Comment[];
   submiting: boolean;
 }
 
 const initialState: CommentsState = {
   loaded: false,
   hasError: false,
-  comments: [],
+  items: [],
   submiting: false,
 };
 
@@ -52,7 +52,7 @@ export const commentsSlice = createSlice({
       .addCase(getComments.fulfilled, (state, action) => {
         state.loaded = true;
         state.hasError = false;
-        state.comments = action.payload;
+        state.items = action.payload;
       })
       .addCase(getComments.rejected, state => {
         state.loaded = true;
@@ -63,12 +63,12 @@ export const commentsSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action) => {
         state.submiting = false;
-        state.comments.push(action.payload);
+        state.items.push(action.payload);
       })
       .addCase(removeComment.fulfilled, (state, action) => {
         return {
           ...state,
-          comments: state.comments.filter(
+          items: state.items.filter(
             comment => comment.id !== action.payload,
           ),
         };

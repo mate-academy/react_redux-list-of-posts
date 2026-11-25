@@ -17,7 +17,7 @@ export const NewCommentForm: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const { submiting } = useAppSelector(state => state.comments);
-  const post = useAppSelector(state => state.post);
+  const post = useAppSelector(state => state.selectedPost);
 
   const clearForm = () => {
     setValues({

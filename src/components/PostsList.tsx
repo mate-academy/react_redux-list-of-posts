@@ -4,15 +4,15 @@ import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { postActions } from '../features/post';
+import { selectedPostActions } from '../features/selectedPost';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { posts } = useAppSelector(state => state.posts);
-  const selectedPost = useAppSelector(state => state.post);
+  const { items } = useAppSelector(state => state.posts);
+  const selectedPost = useAppSelector(state => state.selectedPost);
 
   const selectPost = (post: Post | null) => {
-    dispatch(postActions.selectPost(post));
+    dispatch(selectedPostActions.selectPost(post));
   };
 
   return (
@@ -29,7 +29,7 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {items.map(post => (
             <tr key={post.id} data-cy="Post">
               <td data-cy="PostId">{post.id}</td>
               <td data-cy="PostTitle">{post.title}</td>
