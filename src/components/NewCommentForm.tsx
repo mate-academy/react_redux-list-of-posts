@@ -1,25 +1,23 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { addComment } from '../features/comments';
 
-type Props = {
-  onSubmit: (data: CommentData) => Promise<void>;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
-  const [submitting, setSubmitting] = useState(false);
-
+export const NewCommentForm: React.FC = () => {
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
-
   const [{ name, email, body }, setValues] = useState({
     name: '',
     email: '',
     body: '',
   });
+
+  const dispatch = useAppDispatch();
+  const { submiting } = useAppSelector(state => state.comments);
+  const post = useAppSelector(state => state.post);
 
   const clearForm = () => {
     setValues({
@@ -47,25 +45,46 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    if (!name && !email && !body) {
+      setErrors({ name: true, email: true, body: true });
 
-    if (!name || !email || !body) {
       return;
     }
 
-    setSubmitting(true);
+    if (!name) {
+      setErrors(current => ({ ...current, name: true }));
 
-    // it is very easy to forget about `await` keyword
-    await onSubmit({ name, email, body });
+      return;
+    }
 
-    // and the spinner will disappear immediately
-    setSubmitting(false);
+    if (!email) {
+      setErrors(current => ({ ...current, email: true }));
+
+      return;
+    }
+
+    if (!body) {
+      setErrors(current => ({ ...current, body: true }));
+
+      return;
+    }
+
+    await dispatch(
+      addComment({
+        name,
+        email,
+        body,
+        postId: post!.id,
+      }),
+    );
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+
     setValues(current => ({ ...current, body: '' }));
-    // We keep the entered name and email
   };
 
   return (
@@ -172,7 +191,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': submitting,
+              'is-loading': submiting,
             })}
           >
             Add

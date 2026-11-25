@@ -1,0 +1,80 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createComment, deleteComment, getPostComments } from '../api/comments';
+import { Comment, CommentData } from '../types/Comment';
+
+export interface CommentsState {
+  loaded: boolean;
+  hasError: boolean;
+  comments: Comment[];
+  submiting: boolean;
+}
+
+const initialState: CommentsState = {
+  loaded: false,
+  hasError: false,
+  comments: [],
+  submiting: false,
+};
+
+export const getComments = createAsyncThunk(
+  'comments/fetchCommnts',
+  async (postId: number) => {
+    return getPostComments(postId);
+  },
+);
+
+export const addComment = createAsyncThunk(
+  'newComment/fetchNewComment',
+  async (data: CommentData) => {
+    return createComment(data);
+  },
+);
+
+export const removeComment = createAsyncThunk(
+  'removeComment/fetchRemoveComment',
+  async (commentId: number) => {
+    await deleteComment(commentId);
+
+    return commentId;
+  },
+);
+
+export const commentsSlice = createSlice({
+  name: 'comments',
+  initialState,
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(getComments.pending, state => {
+        state.loaded = false;
+        state.hasError = false;
+      })
+      .addCase(getComments.fulfilled, (state, action) => {
+        state.loaded = true;
+        state.hasError = false;
+        state.comments = action.payload;
+      })
+      .addCase(getComments.rejected, state => {
+        state.loaded = true;
+        state.hasError = true;
+      })
+      .addCase(addComment.pending, state => {
+        state.submiting = true;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.submiting = false;
+        state.comments.push(action.payload);
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
+        return {
+          ...state,
+          comments: state.comments.filter(
+            comment => comment.id !== action.payload,
+          ),
+        };
+      });
+  },
+});
+
+export const commentsActions = commentsSlice.actions;
+export const commentsReducer = commentsSlice.reducer;
