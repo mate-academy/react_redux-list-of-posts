@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
@@ -65,12 +66,13 @@ export const commentsSlice = createSlice({
         state.submiting = false;
         state.items.push(action.payload);
       })
+      .addCase(addComment.rejected, state => {
+        state.submiting = false;
+      })
       .addCase(removeComment.fulfilled, (state, action) => {
         return {
           ...state,
-          items: state.items.filter(
-            comment => comment.id !== action.payload,
-          ),
+          items: state.items.filter(comment => comment.id !== action.payload),
         };
       });
   },
