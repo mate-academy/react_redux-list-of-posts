@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createComment, deleteComment, getPostComments } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
@@ -46,29 +45,35 @@ export const commentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(getComments.pending, state => {
-        state.loaded = false;
-        state.hasError = false;
-      })
-      .addCase(getComments.fulfilled, (state, action) => {
-        state.loaded = true;
-        state.hasError = false;
-        state.items = action.payload;
-      })
-      .addCase(getComments.rejected, state => {
-        state.loaded = true;
-        state.hasError = true;
-      })
-      .addCase(addComment.pending, state => {
-        state.submiting = true;
-      })
-      .addCase(addComment.fulfilled, (state, action) => {
-        state.submiting = false;
-        state.items.push(action.payload);
-      })
-      .addCase(addComment.rejected, state => {
-        state.submiting = false;
-      })
+      .addCase(getComments.pending, state => ({
+        ...state,
+        loaded: false,
+        hasError: false
+      }))
+      .addCase(getComments.fulfilled, (state, action) => ({
+        ...state,
+        loaded: true,
+        hasError: false,
+        items: action.payload,
+      }))
+      .addCase(getComments.rejected, state => ({
+        ...state,
+        loaded: true,
+        hasError: true,
+      }))
+      .addCase(addComment.pending, state => ({
+        ...state,
+        submiting: true
+      }))
+      .addCase(addComment.fulfilled, (state, action) => ({
+        ...state,
+        submiting: false,
+        items: [...state.items, action.payload]
+      }))
+      .addCase(addComment.rejected, state => ({
+        ...state,
+        submiting: false,
+      }))
       .addCase(removeComment.fulfilled, (state, action) => {
         return {
           ...state,
