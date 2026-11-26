@@ -7,10 +7,7 @@ export const authorSlice = createSlice({
   name: 'author',
   initialState,
   reducers: {
-    getAuthor: (
-      author: User | null = initialState,
-      action: PayloadAction<User | null>,
-    ) => author = action.payload,
+    getAuthor: (_, action: PayloadAction<User | null>) => action.payload,
   },
 });
 

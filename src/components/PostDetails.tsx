@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -10,13 +10,11 @@ export const PostDetails: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const selectedPost = useAppSelector(state => state.selectedPost);
-  const { items, loaded, hasError } = useAppSelector(
-    state => state.comments,
-  );
+  const { items, loaded, hasError } = useAppSelector(state => state.comments);
 
-  function loadComments() {
+  const loadComments = useCallback(() => {
     dispatch(getComments(selectedPost!.id));
-  }
+  }, [selectedPost, dispatch]);
 
   function deleteComment(commentId: number) {
     dispatch(removeComment(commentId));
@@ -25,7 +23,7 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     loadComments();
     setVisible(false);
-  }, [selectedPost, selectedPost?.id]);
+  }, [loadComments]);
 
   return (
     <div className="content" data-cy="PostDetails">

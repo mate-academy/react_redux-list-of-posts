@@ -20,7 +20,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(usersInit());
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className="section">

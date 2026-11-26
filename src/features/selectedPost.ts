@@ -7,10 +7,8 @@ export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    selectPost: (
-      selectedPost: Post | null = initialState,
-      action: PayloadAction<Post | null>,
-    ) => (selectedPost = action.payload ?? null),
+    selectPost: (_, action: PayloadAction<Post | null>) =>
+      action.payload ?? null,
   },
 });
 

@@ -48,7 +48,7 @@ export const commentsSlice = createSlice({
       .addCase(getComments.pending, state => ({
         ...state,
         loaded: false,
-        hasError: false
+        hasError: false,
       }))
       .addCase(getComments.fulfilled, (state, action) => ({
         ...state,
@@ -63,12 +63,12 @@ export const commentsSlice = createSlice({
       }))
       .addCase(addComment.pending, state => ({
         ...state,
-        submiting: true
+        submiting: true,
       }))
       .addCase(addComment.fulfilled, (state, action) => ({
         ...state,
         submiting: false,
-        items: [...state.items, action.payload]
+        items: [...state.items, action.payload],
       }))
       .addCase(addComment.rejected, state => ({
         ...state,
