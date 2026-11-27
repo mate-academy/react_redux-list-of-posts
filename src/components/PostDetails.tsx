@@ -1,12 +1,16 @@
+//eslint-disable max-len
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-
 import { Post } from '../types/Post';
 import { CommentData } from '../types/Comment';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { addComment, loadComments, removeComment } from '../features/comments/commentsSlice';
+import {
+  addComment,
+  loadComments,
+  removeComment,
+} from '../features/comments/commentsSlice';
 
 type Props = {
   post: Post;

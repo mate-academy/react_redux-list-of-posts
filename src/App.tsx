@@ -15,6 +15,7 @@ import {
   loadPosts,
   actions as postsActions,
 } from './features/posts/postsSlice';
+// eslint-disable-next-line max-len
 import { actions as selectedPostActions } from './features/selectedPost/selectedPostSlice';
 
 export const App: React.FC = () => {

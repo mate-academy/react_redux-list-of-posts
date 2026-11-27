@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { actions as selectedPostActions } from '../features/selectedPost/selectedPostSlice';
-
 import classNames from 'classnames';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+// eslint-disable-next-line max-len
+import { actions as selectedPostActions } from '../features/selectedPost/selectedPostSlice';
 
 export const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();

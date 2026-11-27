@@ -51,7 +51,7 @@ export const commentSlice = createSlice({
     builder.addCase(addComment.rejected, state => {
       state.hasError = true;
     });
-    builder.addCase(removeComment.pending, (state, action) => {
+    builder.addCase(removeComment.fulfilled, (state, action) => {
       state.items = state.items.filter(c => c.id !== action.meta.arg);
     });
   },
