@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../types/Post';
@@ -17,7 +16,6 @@ export const PostsList: React.FC<Props> = ({
 }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
-
     <table className="table is-fullwidth is-striped is-hoverable is-narrow">
       <thead>
         <tr className="has-background-link-light">
@@ -26,7 +24,6 @@ export const PostsList: React.FC<Props> = ({
           <th> </th>
         </tr>
       </thead>
-
       <tbody>
         {posts.map(post => (
           <tr key={post.id} data-cy="Post">
@@ -39,9 +36,9 @@ export const PostsList: React.FC<Props> = ({
                 className={classNames('button', 'is-link', {
                   'is-light': post.id !== selectedPostId,
                 })}
-                onClick={() => {
-                  onPostSelected(post.id === selectedPostId ? null : post);
-                }}
+                onClick={() =>
+                  onPostSelected(post.id === selectedPostId ? null : post)
+                }
               >
                 {post.id === selectedPostId ? 'Close' : 'Open'}
               </button>
